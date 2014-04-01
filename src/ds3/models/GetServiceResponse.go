@@ -7,8 +7,9 @@ type GetServiceResponse struct {
     Buckets []Bucket
 }
 
-func NewServiceResponse(response *http.Response) *GetServiceResponse {
-    return &GetServiceResponse{}
+func NewServiceResponse(response *http.Response) (*GetServiceResponse, error) {
+    //TODO: make it and do error handling
+    return &GetServiceResponse{}, nil
 }
 
 type Owner struct {

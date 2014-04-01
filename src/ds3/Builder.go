@@ -6,11 +6,11 @@ import (
 )
 
 type Builder struct {
-    connectionInfo net.ConnectionInfo
+    connectionInfo *net.ConnectionInfo
 }
 
 func NewBuilder(endpoint *url.URL, creds net.Credentials) *Builder {
-    return &Builder{net.ConnectionInfo{
+    return &Builder{&net.ConnectionInfo{
         Endpoint: *endpoint,
         Creds: creds,
         RedirectRetryCount: 5,
@@ -29,9 +29,8 @@ func (builder *Builder) WithRedirectRetryCount(count int) *Builder {
 }
 
 func (builder *Builder) Build() *Client {
-    return nil
-    //return &Client{net.FakeNetwork{ }}
+    return &Client{net.NewHttpNetwork(builder.connectionInfo)}
     //TODO
-    //*builder
+    return nil
 }
 
