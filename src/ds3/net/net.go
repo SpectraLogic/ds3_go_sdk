@@ -24,23 +24,49 @@ type Credentials struct {
 
 type httpNetwork struct {
     connectionInfo *ConnectionInfo
+    client *http.Client
 }
 
 func NewHttpNetwork(connectionInfo *ConnectionInfo) Network {
-    return &httpNetwork{connectionInfo}
+    return &httpNetwork{
+        connectionInfo,
+        &http.Client{ Transport: &http.Transport{ Proxy: http.ProxyURL(connectionInfo.Proxy) } },
+    }
 }
 
+//TODO: improve error handling
 func (net httpNetwork) Invoke(request models.Ds3Request) (*http.Response, error) {
-    verb := request.Verb().String()
-    path := buildUrl(net.connectionInfo, request).String()
-    httpRequest, _ := http.NewRequest(verb, path, request.GetContentStream())
-    httpResponse, _ := new(http.Client).Do(httpRequest)
+    // Build the request.
+    httpRequest, makeReqErr := buildHttpRequest(net.connectionInfo, request)
+    if makeReqErr != nil {
+        return nil, makeReqErr
+    }
+
+    // Perform the request.
+    httpResponse, reqErr := net.client.Do(httpRequest)
+    if reqErr != nil {
+        return nil, reqErr
+    }
+
+    // Return the response.
     return httpResponse, nil
-    //TODO: error handling
 }
 
-func buildUrl(connectionInfo *ConnectionInfo, request models.Ds3Request) *url.URL {
-    url := connectionInfo.Endpoint
+func buildHttpRequest(conn *ConnectionInfo, request models.Ds3Request) (*http.Request, error) {
+    httpRequest, err := http.NewRequest(
+        request.Verb().String(),
+        buildUrl(conn, request).String(),
+        request.GetContentStream(),
+    )
+    if err != nil {
+        return nil, err
+    }
+    setRequestHeaders(httpRequest, conn.Creds, request)
+    return httpRequest, nil
+}
+
+func buildUrl(conn *ConnectionInfo, request models.Ds3Request) *url.URL {
+    url := conn.Endpoint
     url.Path = request.Path()
     url.RawQuery = request.QueryParams().Encode()
     return &url

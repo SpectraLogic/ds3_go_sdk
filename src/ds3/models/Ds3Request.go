@@ -3,6 +3,7 @@ package models
 import (
     "io"
     "net/url"
+    "fmt"
 )
 
 type HttpVerb int
@@ -16,6 +17,12 @@ const(
     PATCH
 )
 
+type StatusCode int
+
+const(
+    OK StatusCode = 200
+)
+
 func (verb HttpVerb) String() string {
     switch verb {
         case GET: return "GET"
@@ -24,7 +31,7 @@ func (verb HttpVerb) String() string {
         case DELETE: return "DELETE"
         case HEAD: return "HEAD"
         case PATCH: return "PATCH"
-        default: return "GET"//TODO
+        default: panic(fmt.Sprintf("Invalid HttpVerb represented by: %d", verb))
     }
 }
 

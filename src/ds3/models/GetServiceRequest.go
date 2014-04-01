@@ -2,7 +2,6 @@ package models
 
 import (
     "io"
-    "io/ioutil"
     "net/url"
 )
 
@@ -25,12 +24,6 @@ func (GetServiceRequest) QueryParams() *url.Values {
 }
 
 func (GetServiceRequest) GetContentStream() io.ReadCloser {
-    return ioutil.NopCloser(nopReader{})
-}
-
-//TODO: we might need this somewhere else as well
-type nopReader struct {}
-func (nopReader) Read(p []byte) (int, error) {
-    return 0, nil
+    return nil
 }
 
