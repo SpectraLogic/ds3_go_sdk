@@ -30,7 +30,5 @@ func (builder *Builder) WithRedirectRetryCount(count int) *Builder {
 
 func (builder *Builder) Build() *Client {
     return &Client{net.NewHttpNetwork(builder.connectionInfo)}
-    //TODO
-    return nil
 }
 

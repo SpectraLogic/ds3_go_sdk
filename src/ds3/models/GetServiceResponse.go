@@ -3,9 +3,7 @@ package models
 import (
     "errors"
     "io"
-    "io/ioutil"
     "net/http"
-    "encoding/xml"
 )
 
 type GetServiceResponse struct {
@@ -24,30 +22,20 @@ type Bucket struct {
 }
 
 func NewGetServiceResponse(response *http.Response) (*GetServiceResponse, error) {
-    if response.StatusCode == int(OK) {
-        return readResponseBody(response.Body)
+    if response.StatusCode == http.StatusOK {
+        return readGetServiceResponseBody(response.Body)
     } else {
         return nil, errors.New("Response status error") //TODO: fix error handling
     }
 }
 
 //TODO: improve error handling
-func readResponseBody(stream io.ReadCloser) (*GetServiceResponse, error) {
-    defer stream.Close()
-
-    // Get the bytes or forward the error.
-    bytes, err := ioutil.ReadAll(stream)
+func readGetServiceResponseBody(stream io.ReadCloser) (*GetServiceResponse, error) {
+    var body GetServiceResponse
+    err := readResponseBody(stream, &body)
     if err != nil {
         return nil, err
     }
-
-    // Deserialize or forward the error.
-    var body GetServiceResponse
-    if err = xml.Unmarshal(bytes, &body); err != nil {
-        return nil, err
-    }
-
-    // Return the result.
     return &body, nil
 }
 

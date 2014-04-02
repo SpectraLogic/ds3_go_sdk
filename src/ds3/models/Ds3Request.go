@@ -17,12 +17,6 @@ const(
     PATCH
 )
 
-type StatusCode int
-
-const(
-    OK StatusCode = 200
-)
-
 func (verb HttpVerb) String() string {
     switch verb {
         case GET: return "GET"

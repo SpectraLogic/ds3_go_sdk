@@ -1,6 +1,8 @@
 package net
 
 import (
+    "fmt"
+    "errors"
     "net/http"
     "net/url"
     "ds3/models"
@@ -24,13 +26,13 @@ type Credentials struct {
 
 type httpNetwork struct {
     connectionInfo *ConnectionInfo
-    client *http.Client
+    transport *http.Transport
 }
 
 func NewHttpNetwork(connectionInfo *ConnectionInfo) Network {
     return &httpNetwork{
         connectionInfo,
-        &http.Client{ Transport: &http.Transport{ Proxy: http.ProxyURL(connectionInfo.Proxy) } },
+        &http.Transport{ Proxy: http.ProxyURL(connectionInfo.Proxy) },
     }
 }
 
@@ -42,14 +44,25 @@ func (net httpNetwork) Invoke(request models.Ds3Request) (*http.Response, error)
         return nil, makeReqErr
     }
 
-    // Perform the request.
-    httpResponse, reqErr := net.client.Do(httpRequest)
-    if reqErr != nil {
-        return nil, reqErr
+    // Handle as many 307's as we're allowed.
+    for i := 0; i < net.connectionInfo.RedirectRetryCount; i++ {
+        // Perform the request.
+        httpResponse, reqErr := net.transport.RoundTrip(httpRequest)
+        if reqErr != nil {
+            return nil, reqErr
+        }
+
+        // If it wasn't a redirect then return.
+        if httpResponse.StatusCode != http.StatusTemporaryRedirect {
+            return httpResponse, nil
+        }
     }
 
-    // Return the response.
-    return httpResponse, nil
+    // We had as many 307 redirects as we were allowed to use.
+    return nil, errors.New(fmt.Sprintf(
+        "The server is busy. Retried the max number of %d times.",
+        net.connectionInfo.RedirectRetryCount,
+    ))
 }
 
 func buildHttpRequest(conn *ConnectionInfo, request models.Ds3Request) (*http.Request, error) {
