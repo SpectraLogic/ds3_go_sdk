@@ -6,7 +6,7 @@ import (
     "ds3/models"
 )
 
-func getService(client *ds3.Client) error {
+func getService(client *ds3.Client, args *Arguments) error {
     getServiceResponse, err := client.GetService(models.NewGetServiceRequest())
     if err == nil {
         //TODO: better result printing

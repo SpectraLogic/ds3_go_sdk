@@ -5,19 +5,27 @@ import (
     "ds3"
 )
 
+type command func(*ds3.Client, *Arguments) error
+
+var availableCommands = map[string]command {
+    "get_service": getService,
+    "get_bucket": getBucket,
+    //TODO: implement the rest of the commands.
+    //"get_object": 
+    //"put_bucket": 
+    //"put_object": 
+    //"delete_bucket": 
+    //"delete_object": 
+    //"get_bulk": 
+    //"put_bulk": 
+}
+
 func RunCommand(client *ds3.Client, args *Arguments) error {
-    switch args.Command {
-        case "get_service": return getService(client)
-        case "get_bucket": fallthrough
-        case "get_object": fallthrough
-        case "put_bucket": fallthrough
-        case "put_object": fallthrough
-        case "delete_bucket": fallthrough
-        case "delete_object": fallthrough
-        case "get_bulk": fallthrough
-        case "put_bulk": fallthrough
-        default:
-            return fmt.Errorf("Unsupported command: '%s'", args.Command)
+    cmd, ok := availableCommands[args.Command]
+    if ok {
+        return cmd(client, args)
+    } else {
+        return fmt.Errorf("Unsupported command: '%s'", args.Command)
     }
 }
 

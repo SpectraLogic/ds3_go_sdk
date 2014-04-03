@@ -4,13 +4,14 @@ import (
     "errors"
     "os"
     "flag"
-    "net/url"
 )
 
 type Arguments struct {
-    Endpoint, Proxy *url.URL
+    Endpoint, Proxy string
     AccessKey, SecretKey string
     Command string
+    Bucket string
+    KeyPrefix string
 }
 
 func ParseArgs() (*Arguments, error) {
@@ -20,16 +21,29 @@ func ParseArgs() (*Arguments, error) {
     secretKeyParam := flag.String("secret_key", "", "Specifies the secret_key for the DS3 user.")
     proxyParam := flag.String("proxy", "", "Specifies the HTTP proxy to route through.")
     commandParam := flag.String("command", "", "The HTTP call to execute.")
+    bucketParam := flag.String("bucket", "", "The name of the bucket to constrict the request to.")
+    keyPrefixParam := flag.String("prefix", "", "The key prefix by which to constrain the results.")
     flag.Parse()
 
-    // Build arg set.
-    return buildArgsFromStrings(
-        getParam(*endpointParam, "DS3_ENDPOINT"),
-        getParam(*accessKeyParam, "DS3_ACCESS_KEY"),
-        getParam(*secretKeyParam, "DS3_SECRET_KEY"),
-        getParam(*proxyParam, "DS3_PROXY"),
-        *commandParam,
-    )
+    // Build the arguments object.
+    args := Arguments{
+        Endpoint: getParam(*endpointParam, "DS3_ENDPOINT"),
+        AccessKey: getParam(*accessKeyParam, "DS3_ACCESS_KEY"),
+        SecretKey: getParam(*secretKeyParam, "DS3_SECRET_KEY"),
+        Proxy: getParam(*proxyParam, "DS3_PROXY"),
+        Command: *commandParam,
+        Bucket: *bucketParam,
+        KeyPrefix: *keyPrefixParam,
+    }
+
+    // Validate required arguments.
+    switch {
+        case args.Endpoint == "": return nil, errors.New("Must specify an endpoint.")
+        case args.AccessKey == "": return nil, errors.New("Must specify an access key.")
+        case args.SecretKey == "": return nil, errors.New("Must specify an secret key.")
+        case args.Command == "": return nil, errors.New("Must specify a command.")
+        default: return &args, nil
+    }
 }
 
 func getParam(param, envName string) string {
@@ -39,44 +53,5 @@ func getParam(param, envName string) string {
         case env != "": return env
         default: return ""
     }
-}
-
-func buildArgsFromStrings(endpoint, accessKey, secretKey, proxy, command string) (*Arguments, error) {
-    // Validate required arguments.
-    switch {
-        case endpoint == "": return nil, errors.New("Must specify an endpoint.")
-        case accessKey == "": return nil, errors.New("Must specify an access key.")
-        case secretKey == "": return nil, errors.New("Must specify an secret key.")
-        case command == "": return nil, errors.New("Must specify a command.")
-        default:
-    }
-
-    // Set keys.
-    args := Arguments{
-        AccessKey: accessKey,
-        SecretKey: secretKey,
-        Command: command,
-    }
-
-    // Set endpoint.
-    endpointUrl, endpointErr := url.Parse(endpoint)
-    if endpointErr == nil {
-        args.Endpoint = endpointUrl
-    } else {
-        return nil, errors.New("The endpoint format was invalid.")
-    }
-
-    // Set proxy.
-    if proxy != "" {
-        proxyUrl, proxyErr := url.Parse(proxy)
-        if proxyErr == nil {
-            args.Proxy = proxyUrl
-        } else {
-            return nil, errors.New("The proxy format was invalid.")
-        }
-    }
-
-    // Return args.
-    return &args, nil
 }
 

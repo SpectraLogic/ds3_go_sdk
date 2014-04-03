@@ -17,12 +17,17 @@ func (client *Client) GetService(request *models.GetServiceRequest) (*models.Get
     }
 
     // Create a response object based on the result.
-    getServiceResponse, responseError := models.NewGetServiceResponse(response)
-    if responseError != nil {
-        return nil, responseError
+    return models.NewGetServiceResponse(response)
+}
+
+func (client *Client) GetBucket(request *models.GetBucketRequest) (*models.GetBucketResponse, error) {
+    // Invoke the HTTP request.
+    response, requestErr := client.netLayer.Invoke(request)
+    if requestErr != nil {
+        return nil, requestErr
     }
 
-    // Return the result.
-    return getServiceResponse, nil
+    // Create a response object based on the result.
+    return models.NewGetBucketResponse(response)
 }
 
