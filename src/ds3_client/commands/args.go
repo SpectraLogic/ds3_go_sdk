@@ -12,6 +12,7 @@ type Arguments struct {
     Command string
     Bucket string
     KeyPrefix string
+    MaxKeys int
 }
 
 func ParseArgs() (*Arguments, error) {
@@ -23,6 +24,7 @@ func ParseArgs() (*Arguments, error) {
     commandParam := flag.String("command", "", "The HTTP call to execute.")
     bucketParam := flag.String("bucket", "", "The name of the bucket to constrict the request to.")
     keyPrefixParam := flag.String("prefix", "", "The key prefix by which to constrain the results.")
+    maxKeysParam := flag.Int("max-keys", 0, "The maximum number of objects to return.")
     flag.Parse()
 
     // Build the arguments object.
@@ -34,6 +36,7 @@ func ParseArgs() (*Arguments, error) {
         Command: *commandParam,
         Bucket: *bucketParam,
         KeyPrefix: *keyPrefixParam,
+        MaxKeys: *maxKeysParam,
     }
 
     // Validate required arguments.
