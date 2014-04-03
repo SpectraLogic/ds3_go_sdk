@@ -1,4 +1,4 @@
-package main
+package commands
 
 import (
     "errors"
@@ -7,13 +7,13 @@ import (
     "net/url"
 )
 
-type argSet struct {
-    endpoint, proxy *url.URL
-    accessKey, secretKey string
-    command string
+type Arguments struct {
+    Endpoint, Proxy *url.URL
+    AccessKey, SecretKey string
+    Command string
 }
 
-func parseArgs() (*argSet, error) {
+func ParseArgs() (*Arguments, error) {
     // Parse command line arguments.
     endpointParam := flag.String("endpoint", "", "Specifies the url to the DS3 server.")
     accessKeyParam := flag.String("access_key", "", "Specifies the access_key for the DS3 user.")
@@ -41,7 +41,7 @@ func getParam(param, envName string) string {
     }
 }
 
-func buildArgsFromStrings(endpoint, accessKey, secretKey, proxy, command string) (*argSet, error) {
+func buildArgsFromStrings(endpoint, accessKey, secretKey, proxy, command string) (*Arguments, error) {
     // Validate required arguments.
     switch {
         case endpoint == "": return nil, errors.New("Must specify an endpoint.")
@@ -52,16 +52,16 @@ func buildArgsFromStrings(endpoint, accessKey, secretKey, proxy, command string)
     }
 
     // Set keys.
-    args := argSet{
-        accessKey: accessKey,
-        secretKey: secretKey,
-        command: command,
+    args := Arguments{
+        AccessKey: accessKey,
+        SecretKey: secretKey,
+        Command: command,
     }
 
     // Set endpoint.
     endpointUrl, endpointErr := url.Parse(endpoint)
     if endpointErr == nil {
-        args.endpoint = endpointUrl
+        args.Endpoint = endpointUrl
     } else {
         return nil, errors.New("The endpoint format was invalid.")
     }
@@ -70,7 +70,7 @@ func buildArgsFromStrings(endpoint, accessKey, secretKey, proxy, command string)
     if proxy != "" {
         proxyUrl, proxyErr := url.Parse(proxy)
         if proxyErr == nil {
-            args.proxy = proxyUrl
+            args.Proxy = proxyUrl
         } else {
             return nil, errors.New("The proxy format was invalid.")
         }

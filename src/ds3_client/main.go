@@ -1,17 +1,15 @@
 package main
 
 import (
-    "fmt"
     "log"
     "ds3"
     "ds3/net"
-    "ds3/models"
-    "ds3-client/commands"
+    "ds3_client/commands"
 )
 
 func main() {
     // Parse the arguments.
-    args, argsErr := parseArgs()
+    args, argsErr := commands.ParseArgs()
     if argsErr != nil {
         log.Fatal(argsErr)
     }
@@ -21,20 +19,12 @@ func main() {
     if cmdErr != nil {
         log.Fatal(cmdErr)
     }
-
-    getServiceResponse, err := client.GetService(models.NewGetServiceRequest())
-    if err != nil {
-        fmt.Println(err)
-    } else {
-        fmt.Println("Success:")
-        fmt.Println(getServiceResponse)
-    }
 }
 
-func buildClientFromArgs(args *argSet) *ds3.Client {
+func buildClientFromArgs(args *commands.Arguments) *ds3.Client {
     return ds3.
-        NewBuilder(args.endpoint, net.Credentials{args.accessKey, args.secretKey}).
-        WithProxy(args.proxy).
+        NewBuilder(args.Endpoint, net.Credentials{args.AccessKey, args.SecretKey}).
+        WithProxy(args.Proxy).
         Build()
 }
 

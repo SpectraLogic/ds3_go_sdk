@@ -3,6 +3,7 @@ package commands
 import (
     "fmt"
     "ds3"
+    "ds3/models"
 )
 
 func getService(client *ds3.Client) error {
