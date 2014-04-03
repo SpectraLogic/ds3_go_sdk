@@ -5,20 +5,12 @@ import (
     "os"
     "flag"
     "net/url"
-    "ds3"
-    "ds3/net"
 )
 
 type argSet struct {
     endpoint, proxy *url.URL
     accessKey, secretKey string
-}
-
-func buildClientFromArgs(args *argSet) *ds3.Client {
-    return ds3.
-        NewBuilder(args.endpoint, net.Credentials{args.accessKey, args.secretKey}).
-        WithProxy(args.proxy).
-        Build()
+    command string
 }
 
 func parseArgs() (*argSet, error) {
@@ -27,6 +19,7 @@ func parseArgs() (*argSet, error) {
     accessKeyParam := flag.String("access_key", "", "Specifies the access_key for the DS3 user.")
     secretKeyParam := flag.String("secret_key", "", "Specifies the secret_key for the DS3 user.")
     proxyParam := flag.String("proxy", "", "Specifies the HTTP proxy to route through.")
+    commandParam := flag.String("command", "", "The HTTP call to execute.")
     flag.Parse()
 
     // Build arg set.
@@ -35,6 +28,7 @@ func parseArgs() (*argSet, error) {
         getParam(*accessKeyParam, "DS3_ACCESS_KEY"),
         getParam(*secretKeyParam, "DS3_SECRET_KEY"),
         getParam(*proxyParam, "DS3_PROXY"),
+        *commandParam,
     )
 }
 
@@ -47,12 +41,13 @@ func getParam(param, envName string) string {
     }
 }
 
-func buildArgsFromStrings(endpoint, accessKey, secretKey, proxy string) (*argSet, error) {
+func buildArgsFromStrings(endpoint, accessKey, secretKey, proxy, command string) (*argSet, error) {
     // Validate required arguments.
     switch {
         case endpoint == "": return nil, errors.New("Must specify an endpoint.")
         case accessKey == "": return nil, errors.New("Must specify an access key.")
         case secretKey == "": return nil, errors.New("Must specify an secret key.")
+        case command == "": return nil, errors.New("Must specify a command.")
         default:
     }
 
@@ -60,6 +55,7 @@ func buildArgsFromStrings(endpoint, accessKey, secretKey, proxy string) (*argSet
     args := argSet{
         accessKey: accessKey,
         secretKey: secretKey,
+        command: command,
     }
 
     // Set endpoint.
