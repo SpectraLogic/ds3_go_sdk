@@ -9,7 +9,6 @@ type Client struct {
     netLayer net.Network
 }
 
-//TODO: improve error handling
 func (client *Client) GetService(request *models.GetServiceRequest) (*models.GetServiceResponse, error) {
     // Invoke the HTTP request.
     response, requestErr := client.netLayer.Invoke(request)

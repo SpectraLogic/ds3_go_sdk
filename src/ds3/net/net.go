@@ -36,7 +36,6 @@ func NewHttpNetwork(connectionInfo *ConnectionInfo) Network {
     }
 }
 
-//TODO: improve error handling
 func (net httpNetwork) Invoke(request models.Ds3Request) (*http.Response, error) {
     // Build the request.
     httpRequest, makeReqErr := buildHttpRequest(net.connectionInfo, request)

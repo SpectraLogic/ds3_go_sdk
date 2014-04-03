@@ -7,7 +7,6 @@ import (
 )
 
 
-//TODO: improve error handling
 func readResponseBody(stream io.ReadCloser, body interface{}) (error) {
     defer stream.Close()
 

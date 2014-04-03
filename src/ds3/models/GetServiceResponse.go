@@ -1,8 +1,9 @@
 package models
 
 import (
-    "errors"
     "io"
+    "fmt"
+    "errors"
     "net/http"
 )
 
@@ -22,14 +23,18 @@ type Bucket struct {
 }
 
 func NewGetServiceResponse(response *http.Response) (*GetServiceResponse, error) {
-    if response.StatusCode == http.StatusOK {
+    expectedStatusCode := http.StatusOK
+    if response.StatusCode == expectedStatusCode {
         return readGetServiceResponseBody(response.Body)
     } else {
-        return nil, errors.New("Response status error") //TODO: fix error handling
+        return nil, errors.New(fmt.Sprintf(
+            "Expected HTTP status code %d but got %d.",
+            expectedStatusCode,
+            response.StatusCode,
+        ))
     }
 }
 
-//TODO: improve error handling
 func readGetServiceResponseBody(stream io.ReadCloser) (*GetServiceResponse, error) {
     var body GetServiceResponse
     err := readResponseBody(stream, &body)
