@@ -7,6 +7,7 @@ import (
     "encoding/xml"
 )
 
+//TODO: read the response contents to make better error messages.
 func checkStatusCode(response *http.Response, expectedStatusCode int) error {
     if response.StatusCode == expectedStatusCode {
         return nil

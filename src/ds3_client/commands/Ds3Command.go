@@ -11,7 +11,8 @@ var availableCommands = map[string]command {
     "get_service": getService,
     "get_bucket": getBucket,
     "get_object": getObject,
-    //"put_bucket": 
+
+    "put_bucket": putBucket,
     //"put_object": 
     //"delete_bucket": 
     //"delete_object": 
