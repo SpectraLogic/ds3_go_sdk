@@ -8,7 +8,7 @@ type GetBucketResponse struct {
     Contents []Object
     CreationDate string
     Delimiter string
-    IsTruncated string
+    IsTruncated bool
     Marker string
     MaxKeys int
     NextMarker string

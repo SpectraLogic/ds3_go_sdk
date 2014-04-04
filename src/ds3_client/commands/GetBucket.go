@@ -3,10 +3,20 @@ package commands
 import (
     "fmt"
     "errors"
-    "math"
     "ds3"
     "ds3/models"
 )
+
+const maxInt = int(^uint(0) >> 1)
+const defaultMaxKeys = 1000
+
+func getMinInt(a, b int) int {
+    if a < b {
+        return a
+    } else {
+        return b
+    }
+}
 
 func getBucket(client *ds3.Client, args *Arguments) error {
     // Validate arguments.
@@ -14,7 +24,7 @@ func getBucket(client *ds3.Client, args *Arguments) error {
         return errors.New("Must specify a bucket name when doing get_bucket.")
     }
 
-    remainingKeys := math.MaxInt
+    remainingKeys := maxInt
     if args.MaxKeys > 0 {
         remainingKeys = args.MaxKeys
     }
@@ -23,6 +33,7 @@ func getBucket(client *ds3.Client, args *Arguments) error {
     for {
         // Build the request.
         request := models.NewGetBucketRequest(args.Bucket)
+        request.WithMaxKeys(getMinInt(remainingKeys, defaultMaxKeys))
         if args.KeyPrefix != "" {
             request.WithPrefix(args.KeyPrefix)
         }
@@ -49,16 +60,16 @@ func getBucket(client *ds3.Client, args *Arguments) error {
         marker = response.NextMarker
 
         // Take care of the do...while.
-        if !response.IsTruncated || remainingKeys <= 0 {
+        if response.IsTruncated == false || remainingKeys <= 0 {
             break
         }
     }
 
-    return err
+    return nil
 }
 
 //TODO: better result printing
 func printObject(obj models.Object) {
-    fmt.Println(object.Key)
+    fmt.Println(obj.Key)
 }
 

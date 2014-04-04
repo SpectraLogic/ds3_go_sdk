@@ -3,6 +3,7 @@ package models
 import (
     "net/url"
     "io"
+    "strconv"
 )
 
 type GetBucketRequest struct {
@@ -50,7 +51,7 @@ func (self GetBucketRequest) QueryParams() *url.Values {
         values.Add("prefix", self.prefix)
     }
     if self.maxKeys > 0 {
-        values.Add("max-keys", string(self.maxKeys))
+        values.Add("max-keys", strconv.Itoa(self.maxKeys))
     }
     return &values
 }
