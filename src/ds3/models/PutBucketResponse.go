@@ -1,8 +1,6 @@
 package models
 
-import (
-    "net/http"
-)
+import "net/http"
 
 type PutBucketResponse struct {}
 
@@ -13,5 +11,4 @@ func NewPutBucketResponse(response *http.Response) (*PutBucketResponse, error) {
         return &PutBucketResponse{}, nil
     }
 }
-
 

@@ -1,13 +1,9 @@
 package models
 
-import (
-    "net/url"
-    "io"
-)
+import "net/url"
 
 type PutBucketRequest struct {
     bucketName string
-    content io.ReadCloser
 }
 
 func NewPutBucketRequest(bucketName string) *PutBucketRequest {

@@ -14,7 +14,8 @@ var availableCommands = map[string]command {
 
     "put_bucket": putBucket,
     "put_object": putObject,
-    //"delete_bucket": 
+
+    "delete_bucket": deleteBucket,
     //"delete_object": 
     //"get_bulk": 
     //"put_bulk": 
