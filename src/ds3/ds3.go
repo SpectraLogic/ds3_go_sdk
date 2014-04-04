@@ -31,3 +31,14 @@ func (client *Client) GetBucket(request *models.GetBucketRequest) (*models.GetBu
     return models.NewGetBucketResponse(response)
 }
 
+func (client *Client) GetObject(request *models.GetObjectRequest) (*models.GetObjectResponse, error) {
+    // Invoke the HTTP request.
+    response, requestErr := client.netLayer.Invoke(request)
+    if requestErr != nil {
+        return nil, requestErr
+    }
+
+    // Create a response object based on the result.
+    return models.NewGetObjectResponse(response)
+}
+

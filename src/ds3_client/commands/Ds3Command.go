@@ -10,8 +10,7 @@ type command func(*ds3.Client, *Arguments) error
 var availableCommands = map[string]command {
     "get_service": getService,
     "get_bucket": getBucket,
-    //TODO: implement the rest of the commands.
-    //"get_object": 
+    "get_object": getObject,
     //"put_bucket": 
     //"put_object": 
     //"delete_bucket": 

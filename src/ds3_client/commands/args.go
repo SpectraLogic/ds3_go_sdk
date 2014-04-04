@@ -11,6 +11,7 @@ type Arguments struct {
     AccessKey, SecretKey string
     Command string
     Bucket string
+    Key string
     KeyPrefix string
     MaxKeys int
 }
@@ -23,6 +24,7 @@ func ParseArgs() (*Arguments, error) {
     proxyParam := flag.String("proxy", "", "Specifies the HTTP proxy to route through.")
     commandParam := flag.String("command", "", "The HTTP call to execute.")
     bucketParam := flag.String("bucket", "", "The name of the bucket to constrict the request to.")
+    keyParam := flag.String("key", "", "The key for the object to get.")
     keyPrefixParam := flag.String("prefix", "", "The key prefix by which to constrain the results.")
     maxKeysParam := flag.Int("max-keys", 0, "The maximum number of objects to return.")
     flag.Parse()
@@ -35,6 +37,7 @@ func ParseArgs() (*Arguments, error) {
         Proxy: getParam(*proxyParam, "DS3_PROXY"),
         Command: *commandParam,
         Bucket: *bucketParam,
+        Key: *keyParam,
         KeyPrefix: *keyPrefixParam,
         MaxKeys: *maxKeysParam,
     }
