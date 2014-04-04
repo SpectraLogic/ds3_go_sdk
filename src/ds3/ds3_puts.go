@@ -13,4 +13,14 @@ func (client *Client) PutBucket(request *models.PutBucketRequest) (*models.PutBu
     return models.NewPutBucketResponse(response)
 }
 
+func (client *Client) PutObject(request *models.PutObjectRequest) (*models.PutObjectResponse, error) {
+    // Invoke the HTTP request.
+    response, requestErr := client.netLayer.Invoke(request)
+    if requestErr != nil {
+        return nil, requestErr
+    }
+
+    // Create a response object based on the result.
+    return models.NewPutObjectResponse(response)
+}
 

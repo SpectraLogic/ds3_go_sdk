@@ -2,7 +2,6 @@ package models
 
 import (
     "net/url"
-    "io"
     "strconv"
 )
 
@@ -56,7 +55,7 @@ func (self GetBucketRequest) QueryParams() *url.Values {
     return &values
 }
 
-func (GetBucketRequest) GetContentStream() io.ReadCloser {
+func (GetBucketRequest) GetContentStream() SizedReadCloser {
     return nil
 }
 

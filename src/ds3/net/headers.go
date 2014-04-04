@@ -1,13 +1,13 @@
 package net
 
 import (
-    "net/http"
-    "ds3/models"
+    "fmt"
     "time"
+    "net/http"
     "crypto/hmac"
     "crypto/sha1"
     "encoding/base64"
-    "fmt"
+    "ds3/models"
 )
 
 func setRequestHeaders(httpRequest *http.Request, creds Credentials, request models.Ds3Request) {

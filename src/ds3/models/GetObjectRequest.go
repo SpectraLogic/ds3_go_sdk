@@ -1,9 +1,6 @@
 package models
 
-import (
-    "io"
-    "net/url"
-)
+import "net/url"
 
 type GetObjectRequest struct {
     bucketName, objectName string
@@ -25,7 +22,7 @@ func (GetObjectRequest) QueryParams() *url.Values {
     return new(url.Values)
 }
 
-func (GetObjectRequest) GetContentStream() io.ReadCloser {
+func (GetObjectRequest) GetContentStream() SizedReadCloser {
     return nil
 }
 

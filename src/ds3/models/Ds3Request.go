@@ -29,10 +29,15 @@ func (verb HttpVerb) String() string {
     }
 }
 
+type SizedReadCloser interface {
+    io.ReadCloser
+    Size() int64
+}
+
 type Ds3Request interface {
     Verb() HttpVerb
     Path() string
     QueryParams() *url.Values
-    GetContentStream() io.ReadCloser
+    GetContentStream() SizedReadCloser
 }
 

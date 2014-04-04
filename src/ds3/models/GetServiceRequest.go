@@ -1,9 +1,6 @@
 package models
 
-import (
-    "io"
-    "net/url"
-)
+import "net/url"
 
 type GetServiceRequest struct {}
 
@@ -23,7 +20,7 @@ func (GetServiceRequest) QueryParams() *url.Values {
     return new(url.Values)
 }
 
-func (GetServiceRequest) GetContentStream() io.ReadCloser {
+func (GetServiceRequest) GetContentStream() SizedReadCloser {
     return nil
 }
 

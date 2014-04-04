@@ -28,7 +28,7 @@ func (self PutBucketRequest) QueryParams() *url.Values {
     return new(url.Values)
 }
 
-func (PutBucketRequest) GetContentStream() io.ReadCloser {
+func (PutBucketRequest) GetContentStream() SizedReadCloser {
     return nil
 }
 

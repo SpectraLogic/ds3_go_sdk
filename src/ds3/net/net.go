@@ -70,6 +70,9 @@ func buildHttpRequest(conn *ConnectionInfo, request models.Ds3Request) (*http.Re
         buildUrl(conn, request).String(),
         request.GetContentStream(),
     )
+    if content := request.GetContentStream(); content != nil {
+        httpRequest.ContentLength = content.Size()
+    }
     if err != nil {
         return nil, err
     }
