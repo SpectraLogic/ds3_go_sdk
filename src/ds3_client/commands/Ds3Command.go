@@ -18,8 +18,8 @@ var availableCommands = map[string]command {
     "delete_bucket": deleteBucket,
     "delete_object": deleteObject,
 
-    //"get_bulk": 
-    //"put_bulk": 
+    "bulk_get": bulkGet,
+    "bulk_put": bulkPut,
 }
 
 func RunCommand(client *ds3.Client, args *Arguments) error {
