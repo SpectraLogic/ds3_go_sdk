@@ -41,7 +41,7 @@ func buildObjectListStream(objects []Object) net.SizedReadCloser {
     }
 
     // Create a SizedReadCloser which the network layer expects.
-    return buildSizedReadCloser(xmlBytes)
+    return net.BuildSizedReadCloser(xmlBytes)
 }
 
 // Parses the DS3 specific bulk command response.

@@ -46,7 +46,7 @@ func (err BadStatusCodeError) Error() string {
         )
     } else {
         return fmt.Sprintf(
-        "Received a status code of %d when %d was expected. Could not parse the response for additional information.",
+            "Received a status code of %d when %d was expected. Could not parse the response for additional information.",
             err.ActualStatusCode,
             err.ExpectedStatusCode,
         )
