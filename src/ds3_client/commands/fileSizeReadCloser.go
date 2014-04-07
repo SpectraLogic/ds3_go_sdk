@@ -2,16 +2,17 @@ package commands
 
 import "os"
 
+// Implements the SizedReadCloser interface for a file.
+type fileSizeReadCloser struct {
+    file *os.File
+}
+
 func readFile(path string) (*fileSizeReadCloser, error) {
     content, fileErr := os.Open(path)
     if fileErr != nil {
         return nil, fileErr
     }
     return &fileSizeReadCloser{content}, nil
-}
-
-type fileSizeReadCloser struct {
-    file *os.File
 }
 
 func (self fileSizeReadCloser) Size() int64 {

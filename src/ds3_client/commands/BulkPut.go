@@ -38,59 +38,58 @@ func bulkPut(client *ds3.Client, args *Arguments) error {
     return handleBulkResponse(response.Objects, buildFilePutter(client, args.Bucket))
 }
 
+// Returns a function that puts an object for a bulk put.
 func buildFilePutter(client *ds3.Client, bucketName string) bulkHandler {
-    return func(objectList []models.Object, finish chan error) {
-        // Put each object.
-        for _, obj := range objectList {
-            // Read the file.
-            sizeReadCloser, fileErr := readFile(obj.Key)
-
-            // Send an error along and stop the function if we couldn't open the file.
-            if fileErr != nil {
-                finish <- fileErr
-                return
-            }
-
-            // Submit the put object request.
-            _, putErr := client.PutObject(models.NewPutObjectRequest(
-                bucketName,
-                obj.Key,
-                sizeReadCloser,
-            ))
-
-            // Send an error along and stop the function if we couldn't submit the request.
-            if putErr != nil {
-                finish <- putErr
-                return
-            }
+    return func(obj models.Object) error {
+        // Read the file.
+        sizeReadCloser, fileErr := readFile(obj.Key)
+        if fileErr != nil {
+            return fileErr
         }
 
-        // Signal that we're done.
-        finish <- nil
+        // Submit the put object request.
+        _, putErr := client.PutObject(models.NewPutObjectRequest(
+            bucketName,
+            obj.Key,
+            sizeReadCloser,
+        ))
+        return putErr
     }
 }
 
+// Represent a file that we found in a recursive directory traverse. We need
+// the relative path as well as the size. The FileInfo structure has the size
+// and the filename, but not the relative path.
 type file struct {
     path string
     size int64
 }
 
 func recursivelyListFiles(path string) ([]file, error) {
+    // Read the specified directory.
     infos, err := ioutil.ReadDir(path)
     if err != nil {
         return nil, err
     }
 
+    // For each file or directory...
     var results []file
     for _, info := range(infos) {
+        // Build its relative path.
         name := path + "/" + info.Name()
+
+        // If it's a directory...
         if info.IsDir() {
+            // List all of the files in there too.
             files, err := recursivelyListFiles(name)
             if err != nil {
                 return nil, err
             }
+
+            // Append the results.
             results = append(results, files...)
         } else {
+            // Append the current file.
             results = append(results, file{name, info.Size()})
         }
     }

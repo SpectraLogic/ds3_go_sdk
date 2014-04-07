@@ -2,18 +2,31 @@ package commands
 
 import "ds3/models"
 
-type bulkHandler func([]models.Object, chan error)
+type bulkHandler func(models.Object) error
 
 func handleBulkResponse(objectLists [][]models.Object, objectHandler bulkHandler) error {
-    // Make a channel to keep track of the errors and how many threads have finished.
+    // Make a channel to keep track of the errors and how many goroutines have finished.
     finish := make(chan error)
 
-    // Spawn put threads.
+    // Spawn goroutines to perform the actual gets or puts.
     for _, objectList := range objectLists {
-        go objectHandler(objectList, finish)
+        go func() {
+            // Loop over each object and call the bulk handler.
+            for _, obj := range objectList {
+                // If there was an error, pass it onto the error channel and
+                // terminate the goroutine.
+                if err := objectHandler(obj); err != nil {
+                    finish <- err
+                    return
+                }
+            }
+
+            // Signal that the object list is done.
+            finish <- nil
+        }()
     }
 
-    // Wait for every thread to stop and accumulate their errors.
+    // Wait for every goroutine to stop and accumulate their errors.
     errors := &aggregateError{}
     for i := len(objectLists); i > 0; i-- {
         err := <-finish

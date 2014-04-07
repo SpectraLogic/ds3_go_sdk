@@ -6,6 +6,7 @@ import (
     "flag"
 )
 
+// Represents the parsed command line arguments that we may be interested in.
 type Arguments struct {
     Endpoint, Proxy string
     AccessKey, SecretKey string
@@ -31,10 +32,10 @@ func ParseArgs() (*Arguments, error) {
 
     // Build the arguments object.
     args := Arguments{
-        Endpoint: getParam(*endpointParam, "DS3_ENDPOINT"),
-        AccessKey: getParam(*accessKeyParam, "DS3_ACCESS_KEY"),
-        SecretKey: getParam(*secretKeyParam, "DS3_SECRET_KEY"),
-        Proxy: getParam(*proxyParam, "DS3_PROXY"),
+        Endpoint: paramOrEnv(*endpointParam, "DS3_ENDPOINT"),
+        AccessKey: paramOrEnv(*accessKeyParam, "DS3_ACCESS_KEY"),
+        SecretKey: paramOrEnv(*secretKeyParam, "DS3_SECRET_KEY"),
+        Proxy: paramOrEnv(*proxyParam, "DS3_PROXY"),
         Command: *commandParam,
         Bucket: *bucketParam,
         Key: *keyParam,
@@ -52,7 +53,7 @@ func ParseArgs() (*Arguments, error) {
     }
 }
 
-func getParam(param, envName string) string {
+func paramOrEnv(param, envName string) string {
     env := os.Getenv(envName)
     switch {
         case param != "": return param

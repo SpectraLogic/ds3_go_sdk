@@ -31,50 +31,43 @@ func bulkGet(client *ds3.Client, args *Arguments) error {
     return handleBulkResponse(response.Objects, buildFileGetter(client, args.Bucket))
 }
 
+// Returns a function that gets an object from a bulk get.
 func buildFileGetter(client *ds3.Client, bucketName string) bulkHandler {
-    return func(objectList []models.Object, finish chan error) {
-        // Get each object.
-        for _, obj := range objectList {
-            // Perform the request.
-            response, requestErr := client.GetObject(models.NewGetObjectRequest(bucketName, obj.Key))
-
-            // Send an error along and stop the function if we couldn't submit the request.
-            if requestErr != nil {
-                finish <- requestErr
-                return
-            }
-            defer response.Content.Close()
-
-            // Create the directory where we're going to store the file.
-            currentDir, dirErr := os.Stat(".")
-            if dirErr != nil {
-                finish <- dirErr
-                return
-            }
-            mkdirErr := os.MkdirAll(path.Dir(obj.Key), currentDir.Mode())
-
-            // Send an error along and stop the function if we couldn't create the directory.
-            if mkdirErr != nil {
-                finish <- mkdirErr
-                return
-            }
-
-            // Open the file to write.
-            file, fileErr := os.Create(obj.Key)
-
-            // Send an error along and stop the function if we couldn't open the file.
-            if fileErr != nil {
-                finish <- fileErr
-                return
-            }
-            defer file.Close()
-
-            // Copy the request stream to the file.
-            io.Copy(file, response.Content)
+    return func(obj models.Object) error {
+        // Perform the request.
+        response, requestErr := client.GetObject(models.NewGetObjectRequest(bucketName, obj.Key))
+        if requestErr != nil {
+            return requestErr
         }
+        defer response.Content.Close()
 
-        // Signal that we're done.
-        finish <- nil
+        // Get a file to write to.
+        file, fileErr := ensureDirectoryAndOpenFile(obj.Key)
+        if fileErr != nil {
+            return fileErr
+        }
+        defer file.Close()
+
+        // Copy the request stream to the file.
+        _, copyErr := io.Copy(file, response.Content)
+        return copyErr
     }
+}
+
+func ensureDirectoryAndOpenFile(destination string) (*os.File, error) {
+    // Get the current directory so we can use the same permissions when
+    // creating directories inside of it.
+    currentDir, dirErr := os.Stat(".")
+    if dirErr != nil {
+        return nil, dirErr
+    }
+
+    // Create the directory where we're going to store the file.
+    if mkdirErr := os.MkdirAll(path.Dir(destination), currentDir.Mode()); mkdirErr != nil {
+        return nil, mkdirErr
+    }
+
+    // Open the file to write.
+    return os.Create(destination)
 }
 

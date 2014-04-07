@@ -29,6 +29,9 @@ func (verb HttpVerb) String() string {
     }
 }
 
+// We need a Size method so we can pass the appropriate Content-Length header.
+// Size isn't readily available in Go standard interfaces, so we created a new
+// interface for it.
 type SizedReadCloser interface {
     io.ReadCloser
     Size() int64
