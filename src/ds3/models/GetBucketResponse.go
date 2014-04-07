@@ -6,6 +6,7 @@ import (
 )
 
 type GetBucketResponse struct {
+    Name string
     Contents []Object
     CreationDate string
     Delimiter string
