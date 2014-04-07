@@ -1,24 +1,24 @@
 package models
 
 import (
+    "io"
     "io/ioutil"
-    "net/http"
     "encoding/xml"
+    "ds3/net"
 )
 
-func checkStatusCode(response *http.Response, expectedStatusCode int) error {
-    if response.StatusCode == expectedStatusCode {
+func checkStatusCode(response net.Response, expectedStatusCode int) error {
+    if response.StatusCode() == expectedStatusCode {
         return nil
     } else {
         return buildBadStatusCodeError(response, expectedStatusCode)
     }
 }
 
-func readResponseBody(response *http.Response, expectedStatusCode int, body interface{}) error {
-    // Clean up the response body if it exists.
-    if response.Body != nil {
-        defer response.Body.Close()
-    }
+func readResponseBody(response net.Response, expectedStatusCode int, parsedBody interface{}) error {
+    // Clean up the response body.
+    body := response.Body()
+    defer body.Close()
 
     // Check the status code.
     if err := checkStatusCode(response, expectedStatusCode); err != nil {
@@ -26,12 +26,12 @@ func readResponseBody(response *http.Response, expectedStatusCode int, body inte
     }
 
     // Parse the response
-    return parseResponseBody(response, body)
+    return parseResponseBody(body, parsedBody)
 }
 
-func parseResponseBody(response *http.Response, body interface{}) error {
+func parseResponseBody(reader io.ReadCloser, body interface{}) error {
     // Get the bytes or forward the error.
-    bytes, err := ioutil.ReadAll(response.Body)
+    bytes, err := ioutil.ReadAll(reader)
     if err != nil {
         return err
     }

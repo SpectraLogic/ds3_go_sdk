@@ -5,11 +5,10 @@ import (
     "errors"
     "net/http"
     "net/url"
-    "ds3/models"
 )
 
 type Network interface {
-    Invoke(request models.Ds3Request) (*http.Response, error)
+    Invoke(request Request) (Response, error)
 }
 
 type ConnectionInfo struct {
@@ -36,7 +35,7 @@ func NewHttpNetwork(connectionInfo *ConnectionInfo) Network {
     }
 }
 
-func (net httpNetwork) Invoke(request models.Ds3Request) (*http.Response, error) {
+func (net httpNetwork) Invoke(request Request) (Response, error) {
     // Build the request.
     httpRequest, makeReqErr := buildHttpRequest(net.connectionInfo, request)
     if makeReqErr != nil {
@@ -53,7 +52,7 @@ func (net httpNetwork) Invoke(request models.Ds3Request) (*http.Response, error)
 
         // If it wasn't a redirect then return.
         if httpResponse.StatusCode != http.StatusTemporaryRedirect {
-            return httpResponse, nil
+            return &wrappedHttpResponse{httpResponse}, nil
         }
     }
 
@@ -64,7 +63,7 @@ func (net httpNetwork) Invoke(request models.Ds3Request) (*http.Response, error)
     ))
 }
 
-func buildHttpRequest(conn *ConnectionInfo, request models.Ds3Request) (*http.Request, error) {
+func buildHttpRequest(conn *ConnectionInfo, request Request) (*http.Request, error) {
     // Build the basic request with the verb, url, and payload (if any).
     httpRequest, err := http.NewRequest(
         request.Verb().String(),
@@ -86,7 +85,7 @@ func buildHttpRequest(conn *ConnectionInfo, request models.Ds3Request) (*http.Re
     return httpRequest, nil
 }
 
-func buildUrl(conn *ConnectionInfo, request models.Ds3Request) *url.URL {
+func buildUrl(conn *ConnectionInfo, request Request) *url.URL {
     url := conn.Endpoint
     url.Path = request.Path()
     url.RawQuery = request.QueryParams().Encode()

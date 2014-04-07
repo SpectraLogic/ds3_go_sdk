@@ -1,4 +1,4 @@
-package models
+package net
 
 import (
     "io"
@@ -37,7 +37,7 @@ type SizedReadCloser interface {
     Size() int64
 }
 
-type Ds3Request interface {
+type Request interface {
     Verb() HttpVerb
     Path() string
     QueryParams() *url.Values

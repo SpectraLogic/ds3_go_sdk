@@ -7,10 +7,9 @@ import (
     "crypto/hmac"
     "crypto/sha1"
     "encoding/base64"
-    "ds3/models"
 )
 
-func setRequestHeaders(httpRequest *http.Request, creds Credentials, request models.Ds3Request) {
+func setRequestHeaders(httpRequest *http.Request, creds Credentials, request Request) {
     // We need the current UTC date in a very specific format to be compliant.
     now := time.Now().UTC().Format("Mon, 02 Jan 2006 15:04:05 +0000")
     httpRequest.Header.Add("Date", now)

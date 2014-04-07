@@ -1,18 +1,21 @@
 package models
 
-import "net/url"
+import (
+    "net/url"
+    "ds3/net"
+)
 
 type PutObjectRequest struct {
     bucketName, objectName string
-    content SizedReadCloser
+    content net.SizedReadCloser
 }
 
-func NewPutObjectRequest(bucketName, objectName string, content SizedReadCloser) *PutObjectRequest {
+func NewPutObjectRequest(bucketName, objectName string, content net.SizedReadCloser) *PutObjectRequest {
     return &PutObjectRequest{bucketName, objectName, content}
 }
 
-func (PutObjectRequest) Verb() HttpVerb {
-    return PUT
+func (PutObjectRequest) Verb() net.HttpVerb {
+    return net.PUT
 }
 
 func (self PutObjectRequest) Path() string {
@@ -23,7 +26,7 @@ func (PutObjectRequest) QueryParams() *url.Values {
     return new(url.Values)
 }
 
-func (self PutObjectRequest) GetContentStream() SizedReadCloser {
+func (self PutObjectRequest) GetContentStream() net.SizedReadCloser {
     return self.content
 }
 

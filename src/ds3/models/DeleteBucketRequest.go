@@ -1,6 +1,9 @@
 package models
 
-import "net/url"
+import (
+    "net/url"
+    "ds3/net"
+)
 
 type DeleteBucketRequest struct {
     bucketName string
@@ -12,8 +15,8 @@ func NewDeleteBucketRequest(bucketName string) *DeleteBucketRequest {
     }
 }
 
-func (DeleteBucketRequest) Verb() HttpVerb {
-    return DELETE
+func (DeleteBucketRequest) Verb() net.HttpVerb {
+    return net.DELETE
 }
 
 func (self DeleteBucketRequest) Path() string {
@@ -24,7 +27,7 @@ func (self DeleteBucketRequest) QueryParams() *url.Values {
     return new(url.Values)
 }
 
-func (DeleteBucketRequest) GetContentStream() SizedReadCloser {
+func (DeleteBucketRequest) GetContentStream() net.SizedReadCloser {
     return nil
 }
 

@@ -1,3 +1,11 @@
+package commands
+
+import (
+    "errors"
+    "ds3"
+    "ds3/models"
+)
+
 // Gets all objects in a bucket, performing multiple requests if the results
 // are paged. Also supports limiting to an arbitrary number of keys independent
 // of page size.

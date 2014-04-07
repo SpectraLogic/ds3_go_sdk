@@ -2,9 +2,7 @@ package commands
 
 import (
     "fmt"
-    "errors"
     "ds3"
-    "ds3/models"
 )
 
 const maxInt = int(^uint(0) >> 1)

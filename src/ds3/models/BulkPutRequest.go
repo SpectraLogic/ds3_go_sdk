@@ -1,18 +1,21 @@
 package models
 
-import "net/url"
+import (
+    "net/url"
+    "ds3/net"
+)
 
 type BulkPutRequest struct {
     bucketName string
-    content SizedReadCloser
+    content net.SizedReadCloser
 }
 
 func NewBulkPutRequest(bucketName string, objects []Object) *BulkPutRequest {
     return &BulkPutRequest{bucketName, buildObjectListStream(objects)}
 }
 
-func (BulkPutRequest) Verb() HttpVerb {
-    return PUT
+func (BulkPutRequest) Verb() net.HttpVerb {
+    return net.PUT
 }
 
 func (self BulkPutRequest) Path() string {
@@ -23,7 +26,7 @@ func (BulkPutRequest) QueryParams() *url.Values {
     return &url.Values{"operation": []string{"start_bulk_put"}}
 }
 
-func (self BulkPutRequest) GetContentStream() SizedReadCloser {
+func (self BulkPutRequest) GetContentStream() net.SizedReadCloser {
     return self.content
 }
 

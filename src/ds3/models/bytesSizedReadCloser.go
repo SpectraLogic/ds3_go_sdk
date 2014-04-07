@@ -1,6 +1,9 @@
 package models
 
-import "bytes"
+import (
+    "bytes"
+    "ds3/net"
+)
 
 // Defines a SizedReadCloser based on an array of bytes.
 type bytesSizedReadCloser struct {
@@ -8,7 +11,7 @@ type bytesSizedReadCloser struct {
     size int64
 }
 
-func buildSizedReadCloser(contentBytes []byte) SizedReadCloser{
+func buildSizedReadCloser(contentBytes []byte) net.SizedReadCloser{
     return &bytesSizedReadCloser{bytes.NewReader(contentBytes), int64(len(contentBytes))}
 }
 

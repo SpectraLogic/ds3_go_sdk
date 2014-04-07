@@ -2,7 +2,7 @@ package models
 
 import (
     "fmt"
-    "net/http"
+    "ds3/net"
 )
 
 type BadStatusCodeError struct {
@@ -18,12 +18,12 @@ type Error struct {
     RequestId string
 }
 
-func buildBadStatusCodeError(response *http.Response, expectedStatusCode int) *BadStatusCodeError {
+func buildBadStatusCodeError(response net.Response, expectedStatusCode int) *BadStatusCodeError {
     var errorBody Error
     var errorBodyPtr *Error
 
     // Parse the body and if it worked then use the structure.
-    err := parseResponseBody(response, &errorBody)
+    err := parseResponseBody(response.Body(), &errorBody)
     if err == nil {
         errorBodyPtr = &errorBody
     }
@@ -31,7 +31,7 @@ func buildBadStatusCodeError(response *http.Response, expectedStatusCode int) *B
     // Return the bad status code entity.
     return &BadStatusCodeError{
         expectedStatusCode,
-        response.StatusCode,
+        response.StatusCode(),
         errorBodyPtr,
     }
 }

@@ -3,6 +3,7 @@ package models
 import (
     "encoding/xml"
     "net/http"
+    "ds3/net"
 )
 
 // Represents the XML document for both the bulk request and response data for
@@ -21,7 +22,7 @@ type object struct {
 }
 
 // Converts the ds3 object list to an object we can send in our request.
-func buildObjectListStream(objects []Object) SizedReadCloser {
+func buildObjectListStream(objects []Object) net.SizedReadCloser {
     // Create an array of objects to put into the master object list.
     molObjects := make([]object, len(objects))
 
@@ -44,7 +45,7 @@ func buildObjectListStream(objects []Object) SizedReadCloser {
 }
 
 // Parses the DS3 specific bulk command response.
-func getObjectsFromBulkResponse(response *http.Response) ([][]Object, error) {
+func getObjectsFromBulkResponse(response net.Response) ([][]Object, error) {
     // Parse the master object list response body.
     var mol masterobjectlist
     if err := readResponseBody(response, http.StatusOK, &mol); err != nil {

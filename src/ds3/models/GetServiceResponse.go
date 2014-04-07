@@ -2,6 +2,7 @@ package models
 
 import (
     "net/http"
+    "ds3/net"
 )
 
 type GetServiceResponse struct {
@@ -14,7 +15,7 @@ type Bucket struct {
     CreationDate string
 }
 
-func NewGetServiceResponse(response *http.Response) (*GetServiceResponse, error) {
+func NewGetServiceResponse(response net.Response) (*GetServiceResponse, error) {
     var body GetServiceResponse
     if err := readResponseBody(response, http.StatusOK, &body); err != nil {
         return nil, err

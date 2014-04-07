@@ -1,14 +1,13 @@
 package models
 
-import "net/http"
+import "ds3/net"
 
 type BulkGetResponse struct {
     Objects [][]Object
 }
 
-func NewBulkGetResponse(response *http.Response) (*BulkGetResponse, error) {
+func NewBulkGetResponse(response net.Response) (*BulkGetResponse, error) {
     objects, err := getObjectsFromBulkResponse(response)
     return &BulkGetResponse{objects}, err
 }
-
 
