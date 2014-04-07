@@ -65,18 +65,24 @@ func (net httpNetwork) Invoke(request models.Ds3Request) (*http.Response, error)
 }
 
 func buildHttpRequest(conn *ConnectionInfo, request models.Ds3Request) (*http.Request, error) {
+    // Build the basic request with the verb, url, and payload (if any).
     httpRequest, err := http.NewRequest(
         request.Verb().String(),
         buildUrl(conn, request).String(),
         request.GetContentStream(),
     )
+
+    // Set the content length if we have a payload.
     if content := request.GetContentStream(); content != nil {
         httpRequest.ContentLength = content.Size()
     }
     if err != nil {
         return nil, err
     }
+
+    // Set the request headers such as authorization and date.
     setRequestHeaders(httpRequest, conn.Creds, request)
+
     return httpRequest, nil
 }
 

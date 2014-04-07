@@ -35,4 +35,3 @@ func (client *Client) GetObject(request *models.GetObjectRequest) (*models.GetOb
     return models.NewGetObjectResponse(response)
 }
 
-

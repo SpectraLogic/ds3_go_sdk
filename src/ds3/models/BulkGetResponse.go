@@ -7,7 +7,7 @@ type BulkGetResponse struct {
 }
 
 func NewBulkGetResponse(response *http.Response) (*BulkGetResponse, error) {
-    objects, err := newBulkResponse(response)
+    objects, err := getObjectsFromBulkResponse(response)
     return &BulkGetResponse{objects}, err
 }
 

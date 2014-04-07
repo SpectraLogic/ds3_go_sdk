@@ -8,7 +8,7 @@ type BulkPutRequest struct {
 }
 
 func NewBulkPutRequest(bucketName string, objects []Object) *BulkPutRequest {
-    return &BulkPutRequest{bucketName, buildMolReader(objects)}
+    return &BulkPutRequest{bucketName, buildObjectListStream(objects)}
 }
 
 func (BulkPutRequest) Verb() HttpVerb {

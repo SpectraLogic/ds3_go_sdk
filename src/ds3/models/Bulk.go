@@ -1,63 +1,14 @@
 package models
 
 import (
-    "bytes"
     "encoding/xml"
     "net/http"
 )
 
-func newBulkResponse(response *http.Response) ([][]Object, error) {
-    var body masterobjectlist
-    if err := readResponseBody(response, http.StatusOK, &body); err != nil {
-        return nil, err
-    }
-    return convertMolToObjects(body), nil
-}
-
-func buildMolReader(objects []Object) SizedReadCloser {
-    molObjects := make([]object, len(objects))
-    for i, obj := range(objects) {
-        molObjects[i] = object{obj.Key, obj.Size}
-    }
-    mol := masterobjectlist{[]objectList{objectList{molObjects}}}
-    xmlBytes, err := xml.Marshal(mol)
-    if err != nil {
-        panic(err)
-    }
-    return &bytesSizedReadCloser{bytes.NewReader(xmlBytes), int64(len(xmlBytes))}
-}
-
-func convertMolToObjects(mol masterobjectlist) [][]Object {
-    objectss := make([][]Object, len(mol.Objects))
-    for i, objs := range mol.Objects {
-        objectSlice := make([]Object, len(objs.Objects))
-        for i, obj := range objs.Objects {
-            objectSlice[i] = Object{Key: obj.Name, Size: obj.Size}
-        }
-        objectss[i] = objectSlice
-    }
-    return objectss
-}
-
-type bytesSizedReadCloser struct {
-    reader *bytes.Reader
-    size int64
-}
-
-func (self bytesSizedReadCloser) Read(b []byte) (int, error) {
-    return self.reader.Read(b)
-}
-
-func (bytesSizedReadCloser) Close() error {
-    return nil
-}
-
-func (self bytesSizedReadCloser) Size() int64 {
-    return self.size
-}
-
+// Represents the XML document for both the bulk request and response data for
+// bulk gets and bulk puts.
 type masterobjectlist struct {
-    Objects []objectList `xml:"objects"`
+    ObjectLists []objectList `xml:"objects"`
 }
 
 type objectList struct {
@@ -67,5 +18,56 @@ type objectList struct {
 type object struct {
     Name string `xml:"name,attr"`
     Size int64 `xml:"size,attr"`
+}
+
+// Converts the ds3 object list to an object we can send in our request.
+func buildObjectListStream(objects []Object) SizedReadCloser {
+    // Create an array of objects to put into the master object list.
+    molObjects := make([]object, len(objects))
+
+    // Copy the important ds3 object contents into the master object list objects.
+    for i, obj := range(objects) {
+        molObjects[i] = object{obj.Key, obj.Size}
+    }
+
+    // Build the mast object list entity.
+    mol := masterobjectlist{[]objectList{objectList{molObjects}}}
+
+    // Create an xml document from the entity.
+    xmlBytes, err := xml.Marshal(mol)
+    if err != nil {
+        panic(err)
+    }
+
+    // Create a SizedReadCloser which the network layer expects.
+    return buildSizedReadCloser(xmlBytes)
+}
+
+// Parses the DS3 specific bulk command response.
+func getObjectsFromBulkResponse(response *http.Response) ([][]Object, error) {
+    // Parse the master object list response body.
+    var mol masterobjectlist
+    if err := readResponseBody(response, http.StatusOK, &mol); err != nil {
+        return nil, err
+    }
+
+    // Create an array of ds3 object arrays.
+    ds3ObjectArrayArray := make([][]Object, len(mol.ObjectLists))
+
+    // For each object list in the deserialized XML...
+    for i, molObjs := range mol.ObjectLists {
+
+        // Create an array of ds3 objects.
+        ds3ObjectArray := make([]Object, len(molObjs.Objects))
+
+        // Copy the relevant contents of each deserialized object into new ds3 objects.
+        for i, obj := range molObjs.Objects {
+            ds3ObjectArray[i] = Object{Key: obj.Name, Size: obj.Size}
+        }
+
+        // Put the result into the array of arrays.
+        ds3ObjectArrayArray[i] = ds3ObjectArray
+    }
+    return ds3ObjectArrayArray, nil
 }
 
