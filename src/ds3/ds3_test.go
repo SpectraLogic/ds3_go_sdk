@@ -333,7 +333,7 @@ func runBulkTest(t *testing.T, operation string, callToTest bulkTest) {
     keys := []string { "file2", "file1", "file3" }
     sizes := []int64 { 1202, 256, 2523 }
 
-    stringRequest := "<masterobjectlist><objects><object name=\"file1\" size=\"256\"></object><object name=\"file2\" size=\"1202\"></object><object name=\"file3\" size=\"2523\"></object></objects></masterobjectlist>"
+    stringRequest := "<objects><object name=\"file1\" size=\"256\"></object><object name=\"file2\" size=\"1202\"></object><object name=\"file3\" size=\"2523\"></object></objects>"
     stringResponse := "<masterobjectlist><objects><object name='file2' size='1202'/><object name='file1' size='256'/><object name='file3' size='2523'/></objects></masterobjectlist>"
 
     inputObjects := []models.Object {

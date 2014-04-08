@@ -9,10 +9,10 @@ import (
 // Represents the XML document for both the bulk request and response data for
 // bulk gets and bulk puts.
 type masterobjectlist struct {
-    ObjectLists []objectList `xml:"objects"`
+    ObjectLists []objects `xml:"objects"`
 }
 
-type objectList struct {
+type objects struct {
     Objects []object `xml:"object"`
 }
 
@@ -22,17 +22,17 @@ type object struct {
 }
 
 // Converts the ds3 object list to an object we can send in our request.
-func buildObjectListStream(objects []Object) net.SizedReadCloser {
+func buildObjectListStream(ds3Objects []Object) net.SizedReadCloser {
     // Create an array of objects to put into the master object list.
-    molObjects := make([]object, len(objects))
+    molObjects := make([]object, len(ds3Objects))
 
     // Copy the important ds3 object contents into the master object list objects.
-    for i, obj := range(objects) {
+    for i, obj := range(ds3Objects) {
         molObjects[i] = object{obj.Key, obj.Size}
     }
 
     // Build the mast object list entity.
-    mol := masterobjectlist{[]objectList{objectList{molObjects}}}
+    mol := objects{molObjects}
 
     // Create an xml document from the entity.
     xmlBytes, err := xml.Marshal(mol)
