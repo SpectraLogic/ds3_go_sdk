@@ -305,3 +305,76 @@ func TestPutObject(t *testing.T) {
     }
 }
 
+func TestBulkPut(t *testing.T) {
+    runBulkTest(
+        t,
+        "start_bulk_put",
+        func(client *Client, objects []models.Object) ([][]models.Object, error) {
+            request, err := client.BulkPut(models.NewBulkPutRequest("bucketName", objects))
+            return request.Objects, err
+        },
+    )
+}
+
+func TestBulkGet(t *testing.T) {
+    runBulkTest(
+        t,
+        "start_bulk_get",
+        func(client *Client, objects []models.Object) ([][]models.Object, error) {
+            request, err := client.BulkGet(models.NewBulkGetRequest("bucketName", objects))
+            return request.Objects, err
+        },
+    )
+}
+
+type bulkTest func(*Client, []models.Object) ([][]models.Object, error)
+
+func runBulkTest(t *testing.T, operation string, callToTest bulkTest) {
+    keys := []string { "file2", "file1", "file3" }
+    sizes := []int64 { 1202, 256, 2523 }
+
+    stringRequest := "<masterobjectlist><objects><object name=\"file1\" size=\"256\"></object><object name=\"file2\" size=\"1202\"></object><object name=\"file3\" size=\"2523\"></object></objects></masterobjectlist>"
+    stringResponse := "<masterobjectlist><objects><object name='file2' size='1202'/><object name='file1' size='256'/><object name='file3' size='2523'/></objects></masterobjectlist>"
+
+    inputObjects := []models.Object {
+        models.Object{ Key: "file1", Size: 256 },
+        models.Object{ Key: "file2", Size: 1202 },
+        models.Object{ Key: "file3", Size: 2523 },
+    }
+
+    // Create and run the mocked client.
+    client := mockedClient(t).
+        Expecting(
+            net.PUT,
+            "/_rest_/buckets/bucketName",
+            &url.Values{"operation": []string{operation}},
+            &stringRequest,
+        ).
+        Returning(200, stringResponse)
+    response, err := callToTest(client, inputObjects)
+
+    // Check the error result.
+    if err != nil {
+        t.Errorf("Unexpected error '%s'.", err.Error())
+    }
+
+    // Check the response value.
+    if response == nil {
+        t.Error("Response was unexpectedly nil.")
+    }
+    if len(response) != 1 {
+        t.Errorf("Expected 1 object list but got %d.", len(response))
+    }
+    if len(response[0]) != len(keys) {
+        t.Errorf("Expected %d objects but got %d.", len(keys), len(response[0]))
+    }
+    for i, obj := range response[0] {
+        if obj.Key != keys[i] {
+            t.Errorf("Expected key %s but got %s.", keys[i], obj.Key)
+        }
+        if obj.Size != sizes[i] {
+            t.Errorf("Expected size %d but got %d.", sizes[i], obj.Size)
+        }
+    }
+}
+

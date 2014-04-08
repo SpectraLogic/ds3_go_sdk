@@ -68,8 +68,8 @@ func (self *mockedNet) Invoke(request net.Request) (net.Response, error) {
     if actualQueryParams != expectedQueryParams {
         self.t.Errorf(
             "Expected query params '%s' but got '%s'.",
-            actualQueryParams,
             expectedQueryParams,
+            actualQueryParams,
         )
     }
 
