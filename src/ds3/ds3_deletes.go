@@ -24,3 +24,14 @@ func (client *Client) DeleteObject(request *models.DeleteObjectRequest) (*models
     return models.NewDeleteObjectResponse(response)
 }
 
+func (client *Client) AbortMultipart(request *models.AbortMultipartRequest) (*models.AbortMultipartResponse, error) {
+    // Invoke the HTTP request.
+    response, requestErr := client.netLayer.Invoke(request)
+    if requestErr != nil {
+        return nil, requestErr
+    }
+
+    // Create a response object based on the result.
+    return models.NewAbortMultipartResponse(response)
+}
+

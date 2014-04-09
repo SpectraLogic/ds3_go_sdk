@@ -15,5 +15,3 @@ func NewPutObjectResponse(response net.Response) (*PutObjectResponse, error) {
     }
 }
 
-
-

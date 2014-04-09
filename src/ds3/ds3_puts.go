@@ -46,3 +46,14 @@ func (client *Client) BulkPut(request *models.BulkPutRequest) (*models.BulkPutRe
     return models.NewBulkPutResponse(response)
 }
 
+func (client *Client) PutPart(request *models.PutPartRequest) (*models.PutPartResponse, error) {
+    // Invoke the HTTP request.
+    response, requestErr := client.netLayer.Invoke(request)
+    if requestErr != nil {
+        return nil, requestErr
+    }
+
+    // Create a response object based on the result.
+    return models.NewPutPartResponse(response)
+}
+

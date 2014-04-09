@@ -101,3 +101,7 @@ func (self *mockedNet) Body() io.ReadCloser {
     return net.BuildSizedReadCloser([]byte(self.response))
 }
 
+func (self *mockedNet) Header() map[string][]string {
+    return make(map[string][]string)
+}
+
