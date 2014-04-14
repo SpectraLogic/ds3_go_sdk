@@ -17,7 +17,7 @@ type mockedClientWithTest interface {
 }
 
 type mockedClientWithExpectation interface {
-    Returning(statusCode int, response string) *Client
+    Returning(statusCode int, response string, headers *map[string][]string) *Client
 }
 
 type mockedNet struct {
@@ -33,6 +33,7 @@ type mockedNet struct {
     // Response data to return.
     statusCode int
     response string
+    headers *map[string][]string
 }
 
 func (self *mockedNet) Expecting(verb net.HttpVerb, path string, queryParams *url.Values, request *string) mockedClientWithExpectation {
@@ -43,9 +44,10 @@ func (self *mockedNet) Expecting(verb net.HttpVerb, path string, queryParams *ur
     return self
 }
 
-func (self *mockedNet) Returning(statusCode int, response string) *Client {
+func (self *mockedNet) Returning(statusCode int, response string, headers *map[string][]string) *Client {
     self.statusCode = statusCode
     self.response = response
+    self.headers = headers
     return &Client{self}
 }
 
@@ -102,6 +104,10 @@ func (self *mockedNet) Body() io.ReadCloser {
 }
 
 func (self *mockedNet) Header() map[string][]string {
-    return make(map[string][]string)
+    if self.headers == nil {
+        return make(map[string][]string)
+    } else {
+        return *self.headers
+    }
 }
 

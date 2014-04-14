@@ -1,6 +1,7 @@
 package models
 
 import (
+    "strings"
     "net/http"
     "ds3/net"
 )
@@ -16,6 +17,7 @@ func NewCompleteMultipartResponse(response net.Response) (*CompleteMultipartResp
     if err := readResponseBody(response, http.StatusOK, &body); err != nil {
         return nil, err
     }
+    body.ETag = strings.Trim(body.ETag, "\"")
     return &body, nil
 }
 

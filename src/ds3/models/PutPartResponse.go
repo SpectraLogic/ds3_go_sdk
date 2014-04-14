@@ -1,6 +1,7 @@
 package models
 
 import (
+    "strings"
     "net/http"
     "ds3/net"
 )
@@ -16,7 +17,7 @@ func NewPutPartResponse(response net.Response) (*PutPartResponse, error) {
         etags := response.Header()["etag"]
         var etag string
         if len(etags) > 0 {
-            etag = etags[0]
+            etag = strings.Trim(etags[0], "\"")
         }
         return &PutPartResponse{etag}, nil
     }

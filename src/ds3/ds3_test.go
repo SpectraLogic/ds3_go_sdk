@@ -2,6 +2,7 @@ package ds3
 
 import (
     "testing"
+    "strconv"
     "net/url"
     "io/ioutil"
     "ds3/net"
@@ -40,7 +41,7 @@ func TestGetService(t *testing.T) {
     // Create and run the mocked client.
     response, err := mockedClient(t).
         Expecting(net.GET, "/", &url.Values{}, nil).
-        Returning(200, stringResponse).
+        Returning(200, stringResponse, nil).
         GetService(models.NewGetServiceRequest())
 
     // Check the response.
@@ -75,7 +76,7 @@ func TestGetBadService(t *testing.T) {
     // Create and run the mocked client.
     response, err := mockedClient(t).
         Expecting(net.GET, "/", &url.Values{}, nil).
-        Returning(400, "").
+        Returning(400, "", nil).
         GetService(models.NewGetServiceRequest())
 
     // Check the response.
@@ -116,7 +117,7 @@ func TestGetBucket(t *testing.T) {
     // Create and run the mocked client.
     response, err := mockedClient(t).
         Expecting(net.GET, "/remoteTest16", &url.Values{}, nil).
-        Returning(200, stringResponse).
+        Returning(200, stringResponse, nil).
         GetBucket(models.NewGetBucketRequest("remoteTest16"))
 
     // Check the error result.
@@ -177,7 +178,7 @@ func TestPutBucket(t *testing.T) {
     // Create and run the mocked client.
     response, err := mockedClient(t).
         Expecting(net.PUT, "/bucketName", &url.Values{}, nil).
-        Returning(200, "").
+        Returning(200, "", nil).
         PutBucket(models.NewPutBucketRequest("bucketName"))
 
     // Check the error result.
@@ -195,7 +196,7 @@ func TestDeleteBucket(t *testing.T) {
     // Create and run the mocked client.
     response, err := mockedClient(t).
         Expecting(net.DELETE, "/bucketName", &url.Values{}, nil).
-        Returning(204, "").
+        Returning(204, "", nil).
         DeleteBucket(models.NewDeleteBucketRequest("bucketName"))
 
     // Check the error result.
@@ -213,7 +214,7 @@ func TestDeleteObject(t *testing.T) {
     // Create and run the mocked client.
     response, err := mockedClient(t).
         Expecting(net.DELETE, "/bucketName/my/file.txt", &url.Values{}, nil).
-        Returning(204, "").
+        Returning(204, "", nil).
         DeleteObject(models.NewDeleteObjectRequest("bucketName", "my/file.txt"))
 
     // Check the error result.
@@ -231,7 +232,7 @@ func TestGetBadBucket(t *testing.T) {
     // Create and run the mocked client.
     response, err := mockedClient(t).
         Expecting(net.GET, "/remoteTest16", &url.Values{}, nil).
-        Returning(400, "").
+        Returning(400, "", nil).
         GetBucket(models.NewGetBucketRequest("remoteTest16"))
 
     // Check the error result.
@@ -257,7 +258,7 @@ func TestGetObject(t *testing.T) {
     // Create and run the mocked client.
     response, err := mockedClient(t).
         Expecting(net.GET, "/bucketName/object", &url.Values{}, nil).
-        Returning(200, stringResponse).
+        Returning(200, stringResponse, nil).
         GetObject(models.NewGetObjectRequest("bucketName", "object"))
 
     // Check the error result.
@@ -287,7 +288,7 @@ func TestPutObject(t *testing.T) {
     // Create and run the mocked client.
     response, err := mockedClient(t).
         Expecting(net.PUT, "/bucketName/object", &url.Values{}, nil).
-        Returning(200, "").
+        Returning(200, "", nil).
         PutObject(models.NewPutObjectRequest(
             "bucketName",
             "object",
@@ -350,7 +351,7 @@ func runBulkTest(t *testing.T, operation string, callToTest bulkTest) {
             &url.Values{"operation": []string{operation}},
             &stringRequest,
         ).
-        Returning(200, stringResponse)
+        Returning(200, stringResponse, nil)
     response, err := callToTest(client, inputObjects)
 
     // Check the error result.
@@ -375,6 +376,124 @@ func runBulkTest(t *testing.T, operation string, callToTest bulkTest) {
         if obj.Size != sizes[i] {
             t.Errorf("Expected size %d but got %d.", sizes[i], obj.Size)
         }
+    }
+}
+
+func TestInitiateMultipart(t *testing.T) {
+    stringResponse := "<?xml version=\"1.0\" encoding=\"UTF-8\"?><InitiateMultipartUploadResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Bucket>example-bucket</Bucket><Key>example-object</Key><UploadId>VXBsb2FkIElEIGZvciA2aWWpbmcncyBteS1tb3ZpZS5tMnRzIHVwbG9hZA</UploadId></InitiateMultipartUploadResult>"
+
+    // Create and run the mocked client.
+    qs := &url.Values{"uploads": []string{""}}
+    response, err := mockedClient(t).
+        Expecting(net.POST, "/bucketName/object", qs, nil).
+        Returning(200, stringResponse, nil).
+        InitiateMultipart(models.NewInitiateMultipartRequest(
+            "bucketName",
+            "object",
+        ))
+
+    // Check the error result.
+    if err != nil {
+        t.Errorf("Unexpected error '%s'.", err.Error())
+    }
+
+    // Check the response value.
+    if response == nil {
+        t.Error("Response was unexpectedly nil.")
+    }
+    if response.Bucket != "example-bucket" {
+        t.Errorf("Expected bucket 'example-bucket' but got '%s'.", response.Bucket)
+    }
+    if response.Key != "example-object" {
+        t.Errorf("Expected key 'example-object' but got '%s'.", response.Key)
+    }
+    if response.UploadId != "VXBsb2FkIElEIGZvciA2aWWpbmcncyBteS1tb3ZpZS5tMnRzIHVwbG9hZA" {
+        t.Errorf("Expected upload id 'VXBsb2FkIElEIGZvciA2aWWpbmcncyBteS1tb3ZpZS5tMnRzIHVwbG9hZA' but got '%s'.", response.UploadId)
+    }
+}
+
+func TestPutPart(t *testing.T) {
+    content := "this is the part content"
+    partNumber := 2
+    uploadId := "VXBsb2FkIElEIGZvciA2aWWpbmcncyBteS1tb3ZpZS5tMnRzIHVwbG9hZA"
+    etag := "b54357faf0632cce46e942fa68356b38"
+
+    // Create and run the mocked client.
+    qs := &url.Values{
+        "partNumber": []string{strconv.Itoa(partNumber)},
+        "uploadId": []string{uploadId},
+    }
+    response, err := mockedClient(t).
+        Expecting(net.PUT, "/bucketName/object", qs, nil).
+        Returning(200, "", &map[string][]string{"etag": []string{"\"" + etag + "\""}}).
+        PutPart(models.NewPutPartRequest(
+            "bucketName",
+            "object",
+            partNumber,
+            uploadId,
+            net.BuildSizedReadCloser([]byte(content)),
+        ))
+
+    // Check the error result.
+    if err != nil {
+        t.Errorf("Unexpected error '%s'.", err.Error())
+    }
+
+    // Check the response value.
+    if response == nil {
+        t.Error("Response was unexpectedly nil.")
+    }
+    if response.ETag != etag {
+        t.Errorf("Expected etag '%s' but got '%s'.", etag, response.ETag)
+    }
+}
+
+func TestCompleteMultipart(t *testing.T) {
+    bucket := "bucketName"
+    key := "object"
+    location := "http://my-server/bucketName/object"
+    etag := "b54357faf0632cce46e942fa68356b38"
+    uploadId := "VXBsb2FkIElEIGZvciA2aWWpbmcncyBteS1tb3ZpZS5tMnRzIHVwbG9hZA"
+    expectedRequest := "<CompleteMultipartUpload><Part><PartNumber>1</PartNumber><ETag>7a112844c1a2327e617f530cb06dccf8</ETag></Part><Part><PartNumber>2</PartNumber><ETag>7162e29f4e40da7f521d0794b57770ba</ETag></Part></CompleteMultipartUpload>"
+    expectedResponse := "<?xml version=\"1.0\" encoding=\"UTF-8\"?><CompleteMultipartUploadResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Location>http://my-server/bucketName/object</Location><Bucket>bucketName</Bucket><Key>object</Key><ETag>\"b54357faf0632cce46e942fa68356b38\"</ETag></CompleteMultipartUploadResult>"
+
+    // Create and run the mocked client.
+    qs := &url.Values{
+        "uploadId": []string{uploadId},
+    }
+    response, err := mockedClient(t).
+        Expecting(net.POST, "/bucketName/object", qs, &expectedRequest).
+        Returning(200, expectedResponse, &map[string][]string{"etag": []string{etag}}).
+        CompleteMultipart(models.NewCompleteMultipartRequest(
+            bucket,
+            key,
+            uploadId,
+            []models.Part{
+                models.Part{1, "7a112844c1a2327e617f530cb06dccf8"},
+                models.Part{2, "7162e29f4e40da7f521d0794b57770ba"},
+            },
+        ))
+
+    // Check the error result.
+    if err != nil {
+        t.Errorf("Unexpected error '%s'.", err.Error())
+    }
+
+    // Check the response value.
+    if response == nil {
+        t.Error("Response was unexpectedly nil.")
+    }
+    if response.Location != location {
+        t.Errorf("Expected location '%s' but got '%s'.", location, response.Location)
+    }
+    if response.Bucket != bucket {
+        t.Errorf("Expected bucket '%s' but got '%s'.", bucket, response.Bucket)
+    }
+    if response.Key != key {
+        t.Errorf("Expected key '%s' but got '%s'.", key, response.Key)
+    }
+    if response.ETag != etag {
+        t.Errorf("Expected etag '%s' but got '%s'.", etag, response.ETag)
     }
 }
 

@@ -13,7 +13,7 @@ type CompleteMultipartRequest struct {
 }
 
 type CompleteMultipartUpload struct {
-    Parts []Part
+    Parts []Part `xml:"Part"`
 }
 
 type Part struct {
