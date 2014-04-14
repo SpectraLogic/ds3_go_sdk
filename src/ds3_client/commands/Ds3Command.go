@@ -20,6 +20,8 @@ var availableCommands = map[string]command {
 
     "bulk_get": bulkGet,
     "bulk_put": bulkPut,
+
+    "temp": temp,//TODO
 }
 
 func RunCommand(client *ds3.Client, args *Arguments) error {

@@ -46,3 +46,14 @@ func (client *Client) ListParts(request *models.ListPartsRequest) (*models.ListP
     return models.NewListPartsResponse(response)
 }
 
+func (client *Client) ListMultipart(request *models.ListMultipartRequest) (*models.ListMultipartResponse, error) {
+    // Invoke the HTTP request.
+    response, requestErr := client.netLayer.Invoke(request)
+    if requestErr != nil {
+        return nil, requestErr
+    }
+
+    // Create a response object based on the result.
+    return models.NewListMultipartResponse(response)
+}
+
