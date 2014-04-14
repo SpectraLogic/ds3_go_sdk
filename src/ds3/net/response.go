@@ -9,7 +9,7 @@ import (
 type Response interface {
     StatusCode() int
     Body() io.ReadCloser
-    Header() map[string][]string
+    Header() *http.Header
 }
 
 type wrappedHttpResponse struct {
@@ -24,15 +24,15 @@ func (self wrappedHttpResponse) Body() io.ReadCloser {
     return self.rawResponse.Body
 }
 
-func (self wrappedHttpResponse) Header() map[string][]string {
+func (self wrappedHttpResponse) Header() *http.Header {
     // The HTTP spec says headers keys are case insensitive, so we'll just
     // tolower them before processing the response so we can always get the
     // right thing.
-    result := make(map[string][]string)
+    result := make(http.Header)
     header := self.rawResponse.Header
     for k, v := range header {
         result[strings.ToLower(k)] = v
     }
-    return result
+    return &result
 }
 

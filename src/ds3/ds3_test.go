@@ -4,6 +4,7 @@ import (
     "testing"
     "strconv"
     "net/url"
+    "net/http"
     "io/ioutil"
     "ds3/net"
     "ds3/models"
@@ -282,6 +283,38 @@ func TestGetObject(t *testing.T) {
     }
 }
 
+func TestGetObjectRange(t *testing.T) {
+    stringResponse := "object contents"
+
+    // Create and run the mocked client.
+    request := models.NewGetObjectRequest("bucketName", "object")
+    request.WithRange(20, 179)
+    response, err := mockedClient(t).
+        Expecting(net.GET, "/bucketName/object", &url.Values{}, nil).
+        Returning(200, stringResponse, &http.Header{"Range": []string{"bytes=20-179"}}).
+        GetObject(request)
+
+    // Check the error result.
+    if err != nil {
+        t.Errorf("Unexpected error '%s'.", err.Error())
+    }
+
+    // Check the response value.
+    if response == nil {
+        t.Error("Response was unexpectedly nil.")
+    } else if response.Content == nil {
+        t.Error("Response content was unexpectedly nil.")
+    } else {
+        defer response.Content.Close()
+        bs, readErr := ioutil.ReadAll(response.Content)
+        if readErr != nil {
+            t.Errorf("Unexpected error '%s'.", readErr.Error())
+        } else if string(bs) != stringResponse {
+            t.Errorf("Expected '%s' but got '%s'.", stringResponse, string(bs))
+        }
+    }
+}
+
 func TestPutObject(t *testing.T) {
     stringResponse := "object contents"
 
@@ -425,7 +458,7 @@ func TestPutPart(t *testing.T) {
     }
     response, err := mockedClient(t).
         Expecting(net.PUT, "/bucketName/object", qs, nil).
-        Returning(200, "", &map[string][]string{"etag": []string{"\"" + etag + "\""}}).
+        Returning(200, "", &http.Header{"etag": []string{"\"" + etag + "\""}}).
         PutPart(models.NewPutPartRequest(
             "bucketName",
             "object",
@@ -463,7 +496,7 @@ func TestCompleteMultipart(t *testing.T) {
     }
     response, err := mockedClient(t).
         Expecting(net.POST, "/bucketName/object", qs, &expectedRequest).
-        Returning(200, expectedResponse, &map[string][]string{"etag": []string{etag}}).
+        Returning(200, expectedResponse, &http.Header{"etag": []string{etag}}).
         CompleteMultipart(models.NewCompleteMultipartRequest(
             bucket,
             key,

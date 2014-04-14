@@ -1,6 +1,7 @@
 package net
 
 import (
+    "net/http"
     "bytes"
     "io"
     "net/url"
@@ -11,6 +12,7 @@ type Request interface {
     Verb() HttpVerb
     Path() string
     QueryParams() *url.Values
+    Header() *http.Header
     GetContentStream() SizedReadCloser
 }
 

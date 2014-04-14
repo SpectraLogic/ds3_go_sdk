@@ -5,6 +5,7 @@ import (
     "io/ioutil"
     "testing"
     "net/url"
+    "net/http"
     "ds3/net"
 )
 
@@ -17,7 +18,7 @@ type mockedClientWithTest interface {
 }
 
 type mockedClientWithExpectation interface {
-    Returning(statusCode int, response string, headers *map[string][]string) *Client
+    Returning(statusCode int, response string, headers *http.Header) *Client
 }
 
 type mockedNet struct {
@@ -33,7 +34,7 @@ type mockedNet struct {
     // Response data to return.
     statusCode int
     response string
-    headers *map[string][]string
+    headers *http.Header
 }
 
 func (self *mockedNet) Expecting(verb net.HttpVerb, path string, queryParams *url.Values, request *string) mockedClientWithExpectation {
@@ -44,7 +45,7 @@ func (self *mockedNet) Expecting(verb net.HttpVerb, path string, queryParams *ur
     return self
 }
 
-func (self *mockedNet) Returning(statusCode int, response string, headers *map[string][]string) *Client {
+func (self *mockedNet) Returning(statusCode int, response string, headers *http.Header) *Client {
     self.statusCode = statusCode
     self.response = response
     self.headers = headers
@@ -103,11 +104,11 @@ func (self *mockedNet) Body() io.ReadCloser {
     return net.BuildSizedReadCloser([]byte(self.response))
 }
 
-func (self *mockedNet) Header() map[string][]string {
+func (self *mockedNet) Header() *http.Header {
     if self.headers == nil {
-        return make(map[string][]string)
+        return &http.Header{}
     } else {
-        return *self.headers
+        return self.headers
     }
 }
 

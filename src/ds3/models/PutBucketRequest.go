@@ -2,6 +2,7 @@ package models
 
 import (
     "net/url"
+    "net/http"
     "ds3/net"
 )
 
@@ -27,8 +28,11 @@ func (self PutBucketRequest) QueryParams() *url.Values {
     return new(url.Values)
 }
 
+func (PutBucketRequest) Header() *http.Header {
+    return &http.Header{}
+}
+
 func (PutBucketRequest) GetContentStream() net.SizedReadCloser {
     return nil
 }
-
 

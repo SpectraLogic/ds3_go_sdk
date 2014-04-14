@@ -2,6 +2,7 @@ package models
 
 import (
     "net/url"
+    "net/http"
     "ds3/net"
 )
 
@@ -24,6 +25,10 @@ func (self BulkGetRequest) Path() string {
 
 func (BulkGetRequest) QueryParams() *url.Values {
     return &url.Values{"operation": []string{"start_bulk_get"}}
+}
+
+func (BulkGetRequest) Header() *http.Header {
+    return &http.Header{}
 }
 
 func (self BulkGetRequest) GetContentStream() net.SizedReadCloser {

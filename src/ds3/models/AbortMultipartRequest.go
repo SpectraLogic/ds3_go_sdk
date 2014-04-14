@@ -2,6 +2,7 @@ package models
 
 import (
     "net/url"
+    "net/http"
     "ds3/net"
 )
 
@@ -28,6 +29,10 @@ func (self AbortMultipartRequest) Path() string {
 
 func (self AbortMultipartRequest) QueryParams() *url.Values {
     return &url.Values{"uploadId": []string{self.uploadId}}
+}
+
+func (AbortMultipartRequest) Header() *http.Header {
+    return &http.Header{}
 }
 
 func (AbortMultipartRequest) GetContentStream() net.SizedReadCloser {

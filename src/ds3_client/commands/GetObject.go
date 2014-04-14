@@ -22,8 +22,14 @@ func getObject(client *ds3.Client, args *Arguments) error {
         return errors.New("File already exists")
     }
 
+    // Build the request.
+    request := models.NewGetObjectRequest(args.Bucket, args.Key)
+    if args.End > 0 {
+        request.WithRange(args.Start, args.End)
+    }
+
     // Perform the request.
-    response, requestErr := client.GetObject(models.NewGetObjectRequest(args.Bucket, args.Key))
+    response, requestErr := client.GetObject(request)
     if requestErr != nil {
         return requestErr
     }

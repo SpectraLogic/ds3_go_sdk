@@ -2,6 +2,7 @@ package models
 
 import (
     "net/url"
+    "net/http"
     "strconv"
     "ds3/net"
 )
@@ -35,6 +36,10 @@ func (self PutPartRequest) QueryParams() *url.Values {
         "partNumber": []string{strconv.Itoa(self.partNumber)},
         "uploadId": []string{self.uploadId},
     }
+}
+
+func (PutPartRequest) Header() *http.Header {
+    return &http.Header{}
 }
 
 func (self PutPartRequest) GetContentStream() net.SizedReadCloser {

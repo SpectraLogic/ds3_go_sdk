@@ -2,6 +2,7 @@ package models
 
 import (
     "net/url"
+    "net/http"
     "ds3/net"
 )
 
@@ -25,6 +26,10 @@ func (self DeleteBucketRequest) Path() string {
 
 func (self DeleteBucketRequest) QueryParams() *url.Values {
     return new(url.Values)
+}
+
+func (DeleteBucketRequest) Header() *http.Header {
+    return &http.Header{}
 }
 
 func (DeleteBucketRequest) GetContentStream() net.SizedReadCloser {

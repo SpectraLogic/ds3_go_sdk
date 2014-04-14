@@ -15,6 +15,7 @@ type Arguments struct {
     Key string
     KeyPrefix string
     MaxKeys int
+    Start, End int
 }
 
 func ParseArgs() (*Arguments, error) {
@@ -28,6 +29,8 @@ func ParseArgs() (*Arguments, error) {
     keyParam := flag.String("key", "", "The key for the object to get.")
     keyPrefixParam := flag.String("prefix", "", "The key prefix by which to constrain the results.")
     maxKeysParam := flag.Int("max-keys", 0, "The maximum number of objects to return.")
+    startParam := flag.Int("start", 0, "The object location at which to start.")
+    endParam := flag.Int("end", 0, "The object location at which to end.")
     flag.Parse()
 
     // Build the arguments object.
@@ -41,6 +44,8 @@ func ParseArgs() (*Arguments, error) {
         Key: *keyParam,
         KeyPrefix: *keyPrefixParam,
         MaxKeys: *maxKeysParam,
+        Start: *startParam,
+        End: *endParam,
     }
 
     // Validate required arguments.

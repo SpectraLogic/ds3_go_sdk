@@ -20,6 +20,11 @@ func setRequestHeaders(httpRequest *http.Request, creds Credentials, request Req
         Path: request.Path(),
         Date: now,
     }))
+
+    // Copy the headers from the request object.
+    for key, val := range *request.Header() {
+        httpRequest.Header.Add(key, val[0])
+    }
 }
 
 type signatureFields struct {

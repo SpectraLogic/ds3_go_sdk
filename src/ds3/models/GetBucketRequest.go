@@ -2,6 +2,7 @@ package models
 
 import (
     "net/url"
+    "net/http"
     "strconv"
     "ds3/net"
 )
@@ -54,6 +55,10 @@ func (self GetBucketRequest) QueryParams() *url.Values {
         values.Add("max-keys", strconv.Itoa(self.maxKeys))
     }
     return &values
+}
+
+func (GetBucketRequest) Header() *http.Header {
+    return &http.Header{}
 }
 
 func (GetBucketRequest) GetContentStream() net.SizedReadCloser {

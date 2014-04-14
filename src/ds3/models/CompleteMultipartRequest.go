@@ -2,6 +2,7 @@ package models
 
 import (
     "net/url"
+    "net/http"
     "encoding/xml"
     "ds3/net"
 )
@@ -40,6 +41,10 @@ func (self CompleteMultipartRequest) Path() string {
 
 func (self CompleteMultipartRequest) QueryParams() *url.Values {
     return &url.Values{"uploadId": []string{self.uploadId}}
+}
+
+func (CompleteMultipartRequest) Header() *http.Header {
+    return &http.Header{}
 }
 
 func (self CompleteMultipartRequest) GetContentStream() net.SizedReadCloser {

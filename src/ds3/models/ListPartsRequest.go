@@ -2,6 +2,7 @@ package models
 
 import (
     "net/url"
+    "net/http"
     "ds3/net"
 )
 
@@ -30,8 +31,11 @@ func (self ListPartsRequest) QueryParams() *url.Values {
     return &url.Values{"uploadId": []string{self.uploadId}}
 }
 
+func (ListPartsRequest) Header() *http.Header {
+    return &http.Header{}
+}
+
 func (ListPartsRequest) GetContentStream() net.SizedReadCloser {
     return nil
 }
-
 

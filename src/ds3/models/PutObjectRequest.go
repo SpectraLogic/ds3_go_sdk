@@ -2,6 +2,7 @@ package models
 
 import (
     "net/url"
+    "net/http"
     "ds3/net"
 )
 
@@ -24,6 +25,10 @@ func (self PutObjectRequest) Path() string {
 
 func (PutObjectRequest) QueryParams() *url.Values {
     return new(url.Values)
+}
+
+func (PutObjectRequest) Header() *http.Header {
+    return &http.Header{}
 }
 
 func (self PutObjectRequest) GetContentStream() net.SizedReadCloser {
