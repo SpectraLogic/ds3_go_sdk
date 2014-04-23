@@ -20,7 +20,9 @@ type Request interface {
 // Size isn't readily available in Go standard interfaces, so we created a new
 // interface for it.
 type SizedReadCloser interface {
-    io.ReadCloser
+    io.Reader
+    io.Closer
+    io.Seeker
     Size() int64
 }
 
@@ -54,7 +56,10 @@ type bytesSizedReadCloser struct {
 }
 
 func BuildSizedReadCloser(contentBytes []byte) SizedReadCloser{
-    return &bytesSizedReadCloser{bytes.NewReader(contentBytes), int64(len(contentBytes))}
+    return &bytesSizedReadCloser{
+        bytes.NewReader(contentBytes),
+        int64(len(contentBytes)),
+    }
 }
 
 func (self bytesSizedReadCloser) Read(b []byte) (int, error) {
@@ -65,8 +70,11 @@ func (bytesSizedReadCloser) Close() error {
     return nil
 }
 
+func (self bytesSizedReadCloser) Seek(offset int64, whence int) (int64, error) {
+    return self.reader.Seek(offset, whence)
+}
+
 func (self bytesSizedReadCloser) Size() int64 {
     return self.size
 }
-
 

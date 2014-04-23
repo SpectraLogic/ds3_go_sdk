@@ -1,6 +1,7 @@
 package net
 
 import (
+    "io"
     "fmt"
     "errors"
     "net/http"
@@ -36,14 +37,27 @@ func NewHttpNetwork(connectionInfo *ConnectionInfo) Network {
 }
 
 func (net httpNetwork) Invoke(request Request) (Response, error) {
-    // Build the request.
-    httpRequest, makeReqErr := buildHttpRequest(net.connectionInfo, request)
-    if makeReqErr != nil {
-        return nil, makeReqErr
+    // Open up the content stream.
+    stream := request.GetContentStream()
+    if stream != nil {
+        defer stream.Close()
     }
 
     // Handle as many 307's as we're allowed.
     for i := 0; i < net.connectionInfo.RedirectRetryCount; i++ {
+        // Seek to the beginning of the request stream.
+        if stream != nil {
+            if _, seekErr := stream.Seek(0, 0); seekErr != nil {
+                return nil, seekErr
+            }
+        }
+
+        // Build the request.
+        httpRequest, makeReqErr := buildHttpRequest(net.connectionInfo, request, stream)
+        if makeReqErr != nil {
+            return nil, makeReqErr
+        }
+
         // Perform the request.
         httpResponse, reqErr := net.transport.RoundTrip(httpRequest)
         if reqErr != nil {
@@ -63,26 +77,43 @@ func (net httpNetwork) Invoke(request Request) (Response, error) {
     ))
 }
 
-func buildHttpRequest(conn *ConnectionInfo, request Request) (*http.Request, error) {
+func buildHttpRequest(conn *ConnectionInfo, request Request, stream SizedReadCloser) (*http.Request, error) {
+    var reader io.Reader
+    if stream != nil {
+        reader = proxiedReader{stream}
+    }
+
     // Build the basic request with the verb, url, and payload (if any).
     httpRequest, err := http.NewRequest(
         request.Verb().String(),
         buildUrl(conn, request).String(),
-        request.GetContentStream(),
+        reader,
     )
-
-    // Set the content length if we have a payload.
-    if content := request.GetContentStream(); content != nil {
-        httpRequest.ContentLength = content.Size()
-    }
     if err != nil {
         return nil, err
+    }
+
+    // Set the content length if we have a payload.
+    if stream != nil {
+        httpRequest.ContentLength = stream.Size()
     }
 
     // Set the request headers such as authorization and date.
     setRequestHeaders(httpRequest, conn.Creds, request)
 
     return httpRequest, nil
+}
+
+// http.NewRequest takes an io.Reader, but the client methods do a run time
+// type check for io.Closer and call close. Since we want to be able to do
+// multiple reads of the same stream in the case of 307 redirects, we use this
+// structure to prevent the http client from calling Close.
+type proxiedReader struct {
+    innerReader io.Reader
+}
+
+func (self proxiedReader) Read(p []byte) (n int, err error) {
+    return self.innerReader.Read(p)
 }
 
 func buildUrl(conn *ConnectionInfo, request Request) *url.URL {

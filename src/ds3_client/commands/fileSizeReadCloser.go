@@ -27,6 +27,10 @@ func (self fileSizeReadCloser) Read(p []byte) (int, error) {
     return self.file.Read(p)
 }
 
+func (self fileSizeReadCloser) Seek(offset int64, whence int) (int64, error) {
+    return self.file.Seek(offset, whence)
+}
+
 func (self fileSizeReadCloser) Close() error {
     return self.file.Close()
 }
