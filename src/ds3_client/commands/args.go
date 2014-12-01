@@ -6,13 +6,16 @@ import (
     "flag"
 )
 
+// Represents the parsed command line arguments that we may be interested in.
 type Arguments struct {
     Endpoint, Proxy string
     AccessKey, SecretKey string
     Command string
     Bucket string
+    Key string
     KeyPrefix string
     MaxKeys int
+    Start, End int
 }
 
 func ParseArgs() (*Arguments, error) {
@@ -23,20 +26,26 @@ func ParseArgs() (*Arguments, error) {
     proxyParam := flag.String("proxy", "", "Specifies the HTTP proxy to route through.")
     commandParam := flag.String("command", "", "The HTTP call to execute.")
     bucketParam := flag.String("bucket", "", "The name of the bucket to constrict the request to.")
+    keyParam := flag.String("key", "", "The key for the object to get.")
     keyPrefixParam := flag.String("prefix", "", "The key prefix by which to constrain the results.")
     maxKeysParam := flag.Int("max-keys", 0, "The maximum number of objects to return.")
+    startParam := flag.Int("start", 0, "The object location at which to start.")
+    endParam := flag.Int("end", 0, "The object location at which to end.")
     flag.Parse()
 
     // Build the arguments object.
     args := Arguments{
-        Endpoint: getParam(*endpointParam, "DS3_ENDPOINT"),
-        AccessKey: getParam(*accessKeyParam, "DS3_ACCESS_KEY"),
-        SecretKey: getParam(*secretKeyParam, "DS3_SECRET_KEY"),
-        Proxy: getParam(*proxyParam, "DS3_PROXY"),
+        Endpoint: paramOrEnv(*endpointParam, "DS3_ENDPOINT"),
+        AccessKey: paramOrEnv(*accessKeyParam, "DS3_ACCESS_KEY"),
+        SecretKey: paramOrEnv(*secretKeyParam, "DS3_SECRET_KEY"),
+        Proxy: paramOrEnv(*proxyParam, "DS3_PROXY"),
         Command: *commandParam,
         Bucket: *bucketParam,
+        Key: *keyParam,
         KeyPrefix: *keyPrefixParam,
         MaxKeys: *maxKeysParam,
+        Start: *startParam,
+        End: *endParam,
     }
 
     // Validate required arguments.
@@ -49,7 +58,7 @@ func ParseArgs() (*Arguments, error) {
     }
 }
 
-func getParam(param, envName string) string {
+func paramOrEnv(param, envName string) string {
     env := os.Getenv(envName)
     switch {
         case param != "": return param

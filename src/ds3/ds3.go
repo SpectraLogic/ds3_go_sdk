@@ -2,32 +2,37 @@ package ds3
 
 import (
     "ds3/net"
-    "ds3/models"
+    "net/url"
 )
 
 type Client struct {
     netLayer net.Network
 }
 
-func (client *Client) GetService(request *models.GetServiceRequest) (*models.GetServiceResponse, error) {
-    // Invoke the HTTP request.
-    response, requestErr := client.netLayer.Invoke(request)
-    if requestErr != nil {
-        return nil, requestErr
-    }
-
-    // Create a response object based on the result.
-    return models.NewGetServiceResponse(response)
+type Builder struct {
+    connectionInfo *net.ConnectionInfo
 }
 
-func (client *Client) GetBucket(request *models.GetBucketRequest) (*models.GetBucketResponse, error) {
-    // Invoke the HTTP request.
-    response, requestErr := client.netLayer.Invoke(request)
-    if requestErr != nil {
-        return nil, requestErr
-    }
+func NewBuilder(endpoint *url.URL, creds net.Credentials) *Builder {
+    return &Builder{&net.ConnectionInfo{
+        Endpoint: *endpoint,
+        Creds: creds,
+        RedirectRetryCount: 5,
+        Proxy: nil,
+    }}
+}
 
-    // Create a response object based on the result.
-    return models.NewGetBucketResponse(response)
+func (builder *Builder) WithProxy(proxy *url.URL) *Builder {
+    builder.connectionInfo.Proxy = proxy
+    return builder
+}
+
+func (builder *Builder) WithRedirectRetryCount(count int) *Builder {
+    builder.connectionInfo.RedirectRetryCount = count
+    return builder
+}
+
+func (builder *Builder) Build() *Client {
+    return &Client{net.NewHttpNetwork(builder.connectionInfo)}
 }
 

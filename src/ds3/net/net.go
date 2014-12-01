@@ -1,15 +1,15 @@
 package net
 
 import (
+    "io"
     "fmt"
     "errors"
     "net/http"
     "net/url"
-    "ds3/models"
 )
 
 type Network interface {
-    Invoke(request models.Ds3Request) (*http.Response, error)
+    Invoke(request Request) (Response, error)
 }
 
 type ConnectionInfo struct {
@@ -36,15 +36,28 @@ func NewHttpNetwork(connectionInfo *ConnectionInfo) Network {
     }
 }
 
-func (net httpNetwork) Invoke(request models.Ds3Request) (*http.Response, error) {
-    // Build the request.
-    httpRequest, makeReqErr := buildHttpRequest(net.connectionInfo, request)
-    if makeReqErr != nil {
-        return nil, makeReqErr
+func (net httpNetwork) Invoke(request Request) (Response, error) {
+    // Open up the content stream.
+    stream := request.GetContentStream()
+    if stream != nil {
+        defer stream.Close()
     }
 
     // Handle as many 307's as we're allowed.
     for i := 0; i < net.connectionInfo.RedirectRetryCount; i++ {
+        // Seek to the beginning of the request stream.
+        if stream != nil {
+            if _, seekErr := stream.Seek(0, 0); seekErr != nil {
+                return nil, seekErr
+            }
+        }
+
+        // Build the request.
+        httpRequest, makeReqErr := buildHttpRequest(net.connectionInfo, request, stream)
+        if makeReqErr != nil {
+            return nil, makeReqErr
+        }
+
         // Perform the request.
         httpResponse, reqErr := net.transport.RoundTrip(httpRequest)
         if reqErr != nil {
@@ -53,7 +66,7 @@ func (net httpNetwork) Invoke(request models.Ds3Request) (*http.Response, error)
 
         // If it wasn't a redirect then return.
         if httpResponse.StatusCode != http.StatusTemporaryRedirect {
-            return httpResponse, nil
+            return &wrappedHttpResponse{httpResponse}, nil
         }
     }
 
@@ -64,20 +77,46 @@ func (net httpNetwork) Invoke(request models.Ds3Request) (*http.Response, error)
     ))
 }
 
-func buildHttpRequest(conn *ConnectionInfo, request models.Ds3Request) (*http.Request, error) {
+func buildHttpRequest(conn *ConnectionInfo, request Request, stream SizedReadCloser) (*http.Request, error) {
+    var reader io.Reader
+    if stream != nil {
+        reader = proxiedReader{stream}
+    }
+
+    // Build the basic request with the verb, url, and payload (if any).
     httpRequest, err := http.NewRequest(
         request.Verb().String(),
         buildUrl(conn, request).String(),
-        request.GetContentStream(),
+        reader,
     )
     if err != nil {
         return nil, err
     }
+
+    // Set the content length if we have a payload.
+    if stream != nil {
+        httpRequest.ContentLength = stream.Size()
+    }
+
+    // Set the request headers such as authorization and date.
     setRequestHeaders(httpRequest, conn.Creds, request)
+
     return httpRequest, nil
 }
 
-func buildUrl(conn *ConnectionInfo, request models.Ds3Request) *url.URL {
+// http.NewRequest takes an io.Reader, but the client methods do a run time
+// type check for io.Closer and call close. Since we want to be able to do
+// multiple reads of the same stream in the case of 307 redirects, we use this
+// structure to prevent the http client from calling Close.
+type proxiedReader struct {
+    innerReader io.Reader
+}
+
+func (self proxiedReader) Read(p []byte) (n int, err error) {
+    return self.innerReader.Read(p)
+}
+
+func buildUrl(conn *ConnectionInfo, request Request) *url.URL {
     url := conn.Endpoint
     url.Path = request.Path()
     url.RawQuery = request.QueryParams().Encode()

@@ -7,10 +7,11 @@ import (
 )
 
 func getService(client *ds3.Client, args *Arguments) error {
-    getServiceResponse, err := client.GetService(models.NewGetServiceRequest())
+    response, err := client.GetService(models.NewGetServiceRequest())
     if err == nil {
-        //TODO: better result printing
-        fmt.Println(getServiceResponse)
+        for _, bucket := range(response.Buckets) {
+            fmt.Println(bucket.Name)
+        }
     }
     return err
 }

@@ -2,7 +2,9 @@ package models
 
 import (
     "net/url"
-    "io"
+    "net/http"
+    "strconv"
+    "ds3/net"
 )
 
 type GetBucketRequest struct {
@@ -33,8 +35,8 @@ func (self *GetBucketRequest) WithMaxKeys(maxKeys int) *GetBucketRequest {
     return self
 }
 
-func (GetBucketRequest) Verb() HttpVerb {
-    return GET
+func (GetBucketRequest) Verb() net.HttpVerb {
+    return net.GET
 }
 
 func (self GetBucketRequest) Path() string {
@@ -50,12 +52,16 @@ func (self GetBucketRequest) QueryParams() *url.Values {
         values.Add("prefix", self.prefix)
     }
     if self.maxKeys > 0 {
-        values.Add("max-keys", string(self.maxKeys))
+        values.Add("max-keys", strconv.Itoa(self.maxKeys))
     }
     return &values
 }
 
-func (GetBucketRequest) GetContentStream() io.ReadCloser {
+func (GetBucketRequest) Header() *http.Header {
+    return &http.Header{}
+}
+
+func (GetBucketRequest) GetContentStream() net.SizedReadCloser {
     return nil
 }
 

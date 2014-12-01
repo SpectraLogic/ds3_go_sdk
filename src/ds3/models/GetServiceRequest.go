@@ -1,8 +1,9 @@
 package models
 
 import (
-    "io"
     "net/url"
+    "net/http"
+    "ds3/net"
 )
 
 type GetServiceRequest struct {}
@@ -11,8 +12,8 @@ func NewGetServiceRequest() *GetServiceRequest {
     return &GetServiceRequest{}
 }
 
-func (GetServiceRequest) Verb() HttpVerb {
-    return GET
+func (GetServiceRequest) Verb() net.HttpVerb {
+    return net.GET
 }
 
 func (GetServiceRequest) Path() string {
@@ -23,7 +24,11 @@ func (GetServiceRequest) QueryParams() *url.Values {
     return new(url.Values)
 }
 
-func (GetServiceRequest) GetContentStream() io.ReadCloser {
+func (GetServiceRequest) Header() *http.Header {
+    return &http.Header{}
+}
+
+func (GetServiceRequest) GetContentStream() net.SizedReadCloser {
     return nil
 }
 
