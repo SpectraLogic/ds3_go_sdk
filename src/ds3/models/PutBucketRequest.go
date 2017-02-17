@@ -3,7 +3,7 @@ package models
 import (
     "net/url"
     "net/http"
-    "ds3/net"
+    "ds3/network"
 )
 
 type PutBucketRequest struct {

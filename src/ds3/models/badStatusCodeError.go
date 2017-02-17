@@ -2,7 +2,7 @@ package models
 
 import (
     "fmt"
-    "ds3/net"
+    "ds3/network"
 )
 
 type BadStatusCodeError struct {

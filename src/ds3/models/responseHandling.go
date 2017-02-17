@@ -4,7 +4,7 @@ import (
     "io"
     "io/ioutil"
     "encoding/xml"
-    "ds3/net"
+    "ds3/network"
 )
 
 func checkStatusCode(response net.Response, expectedStatusCode int) error {

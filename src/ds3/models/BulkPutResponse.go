@@ -1,6 +1,6 @@
 package models
 
-import "ds3/net"
+import "ds3/network"
 
 type BulkPutResponse struct {
     Objects [][]Object

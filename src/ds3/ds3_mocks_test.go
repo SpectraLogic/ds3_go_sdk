@@ -6,7 +6,7 @@ import (
     "testing"
     "net/url"
     "net/http"
-    "ds3/net"
+    "ds3/network"
 )
 
 func mockedClient(t *testing.T) mockedClientWithTest {

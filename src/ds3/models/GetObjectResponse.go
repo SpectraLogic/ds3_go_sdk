@@ -3,7 +3,7 @@ package models
 import (
     "io"
     "net/http"
-    "ds3/net"
+    "ds3/network"
 )
 
 type GetObjectResponse struct {

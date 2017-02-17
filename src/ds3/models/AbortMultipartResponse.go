@@ -2,7 +2,7 @@ package models
 
 import (
     "net/http"
-    "ds3/net"
+    "ds3/network"
 )
 
 type AbortMultipartResponse struct {}

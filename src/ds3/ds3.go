@@ -1,7 +1,7 @@
 package ds3
 
 import (
-    "ds3/net"
+    "ds3/network"
     "net/url"
 )
 

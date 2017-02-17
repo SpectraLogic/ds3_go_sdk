@@ -4,7 +4,7 @@ import (
     "fmt"
     "net/url"
     "net/http"
-    "ds3/net"
+    "ds3/network"
 )
 
 type GetObjectRequest struct {

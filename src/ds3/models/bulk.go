@@ -3,7 +3,7 @@ package models
 import (
     "encoding/xml"
     "net/http"
-    "ds3/net"
+    "ds3/network"
 )
 
 // Represents the XML document for both the bulk request and response data for

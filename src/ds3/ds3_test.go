@@ -6,7 +6,7 @@ import (
     "net/url"
     "net/http"
     "io/ioutil"
-    "ds3/net"
+    "ds3/network"
     "ds3/models"
 )
 

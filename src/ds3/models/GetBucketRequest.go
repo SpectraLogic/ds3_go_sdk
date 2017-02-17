@@ -4,7 +4,7 @@ import (
     "net/url"
     "net/http"
     "strconv"
-    "ds3/net"
+    "ds3/network"
 )
 
 type GetBucketRequest struct {

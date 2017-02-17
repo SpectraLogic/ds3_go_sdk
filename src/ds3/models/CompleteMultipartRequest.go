@@ -4,7 +4,7 @@ import (
     "net/url"
     "net/http"
     "encoding/xml"
-    "ds3/net"
+    "ds3/network"
 )
 
 type CompleteMultipartRequest struct {
