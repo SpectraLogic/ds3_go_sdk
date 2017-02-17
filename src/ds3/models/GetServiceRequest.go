@@ -3,7 +3,7 @@ package models
 import (
     "net/url"
     "net/http"
-    "ds3/network"
+    "ds3/networking"
 )
 
 type GetServiceRequest struct {}
@@ -12,8 +12,8 @@ func NewGetServiceRequest() *GetServiceRequest {
     return &GetServiceRequest{}
 }
 
-func (GetServiceRequest) Verb() net.HttpVerb {
-    return net.GET
+func (GetServiceRequest) Verb() networking.HttpVerb {
+    return networking.GET
 }
 
 func (GetServiceRequest) Path() string {
@@ -28,7 +28,7 @@ func (GetServiceRequest) Header() *http.Header {
     return &http.Header{}
 }
 
-func (GetServiceRequest) GetContentStream() net.SizedReadCloser {
+func (GetServiceRequest) GetContentStream() networking.SizedReadCloser {
     return nil
 }
 

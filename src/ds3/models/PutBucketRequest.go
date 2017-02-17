@@ -3,7 +3,7 @@ package models
 import (
     "net/url"
     "net/http"
-    "ds3/network"
+    "ds3/networking"
 )
 
 type PutBucketRequest struct {
@@ -16,8 +16,8 @@ func NewPutBucketRequest(bucketName string) *PutBucketRequest {
     }
 }
 
-func (PutBucketRequest) Verb() net.HttpVerb {
-    return net.PUT
+func (PutBucketRequest) Verb() networking.HttpVerb {
+    return networking.PUT
 }
 
 func (self PutBucketRequest) Path() string {
@@ -32,7 +32,7 @@ func (PutBucketRequest) Header() *http.Header {
     return &http.Header{}
 }
 
-func (PutBucketRequest) GetContentStream() net.SizedReadCloser {
+func (PutBucketRequest) GetContentStream() networking.SizedReadCloser {
     return nil
 }
 

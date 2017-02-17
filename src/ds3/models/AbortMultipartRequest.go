@@ -3,7 +3,7 @@ package models
 import (
     "net/url"
     "net/http"
-    "ds3/network"
+    "ds3/networking"
 )
 
 type AbortMultipartRequest struct {
@@ -19,8 +19,8 @@ func NewAbortMultipartRequest(bucketName, objectName, uploadId string) *AbortMul
     }
 }
 
-func (AbortMultipartRequest) Verb() net.HttpVerb {
-    return net.DELETE
+func (AbortMultipartRequest) Verb() networking.HttpVerb {
+    return networking.DELETE
 }
 
 func (self AbortMultipartRequest) Path() string {
@@ -35,7 +35,7 @@ func (AbortMultipartRequest) Header() *http.Header {
     return &http.Header{}
 }
 
-func (AbortMultipartRequest) GetContentStream() net.SizedReadCloser {
+func (AbortMultipartRequest) GetContentStream() networking.SizedReadCloser {
     return nil
 }
 

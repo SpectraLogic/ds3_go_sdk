@@ -3,7 +3,7 @@ package models
 import (
     "strings"
     "net/http"
-    "ds3/network"
+    "ds3/networking"
 )
 
 type CompleteMultipartResponse struct {
@@ -12,7 +12,7 @@ type CompleteMultipartResponse struct {
     ETag string
 }
 
-func NewCompleteMultipartResponse(response net.Response) (*CompleteMultipartResponse, error) {
+func NewCompleteMultipartResponse(response networking.Response) (*CompleteMultipartResponse, error) {
     var body CompleteMultipartResponse
     if err := readResponseBody(response, http.StatusOK, &body); err != nil {
         return nil, err

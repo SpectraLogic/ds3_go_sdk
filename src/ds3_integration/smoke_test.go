@@ -4,7 +4,7 @@ import (
     "testing"
     "log"
     "os"
-    "ds3_client/buildclient"
+    "ds3/buildclient"
     "ds3"
     "ds3/models"
     "ds3_integration/utils"

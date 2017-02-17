@@ -2,8 +2,8 @@ package main
 
 import (
     "log"
-    "ds3_client/buildclient"
-    "ds3_client/commands"
+    "ds3/buildclient"
+    "ds3_cli/commands"
 )
 
 func main() {

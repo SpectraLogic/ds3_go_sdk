@@ -3,14 +3,14 @@ package models
 import (
     "io"
     "net/http"
-    "ds3/network"
+    "ds3/networking"
 )
 
 type GetObjectResponse struct {
     Content io.ReadCloser
 }
 
-func NewGetObjectResponse(response net.Response) (*GetObjectResponse, error) {
+func NewGetObjectResponse(response networking.Response) (*GetObjectResponse, error) {
     if err := checkStatusCode(response, http.StatusOK); err != nil {
         return nil, err
     }

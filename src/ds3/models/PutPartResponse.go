@@ -3,14 +3,14 @@ package models
 import (
     "strings"
     "net/http"
-    "ds3/network"
+    "ds3/networking"
 )
 
 type PutPartResponse struct {
     ETag string
 }
 
-func NewPutPartResponse(response net.Response) (*PutPartResponse, error) {
+func NewPutPartResponse(response networking.Response) (*PutPartResponse, error) {
     if err := checkStatusCode(response, http.StatusOK); err != nil {
         return nil, err
     } else {

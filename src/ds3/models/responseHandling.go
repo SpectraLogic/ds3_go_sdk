@@ -4,10 +4,10 @@ import (
     "io"
     "io/ioutil"
     "encoding/xml"
-    "ds3/network"
+    "ds3/networking"
 )
 
-func checkStatusCode(response net.Response, expectedStatusCode int) error {
+func checkStatusCode(response networking.Response, expectedStatusCode int) error {
     if response.StatusCode() == expectedStatusCode {
         return nil
     } else {
@@ -15,7 +15,7 @@ func checkStatusCode(response net.Response, expectedStatusCode int) error {
     }
 }
 
-func readResponseBody(response net.Response, expectedStatusCode int, parsedBody interface{}) error {
+func readResponseBody(response networking.Response, expectedStatusCode int, parsedBody interface{}) error {
     // Clean up the response body.
     body := response.Body()
     defer body.Close()

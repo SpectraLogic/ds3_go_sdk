@@ -3,20 +3,20 @@ package models
 import (
     "net/url"
     "net/http"
-    "ds3/network"
+    "ds3/networking"
 )
 
 type BulkGetRequest struct {
     bucketName string
-    content net.SizedReadCloser
+    content networking.SizedReadCloser
 }
 
 func NewBulkGetRequest(bucketName string, objects []Object) *BulkGetRequest {
     return &BulkGetRequest{bucketName, buildObjectListStream(objects)}
 }
 
-func (BulkGetRequest) Verb() net.HttpVerb {
-    return net.PUT
+func (BulkGetRequest) Verb() networking.HttpVerb {
+    return networking.PUT
 }
 
 func (self BulkGetRequest) Path() string {
@@ -31,7 +31,7 @@ func (BulkGetRequest) Header() *http.Header {
     return &http.Header{}
 }
 
-func (self BulkGetRequest) GetContentStream() net.SizedReadCloser {
+func (self BulkGetRequest) GetContentStream() networking.SizedReadCloser {
     return self.content
 }
 

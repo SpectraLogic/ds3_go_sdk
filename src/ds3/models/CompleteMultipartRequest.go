@@ -4,7 +4,7 @@ import (
     "net/url"
     "net/http"
     "encoding/xml"
-    "ds3/network"
+    "ds3/networking"
 )
 
 type CompleteMultipartRequest struct {
@@ -31,8 +31,8 @@ func NewCompleteMultipartRequest(bucketName, objectName, uploadId string, parts 
     }
 }
 
-func (CompleteMultipartRequest) Verb() net.HttpVerb {
-    return net.POST
+func (CompleteMultipartRequest) Verb() networking.HttpVerb {
+    return networking.POST
 }
 
 func (self CompleteMultipartRequest) Path() string {
@@ -47,7 +47,7 @@ func (CompleteMultipartRequest) Header() *http.Header {
     return &http.Header{}
 }
 
-func (self CompleteMultipartRequest) GetContentStream() net.SizedReadCloser {
+func (self CompleteMultipartRequest) GetContentStream() networking.SizedReadCloser {
     // Create an xml document from the entity.
     xmlBytes, err := xml.Marshal(CompleteMultipartUpload{self.parts})
     if err != nil {
@@ -55,6 +55,6 @@ func (self CompleteMultipartRequest) GetContentStream() net.SizedReadCloser {
     }
 
     // Create a SizedReadCloser which the network layer expects.
-    return net.BuildSizedReadCloser(xmlBytes)
+    return networking.BuildSizedReadCloser(xmlBytes)
 }
 

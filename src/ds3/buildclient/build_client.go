@@ -1,11 +1,11 @@
 package buildclient
 
 import (
-    "ds3_client/commands"
+    "ds3_cli/commands"
     "ds3"
     "net/url"
     "errors"
-    "ds3/network"
+    "ds3/networking"
     "os"
 )
 
@@ -14,6 +14,7 @@ const accessKeyEnv = "DS3_ACCESS_KEY"
 const secretKeyEnv = "DS3_SECRET_KEY"
 const proxyEnv = "DS3_PROXY"
 
+// Creates a client from cli arguments
 func FromArgs(args *commands.Arguments) (*ds3.Client, error) {
     return createClient(args.Endpoint, args.AccessKey, args.SecretKey, args.Proxy)
 }
@@ -55,7 +56,7 @@ func createClient(endpoint, accessKey, secretKey, proxy string) (*ds3.Client, er
 
     // Create the client.
     client := ds3.
-    NewBuilder(endpointUrl, net.Credentials{accessKey, secretKey}).
+    NewBuilder(endpointUrl, networking.Credentials{accessKey, secretKey}).
         WithProxy(proxyUrlPtr).
         Build()
     return client, nil

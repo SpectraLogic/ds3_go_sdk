@@ -1,20 +1,20 @@
 package ds3
 
 import (
-    "ds3/network"
+    "ds3/networking"
     "net/url"
 )
 
 type Client struct {
-    netLayer net.Network
+    netLayer networking.Network
 }
 
 type Builder struct {
-    connectionInfo *net.ConnectionInfo
+    connectionInfo *networking.ConnectionInfo
 }
 
-func NewBuilder(endpoint *url.URL, creds net.Credentials) *Builder {
-    return &Builder{&net.ConnectionInfo{
+func NewBuilder(endpoint *url.URL, creds networking.Credentials) *Builder {
+    return &Builder{&networking.ConnectionInfo{
         Endpoint: *endpoint,
         Creds: creds,
         RedirectRetryCount: 5,
@@ -33,6 +33,6 @@ func (builder *Builder) WithRedirectRetryCount(count int) *Builder {
 }
 
 func (builder *Builder) Build() *Client {
-    return &Client{net.NewHttpNetwork(builder.connectionInfo)}
+    return &Client{networking.NewHttpNetwork(builder.connectionInfo)}
 }
 

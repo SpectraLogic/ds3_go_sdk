@@ -2,7 +2,7 @@ package models
 
 import (
     "net/http"
-    "ds3/network"
+    "ds3/networking"
 )
 
 type ListMultipartResponse struct {
@@ -25,7 +25,7 @@ type Upload struct {
     Initiated string
 }
 
-func NewListMultipartResponse(response net.Response) (*ListMultipartResponse, error) {
+func NewListMultipartResponse(response networking.Response) (*ListMultipartResponse, error) {
     var body ListMultipartResponse
     if err := readResponseBody(response, http.StatusOK, &body); err != nil {
         return nil, err

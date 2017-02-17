@@ -3,7 +3,7 @@ package models
 import (
     "encoding/xml"
     "net/http"
-    "ds3/network"
+    "ds3/networking"
 )
 
 // Represents the XML document for both the bulk request and response data for
@@ -22,7 +22,7 @@ type object struct {
 }
 
 // Converts the ds3 object list to an object we can send in our request.
-func buildObjectListStream(ds3Objects []Object) net.SizedReadCloser {
+func buildObjectListStream(ds3Objects []Object) networking.SizedReadCloser {
     // Create an array of objects to put into the master object list.
     molObjects := make([]object, len(ds3Objects))
 
@@ -41,11 +41,11 @@ func buildObjectListStream(ds3Objects []Object) net.SizedReadCloser {
     }
 
     // Create a SizedReadCloser which the network layer expects.
-    return net.BuildSizedReadCloser(xmlBytes)
+    return networking.BuildSizedReadCloser(xmlBytes)
 }
 
 // Parses the DS3 specific bulk command response.
-func getObjectsFromBulkResponse(response net.Response) ([][]Object, error) {
+func getObjectsFromBulkResponse(response networking.Response) ([][]Object, error) {
     // Parse the master object list response body.
     var mol masterobjectlist
     if err := readResponseBody(response, http.StatusOK, &mol); err != nil {
