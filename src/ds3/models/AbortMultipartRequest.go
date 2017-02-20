@@ -23,12 +23,12 @@ func (AbortMultipartRequest) Verb() networking.HttpVerb {
     return networking.DELETE
 }
 
-func (self AbortMultipartRequest) Path() string {
-    return "/" + self.bucketName + "/" + self.objectName
+func (abortMultipartRequest *AbortMultipartRequest) Path() string {
+    return "/" + abortMultipartRequest.bucketName + "/" + abortMultipartRequest.objectName
 }
 
-func (self AbortMultipartRequest) QueryParams() *url.Values {
-    return &url.Values{"uploadId": []string{self.uploadId}}
+func (abortMultipartRequest *AbortMultipartRequest) QueryParams() *url.Values {
+    return &url.Values{"uploadId": []string{abortMultipartRequest.uploadId}}
 }
 
 func (AbortMultipartRequest) Header() *http.Header {

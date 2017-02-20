@@ -1,1 +1,3 @@
-GOPATH="$( cd "$(dirname "$0")" ; pwd -P )" go install ds3_client
+#!/bin/bash
+export GOPATH=$PWD
+go install ds3_client

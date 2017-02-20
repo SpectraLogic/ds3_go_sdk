@@ -20,39 +20,39 @@ func NewGetBucketRequest(bucketName string) *GetBucketRequest {
     }
 }
 
-func (self *GetBucketRequest) WithMarker(marker string) *GetBucketRequest {
-    self.marker = marker
-    return self
+func (getBucketRequest *GetBucketRequest) WithMarker(marker string) *GetBucketRequest {
+    getBucketRequest.marker = marker
+    return getBucketRequest
 }
 
-func (self *GetBucketRequest) WithPrefix(prefix string) *GetBucketRequest {
-    self.prefix = prefix
-    return self
+func (getBucketRequest *GetBucketRequest) WithPrefix(prefix string) *GetBucketRequest {
+    getBucketRequest.prefix = prefix
+    return getBucketRequest
 }
 
-func (self *GetBucketRequest) WithMaxKeys(maxKeys int) *GetBucketRequest {
-    self.maxKeys = maxKeys
-    return self
+func (getBucketRequest *GetBucketRequest) WithMaxKeys(maxKeys int) *GetBucketRequest {
+    getBucketRequest.maxKeys = maxKeys
+    return getBucketRequest
 }
 
 func (GetBucketRequest) Verb() networking.HttpVerb {
     return networking.GET
 }
 
-func (self GetBucketRequest) Path() string {
-    return "/" + self.bucketName
+func (getBucketRequest *GetBucketRequest) Path() string {
+    return "/" + getBucketRequest.bucketName
 }
 
-func (self GetBucketRequest) QueryParams() *url.Values {
+func (getBucketRequest *GetBucketRequest) QueryParams() *url.Values {
     values := make(url.Values)
-    if self.marker != "" {
-        values.Add("marker", self.marker)
+    if getBucketRequest.marker != "" {
+        values.Add("marker", getBucketRequest.marker)
     }
-    if self.prefix != "" {
-        values.Add("prefix", self.prefix)
+    if getBucketRequest.prefix != "" {
+        values.Add("prefix", getBucketRequest.prefix)
     }
-    if self.maxKeys > 0 {
-        values.Add("max-keys", strconv.Itoa(self.maxKeys))
+    if getBucketRequest.maxKeys > 0 {
+        values.Add("max-keys", strconv.Itoa(getBucketRequest.maxKeys))
     }
     return &values
 }

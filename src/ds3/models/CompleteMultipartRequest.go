@@ -35,21 +35,21 @@ func (CompleteMultipartRequest) Verb() networking.HttpVerb {
     return networking.POST
 }
 
-func (self CompleteMultipartRequest) Path() string {
-    return "/" + self.bucketName + "/" + self.objectName
+func (completeMultipartRequest *CompleteMultipartRequest) Path() string {
+    return "/" + completeMultipartRequest.bucketName + "/" + completeMultipartRequest.objectName
 }
 
-func (self CompleteMultipartRequest) QueryParams() *url.Values {
-    return &url.Values{"uploadId": []string{self.uploadId}}
+func (completeMultipartRequest *CompleteMultipartRequest) QueryParams() *url.Values {
+    return &url.Values{"uploadId": []string{completeMultipartRequest.uploadId}}
 }
 
 func (CompleteMultipartRequest) Header() *http.Header {
     return &http.Header{}
 }
 
-func (self CompleteMultipartRequest) GetContentStream() networking.SizedReadCloser {
+func (completeMultipartRequest *CompleteMultipartRequest) GetContentStream() networking.SizedReadCloser {
     // Create an xml document from the entity.
-    xmlBytes, err := xml.Marshal(CompleteMultipartUpload{self.parts})
+    xmlBytes, err := xml.Marshal(CompleteMultipartUpload{completeMultipartRequest.parts})
     if err != nil {
         panic(err)
     }

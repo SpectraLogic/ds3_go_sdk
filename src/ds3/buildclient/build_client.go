@@ -56,8 +56,8 @@ func createClient(endpoint, accessKey, secretKey, proxy string) (*ds3.Client, er
 
     // Create the client.
     client := ds3.
-    NewBuilder(endpointUrl, networking.Credentials{accessKey, secretKey}).
+    NewClientBuilder(endpointUrl, networking.Credentials{AccessId: accessKey, Key: secretKey}).
         WithProxy(proxyUrlPtr).
-        Build()
+        BuildClient()
     return client, nil
 }

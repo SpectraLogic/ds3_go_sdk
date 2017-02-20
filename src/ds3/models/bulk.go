@@ -27,7 +27,7 @@ func buildObjectListStream(ds3Objects []Object) networking.SizedReadCloser {
     molObjects := make([]object, len(ds3Objects))
 
     // Copy the important ds3 object contents into the master object list objects.
-    for i, obj := range(ds3Objects) {
+    for i, obj := range ds3Objects {
         molObjects[i] = object{obj.Key, obj.Size}
     }
 

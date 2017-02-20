@@ -16,20 +16,20 @@ type wrappedHttpResponse struct {
     rawResponse *http.Response
 }
 
-func (self wrappedHttpResponse) StatusCode() int {
-    return self.rawResponse.StatusCode
+func (wrappedHttpResponse *wrappedHttpResponse) StatusCode() int {
+    return wrappedHttpResponse.rawResponse.StatusCode
 }
 
-func (self wrappedHttpResponse) Body() io.ReadCloser {
-    return self.rawResponse.Body
+func (wrappedHttpResponse *wrappedHttpResponse) Body() io.ReadCloser {
+    return wrappedHttpResponse.rawResponse.Body
 }
 
-func (self wrappedHttpResponse) Header() *http.Header {
+func (wrappedHttpResponse *wrappedHttpResponse) Header() *http.Header {
     // The HTTP spec says headers keys are case insensitive, so we'll just
-    // tolower them before processing the response so we can always get the
+    // to lower them before processing the response so we can always get the
     // right thing.
     result := make(http.Header)
-    header := self.rawResponse.Header
+    header := wrappedHttpResponse.rawResponse.Header
     for k, v := range header {
         result[strings.ToLower(k)] = v
     }

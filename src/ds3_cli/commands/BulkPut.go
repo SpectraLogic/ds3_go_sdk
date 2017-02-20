@@ -24,7 +24,7 @@ func bulkPut(client *ds3.Client, args *Arguments) error {
 
     // Create object entities that we can query with for each file.
     objects := make([]models.Object, len(files))
-    for i, file := range(files) {
+    for i, file := range files {
         objects[i] = models.Object{Key: file.path, Size: file.size}
     }
 
@@ -74,7 +74,7 @@ func recursivelyListFiles(path string) ([]file, error) {
 
     // For each file or directory...
     var results []file
-    for _, info := range(infos) {
+    for _, info := range infos {
         // Build its relative path.
         name := path + "/" + info.Name()
 

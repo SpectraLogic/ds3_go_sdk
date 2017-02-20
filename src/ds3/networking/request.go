@@ -62,19 +62,19 @@ func BuildSizedReadCloser(contentBytes []byte) SizedReadCloser{
     }
 }
 
-func (self bytesSizedReadCloser) Read(b []byte) (int, error) {
-    return self.reader.Read(b)
+func (bytesSizedReadCloser *bytesSizedReadCloser) Read(b []byte) (int, error) {
+    return bytesSizedReadCloser.reader.Read(b)
 }
 
 func (bytesSizedReadCloser) Close() error {
     return nil
 }
 
-func (self bytesSizedReadCloser) Seek(offset int64, whence int) (int64, error) {
-    return self.reader.Seek(offset, whence)
+func (bytesSizedReadCloser *bytesSizedReadCloser) Seek(offset int64, whence int) (int64, error) {
+    return bytesSizedReadCloser.reader.Seek(offset, whence)
 }
 
-func (self bytesSizedReadCloser) Size() int64 {
-    return self.size
+func (bytesSizedReadCloser *bytesSizedReadCloser) Size() int64 {
+    return bytesSizedReadCloser.size
 }
 

@@ -20,11 +20,11 @@ func (DeleteBucketRequest) Verb() networking.HttpVerb {
     return networking.DELETE
 }
 
-func (self DeleteBucketRequest) Path() string {
-    return "/" + self.bucketName
+func (deleteBucketRequest *DeleteBucketRequest) Path() string {
+    return "/" + deleteBucketRequest.bucketName
 }
 
-func (self DeleteBucketRequest) QueryParams() *url.Values {
+func (deleteBucketRequest *DeleteBucketRequest) QueryParams() *url.Values {
     return new(url.Values)
 }
 

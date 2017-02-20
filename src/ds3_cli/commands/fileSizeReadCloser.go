@@ -15,23 +15,23 @@ func readFile(path string) (*fileSizeReadCloser, error) {
     return &fileSizeReadCloser{content}, nil
 }
 
-func (self fileSizeReadCloser) Size() int64 {
-    fi, err := self.file.Stat()
+func (fileSizeReadCloser *fileSizeReadCloser) Size() int64 {
+    fi, err := fileSizeReadCloser.file.Stat()
     if err != nil {
         panic(err)
     }
     return fi.Size()
 }
 
-func (self fileSizeReadCloser) Read(p []byte) (int, error) {
-    return self.file.Read(p)
+func (fileSizeReadCloser *fileSizeReadCloser) Read(p []byte) (int, error) {
+    return fileSizeReadCloser.file.Read(p)
 }
 
-func (self fileSizeReadCloser) Seek(offset int64, whence int) (int64, error) {
-    return self.file.Seek(offset, whence)
+func (fileSizeReadCloser *fileSizeReadCloser) Seek(offset int64, whence int) (int64, error) {
+    return fileSizeReadCloser.file.Seek(offset, whence)
 }
 
-func (self fileSizeReadCloser) Close() error {
-    return self.file.Close()
+func (fileSizeReadCloser *fileSizeReadCloser) Close() error {
+    return fileSizeReadCloser.file.Close()
 }
 

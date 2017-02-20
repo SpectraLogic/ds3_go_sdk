@@ -20,11 +20,11 @@ func (PutBucketRequest) Verb() networking.HttpVerb {
     return networking.PUT
 }
 
-func (self PutBucketRequest) Path() string {
-    return "/" + self.bucketName
+func (putBucketRequest *PutBucketRequest) Path() string {
+    return "/" + putBucketRequest.bucketName
 }
 
-func (self PutBucketRequest) QueryParams() *url.Values {
+func (putBucketRequest *PutBucketRequest) QueryParams() *url.Values {
     return new(url.Values)
 }
 

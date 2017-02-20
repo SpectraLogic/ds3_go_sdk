@@ -6,6 +6,7 @@ import (
     "errors"
     "net/http"
     "net/url"
+    "net"
 )
 
 type Network interface {
@@ -21,7 +22,8 @@ type ConnectionInfo struct {
 }
 
 type Credentials struct {
-    AccessId, Key string
+    AccessId string
+    Key string
 }
 
 type httpNetwork struct {
@@ -36,7 +38,7 @@ func NewHttpNetwork(connectionInfo *ConnectionInfo) Network {
     }
 }
 
-func (net httpNetwork) Invoke(request Request) (Response, error) {
+func (httpNetwork *httpNetwork) Invoke(request Request) (Response, error) {
     // Open up the content stream.
     stream := request.GetContentStream()
     if stream != nil {
@@ -44,7 +46,7 @@ func (net httpNetwork) Invoke(request Request) (Response, error) {
     }
 
     // Handle as many 307's as we're allowed.
-    for i := 0; i < net.connectionInfo.RedirectRetryCount; i++ {
+    for i := 0; i < httpNetwork.connectionInfo.RedirectRetryCount; i++ {
         // Seek to the beginning of the request stream.
         if stream != nil {
             if _, seekErr := stream.Seek(0, 0); seekErr != nil {
@@ -53,13 +55,13 @@ func (net httpNetwork) Invoke(request Request) (Response, error) {
         }
 
         // Build the request.
-        httpRequest, makeReqErr := buildHttpRequest(net.connectionInfo, request, stream)
+        httpRequest, makeReqErr := buildHttpRequest(httpNetwork.connectionInfo, request, stream)
         if makeReqErr != nil {
             return nil, makeReqErr
         }
 
         // Perform the request.
-        httpResponse, reqErr := net.transport.RoundTrip(httpRequest)
+        httpResponse, reqErr := httpNetwork.transport.RoundTrip(httpRequest)
         if reqErr != nil {
             return nil, reqErr
         }
@@ -73,7 +75,7 @@ func (net httpNetwork) Invoke(request Request) (Response, error) {
     // We had as many 307 redirects as we were allowed to use.
     return nil, errors.New(fmt.Sprintf(
         "The server is busy. Retried the max number of %d times.",
-        net.connectionInfo.RedirectRetryCount,
+        httpNetwork.connectionInfo.RedirectRetryCount,
     ))
 }
 
@@ -112,14 +114,14 @@ type proxiedReader struct {
     innerReader io.Reader
 }
 
-func (self proxiedReader) Read(p []byte) (n int, err error) {
-    return self.innerReader.Read(p)
+func (proxiedReader *proxiedReader) Read(p []byte) (n int, err error) {
+    return proxiedReader.innerReader.Read(p)
 }
 
 func buildUrl(conn *ConnectionInfo, request Request) *url.URL {
-    url := conn.Endpoint
-    url.Path = request.Path()
-    url.RawQuery = request.QueryParams().Encode()
-    return &url
+    httpUrl := conn.Endpoint
+    httpUrl.Path = request.Path()
+    httpUrl.RawQuery = request.QueryParams().Encode()
+    return &httpUrl
 }
 

@@ -19,8 +19,8 @@ func (BulkPutRequest) Verb() networking.HttpVerb {
     return networking.PUT
 }
 
-func (self BulkPutRequest) Path() string {
-    return "/_rest_/buckets/" + self.bucketName
+func (bulkPutRequest *BulkPutRequest) Path() string {
+    return "/_rest_/buckets/" + bulkPutRequest.bucketName
 }
 
 func (BulkPutRequest) QueryParams() *url.Values {
@@ -31,8 +31,8 @@ func (BulkPutRequest) Header() *http.Header {
     return &http.Header{}
 }
 
-func (self BulkPutRequest) GetContentStream() networking.SizedReadCloser {
-    return self.content
+func (bulkPutRequest *BulkPutRequest) GetContentStream() networking.SizedReadCloser {
+    return bulkPutRequest.content
 }
 
 

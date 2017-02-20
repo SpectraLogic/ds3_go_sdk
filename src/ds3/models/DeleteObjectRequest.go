@@ -18,11 +18,11 @@ func (DeleteObjectRequest) Verb() networking.HttpVerb {
     return networking.DELETE
 }
 
-func (self DeleteObjectRequest) Path() string {
-    return "/" + self.bucketName + "/" + self.objectName
+func (deleteObjectRequest *DeleteObjectRequest) Path() string {
+    return "/" + deleteObjectRequest.bucketName + "/" + deleteObjectRequest.objectName
 }
 
-func (self DeleteObjectRequest) QueryParams() *url.Values {
+func (deleteObjectRequest *DeleteObjectRequest) QueryParams() *url.Values {
     return new(url.Values)
 }
 

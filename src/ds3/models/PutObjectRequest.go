@@ -19,8 +19,8 @@ func (PutObjectRequest) Verb() networking.HttpVerb {
     return networking.PUT
 }
 
-func (self PutObjectRequest) Path() string {
-    return "/" + self.bucketName + "/" + self.objectName
+func (putObjectRequest *PutObjectRequest) Path() string {
+    return "/" + putObjectRequest.bucketName + "/" + putObjectRequest.objectName
 }
 
 func (PutObjectRequest) QueryParams() *url.Values {
@@ -31,7 +31,7 @@ func (PutObjectRequest) Header() *http.Header {
     return &http.Header{}
 }
 
-func (self PutObjectRequest) GetContentStream() networking.SizedReadCloser {
-    return self.content
+func (putObjectRequest *PutObjectRequest) GetContentStream() networking.SizedReadCloser {
+    return putObjectRequest.content
 }
 

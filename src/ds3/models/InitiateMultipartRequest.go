@@ -21,11 +21,11 @@ func (InitiateMultipartRequest) Verb() networking.HttpVerb {
     return networking.POST
 }
 
-func (self InitiateMultipartRequest) Path() string {
-    return "/" + self.bucketName + "/" + self.objectName
+func (initiateMultipartRequest *InitiateMultipartRequest) Path() string {
+    return "/" + initiateMultipartRequest.bucketName + "/" + initiateMultipartRequest.objectName
 }
 
-func (self InitiateMultipartRequest) QueryParams() *url.Values {
+func (initiateMultipartRequest *InitiateMultipartRequest) QueryParams() *url.Values {
     return &url.Values{"uploads": []string{""}}
 }
 

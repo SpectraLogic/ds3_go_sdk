@@ -23,12 +23,12 @@ func (ListPartsRequest) Verb() networking.HttpVerb {
     return networking.GET
 }
 
-func (self ListPartsRequest) Path() string {
-    return "/" + self.bucketName + "/" + self.objectName
+func (listPartsRequest *ListPartsRequest) Path() string {
+    return "/" + listPartsRequest.bucketName + "/" + listPartsRequest.objectName
 }
 
-func (self ListPartsRequest) QueryParams() *url.Values {
-    return &url.Values{"uploadId": []string{self.uploadId}}
+func (listPartsRequest *ListPartsRequest) QueryParams() *url.Values {
+    return &url.Values{"uploadId": []string{listPartsRequest.uploadId}}
 }
 
 func (ListPartsRequest) Header() *http.Header {

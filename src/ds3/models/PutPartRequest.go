@@ -27,14 +27,14 @@ func (PutPartRequest) Verb() networking.HttpVerb {
     return networking.PUT
 }
 
-func (self PutPartRequest) Path() string {
-    return "/" + self.bucketName + "/" + self.objectName
+func (putPartRequest *PutPartRequest) Path() string {
+    return "/" + putPartRequest.bucketName + "/" + putPartRequest.objectName
 }
 
-func (self PutPartRequest) QueryParams() *url.Values {
+func (putPartRequest *PutPartRequest) QueryParams() *url.Values {
     return &url.Values{
-        "partNumber": []string{strconv.Itoa(self.partNumber)},
-        "uploadId": []string{self.uploadId},
+        "partNumber": []string{strconv.Itoa(putPartRequest.partNumber)},
+        "uploadId": []string{putPartRequest.uploadId},
     }
 }
 
@@ -42,7 +42,7 @@ func (PutPartRequest) Header() *http.Header {
     return &http.Header{}
 }
 
-func (self PutPartRequest) GetContentStream() networking.SizedReadCloser {
-    return self.content
+func (putPartRequest *PutPartRequest) GetContentStream() networking.SizedReadCloser {
+    return putPartRequest.content
 }
 
