@@ -35,7 +35,7 @@ func getBucketObjects(client *ds3.Client, args *Arguments) ([]models.Object, err
         }
 
         // Output the results.
-        for _, obj := range(response.Contents) {
+        for _, obj := range response.Contents {
             results = append(results, obj)
         }
 

@@ -6,7 +6,7 @@ import (
     "testing"
     "net/url"
     "net/http"
-    "ds3/net"
+    "ds3/networking"
 )
 
 func mockedClient(t *testing.T) mockedClientWithTest {
@@ -14,7 +14,7 @@ func mockedClient(t *testing.T) mockedClientWithTest {
 }
 
 type mockedClientWithTest interface {
-    Expecting(verb net.HttpVerb, path string, queryParams *url.Values, request *string) mockedClientWithExpectation
+    Expecting(verb networking.HttpVerb, path string, queryParams *url.Values, request *string) mockedClientWithExpectation
 }
 
 type mockedClientWithExpectation interface {
@@ -26,7 +26,7 @@ type mockedNet struct {
     t *testing.T
 
     // Expected data to validate.
-    verb net.HttpVerb
+    verb networking.HttpVerb
     path string
     queryParams *url.Values
     request *string
@@ -37,7 +37,7 @@ type mockedNet struct {
     headers *http.Header
 }
 
-func (self *mockedNet) Expecting(verb net.HttpVerb, path string, queryParams *url.Values, request *string) mockedClientWithExpectation {
+func (self *mockedNet) Expecting(verb networking.HttpVerb, path string, queryParams *url.Values, request *string) mockedClientWithExpectation {
     self.verb = verb
     self.path = path
     self.queryParams = queryParams
@@ -52,7 +52,7 @@ func (self *mockedNet) Returning(statusCode int, response string, headers *http.
     return &Client{self}
 }
 
-func (self *mockedNet) Invoke(request net.Request) (net.Response, error) {
+func (self *mockedNet) Invoke(request networking.Request) (networking.Response, error) {
     // Verify the verb.
     verb := request.Verb()
     if verb != self.verb {
@@ -101,7 +101,7 @@ func (self *mockedNet) StatusCode() int {
 }
 
 func (self *mockedNet) Body() io.ReadCloser {
-    return net.BuildSizedReadCloser([]byte(self.response))
+    return networking.BuildSizedReadCloser([]byte(self.response))
 }
 
 func (self *mockedNet) Header() *http.Header {

@@ -2,7 +2,7 @@ package models
 
 import (
     "net/http"
-    "ds3/net"
+    "ds3/networking"
 )
 
 type GetBucketResponse struct {
@@ -17,7 +17,7 @@ type GetBucketResponse struct {
     Prefix string
 }
 
-func NewGetBucketResponse(response net.Response) (*GetBucketResponse, error) {
+func NewGetBucketResponse(response networking.Response) (*GetBucketResponse, error) {
     var body GetBucketResponse
     if err := readResponseBody(response, http.StatusOK, &body); err != nil {
         return nil, err

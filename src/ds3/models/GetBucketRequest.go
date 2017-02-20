@@ -4,7 +4,7 @@ import (
     "net/url"
     "net/http"
     "strconv"
-    "ds3/net"
+    "ds3/networking"
 )
 
 type GetBucketRequest struct {
@@ -35,8 +35,8 @@ func (self *GetBucketRequest) WithMaxKeys(maxKeys int) *GetBucketRequest {
     return self
 }
 
-func (GetBucketRequest) Verb() net.HttpVerb {
-    return net.GET
+func (GetBucketRequest) Verb() networking.HttpVerb {
+    return networking.GET
 }
 
 func (self GetBucketRequest) Path() string {
@@ -61,7 +61,7 @@ func (GetBucketRequest) Header() *http.Header {
     return &http.Header{}
 }
 
-func (GetBucketRequest) GetContentStream() net.SizedReadCloser {
+func (GetBucketRequest) GetContentStream() networking.SizedReadCloser {
     return nil
 }
 

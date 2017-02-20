@@ -6,8 +6,8 @@ import (
     "net/url"
     "net/http"
     "io/ioutil"
-    "ds3/net"
     "ds3/models"
+    "ds3/networking"
 )
 
 func TestGetService(t *testing.T) {
@@ -41,7 +41,7 @@ func TestGetService(t *testing.T) {
 
     // Create and run the mocked client.
     response, err := mockedClient(t).
-        Expecting(net.GET, "/", &url.Values{}, nil).
+        Expecting(networking.GET, "/", &url.Values{}, nil).
         Returning(200, stringResponse, nil).
         GetService(models.NewGetServiceRequest())
 
@@ -76,7 +76,7 @@ func TestGetService(t *testing.T) {
 func TestGetBadService(t *testing.T) {
     // Create and run the mocked client.
     response, err := mockedClient(t).
-        Expecting(net.GET, "/", &url.Values{}, nil).
+        Expecting(networking.GET, "/", &url.Values{}, nil).
         Returning(400, "", nil).
         GetService(models.NewGetServiceRequest())
 
@@ -117,7 +117,7 @@ func TestGetBucket(t *testing.T) {
 
     // Create and run the mocked client.
     response, err := mockedClient(t).
-        Expecting(net.GET, "/remoteTest16", &url.Values{}, nil).
+        Expecting(networking.GET, "/remoteTest16", &url.Values{}, nil).
         Returning(200, stringResponse, nil).
         GetBucket(models.NewGetBucketRequest("remoteTest16"))
 
@@ -178,7 +178,7 @@ func TestGetBucket(t *testing.T) {
 func TestPutBucket(t *testing.T) {
     // Create and run the mocked client.
     response, err := mockedClient(t).
-        Expecting(net.PUT, "/bucketName", &url.Values{}, nil).
+        Expecting(networking.PUT, "/bucketName", &url.Values{}, nil).
         Returning(200, "", nil).
         PutBucket(models.NewPutBucketRequest("bucketName"))
 
@@ -196,7 +196,7 @@ func TestPutBucket(t *testing.T) {
 func TestDeleteBucket(t *testing.T) {
     // Create and run the mocked client.
     response, err := mockedClient(t).
-        Expecting(net.DELETE, "/bucketName", &url.Values{}, nil).
+        Expecting(networking.DELETE, "/bucketName", &url.Values{}, nil).
         Returning(204, "", nil).
         DeleteBucket(models.NewDeleteBucketRequest("bucketName"))
 
@@ -214,7 +214,7 @@ func TestDeleteBucket(t *testing.T) {
 func TestDeleteObject(t *testing.T) {
     // Create and run the mocked client.
     response, err := mockedClient(t).
-        Expecting(net.DELETE, "/bucketName/my/file.txt", &url.Values{}, nil).
+        Expecting(networking.DELETE, "/bucketName/my/file.txt", &url.Values{}, nil).
         Returning(204, "", nil).
         DeleteObject(models.NewDeleteObjectRequest("bucketName", "my/file.txt"))
 
@@ -232,7 +232,7 @@ func TestDeleteObject(t *testing.T) {
 func TestGetBadBucket(t *testing.T) {
     // Create and run the mocked client.
     response, err := mockedClient(t).
-        Expecting(net.GET, "/remoteTest16", &url.Values{}, nil).
+        Expecting(networking.GET, "/remoteTest16", &url.Values{}, nil).
         Returning(400, "", nil).
         GetBucket(models.NewGetBucketRequest("remoteTest16"))
 
@@ -258,7 +258,7 @@ func TestGetObject(t *testing.T) {
 
     // Create and run the mocked client.
     response, err := mockedClient(t).
-        Expecting(net.GET, "/bucketName/object", &url.Values{}, nil).
+        Expecting(networking.GET, "/bucketName/object", &url.Values{}, nil).
         Returning(200, stringResponse, nil).
         GetObject(models.NewGetObjectRequest("bucketName", "object"))
 
@@ -290,7 +290,7 @@ func TestGetObjectRange(t *testing.T) {
     request := models.NewGetObjectRequest("bucketName", "object")
     request.WithRange(20, 179)
     response, err := mockedClient(t).
-        Expecting(net.GET, "/bucketName/object", &url.Values{}, nil).
+        Expecting(networking.GET, "/bucketName/object", &url.Values{}, nil).
         Returning(200, stringResponse, &http.Header{"Range": []string{"bytes=20-179"}}).
         GetObject(request)
 
@@ -320,12 +320,12 @@ func TestPutObject(t *testing.T) {
 
     // Create and run the mocked client.
     response, err := mockedClient(t).
-        Expecting(net.PUT, "/bucketName/object", &url.Values{}, nil).
+        Expecting(networking.PUT, "/bucketName/object", &url.Values{}, nil).
         Returning(200, "", nil).
         PutObject(models.NewPutObjectRequest(
             "bucketName",
             "object",
-            net.BuildSizedReadCloser([]byte(stringResponse)),
+        networking.BuildSizedReadCloser([]byte(stringResponse)),
         ))
 
     // Check the error result.
@@ -379,7 +379,7 @@ func runBulkTest(t *testing.T, operation string, callToTest bulkTest) {
     // Create and run the mocked client.
     client := mockedClient(t).
         Expecting(
-            net.PUT,
+        networking.PUT,
             "/_rest_/buckets/bucketName",
             &url.Values{"operation": []string{operation}},
             &stringRequest,
@@ -418,7 +418,7 @@ func TestInitiateMultipart(t *testing.T) {
     // Create and run the mocked client.
     qs := &url.Values{"uploads": []string{""}}
     response, err := mockedClient(t).
-        Expecting(net.POST, "/bucketName/object", qs, nil).
+        Expecting(networking.POST, "/bucketName/object", qs, nil).
         Returning(200, stringResponse, nil).
         InitiateMultipart(models.NewInitiateMultipartRequest(
             "bucketName",
@@ -457,14 +457,14 @@ func TestPutPart(t *testing.T) {
         "uploadId": []string{uploadId},
     }
     response, err := mockedClient(t).
-        Expecting(net.PUT, "/bucketName/object", qs, nil).
+        Expecting(networking.PUT, "/bucketName/object", qs, nil).
         Returning(200, "", &http.Header{"etag": []string{"\"" + etag + "\""}}).
         PutPart(models.NewPutPartRequest(
             "bucketName",
             "object",
             partNumber,
             uploadId,
-            net.BuildSizedReadCloser([]byte(content)),
+            networking.BuildSizedReadCloser([]byte(content)),
         ))
 
     // Check the error result.
@@ -495,7 +495,7 @@ func TestCompleteMultipart(t *testing.T) {
         "uploadId": []string{uploadId},
     }
     response, err := mockedClient(t).
-        Expecting(net.POST, "/bucketName/object", qs, &expectedRequest).
+        Expecting(networking.POST, "/bucketName/object", qs, &expectedRequest).
         Returning(200, expectedResponse, &http.Header{"etag": []string{etag}}).
         CompleteMultipart(models.NewCompleteMultipartRequest(
             bucket,

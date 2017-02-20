@@ -3,7 +3,7 @@ package models
 import (
     "net/url"
     "net/http"
-    "ds3/net"
+    "ds3/networking"
 )
 
 type DeleteBucketRequest struct {
@@ -16,8 +16,8 @@ func NewDeleteBucketRequest(bucketName string) *DeleteBucketRequest {
     }
 }
 
-func (DeleteBucketRequest) Verb() net.HttpVerb {
-    return net.DELETE
+func (DeleteBucketRequest) Verb() networking.HttpVerb {
+    return networking.DELETE
 }
 
 func (self DeleteBucketRequest) Path() string {
@@ -32,7 +32,7 @@ func (DeleteBucketRequest) Header() *http.Header {
     return &http.Header{}
 }
 
-func (DeleteBucketRequest) GetContentStream() net.SizedReadCloser {
+func (DeleteBucketRequest) GetContentStream() networking.SizedReadCloser {
     return nil
 }
 

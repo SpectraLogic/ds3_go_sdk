@@ -4,7 +4,7 @@ import (
     "fmt"
     "net/url"
     "net/http"
-    "ds3/net"
+    "ds3/networking"
 )
 
 type GetObjectRequest struct {
@@ -25,8 +25,8 @@ func (self *GetObjectRequest) WithRange(start, end int) *GetObjectRequest {
     return self
 }
 
-func (GetObjectRequest) Verb() net.HttpVerb {
-    return net.GET
+func (GetObjectRequest) Verb() networking.HttpVerb {
+    return networking.GET
 }
 
 func (self GetObjectRequest) Path() string {
@@ -46,7 +46,7 @@ func (self GetObjectRequest) Header() *http.Header {
     }
 }
 
-func (GetObjectRequest) GetContentStream() net.SizedReadCloser {
+func (GetObjectRequest) GetContentStream() networking.SizedReadCloser {
     return nil
 }
 

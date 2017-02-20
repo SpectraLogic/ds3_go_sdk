@@ -3,20 +3,20 @@ package models
 import (
     "net/url"
     "net/http"
-    "ds3/net"
+    "ds3/networking"
 )
 
 type PutObjectRequest struct {
     bucketName, objectName string
-    content net.SizedReadCloser
+    content networking.SizedReadCloser
 }
 
-func NewPutObjectRequest(bucketName, objectName string, content net.SizedReadCloser) *PutObjectRequest {
+func NewPutObjectRequest(bucketName, objectName string, content networking.SizedReadCloser) *PutObjectRequest {
     return &PutObjectRequest{bucketName, objectName, content}
 }
 
-func (PutObjectRequest) Verb() net.HttpVerb {
-    return net.PUT
+func (PutObjectRequest) Verb() networking.HttpVerb {
+    return networking.PUT
 }
 
 func (self PutObjectRequest) Path() string {
@@ -31,7 +31,7 @@ func (PutObjectRequest) Header() *http.Header {
     return &http.Header{}
 }
 
-func (self PutObjectRequest) GetContentStream() net.SizedReadCloser {
+func (self PutObjectRequest) GetContentStream() networking.SizedReadCloser {
     return self.content
 }
 

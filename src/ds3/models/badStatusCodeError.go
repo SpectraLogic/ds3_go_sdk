@@ -2,7 +2,7 @@ package models
 
 import (
     "fmt"
-    "ds3/net"
+    "ds3/networking"
 )
 
 type BadStatusCodeError struct {
@@ -18,7 +18,7 @@ type Error struct {
     RequestId string
 }
 
-func buildBadStatusCodeError(response net.Response, expectedStatusCode int) *BadStatusCodeError {
+func buildBadStatusCodeError(response networking.Response, expectedStatusCode int) *BadStatusCodeError {
     var errorBody Error
     var errorBodyPtr *Error
 

@@ -3,7 +3,7 @@ package models
 import (
     "net/url"
     "net/http"
-    "ds3/net"
+    "ds3/networking"
 )
 
 type ListPartsRequest struct {
@@ -19,8 +19,8 @@ func NewListPartsRequest(bucketName, objectName, uploadId string) *ListPartsRequ
     }
 }
 
-func (ListPartsRequest) Verb() net.HttpVerb {
-    return net.GET
+func (ListPartsRequest) Verb() networking.HttpVerb {
+    return networking.GET
 }
 
 func (self ListPartsRequest) Path() string {
@@ -35,7 +35,7 @@ func (ListPartsRequest) Header() *http.Header {
     return &http.Header{}
 }
 
-func (ListPartsRequest) GetContentStream() net.SizedReadCloser {
+func (ListPartsRequest) GetContentStream() networking.SizedReadCloser {
     return nil
 }
 

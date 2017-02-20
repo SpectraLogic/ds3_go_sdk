@@ -3,7 +3,7 @@ package models
 import (
     "net/url"
     "net/http"
-    "ds3/net"
+    "ds3/networking"
 )
 
 type InitiateMultipartRequest struct {
@@ -17,8 +17,8 @@ func NewInitiateMultipartRequest(bucketName, objectName string) *InitiateMultipa
     }
 }
 
-func (InitiateMultipartRequest) Verb() net.HttpVerb {
-    return net.POST
+func (InitiateMultipartRequest) Verb() networking.HttpVerb {
+    return networking.POST
 }
 
 func (self InitiateMultipartRequest) Path() string {
@@ -33,7 +33,7 @@ func (InitiateMultipartRequest) Header() *http.Header {
     return &http.Header{}
 }
 
-func (InitiateMultipartRequest) GetContentStream() net.SizedReadCloser {
+func (InitiateMultipartRequest) GetContentStream() networking.SizedReadCloser {
     return nil
 }
 
