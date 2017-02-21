@@ -7,10 +7,11 @@ import (
 )
 
 type DeleteObjectRequest struct {
-    bucketName, objectName string
+    bucketName string
+    objectName string
 }
 
-func NewDeleteObjectRequest(bucketName, objectName string) *DeleteObjectRequest {
+func NewDeleteObjectRequest(bucketName string, objectName string) *DeleteObjectRequest {
     return &DeleteObjectRequest{bucketName, objectName}
 }
 

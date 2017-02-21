@@ -7,7 +7,7 @@ import (
     "ds3/networking"
 )
 
-func checkStatusCode(response networking.Response, expectedStatusCode int) error {
+func checkStatusCode(response networking.Ds3Response, expectedStatusCode int) error {
     if response.StatusCode() == expectedStatusCode {
         return nil
     } else {
@@ -15,13 +15,13 @@ func checkStatusCode(response networking.Response, expectedStatusCode int) error
     }
 }
 
-func readResponseBody(response networking.Response, expectedStatusCode int, parsedBody interface{}) error {
+func readResponseBody(ds3Response networking.Ds3Response, expectedStatusCode int, parsedBody interface{}) error {
     // Clean up the response body.
-    body := response.Body()
+    body := ds3Response.Body()
     defer body.Close()
 
     // Check the status code.
-    if err := checkStatusCode(response, expectedStatusCode); err != nil {
+    if err := checkStatusCode(ds3Response, expectedStatusCode); err != nil {
         return err
     }
 

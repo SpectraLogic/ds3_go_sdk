@@ -7,8 +7,8 @@ import (
 
 type PutBucketResponse struct {}
 
-func NewPutBucketResponse(response networking.Response) (*PutBucketResponse, error) {
-    if err := checkStatusCode(response, http.StatusOK); err != nil {
+func NewPutBucketResponse(ds3Response networking.Ds3Response) (*PutBucketResponse, error) {
+    if err := checkStatusCode(ds3Response, http.StatusOK); err != nil {
         return nil, err
     } else {
         return &PutBucketResponse{}, nil

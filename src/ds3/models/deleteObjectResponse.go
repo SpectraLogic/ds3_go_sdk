@@ -7,8 +7,8 @@ import (
 
 type DeleteObjectResponse struct {}
 
-func NewDeleteObjectResponse(response networking.Response) (*DeleteObjectResponse, error) {
-    if err := checkStatusCode(response, http.StatusNoContent); err != nil {
+func NewDeleteObjectResponse(ds3Response networking.Ds3Response) (*DeleteObjectResponse, error) {
+    if err := checkStatusCode(ds3Response, http.StatusNoContent); err != nil {
         return nil, err
     } else {
         return &DeleteObjectResponse{}, nil

@@ -26,9 +26,9 @@ type UploadedPart struct {
     Size int64
 }
 
-func NewListPartsResponse(response networking.Response) (*ListPartsResponse, error) {
+func NewListPartsResponse(ds3Response networking.Ds3Response) (*ListPartsResponse, error) {
     var body ListPartsResponse
-    if err := readResponseBody(response, http.StatusOK, &body); err != nil {
+    if err := readResponseBody(ds3Response, http.StatusOK, &body); err != nil {
         return nil, err
     }
     return &body, nil

@@ -7,11 +7,12 @@ import (
 )
 
 type PutObjectRequest struct {
-    bucketName, objectName string
+    bucketName string
+    objectName string
     content networking.SizedReadCloser
 }
 
-func NewPutObjectRequest(bucketName, objectName string, content networking.SizedReadCloser) *PutObjectRequest {
+func NewPutObjectRequest(bucketName string, objectName string, content networking.SizedReadCloser) *PutObjectRequest {
     return &PutObjectRequest{bucketName, objectName, content}
 }
 

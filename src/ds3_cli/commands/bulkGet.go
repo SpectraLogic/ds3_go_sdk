@@ -28,11 +28,11 @@ func bulkGet(client *ds3.Client, args *Arguments) error {
     }
 
     // Handle the responses in parallel
-    return handleBulkResponse(response.Objects, buildFileGetter(client, args.Bucket))
+    return handleBulkResponse(response.Objects, buildBulkHandler(client, args.Bucket))
 }
 
 // Returns a function that gets an object from a bulk get.
-func buildFileGetter(client *ds3.Client, bucketName string) bulkHandler {
+func buildBulkHandler(client *ds3.Client, bucketName string) bulkHandler {
     return func(obj models.Object) error {
         // Perform the request.
         response, requestErr := client.GetObject(models.NewGetObjectRequest(bucketName, obj.Key))

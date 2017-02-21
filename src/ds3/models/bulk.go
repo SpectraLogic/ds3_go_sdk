@@ -45,10 +45,10 @@ func buildObjectListStream(ds3Objects []Object) networking.SizedReadCloser {
 }
 
 // Parses the DS3 specific bulk command response.
-func getObjectsFromBulkResponse(response networking.Response) ([][]Object, error) {
+func getObjectsFromBulkResponse(ds3Response networking.Ds3Response) ([][]Object, error) {
     // Parse the master object list response body.
     var mol masterobjectlist
-    if err := readResponseBody(response, http.StatusOK, &mol); err != nil {
+    if err := readResponseBody(ds3Response, http.StatusOK, &mol); err != nil {
         return nil, err
     }
 

@@ -18,12 +18,12 @@ type Error struct {
     RequestId string
 }
 
-func buildBadStatusCodeError(response networking.Response, expectedStatusCode int) *BadStatusCodeError {
+func buildBadStatusCodeError(ds3Response networking.Ds3Response, expectedStatusCode int) *BadStatusCodeError {
     var errorBody Error
     var errorBodyPtr *Error
 
     // Parse the body and if it worked then use the structure.
-    err := parseResponseBody(response.Body(), &errorBody)
+    err := parseResponseBody(ds3Response.Body(), &errorBody)
     if err == nil {
         errorBodyPtr = &errorBody
     }
@@ -31,7 +31,7 @@ func buildBadStatusCodeError(response networking.Response, expectedStatusCode in
     // Return the bad status code entity.
     return &BadStatusCodeError{
         expectedStatusCode,
-        response.StatusCode(),
+        ds3Response.StatusCode(),
         errorBodyPtr,
     }
 }

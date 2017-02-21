@@ -8,14 +8,16 @@ import (
 )
 
 type PutPartRequest struct {
-    bucketName, objectName string
+    bucketName string
+    objectName string
     partNumber int
     uploadId string
     content networking.SizedReadCloser
 }
 
 func NewPutPartRequest(
-    bucketName, objectName string,
+    bucketName string,
+    objectName string,
     partNumber int,
     uploadId string,
     content networking.SizedReadCloser,

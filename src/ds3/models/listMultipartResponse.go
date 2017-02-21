@@ -25,9 +25,9 @@ type Upload struct {
     Initiated string
 }
 
-func NewListMultipartResponse(response networking.Response) (*ListMultipartResponse, error) {
+func NewListMultipartResponse(ds3Response networking.Ds3Response) (*ListMultipartResponse, error) {
     var body ListMultipartResponse
-    if err := readResponseBody(response, http.StatusOK, &body); err != nil {
+    if err := readResponseBody(ds3Response, http.StatusOK, &body); err != nil {
         return nil, err
     }
     return &body, nil

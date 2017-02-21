@@ -52,21 +52,27 @@ func (mockedNet *mockedNet) Returning(statusCode int, response string, headers *
     return &Client{mockedNet}
 }
 
-func (mockedNet *mockedNet) Invoke(request networking.Request) (networking.Response, error) {
+func (mockedNet *mockedNet) Invoke(ds3Request networking.Ds3Request) (networking.Ds3Response, error) {
     // Verify the verb.
-    verb := request.Verb()
+    verb := ds3Request.Verb()
     if verb != mockedNet.verb {
-        mockedNet.t.Errorf("Expected verb '%s' but got '%s'.", mockedNet.verb.String(), verb.String())
+        actualVerb, err := verb.String()
+        if err != nil {
+            mockedNet.t.Error(err)
+        } else {
+            mockedVerb, _ := mockedNet.verb.String()
+            mockedNet.t.Errorf("Expected verb '%s' but got '%s'.", mockedVerb, actualVerb)
+        }
     }
 
     // Verify the path.
-    path := request.Path()
+    path := ds3Request.Path()
     if path != mockedNet.path {
         mockedNet.t.Errorf("Expected path '%s' but got '%s'.", mockedNet.path, path)
     }
 
     // Verify the query parameters.
-    actualQueryParams := request.QueryParams().Encode()
+    actualQueryParams := ds3Request.QueryParams().Encode()
     expectedQueryParams := mockedNet.queryParams.Encode()
     if actualQueryParams != expectedQueryParams {
         mockedNet.t.Errorf(
@@ -78,7 +84,7 @@ func (mockedNet *mockedNet) Invoke(request networking.Request) (networking.Respo
 
     // Verify the request contents.
     if mockedNet.request != nil {
-        contentStream := request.GetContentStream()
+        contentStream := ds3Request.GetContentStream()
         if contentStream == nil {
             mockedNet.t.Error("Expected a non-nil content stream, but got nil.")
         } else {
@@ -92,7 +98,7 @@ func (mockedNet *mockedNet) Invoke(request networking.Request) (networking.Respo
         }
     }
 
-    // Return the net.Response interface, which we just made mockedNet also implement.
+    // Return the net.Ds3Response interface, which we just made mockedNet also implement.
     return mockedNet, nil
 }
 

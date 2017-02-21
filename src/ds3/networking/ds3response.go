@@ -6,7 +6,7 @@ import (
     "net/http"
 )
 
-type Response interface {
+type Ds3Response interface {
     StatusCode() int
     Body() io.ReadCloser
     Header() *http.Header

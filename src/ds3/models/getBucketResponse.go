@@ -17,9 +17,9 @@ type GetBucketResponse struct {
     Prefix string
 }
 
-func NewGetBucketResponse(response networking.Response) (*GetBucketResponse, error) {
+func NewGetBucketResponse(ds3Response networking.Ds3Response) (*GetBucketResponse, error) {
     var body GetBucketResponse
-    if err := readResponseBody(response, http.StatusOK, &body); err != nil {
+    if err := readResponseBody(ds3Response, http.StatusOK, &body); err != nil {
         return nil, err
     }
     return &body, nil

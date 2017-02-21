@@ -7,11 +7,12 @@ import (
 )
 
 type ListPartsRequest struct {
-    bucketName, objectName string
+    bucketName string
+    objectName string
     uploadId string
 }
 
-func NewListPartsRequest(bucketName, objectName, uploadId string) *ListPartsRequest {
+func NewListPartsRequest(bucketName string, objectName string, uploadId string) *ListPartsRequest {
     return &ListPartsRequest{
         bucketName: bucketName,
         objectName: objectName,

@@ -7,10 +7,11 @@ import (
 )
 
 type InitiateMultipartRequest struct {
-    bucketName, objectName string
+    bucketName string
+    objectName string
 }
 
-func NewInitiateMultipartRequest(bucketName, objectName string) *InitiateMultipartRequest {
+func NewInitiateMultipartRequest(bucketName string, objectName string) *InitiateMultipartRequest {
     return &InitiateMultipartRequest{
         bucketName: bucketName,
         objectName: objectName,

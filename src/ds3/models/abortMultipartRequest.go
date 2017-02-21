@@ -7,11 +7,12 @@ import (
 )
 
 type AbortMultipartRequest struct {
-    bucketName, objectName string
+    bucketName string
+    objectName string
     uploadId string
 }
 
-func NewAbortMultipartRequest(bucketName, objectName, uploadId string) *AbortMultipartRequest {
+func NewAbortMultipartRequest(bucketName string, objectName string, uploadId string) *AbortMultipartRequest {
     return &AbortMultipartRequest{
         bucketName: bucketName,
         objectName: objectName,

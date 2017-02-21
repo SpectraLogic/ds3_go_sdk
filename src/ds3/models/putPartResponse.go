@@ -10,11 +10,11 @@ type PutPartResponse struct {
     ETag string
 }
 
-func NewPutPartResponse(response networking.Response) (*PutPartResponse, error) {
-    if err := checkStatusCode(response, http.StatusOK); err != nil {
+func NewPutPartResponse(ds3Response networking.Ds3Response) (*PutPartResponse, error) {
+    if err := checkStatusCode(ds3Response, http.StatusOK); err != nil {
         return nil, err
     } else {
-        etags := (*response.Header())["etag"]
+        etags := (*ds3Response.Header())["etag"]
         var etag string
         if len(etags) > 0 {
             etag = strings.Trim(etags[0], "\"")

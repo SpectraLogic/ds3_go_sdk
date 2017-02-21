@@ -8,7 +8,8 @@ import (
 )
 
 type CompleteMultipartRequest struct {
-    bucketName, objectName string
+    bucketName string
+    objectName string
     uploadId string
     parts []Part
 }
@@ -22,7 +23,7 @@ type Part struct {
     ETag string
 }
 
-func NewCompleteMultipartRequest(bucketName, objectName, uploadId string, parts []Part) *CompleteMultipartRequest {
+func NewCompleteMultipartRequest(bucketName string, objectName string, uploadId string, parts []Part) *CompleteMultipartRequest {
     return &CompleteMultipartRequest{
         bucketName: bucketName,
         objectName: objectName,

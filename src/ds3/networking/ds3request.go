@@ -6,9 +6,10 @@ import (
     "io"
     "net/url"
     "fmt"
+    "errors"
 )
 
-type Request interface {
+type Ds3Request interface {
     Verb() HttpVerb
     Path() string
     QueryParams() *url.Values
@@ -37,15 +38,15 @@ const(
     PATCH
 )
 
-func (verb HttpVerb) String() string {
+func (verb HttpVerb) String() (string, error) {
     switch verb {
-        case GET: return "GET"
-        case PUT: return "PUT"
-        case POST: return "POST"
-        case DELETE: return "DELETE"
-        case HEAD: return "HEAD"
-        case PATCH: return "PATCH"
-        default: panic(fmt.Sprintf("Invalid HttpVerb represented by: %d", verb))
+        case GET: return "GET", nil
+        case PUT: return "PUT", nil
+        case POST: return "POST", nil
+        case DELETE: return "DELETE", nil
+        case HEAD: return "HEAD", nil
+        case PATCH: return "PATCH", nil
+        default: return "", errors.New(fmt.Sprintf("Invalid HttpVerb represented by: %d", verb))
     }
 }
 

@@ -6,11 +6,10 @@ import (
     "errors"
     "net/http"
     "net/url"
-    "net"
 )
 
 type Network interface {
-    Invoke(request Request) (Response, error)
+    Invoke(ds3Request Ds3Request) (Ds3Response, error)
 }
 
 type ConnectionInfo struct {
@@ -38,9 +37,9 @@ func NewHttpNetwork(connectionInfo *ConnectionInfo) Network {
     }
 }
 
-func (httpNetwork *httpNetwork) Invoke(request Request) (Response, error) {
+func (httpNetwork *httpNetwork) Invoke(ds3Request Ds3Request) (Ds3Response, error) {
     // Open up the content stream.
-    stream := request.GetContentStream()
+    stream := ds3Request.GetContentStream()
     if stream != nil {
         defer stream.Close()
     }
@@ -55,7 +54,7 @@ func (httpNetwork *httpNetwork) Invoke(request Request) (Response, error) {
         }
 
         // Build the request.
-        httpRequest, makeReqErr := buildHttpRequest(httpNetwork.connectionInfo, request, stream)
+        httpRequest, makeReqErr := buildHttpRequest(httpNetwork.connectionInfo, ds3Request, stream)
         if makeReqErr != nil {
             return nil, makeReqErr
         }
@@ -79,16 +78,21 @@ func (httpNetwork *httpNetwork) Invoke(request Request) (Response, error) {
     ))
 }
 
-func buildHttpRequest(conn *ConnectionInfo, request Request, stream SizedReadCloser) (*http.Request, error) {
+func buildHttpRequest(conn *ConnectionInfo, ds3Request Ds3Request, stream SizedReadCloser) (*http.Request, error) {
     var reader io.Reader
     if stream != nil {
-        reader = proxiedReader{stream}
+        reader = &proxiedReader{stream}
     }
 
     // Build the basic request with the verb, url, and payload (if any).
+    verb, verbErr := ds3Request.Verb().String()
+    if verbErr != nil {
+        return nil, verbErr
+    }
+
     httpRequest, err := http.NewRequest(
-        request.Verb().String(),
-        buildUrl(conn, request).String(),
+        verb,
+        buildUrl(conn, ds3Request).String(),
         reader,
     )
     if err != nil {
@@ -101,7 +105,10 @@ func buildHttpRequest(conn *ConnectionInfo, request Request, stream SizedReadClo
     }
 
     // Set the request headers such as authorization and date.
-    setRequestHeaders(httpRequest, conn.Creds, request)
+    headersErr := setRequestHeaders(httpRequest, conn.Creds, ds3Request)
+    if headersErr != nil {
+        return nil, headersErr
+    }
 
     return httpRequest, nil
 }
@@ -118,10 +125,10 @@ func (proxiedReader *proxiedReader) Read(p []byte) (n int, err error) {
     return proxiedReader.innerReader.Read(p)
 }
 
-func buildUrl(conn *ConnectionInfo, request Request) *url.URL {
+func buildUrl(conn *ConnectionInfo, ds3Request Ds3Request) *url.URL {
     httpUrl := conn.Endpoint
-    httpUrl.Path = request.Path()
-    httpUrl.RawQuery = request.QueryParams().Encode()
+    httpUrl.Path = ds3Request.Path()
+    httpUrl.RawQuery = ds3Request.QueryParams().Encode()
     return &httpUrl
 }
 

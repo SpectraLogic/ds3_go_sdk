@@ -8,7 +8,8 @@ import (
 )
 
 type GetObjectRequest struct {
-    bucketName, objectName string
+    bucketName string
+    objectName string
     rangeHeader *rangeHeader
 }
 
@@ -16,7 +17,7 @@ type rangeHeader struct {
     start, end int
 }
 
-func NewGetObjectRequest(bucketName, objectName string) *GetObjectRequest {
+func NewGetObjectRequest(bucketName string, objectName string) *GetObjectRequest {
     return &GetObjectRequest{bucketName, objectName, nil}
 }
 
