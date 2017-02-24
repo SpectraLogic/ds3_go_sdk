@@ -15,8 +15,10 @@ type Network interface {
 type ConnectionInfo struct {
     Endpoint url.URL
     Creds Credentials
-
     Proxy *url.URL
+}
+
+type ConnectionPolicy struct {
     RedirectRetryCount int
 }
 
@@ -27,12 +29,14 @@ type Credentials struct {
 
 type httpNetwork struct {
     connectionInfo *ConnectionInfo
+    connectionPolicy *ConnectionPolicy
     transport *http.Transport
 }
 
-func NewHttpNetwork(connectionInfo *ConnectionInfo) Network {
+func NewHttpNetwork(connectionInfo *ConnectionInfo, connectionPolicy *ConnectionPolicy) Network {
     return &httpNetwork{
         connectionInfo,
+        connectionPolicy,
         &http.Transport{ Proxy: http.ProxyURL(connectionInfo.Proxy) },
     }
 }
@@ -45,7 +49,7 @@ func (httpNetwork *httpNetwork) Invoke(ds3Request Ds3Request) (Ds3Response, erro
     }
 
     // Handle as many 307's as we're allowed.
-    for i := 0; i < httpNetwork.connectionInfo.RedirectRetryCount; i++ {
+    for i := 0; i < httpNetwork.connectionPolicy.RedirectRetryCount; i++ {
         // Seek to the beginning of the request stream.
         if stream != nil {
             if _, seekErr := stream.Seek(0, 0); seekErr != nil {
@@ -74,7 +78,7 @@ func (httpNetwork *httpNetwork) Invoke(ds3Request Ds3Request) (Ds3Response, erro
     // We had as many 307 redirects as we were allowed to use.
     return nil, errors.New(fmt.Sprintf(
         "The server is busy. Retried the max number of %d times.",
-        httpNetwork.connectionInfo.RedirectRetryCount,
+        httpNetwork.connectionPolicy.RedirectRetryCount,
     ))
 }
 
