@@ -9,12 +9,12 @@ type Client struct {
     netLayer networking.Network
 }
 
-type Builder struct {
+type ClientBuilder struct {
     connectionInfo *networking.ConnectionInfo
 }
 
-func NewBuilder(endpoint *url.URL, creds networking.Credentials) *Builder {
-    return &Builder{&networking.ConnectionInfo{
+func NewClientBuilder(endpoint *url.URL, creds networking.Credentials) *ClientBuilder {
+    return &ClientBuilder{&networking.ConnectionInfo{
         Endpoint: *endpoint,
         Creds: creds,
         RedirectRetryCount: 5,
@@ -22,17 +22,17 @@ func NewBuilder(endpoint *url.URL, creds networking.Credentials) *Builder {
     }}
 }
 
-func (builder *Builder) WithProxy(proxy *url.URL) *Builder {
-    builder.connectionInfo.Proxy = proxy
-    return builder
+func (clientBuilder *ClientBuilder) WithProxy(proxy *url.URL) *ClientBuilder {
+    clientBuilder.connectionInfo.Proxy = proxy
+    return clientBuilder
 }
 
-func (builder *Builder) WithRedirectRetryCount(count int) *Builder {
-    builder.connectionInfo.RedirectRetryCount = count
-    return builder
+func (clientBuilder *ClientBuilder) WithRedirectRetryCount(count int) *ClientBuilder {
+    clientBuilder.connectionInfo.RedirectRetryCount = count
+    return clientBuilder
 }
 
-func (builder *Builder) Build() *Client {
-    return &Client{networking.NewHttpNetwork(builder.connectionInfo)}
+func (clientBuilder *ClientBuilder) BuildClient() *Client {
+    return &Client{networking.NewHttpNetwork(clientBuilder.connectionInfo)}
 }
 

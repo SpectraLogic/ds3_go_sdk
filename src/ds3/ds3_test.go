@@ -371,9 +371,9 @@ func runBulkTest(t *testing.T, operation string, callToTest bulkTest) {
     stringResponse := "<masterobjectlist><objects><object name='file2' size='1202'/><object name='file1' size='256'/><object name='file3' size='2523'/></objects></masterobjectlist>"
 
     inputObjects := []models.Object {
-        models.Object{ Key: "file1", Size: 256 },
-        models.Object{ Key: "file2", Size: 1202 },
-        models.Object{ Key: "file3", Size: 2523 },
+        {Key: "file1", Size: 256 },
+        {Key: "file2", Size: 1202 },
+        {Key: "file3", Size: 2523 },
     }
 
     // Create and run the mocked client.
@@ -502,8 +502,8 @@ func TestCompleteMultipart(t *testing.T) {
             key,
             uploadId,
             []models.Part{
-                models.Part{1, "7a112844c1a2327e617f530cb06dccf8"},
-                models.Part{2, "7162e29f4e40da7f521d0794b57770ba"},
+                {PartNumber: 1, ETag: "7a112844c1a2327e617f530cb06dccf8"},
+                {PartNumber: 2, ETag: "7162e29f4e40da7f521d0794b57770ba"},
             },
         ))
 

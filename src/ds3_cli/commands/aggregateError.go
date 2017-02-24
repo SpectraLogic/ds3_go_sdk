@@ -9,14 +9,14 @@ type aggregateError struct {
 }
 
 // Adds an error to the aggregate.
-func (self *aggregateError) Add(err error) {
-    self.errors = append(self.errors, err)
+func (aggregateError *aggregateError) Add(err error) {
+    aggregateError.errors = append(aggregateError.errors, err)
 }
 
 // Implements the error interface.
-func (self *aggregateError) Error() string {
+func (aggregateError *aggregateError) Error() string {
     var buffer bytes.Buffer
-    for _, err := range self.errors {
+    for _, err := range aggregateError.errors {
         buffer.WriteString(err.Error())
         buffer.WriteString("\n")
     }

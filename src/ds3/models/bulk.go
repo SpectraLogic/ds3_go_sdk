@@ -27,7 +27,7 @@ func buildObjectListStream(ds3Objects []Object) networking.SizedReadCloser {
     molObjects := make([]object, len(ds3Objects))
 
     // Copy the important ds3 object contents into the master object list objects.
-    for i, obj := range(ds3Objects) {
+    for i, obj := range ds3Objects {
         molObjects[i] = object{obj.Key, obj.Size}
     }
 
@@ -45,10 +45,10 @@ func buildObjectListStream(ds3Objects []Object) networking.SizedReadCloser {
 }
 
 // Parses the DS3 specific bulk command response.
-func getObjectsFromBulkResponse(response networking.Response) ([][]Object, error) {
+func getObjectsFromBulkResponse(ds3Response networking.Ds3Response) ([][]Object, error) {
     // Parse the master object list response body.
     var mol masterobjectlist
-    if err := readResponseBody(response, http.StatusOK, &mol); err != nil {
+    if err := readResponseBody(ds3Response, http.StatusOK, &mol); err != nil {
         return nil, err
     }
 

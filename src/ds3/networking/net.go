@@ -9,7 +9,7 @@ import (
 )
 
 type Network interface {
-    Invoke(request Request) (Response, error)
+    Invoke(ds3Request Ds3Request) (Ds3Response, error)
 }
 
 type ConnectionInfo struct {
@@ -21,7 +21,8 @@ type ConnectionInfo struct {
 }
 
 type Credentials struct {
-    AccessId, Key string
+    AccessId string
+    Key string
 }
 
 type httpNetwork struct {
@@ -36,15 +37,15 @@ func NewHttpNetwork(connectionInfo *ConnectionInfo) Network {
     }
 }
 
-func (net httpNetwork) Invoke(request Request) (Response, error) {
+func (httpNetwork *httpNetwork) Invoke(ds3Request Ds3Request) (Ds3Response, error) {
     // Open up the content stream.
-    stream := request.GetContentStream()
+    stream := ds3Request.GetContentStream()
     if stream != nil {
         defer stream.Close()
     }
 
     // Handle as many 307's as we're allowed.
-    for i := 0; i < net.connectionInfo.RedirectRetryCount; i++ {
+    for i := 0; i < httpNetwork.connectionInfo.RedirectRetryCount; i++ {
         // Seek to the beginning of the request stream.
         if stream != nil {
             if _, seekErr := stream.Seek(0, 0); seekErr != nil {
@@ -53,13 +54,13 @@ func (net httpNetwork) Invoke(request Request) (Response, error) {
         }
 
         // Build the request.
-        httpRequest, makeReqErr := buildHttpRequest(net.connectionInfo, request, stream)
+        httpRequest, makeReqErr := buildHttpRequest(httpNetwork.connectionInfo, ds3Request, stream)
         if makeReqErr != nil {
             return nil, makeReqErr
         }
 
         // Perform the request.
-        httpResponse, reqErr := net.transport.RoundTrip(httpRequest)
+        httpResponse, reqErr := httpNetwork.transport.RoundTrip(httpRequest)
         if reqErr != nil {
             return nil, reqErr
         }
@@ -73,20 +74,25 @@ func (net httpNetwork) Invoke(request Request) (Response, error) {
     // We had as many 307 redirects as we were allowed to use.
     return nil, errors.New(fmt.Sprintf(
         "The server is busy. Retried the max number of %d times.",
-        net.connectionInfo.RedirectRetryCount,
+        httpNetwork.connectionInfo.RedirectRetryCount,
     ))
 }
 
-func buildHttpRequest(conn *ConnectionInfo, request Request, stream SizedReadCloser) (*http.Request, error) {
+func buildHttpRequest(conn *ConnectionInfo, ds3Request Ds3Request, stream SizedReadCloser) (*http.Request, error) {
     var reader io.Reader
     if stream != nil {
-        reader = proxiedReader{stream}
+        reader = &proxiedReader{stream}
     }
 
     // Build the basic request with the verb, url, and payload (if any).
+    verb, verbErr := ds3Request.Verb().String()
+    if verbErr != nil {
+        return nil, verbErr
+    }
+
     httpRequest, err := http.NewRequest(
-        request.Verb().String(),
-        buildUrl(conn, request).String(),
+        verb,
+        buildUrl(conn, ds3Request).String(),
         reader,
     )
     if err != nil {
@@ -99,7 +105,10 @@ func buildHttpRequest(conn *ConnectionInfo, request Request, stream SizedReadClo
     }
 
     // Set the request headers such as authorization and date.
-    setRequestHeaders(httpRequest, conn.Creds, request)
+    headersErr := setRequestHeaders(httpRequest, conn.Creds, ds3Request)
+    if headersErr != nil {
+        return nil, headersErr
+    }
 
     return httpRequest, nil
 }
@@ -112,14 +121,14 @@ type proxiedReader struct {
     innerReader io.Reader
 }
 
-func (self proxiedReader) Read(p []byte) (n int, err error) {
-    return self.innerReader.Read(p)
+func (proxiedReader *proxiedReader) Read(p []byte) (n int, err error) {
+    return proxiedReader.innerReader.Read(p)
 }
 
-func buildUrl(conn *ConnectionInfo, request Request) *url.URL {
-    url := conn.Endpoint
-    url.Path = request.Path()
-    url.RawQuery = request.QueryParams().Encode()
-    return &url
+func buildUrl(conn *ConnectionInfo, ds3Request Ds3Request) *url.URL {
+    httpUrl := conn.Endpoint
+    httpUrl.Path = ds3Request.Path()
+    httpUrl.RawQuery = ds3Request.QueryParams().Encode()
+    return &httpUrl
 }
 
