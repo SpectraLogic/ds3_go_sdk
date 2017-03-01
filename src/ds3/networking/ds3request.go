@@ -23,8 +23,7 @@ type Ds3Request interface {
 type SizedReadCloser interface {
     io.Reader
     io.Closer
-    io.Seeker
-    Size() int64
+    Size() (int64, error)
 }
 
 type HttpVerb int
@@ -75,7 +74,7 @@ func (bytesSizedReadCloser *bytesSizedReadCloser) Seek(offset int64, whence int)
     return bytesSizedReadCloser.reader.Seek(offset, whence)
 }
 
-func (bytesSizedReadCloser *bytesSizedReadCloser) Size() int64 {
-    return bytesSizedReadCloser.size
+func (bytesSizedReadCloser *bytesSizedReadCloser) Size() (int64, error) {
+    return bytesSizedReadCloser.size, nil
 }
 

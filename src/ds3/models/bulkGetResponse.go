@@ -8,8 +8,8 @@ type BulkGetResponse struct {
     Objects [][]Object
 }
 
-func NewBulkGetResponse(ds3Response networking.Ds3Response) (*BulkGetResponse, error) {
-    objects, err := getObjectsFromBulkResponse(ds3Response)
+func NewBulkGetResponse(webResponse networking.WebResponse) (*BulkGetResponse, error) {
+    objects, err := getObjectsFromBulkResponse(webResponse)
     return &BulkGetResponse{objects}, err
 }
 

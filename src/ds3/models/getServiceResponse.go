@@ -15,9 +15,9 @@ type Bucket struct {
     CreationDate string
 }
 
-func NewGetServiceResponse(ds3Response networking.Ds3Response) (*GetServiceResponse, error) {
+func NewGetServiceResponse(webResponse networking.WebResponse) (*GetServiceResponse, error) {
     var body GetServiceResponse
-    if err := readResponseBody(ds3Response, http.StatusOK, &body); err != nil {
+    if err := readResponseBody(webResponse, http.StatusOK, &body); err != nil {
         return nil, err
     }
     return &body, nil

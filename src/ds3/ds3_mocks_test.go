@@ -52,7 +52,7 @@ func (mockedNet *mockedNet) Returning(statusCode int, response string, headers *
     return &Client{mockedNet}
 }
 
-func (mockedNet *mockedNet) Invoke(ds3Request networking.Ds3Request) (networking.Ds3Response, error) {
+func (mockedNet *mockedNet) Invoke(ds3Request networking.Ds3Request) (networking.WebResponse, error) {
     // Verify the verb.
     verb := ds3Request.Verb()
     if verb != mockedNet.verb {
@@ -98,7 +98,7 @@ func (mockedNet *mockedNet) Invoke(ds3Request networking.Ds3Request) (networking
         }
     }
 
-    // Return the net.Ds3Response interface, which we just made mockedNet also implement.
+    // Return the net.WebResponse interface, which we just made mockedNet also implement.
     return mockedNet, nil
 }
 

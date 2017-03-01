@@ -13,9 +13,9 @@ type CompleteMultipartResponse struct {
     ETag string
 }
 
-func NewCompleteMultipartResponse(ds3Response networking.Ds3Response) (*CompleteMultipartResponse, error) {
+func NewCompleteMultipartResponse(webResponse networking.WebResponse) (*CompleteMultipartResponse, error) {
     var body CompleteMultipartResponse
-    if err := readResponseBody(ds3Response, http.StatusOK, &body); err != nil {
+    if err := readResponseBody(webResponse, http.StatusOK, &body); err != nil {
         return nil, err
     }
     body.ETag = strings.Trim(body.ETag, "\"")

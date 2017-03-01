@@ -33,12 +33,12 @@ func setRequestHeaders(httpRequest *http.Request, creds Credentials, ds3Request 
 }
 
 type signatureFields struct {
-    Verb string
-    ContentMd5 string
-    ContentType string
-    Date string
+    Verb                    string
+    ContentHash             string
+    ContentType             string
+    Date                    string
     CanonicalizedAmzHeaders string
-    Path string
+    Path                    string
 }
 
 func buildAuthHeaderValue(creds Credentials, fields signatureFields) string {
@@ -46,7 +46,7 @@ func buildAuthHeaderValue(creds Credentials, fields signatureFields) string {
     stringToSign := fmt.Sprintf(
         "%s\n%s\n%s\n%s\n%s%s",
         fields.Verb,
-        fields.ContentMd5,
+        fields.ContentHash,
         fields.ContentType,
         fields.Date,
         fields.CanonicalizedAmzHeaders,

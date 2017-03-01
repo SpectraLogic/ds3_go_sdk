@@ -10,10 +10,10 @@ type GetObjectResponse struct {
     Content io.ReadCloser
 }
 
-func NewGetObjectResponse(ds3Response networking.Ds3Response) (*GetObjectResponse, error) {
-    if err := checkStatusCode(ds3Response, http.StatusOK); err != nil {
+func NewGetObjectResponse(webResponse networking.WebResponse) (*GetObjectResponse, error) {
+    if err := checkStatusCode(webResponse, http.StatusOK); err != nil {
         return nil, err
     }
-    return &GetObjectResponse{ds3Response.Body()}, nil
+    return &GetObjectResponse{webResponse.Body()}, nil
 }
 

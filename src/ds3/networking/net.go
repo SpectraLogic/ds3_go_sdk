@@ -9,7 +9,7 @@ import (
 )
 
 type Network interface {
-    Invoke(ds3Request Ds3Request) (Ds3Response, error)
+    Invoke(ds3Request Ds3Request) (WebResponse, error)
 }
 
 type ConnectionInfo struct {
@@ -41,7 +41,7 @@ func NewHttpNetwork(connectionInfo *ConnectionInfo, connectionPolicy *Connection
     }
 }
 
-func (httpNetwork *httpNetwork) Invoke(ds3Request Ds3Request) (Ds3Response, error) {
+func (httpNetwork *httpNetwork) Invoke(ds3Request Ds3Request) (WebResponse, error) {
     // Open up the content stream.
     stream := ds3Request.GetContentStream()
     if stream != nil {
@@ -50,13 +50,6 @@ func (httpNetwork *httpNetwork) Invoke(ds3Request Ds3Request) (Ds3Response, erro
 
     // Handle as many 307's as we're allowed.
     for i := 0; i < httpNetwork.connectionPolicy.RedirectRetryCount; i++ {
-        // Seek to the beginning of the request stream.
-        if stream != nil {
-            if _, seekErr := stream.Seek(0, 0); seekErr != nil {
-                return nil, seekErr
-            }
-        }
-
         // Build the request.
         httpRequest, makeReqErr := buildHttpRequest(httpNetwork.connectionInfo, ds3Request, stream)
         if makeReqErr != nil {
@@ -105,7 +98,11 @@ func buildHttpRequest(conn *ConnectionInfo, ds3Request Ds3Request, stream SizedR
 
     // Set the content length if we have a payload.
     if stream != nil {
-        httpRequest.ContentLength = stream.Size()
+        var sizeErr error
+        httpRequest.ContentLength, sizeErr = stream.Size()
+        if sizeErr != nil {
+            return nil, sizeErr
+        }
     }
 
     // Set the request headers such as authorization and date.
