@@ -3,35 +3,36 @@ package commands
 import "os"
 
 // Implements the SizedReadCloser interface for a file.
-type fileSizeReadCloser struct {
+// Decorates an os.File and adds a Size function which determines the length of the file
+type fileWithSizeDecorator struct {
     file *os.File
 }
 
-func readFile(path string) (*fileSizeReadCloser, error) {
+func readFile(path string) (*fileWithSizeDecorator, error) {
     content, fileErr := os.Open(path)
     if fileErr != nil {
         return nil, fileErr
     }
-    return &fileSizeReadCloser{content}, nil
+    return &fileWithSizeDecorator{content}, nil
 }
 
-func (fileSizeReadCloser *fileSizeReadCloser) Size() int64 {
-    fi, err := fileSizeReadCloser.file.Stat()
+func (fileWithSizeDecorator *fileWithSizeDecorator) Size() (int64, error) {
+    fi, err := fileWithSizeDecorator.file.Stat()
     if err != nil {
-        panic(err)
+        return 0, err
     }
-    return fi.Size()
+    return fi.Size(), nil
 }
 
-func (fileSizeReadCloser *fileSizeReadCloser) Read(p []byte) (int, error) {
-    return fileSizeReadCloser.file.Read(p)
+func (fileWithSizeDecorator *fileWithSizeDecorator) Read(p []byte) (int, error) {
+    return fileWithSizeDecorator.file.Read(p)
 }
 
-func (fileSizeReadCloser *fileSizeReadCloser) Seek(offset int64, whence int) (int64, error) {
-    return fileSizeReadCloser.file.Seek(offset, whence)
+func (fileWithSizeDecorator *fileWithSizeDecorator) Seek(offset int64, whence int) (int64, error) {
+    return fileWithSizeDecorator.file.Seek(offset, whence)
 }
 
-func (fileSizeReadCloser *fileSizeReadCloser) Close() error {
-    return fileSizeReadCloser.file.Close()
+func (fileWithSizeDecorator *fileWithSizeDecorator) Close() error {
+    return fileWithSizeDecorator.file.Close()
 }
 

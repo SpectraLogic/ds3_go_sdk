@@ -7,21 +7,21 @@ import (
     "ds3/networking"
 )
 
-func checkStatusCode(response networking.Ds3Response, expectedStatusCode int) error {
-    if response.StatusCode() == expectedStatusCode {
+func checkStatusCode(webResponse networking.WebResponse, expectedStatusCode int) error {
+    if webResponse.StatusCode() == expectedStatusCode {
         return nil
     } else {
-        return buildBadStatusCodeError(response, expectedStatusCode)
+        return buildBadStatusCodeError(webResponse, expectedStatusCode)
     }
 }
 
-func readResponseBody(ds3Response networking.Ds3Response, expectedStatusCode int, parsedBody interface{}) error {
+func readResponseBody(webResponse networking.WebResponse, expectedStatusCode int, parsedBody interface{}) error {
     // Clean up the response body.
-    body := ds3Response.Body()
+    body := webResponse.Body()
     defer body.Close()
 
     // Check the status code.
-    if err := checkStatusCode(ds3Response, expectedStatusCode); err != nil {
+    if err := checkStatusCode(webResponse, expectedStatusCode); err != nil {
         return err
     }
 
