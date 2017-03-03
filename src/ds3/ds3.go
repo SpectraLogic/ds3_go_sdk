@@ -7,6 +7,7 @@ import (
 
 type Client struct {
     netLayer networking.Network
+    clientPolicy *ClientPolicy
 }
 
 type ClientBuilder struct {
@@ -46,6 +47,9 @@ func (clientBuilder *ClientBuilder) WithNetworkRetryCount(count int) *ClientBuil
 }
 
 func (clientBuilder *ClientBuilder) BuildClient() *Client {
-    return &Client{networking.NewHttpNetwork(clientBuilder.connectionInfo)}
+    return &Client{
+        networking.NewHttpNetwork(clientBuilder.connectionInfo),
+        clientBuilder.clientPolicy,
+    }
 }
 
