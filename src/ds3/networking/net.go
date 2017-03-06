@@ -2,8 +2,6 @@ package networking
 
 import (
     "io"
-    "fmt"
-    "errors"
     "net/http"
     "net/url"
 )
@@ -18,10 +16,6 @@ type ConnectionInfo struct {
     Proxy *url.URL
 }
 
-type ConnectionPolicy struct {
-    RedirectRetryCount int
-}
-
 type Credentials struct {
     AccessId string
     Key string
@@ -29,14 +23,12 @@ type Credentials struct {
 
 type httpNetwork struct {
     connectionInfo *ConnectionInfo
-    connectionPolicy *ConnectionPolicy
     transport *http.Transport
 }
 
-func NewHttpNetwork(connectionInfo *ConnectionInfo, connectionPolicy *ConnectionPolicy) Network {
+func NewHttpNetwork(connectionInfo *ConnectionInfo) Network {
     return &httpNetwork{
         connectionInfo,
-        connectionPolicy,
         &http.Transport{ Proxy: http.ProxyURL(connectionInfo.Proxy) },
     }
 }
@@ -48,31 +40,24 @@ func (httpNetwork *httpNetwork) Invoke(ds3Request Ds3Request) (WebResponse, erro
         defer stream.Close()
     }
 
-    // Handle as many 307's as we're allowed.
-    for i := 0; i < httpNetwork.connectionPolicy.RedirectRetryCount; i++ {
-        // Build the request.
-        httpRequest, makeReqErr := buildHttpRequest(httpNetwork.connectionInfo, ds3Request, stream)
-        if makeReqErr != nil {
-            return nil, makeReqErr
-        }
-
-        // Perform the request.
-        httpResponse, reqErr := httpNetwork.transport.RoundTrip(httpRequest)
-        if reqErr != nil {
-            return nil, reqErr
-        }
-
-        // If it wasn't a redirect then return.
-        if httpResponse.StatusCode != http.StatusTemporaryRedirect {
-            return &wrappedHttpResponse{httpResponse}, nil
-        }
+    // Build the request.
+    httpRequest, makeReqErr := buildHttpRequest(httpNetwork.connectionInfo, ds3Request, stream)
+    if makeReqErr != nil {
+        return nil, makeReqErr
     }
 
-    // We had as many 307 redirects as we were allowed to use.
-    return nil, errors.New(fmt.Sprintf(
-        "The server is busy. Retried the max number of %d times.",
-        httpNetwork.connectionPolicy.RedirectRetryCount,
-    ))
+    // Perform the request.
+    httpResponse, reqErr := httpNetwork.transport.RoundTrip(httpRequest)
+    if reqErr != nil {
+        return nil, RoundTripError(reqErr.Error())
+    }
+
+    //If it was a redirect then return redirect error
+    if httpResponse.StatusCode == http.StatusTemporaryRedirect {
+        return nil, TemporaryRedirectError(httpResponse.StatusCode)
+    }
+
+    return &wrappedHttpResponse{httpResponse}, nil
 }
 
 func buildHttpRequest(conn *ConnectionInfo, ds3Request Ds3Request, stream SizedReadCloser) (*http.Request, error) {

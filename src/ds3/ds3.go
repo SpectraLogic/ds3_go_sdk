@@ -7,11 +7,17 @@ import (
 
 type Client struct {
     netLayer networking.Network
+    clientPolicy *ClientPolicy
 }
 
 type ClientBuilder struct {
     connectionInfo *networking.ConnectionInfo
-    connectionPolicy *networking.ConnectionPolicy
+    clientPolicy *ClientPolicy
+}
+
+type ClientPolicy struct {
+    maxRetries int // Maximum number of times to attempt sending a request amidst network issues
+    maxRedirect int // Maximum number of times to attempt redirect retries
 }
 
 func NewClientBuilder(endpoint *url.URL, creds networking.Credentials) *ClientBuilder {
@@ -20,7 +26,9 @@ func NewClientBuilder(endpoint *url.URL, creds networking.Credentials) *ClientBu
             Endpoint: *endpoint,
             Creds: creds,
             Proxy: nil},
-        &networking.ConnectionPolicy{RedirectRetryCount: 5}}
+        &ClientPolicy{
+            maxRetries: 5,
+            maxRedirect: 5}}
 }
 
 func (clientBuilder *ClientBuilder) WithProxy(proxy *url.URL) *ClientBuilder {
@@ -29,11 +37,19 @@ func (clientBuilder *ClientBuilder) WithProxy(proxy *url.URL) *ClientBuilder {
 }
 
 func (clientBuilder *ClientBuilder) WithRedirectRetryCount(count int) *ClientBuilder {
-    clientBuilder.connectionPolicy.RedirectRetryCount = count
+    clientBuilder.clientPolicy.maxRedirect = count
+    return clientBuilder
+}
+
+func (clientBuilder *ClientBuilder) WithNetworkRetryCount(count int) *ClientBuilder {
+    clientBuilder.clientPolicy.maxRetries = count
     return clientBuilder
 }
 
 func (clientBuilder *ClientBuilder) BuildClient() *Client {
-    return &Client{networking.NewHttpNetwork(clientBuilder.connectionInfo, clientBuilder.connectionPolicy)}
+    return &Client{
+        networking.NewHttpNetwork(clientBuilder.connectionInfo),
+        clientBuilder.clientPolicy,
+    }
 }
 

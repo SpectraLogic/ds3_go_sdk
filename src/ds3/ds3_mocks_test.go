@@ -49,7 +49,7 @@ func (mockedNet *mockedNet) Returning(statusCode int, response string, headers *
     mockedNet.statusCode = statusCode
     mockedNet.response = response
     mockedNet.headers = headers
-    return &Client{mockedNet}
+    return &Client{mockedNet, &ClientPolicy{5, 5}}
 }
 
 func (mockedNet *mockedNet) Invoke(ds3Request networking.Ds3Request) (networking.WebResponse, error) {
