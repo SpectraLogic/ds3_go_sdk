@@ -91,7 +91,13 @@ func buildHttpRequest(conn *ConnectionInfo, ds3Request Ds3Request, stream SizedR
     }
 
     // Set the request headers such as authorization and date.
-    headersErr := setRequestHeaders(httpRequest, conn.Creds, ds3Request)
+    now := getCurrentTime()
+    authHeaderVal := buildAuthHeaderValue(conn.Creds, signatureFields{
+        Verb: verb,
+        Path: ds3Request.Path(),
+        Date: now,
+    })
+    headersErr := setRequestHeaders(httpRequest, ds3Request, authHeaderVal, now)
     if headersErr != nil {
         return nil, headersErr
     }
