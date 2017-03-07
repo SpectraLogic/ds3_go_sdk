@@ -46,7 +46,7 @@ func createClient(endpoint, accessKey, secretKey, proxy string) (*ds3.Client, er
 
     // Parse proxy.
     var proxyUrlPtr *url.URL
-    if proxy != "" {
+    if len(proxy) != 0 {
         var proxyErr error
         proxyUrlPtr, proxyErr = url.Parse(proxy)
         if proxyErr != nil {

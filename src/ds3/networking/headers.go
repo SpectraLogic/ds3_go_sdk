@@ -9,27 +9,20 @@ import (
     "encoding/base64"
 )
 
-func setRequestHeaders(httpRequest *http.Request, creds Credentials, ds3Request Ds3Request) (error) {
-    // We need the current UTC date in a very specific format to be compliant.
-    now := time.Now().UTC().Format("Mon, 02 Jan 2006 15:04:05 +0000")
-    httpRequest.Header.Add("Date", now)
-
-    verb, verbErr := ds3Request.Verb().String()
-    if verbErr != nil {
-        return verbErr
-    }
-    // For now we're not setting all of the signature field values because we don't need them all.
-    httpRequest.Header.Add("Authorization", buildAuthHeaderValue(creds, signatureFields{
-        Verb: verb,
-        Path: ds3Request.Path(),
-        Date: now,
-    }))
+func setRequestHeaders(httpRequest *http.Request, ds3Request Ds3Request, authHeaderVal string, dateHeaderVal string) (error) {
+    httpRequest.Header.Add("Date", dateHeaderVal)
+    httpRequest.Header.Add("Authorization", authHeaderVal)
 
     // Copy the headers from the request object.
     for key, val := range *ds3Request.Header() {
         httpRequest.Header.Add(key, val[0])
     }
     return nil
+}
+
+// Retrieves the current UTC date in a specific format to be used in creating Date header value
+func getCurrentTime() (string) {
+    return time.Now().UTC().Format("Mon, 02 Jan 2006 15:04:05 +0000")
 }
 
 type signatureFields struct {
@@ -54,13 +47,17 @@ func buildAuthHeaderValue(creds Credentials, fields signatureFields) string {
     )
 
     // Compute the MAC and base64 encode the result.
-    signature := base64.StdEncoding.EncodeToString(getSha1Mac(creds.Key, stringToSign))
+    signature := computeChecksum(creds.Key, stringToSign)
 
     // Return the pieces in the correct format.
     return fmt.Sprintf("AWS %s:%s", creds.AccessId, signature)
 }
 
-func getSha1Mac(key, stringToSign string) []byte {
+func computeChecksum(key string, stringToSign string) (string) {
+    return base64.StdEncoding.EncodeToString(calcSha1Mac(key, stringToSign))
+}
+
+func calcSha1Mac(key, stringToSign string) []byte {
     // Create a new mac with a secret key.
     mac := hmac.New(sha1.New, []byte(key))
 
