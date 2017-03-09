@@ -32,3 +32,10 @@ func (GetServiceRequest) GetContentStream() networking.SizedReadCloser {
     return nil
 }
 
+func (GetServiceRequest) GetChecksum() string {
+    return ""
+}
+
+func (GetServiceRequest) GetChecksumType() networking.ChecksumType {
+    return networking.NONE
+}

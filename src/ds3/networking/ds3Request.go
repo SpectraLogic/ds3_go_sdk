@@ -15,6 +15,8 @@ type Ds3Request interface {
     QueryParams() *url.Values
     Header() *http.Header
     GetContentStream() SizedReadCloser
+    GetChecksum() string
+    GetChecksumType() ChecksumType
 }
 
 // We need a Size method so we can pass the appropriate Content-Length header.
@@ -25,6 +27,17 @@ type SizedReadCloser interface {
     io.Closer
     Size() (int64, error)
 }
+
+type ChecksumType int
+
+const(
+    CRC_32 ChecksumType = iota
+    CRC_32C
+    MD5
+    SHA_256
+    SHA_512
+    NONE
+)
 
 type HttpVerb int
 

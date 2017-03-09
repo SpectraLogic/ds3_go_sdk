@@ -35,3 +35,10 @@ func (bulkGetRequest *BulkGetRequest) GetContentStream() networking.SizedReadClo
     return bulkGetRequest.content
 }
 
+func (BulkGetRequest) GetChecksum() string {
+    return ""
+}
+
+func (BulkGetRequest) GetChecksumType() networking.ChecksumType {
+    return networking.NONE
+}

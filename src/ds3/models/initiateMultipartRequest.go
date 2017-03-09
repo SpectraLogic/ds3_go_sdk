@@ -38,3 +38,10 @@ func (InitiateMultipartRequest) GetContentStream() networking.SizedReadCloser {
     return nil
 }
 
+func (InitiateMultipartRequest) GetChecksum() string {
+    return ""
+}
+
+func (InitiateMultipartRequest) GetChecksumType() networking.ChecksumType {
+    return networking.NONE
+}

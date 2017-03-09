@@ -48,3 +48,10 @@ func (putPartRequest *PutPartRequest) GetContentStream() networking.SizedReadClo
     return putPartRequest.content
 }
 
+func (PutPartRequest) GetChecksum() string {
+    return ""
+}
+
+func (PutPartRequest) GetChecksumType() networking.ChecksumType {
+    return networking.NONE
+}
