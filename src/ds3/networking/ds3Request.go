@@ -15,8 +15,12 @@ type Ds3Request interface {
     QueryParams() *url.Values
     Header() *http.Header
     GetContentStream() SizedReadCloser
-    GetChecksum() string
-    GetChecksumType() ChecksumType
+    GetChecksum() Checksum
+}
+
+type Checksum struct {
+    ContentHash string
+    Type        ChecksumType
 }
 
 // We need a Size method so we can pass the appropriate Content-Length header.

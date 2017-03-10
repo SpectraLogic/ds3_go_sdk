@@ -95,7 +95,7 @@ func buildHttpRequest(conn *ConnectionInfo, ds3Request Ds3Request, stream SizedR
 
     authHeaderVal := buildAuthHeaderValue(conn.Creds, signatureFields{
         Verb: verb,
-        ContentHash: ds3Request.GetChecksum(),
+        ContentHash: ds3Request.GetChecksum().ContentHash,
         ContentType: ds3Request.Header().Get(ContentTypeKey),
         Path: ds3Request.Path(),
         Date: now,
@@ -105,8 +105,8 @@ func buildHttpRequest(conn *ConnectionInfo, ds3Request Ds3Request, stream SizedR
     setHttpRequestHeaders(httpRequest, ds3Request, headerFields{
         AuthHeaderVal: authHeaderVal,
         DateHeaderVal: now,
-        ChecksumType:  ds3Request.GetChecksumType(),
-        ContentHash:   ds3Request.GetChecksum(),
+        ChecksumType:  ds3Request.GetChecksum().Type,
+        ContentHash:   ds3Request.GetChecksum().ContentHash,
     })
 
     return httpRequest, nil

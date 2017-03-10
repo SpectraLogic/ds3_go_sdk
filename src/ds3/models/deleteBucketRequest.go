@@ -36,10 +36,8 @@ func (DeleteBucketRequest) GetContentStream() networking.SizedReadCloser {
     return nil
 }
 
-func (DeleteBucketRequest) GetChecksum() string {
-    return ""
-}
-
-func (DeleteBucketRequest) GetChecksumType() networking.ChecksumType {
-    return networking.NONE
+func (DeleteBucketRequest) GetChecksum() networking.Checksum {
+    return networking.Checksum{
+        Type: networking.NONE,
+        ContentHash: "" }
 }

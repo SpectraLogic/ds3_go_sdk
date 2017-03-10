@@ -65,10 +65,8 @@ func (GetBucketRequest) GetContentStream() networking.SizedReadCloser {
     return nil
 }
 
-func (GetBucketRequest) GetChecksum() string {
-    return ""
-}
-
-func (GetBucketRequest) GetChecksumType() networking.ChecksumType {
-    return networking.NONE
+func (GetBucketRequest) GetChecksum() networking.Checksum {
+    return networking.Checksum{
+        Type: networking.NONE,
+        ContentHash: "" }
 }

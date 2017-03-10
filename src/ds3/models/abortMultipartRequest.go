@@ -40,10 +40,8 @@ func (AbortMultipartRequest) GetContentStream() networking.SizedReadCloser {
     return nil
 }
 
-func (AbortMultipartRequest) GetChecksum() string {
-    return ""
-}
-
-func (AbortMultipartRequest) GetChecksumType() networking.ChecksumType {
-    return networking.NONE
+func (AbortMultipartRequest) GetChecksum() networking.Checksum {
+    return networking.Checksum{
+        Type: networking.NONE,
+        ContentHash: "" }
 }

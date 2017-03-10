@@ -36,10 +36,8 @@ func (PutBucketRequest) GetContentStream() networking.SizedReadCloser {
     return nil
 }
 
-func (PutBucketRequest) GetChecksum() string {
-    return ""
-}
-
-func (PutBucketRequest) GetChecksumType() networking.ChecksumType {
-    return networking.NONE
+func (PutBucketRequest) GetChecksum() networking.Checksum {
+    return networking.Checksum{
+        Type: networking.NONE,
+        ContentHash: "" }
 }

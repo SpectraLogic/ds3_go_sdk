@@ -59,10 +59,8 @@ func (completeMultipartRequest *CompleteMultipartRequest) GetContentStream() net
     return networking.BuildSizedReadCloser(xmlBytes)
 }
 
-func (CompleteMultipartRequest) GetChecksum() string {
-    return ""
-}
-
-func (CompleteMultipartRequest) GetChecksumType() networking.ChecksumType {
-    return networking.NONE
+func (CompleteMultipartRequest) GetChecksum() networking.Checksum {
+    return networking.Checksum{
+        Type: networking.NONE,
+        ContentHash: "" }
 }
