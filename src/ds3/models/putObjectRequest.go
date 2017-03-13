@@ -10,10 +10,22 @@ type PutObjectRequest struct {
     bucketName string
     objectName string
     content networking.SizedReadCloser
+    checksum networking.Checksum
 }
 
 func NewPutObjectRequest(bucketName string, objectName string, content networking.SizedReadCloser) *PutObjectRequest {
-    return &PutObjectRequest{bucketName, objectName, content}
+    return &PutObjectRequest{
+        bucketName: bucketName,
+        objectName:objectName,
+        content:content,
+        checksum: networking.NewNoneChecksum(), //Default checksum type of None
+    }
+}
+
+func (putObjectRequest *PutObjectRequest) WithChecksum(contentHash string, checksumType networking.ChecksumType) *PutObjectRequest {
+    putObjectRequest.checksum.ContentHash = contentHash
+    putObjectRequest.checksum.Type = checksumType
+    return putObjectRequest
 }
 
 func (PutObjectRequest) Verb() networking.HttpVerb {
@@ -36,3 +48,6 @@ func (putObjectRequest *PutObjectRequest) GetContentStream() networking.SizedRea
     return putObjectRequest.content
 }
 
+func (putObjectRequest *PutObjectRequest) GetChecksum() networking.Checksum {
+    return putObjectRequest.checksum
+}

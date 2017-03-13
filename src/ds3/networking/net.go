@@ -90,17 +90,24 @@ func buildHttpRequest(conn *ConnectionInfo, ds3Request Ds3Request, stream SizedR
         }
     }
 
-    // Set the request headers such as authorization and date.
+    // Build the authentication
     now := getCurrentTime()
+
     authHeaderVal := buildAuthHeaderValue(conn.Creds, signatureFields{
         Verb: verb,
+        ContentHash: ds3Request.GetChecksum().ContentHash,
+        ContentType: ds3Request.Header().Get(ContentTypeKey),
         Path: ds3Request.Path(),
         Date: now,
     })
-    headersErr := setRequestHeaders(httpRequest, ds3Request, authHeaderVal, now)
-    if headersErr != nil {
-        return nil, headersErr
-    }
+
+    // Set the http request headers such as authorization and date.
+    setHttpRequestHeaders(httpRequest, ds3Request, headerFields{
+        AuthHeaderVal: authHeaderVal,
+        DateHeaderVal: now,
+        ChecksumType:  ds3Request.GetChecksum().Type,
+        ContentHash:   ds3Request.GetChecksum().ContentHash,
+    })
 
     return httpRequest, nil
 }

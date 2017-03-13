@@ -11,6 +11,7 @@ type GetObjectRequest struct {
     bucketName string
     objectName string
     rangeHeader *rangeHeader
+    checksum networking.Checksum
 }
 
 type rangeHeader struct {
@@ -18,11 +19,21 @@ type rangeHeader struct {
 }
 
 func NewGetObjectRequest(bucketName string, objectName string) *GetObjectRequest {
-    return &GetObjectRequest{bucketName, objectName, nil}
+    return &GetObjectRequest{
+        bucketName: bucketName,
+        objectName: objectName,
+        checksum:   networking.NewNoneChecksum(), //Default checksum type of None
+    }
 }
 
 func (getObjectRequest *GetObjectRequest) WithRange(start, end int) *GetObjectRequest {
     getObjectRequest.rangeHeader = &rangeHeader{start, end}
+    return getObjectRequest
+}
+
+func (getObjectRequest *GetObjectRequest) WithChecksum(contentHash string, checksumType networking.ChecksumType) *GetObjectRequest {
+    getObjectRequest.checksum.ContentHash = contentHash
+    getObjectRequest.checksum.Type = checksumType
     return getObjectRequest
 }
 
@@ -51,3 +62,6 @@ func (GetObjectRequest) GetContentStream() networking.SizedReadCloser {
     return nil
 }
 
+func (getObjectRequest *GetObjectRequest) GetChecksum() networking.Checksum {
+    return getObjectRequest.checksum
+}

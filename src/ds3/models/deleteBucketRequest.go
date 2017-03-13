@@ -36,3 +36,6 @@ func (DeleteBucketRequest) GetContentStream() networking.SizedReadCloser {
     return nil
 }
 
+func (DeleteBucketRequest) GetChecksum() networking.Checksum {
+    return networking.NewNoneChecksum()
+}

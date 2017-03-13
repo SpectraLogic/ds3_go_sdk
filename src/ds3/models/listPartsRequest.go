@@ -40,3 +40,6 @@ func (ListPartsRequest) GetContentStream() networking.SizedReadCloser {
     return nil
 }
 
+func (ListPartsRequest) GetChecksum() networking.Checksum {
+    return networking.NewNoneChecksum()
+}

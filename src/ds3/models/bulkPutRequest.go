@@ -35,4 +35,6 @@ func (bulkPutRequest *BulkPutRequest) GetContentStream() networking.SizedReadClo
     return bulkPutRequest.content
 }
 
-
+func (BulkPutRequest) GetChecksum() networking.Checksum {
+    return networking.NewNoneChecksum()
+}
