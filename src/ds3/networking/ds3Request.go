@@ -23,6 +23,12 @@ type Checksum struct {
     Type        ChecksumType
 }
 
+func NewNoneChecksum() Checksum {
+    return Checksum{
+        Type: NONE,
+        ContentHash: "" }
+}
+
 // We need a Size method so we can pass the appropriate Content-Length header.
 // Size isn't readily available in Go standard interfaces, so we created a new
 // interface for it.

@@ -49,7 +49,5 @@ func (putPartRequest *PutPartRequest) GetContentStream() networking.SizedReadClo
 }
 
 func (PutPartRequest) GetChecksum() networking.Checksum {
-    return networking.Checksum{
-        Type: networking.NONE,
-        ContentHash: "" }
+    return networking.NewNoneChecksum()
 }

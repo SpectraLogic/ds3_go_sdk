@@ -33,7 +33,5 @@ func (ListMultipartRequest) GetContentStream() networking.SizedReadCloser {
 }
 
 func (ListMultipartRequest) GetChecksum() networking.Checksum {
-    return networking.Checksum{
-        Type: networking.NONE,
-        ContentHash: "" }
+    return networking.NewNoneChecksum()
 }

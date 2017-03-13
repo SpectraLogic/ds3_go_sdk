@@ -36,7 +36,5 @@ func (bulkGetRequest *BulkGetRequest) GetContentStream() networking.SizedReadClo
 }
 
 func (BulkGetRequest) GetChecksum() networking.Checksum {
-    return networking.Checksum{
-        Type: networking.NONE,
-        ContentHash: "" }
+    return networking.NewNoneChecksum()
 }

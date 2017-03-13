@@ -60,7 +60,5 @@ func (completeMultipartRequest *CompleteMultipartRequest) GetContentStream() net
 }
 
 func (CompleteMultipartRequest) GetChecksum() networking.Checksum {
-    return networking.Checksum{
-        Type: networking.NONE,
-        ContentHash: "" }
+    return networking.NewNoneChecksum()
 }

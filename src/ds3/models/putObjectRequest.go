@@ -18,10 +18,8 @@ func NewPutObjectRequest(bucketName string, objectName string, content networkin
         bucketName: bucketName,
         objectName:objectName,
         content:content,
-        checksum: networking.Checksum{ //Default checksum type of None
-            Type: networking.NONE,
-            ContentHash: "",
-        }}
+        checksum: networking.NewNoneChecksum(), //Default checksum type of None
+    }
 }
 
 func (putObjectRequest *PutObjectRequest) WithChecksum(contentHash string, checksumType networking.ChecksumType) *PutObjectRequest {

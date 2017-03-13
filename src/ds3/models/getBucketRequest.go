@@ -66,7 +66,5 @@ func (GetBucketRequest) GetContentStream() networking.SizedReadCloser {
 }
 
 func (GetBucketRequest) GetChecksum() networking.Checksum {
-    return networking.Checksum{
-        Type: networking.NONE,
-        ContentHash: "" }
+    return networking.NewNoneChecksum()
 }

@@ -36,7 +36,5 @@ func (DeleteObjectRequest) GetContentStream() networking.SizedReadCloser {
 }
 
 func (DeleteObjectRequest) GetChecksum() networking.Checksum {
-    return networking.Checksum{
-        Type: networking.NONE,
-        ContentHash: "" }
+    return networking.NewNoneChecksum()
 }

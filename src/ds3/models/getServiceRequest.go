@@ -33,7 +33,5 @@ func (GetServiceRequest) GetContentStream() networking.SizedReadCloser {
 }
 
 func (GetServiceRequest) GetChecksum() networking.Checksum {
-    return networking.Checksum{
-        Type: networking.NONE,
-        ContentHash: "" }
+    return networking.NewNoneChecksum()
 }

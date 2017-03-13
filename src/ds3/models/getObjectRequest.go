@@ -20,12 +20,10 @@ type rangeHeader struct {
 
 func NewGetObjectRequest(bucketName string, objectName string) *GetObjectRequest {
     return &GetObjectRequest{
-        bucketName:   bucketName,
-        objectName:   objectName,
-        checksum: networking.Checksum{ //Default checksum type of None
-            Type: networking.NONE,
-            ContentHash: "",
-        }}
+        bucketName: bucketName,
+        objectName: objectName,
+        checksum:   networking.NewNoneChecksum(), //Default checksum type of None
+    }
 }
 
 func (getObjectRequest *GetObjectRequest) WithRange(start, end int) *GetObjectRequest {
