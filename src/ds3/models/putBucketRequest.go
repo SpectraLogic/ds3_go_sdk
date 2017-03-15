@@ -8,11 +8,13 @@ import (
 
 type PutBucketRequest struct {
     bucketName string
+    queryParams *url.Values
 }
 
 func NewPutBucketRequest(bucketName string) *PutBucketRequest {
     return &PutBucketRequest{
         bucketName: bucketName,
+        queryParams: &url.Values{},
     }
 }
 
@@ -25,7 +27,7 @@ func (putBucketRequest *PutBucketRequest) Path() string {
 }
 
 func (putBucketRequest *PutBucketRequest) QueryParams() *url.Values {
-    return new(url.Values)
+    return putBucketRequest.queryParams
 }
 
 func (PutBucketRequest) Header() *http.Header {

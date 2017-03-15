@@ -6,10 +6,14 @@ import (
     "ds3/networking"
 )
 
-type GetServiceRequest struct {}
+type GetServiceRequest struct {
+    queryParams *url.Values
+}
 
 func NewGetServiceRequest() *GetServiceRequest {
-    return &GetServiceRequest{}
+    return &GetServiceRequest{
+        queryParams: &url.Values{},
+    }
 }
 
 func (GetServiceRequest) Verb() networking.HttpVerb {
@@ -20,8 +24,8 @@ func (GetServiceRequest) Path() string {
     return "/"
 }
 
-func (GetServiceRequest) QueryParams() *url.Values {
-    return new(url.Values)
+func (getServiceRequest *GetServiceRequest) QueryParams() *url.Values {
+    return getServiceRequest.queryParams
 }
 
 func (GetServiceRequest) Header() *http.Header {

@@ -9,10 +9,14 @@ import (
 type DeleteObjectRequest struct {
     bucketName string
     objectName string
+    queryParams *url.Values
 }
 
 func NewDeleteObjectRequest(bucketName string, objectName string) *DeleteObjectRequest {
-    return &DeleteObjectRequest{bucketName, objectName}
+    return &DeleteObjectRequest{
+        bucketName: bucketName,
+        objectName: objectName,
+        queryParams: &url.Values{},}
 }
 
 func (DeleteObjectRequest) Verb() networking.HttpVerb {
@@ -24,7 +28,7 @@ func (deleteObjectRequest *DeleteObjectRequest) Path() string {
 }
 
 func (deleteObjectRequest *DeleteObjectRequest) QueryParams() *url.Values {
-    return new(url.Values)
+    return deleteObjectRequest.queryParams
 }
 
 func (DeleteObjectRequest) Header() *http.Header {

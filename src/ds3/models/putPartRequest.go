@@ -13,6 +13,7 @@ type PutPartRequest struct {
     partNumber int
     uploadId string
     content networking.SizedReadCloser
+    queryParams *url.Values
 }
 
 func NewPutPartRequest(
@@ -22,7 +23,18 @@ func NewPutPartRequest(
     uploadId string,
     content networking.SizedReadCloser,
 ) *PutPartRequest {
-    return &PutPartRequest{bucketName, objectName, partNumber, uploadId, content}
+    queryParams := &url.Values{}
+    queryParams.Set("partNumber", strconv.Itoa(partNumber))
+    queryParams.Set("uploadId", uploadId)
+
+    return &PutPartRequest{
+        bucketName: bucketName,
+        objectName: objectName,
+        partNumber: partNumber,
+        uploadId: uploadId,
+        content: content,
+        queryParams: queryParams,
+    }
 }
 
 func (PutPartRequest) Verb() networking.HttpVerb {
@@ -34,10 +46,7 @@ func (putPartRequest *PutPartRequest) Path() string {
 }
 
 func (putPartRequest *PutPartRequest) QueryParams() *url.Values {
-    return &url.Values{
-        "partNumber": []string{strconv.Itoa(putPartRequest.partNumber)},
-        "uploadId": []string{putPartRequest.uploadId},
-    }
+    return putPartRequest.queryParams
 }
 
 func (PutPartRequest) Header() *http.Header {

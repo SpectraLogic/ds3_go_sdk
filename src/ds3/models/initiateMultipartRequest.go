@@ -9,12 +9,17 @@ import (
 type InitiateMultipartRequest struct {
     bucketName string
     objectName string
+    queryParams *url.Values
 }
 
 func NewInitiateMultipartRequest(bucketName string, objectName string) *InitiateMultipartRequest {
+    queryParams := &url.Values{}
+    queryParams.Set("uploads", "")
+
     return &InitiateMultipartRequest{
         bucketName: bucketName,
         objectName: objectName,
+        queryParams: queryParams,
     }
 }
 
@@ -27,7 +32,7 @@ func (initiateMultipartRequest *InitiateMultipartRequest) Path() string {
 }
 
 func (initiateMultipartRequest *InitiateMultipartRequest) QueryParams() *url.Values {
-    return &url.Values{"uploads": []string{""}}
+    return initiateMultipartRequest.queryParams
 }
 
 func (InitiateMultipartRequest) Header() *http.Header {

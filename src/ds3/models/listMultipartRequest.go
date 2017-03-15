@@ -6,10 +6,17 @@ import (
     "ds3/networking"
 )
 
-type ListMultipartRequest struct { }
+type ListMultipartRequest struct {
+    queryParams *url.Values
+}
 
 func NewListMultipartRequest() *ListMultipartRequest {
-    return &ListMultipartRequest{}
+    queryParams := &url.Values{}
+    queryParams.Set("uploads", "")
+
+    return &ListMultipartRequest{
+        queryParams: queryParams,
+    }
 }
 
 func (ListMultipartRequest) Verb() networking.HttpVerb {
@@ -20,8 +27,8 @@ func (ListMultipartRequest) Path() string {
     return "/"
 }
 
-func (ListMultipartRequest) QueryParams() *url.Values {
-    return &url.Values{"uploads": []string{""}}
+func (listMultipartRequest *ListMultipartRequest) QueryParams() *url.Values {
+    return listMultipartRequest.queryParams
 }
 
 func (ListMultipartRequest) Header() *http.Header {
