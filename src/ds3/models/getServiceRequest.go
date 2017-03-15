@@ -32,7 +32,7 @@ func (GetServiceRequest) Header() *http.Header {
     return &http.Header{}
 }
 
-func (GetServiceRequest) GetContentStream() networking.SizedReadCloser {
+func (GetServiceRequest) GetContentStream() networking.ReaderWithSizeDecorator {
     return nil
 }
 

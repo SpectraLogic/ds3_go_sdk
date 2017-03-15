@@ -60,7 +60,7 @@ func (getObjectRequest GetObjectRequest) Header() *http.Header {
     }
 }
 
-func (GetObjectRequest) GetContentStream() networking.SizedReadCloser {
+func (GetObjectRequest) GetContentStream() networking.ReaderWithSizeDecorator {
     return nil
 }
 

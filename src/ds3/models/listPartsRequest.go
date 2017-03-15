@@ -41,7 +41,7 @@ func (ListPartsRequest) Header() *http.Header {
     return &http.Header{}
 }
 
-func (ListPartsRequest) GetContentStream() networking.SizedReadCloser {
+func (ListPartsRequest) GetContentStream() networking.ReaderWithSizeDecorator {
     return nil
 }
 

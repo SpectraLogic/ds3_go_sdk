@@ -22,7 +22,7 @@ type object struct {
 }
 
 // Converts the ds3 object list to an object we can send in our request.
-func buildObjectListStream(ds3Objects []Object) networking.SizedReadCloser {
+func buildObjectListStream(ds3Objects []Object) networking.ReaderWithSizeDecorator {
     // Create an array of objects to put into the master object list.
     molObjects := make([]object, len(ds3Objects))
 
@@ -40,7 +40,7 @@ func buildObjectListStream(ds3Objects []Object) networking.SizedReadCloser {
         panic(err)
     }
 
-    // Create a SizedReadCloser which the network layer expects.
+    // Create a ReaderWithSizeDecorator which the network layer expects.
     return networking.BuildSizedReadCloser(xmlBytes)
 }
 

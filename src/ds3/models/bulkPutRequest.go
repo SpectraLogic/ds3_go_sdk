@@ -8,7 +8,7 @@ import (
 
 type BulkPutRequest struct {
     bucketName string
-    content networking.SizedReadCloser
+    content networking.ReaderWithSizeDecorator
     queryParams *url.Values
 }
 
@@ -39,7 +39,7 @@ func (BulkPutRequest) Header() *http.Header {
     return &http.Header{}
 }
 
-func (bulkPutRequest *BulkPutRequest) GetContentStream() networking.SizedReadCloser {
+func (bulkPutRequest *BulkPutRequest) GetContentStream() networking.ReaderWithSizeDecorator {
     return bulkPutRequest.content
 }
 

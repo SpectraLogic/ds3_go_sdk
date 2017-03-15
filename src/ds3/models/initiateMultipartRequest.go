@@ -39,7 +39,7 @@ func (InitiateMultipartRequest) Header() *http.Header {
     return &http.Header{}
 }
 
-func (InitiateMultipartRequest) GetContentStream() networking.SizedReadCloser {
+func (InitiateMultipartRequest) GetContentStream() networking.ReaderWithSizeDecorator {
     return nil
 }
 

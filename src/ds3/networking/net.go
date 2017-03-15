@@ -60,7 +60,7 @@ func (httpNetwork *httpNetwork) Invoke(ds3Request Ds3Request) (WebResponse, erro
     return &wrappedHttpResponse{httpResponse}, nil
 }
 
-func buildHttpRequest(conn *ConnectionInfo, ds3Request Ds3Request, stream SizedReadCloser) (*http.Request, error) {
+func buildHttpRequest(conn *ConnectionInfo, ds3Request Ds3Request, stream ReaderWithSizeDecorator) (*http.Request, error) {
     var reader io.Reader
     if stream != nil {
         reader = &proxiedReader{stream}
