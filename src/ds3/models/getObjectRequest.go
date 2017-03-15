@@ -47,11 +47,11 @@ func (getObjectRequest *GetObjectRequest) Path() string {
     return "/" + getObjectRequest.bucketName + "/" + getObjectRequest.objectName
 }
 
-func (getObjectRequest GetObjectRequest) QueryParams() *url.Values {
+func (getObjectRequest *GetObjectRequest) QueryParams() *url.Values {
     return getObjectRequest.queryParams
 }
 
-func (getObjectRequest GetObjectRequest) Header() *http.Header {
+func (getObjectRequest *GetObjectRequest) Header() *http.Header {
     if getObjectRequest.rangeHeader == nil {
         return &http.Header{}
     } else {
