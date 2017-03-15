@@ -34,7 +34,7 @@ func (PutBucketRequest) Header() *http.Header {
     return &http.Header{}
 }
 
-func (PutBucketRequest) GetContentStream() networking.SizedReadCloser {
+func (PutBucketRequest) GetContentStream() networking.ReaderWithSizeDecorator {
     return nil
 }
 

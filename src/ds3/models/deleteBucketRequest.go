@@ -34,7 +34,7 @@ func (DeleteBucketRequest) Header() *http.Header {
     return &http.Header{}
 }
 
-func (DeleteBucketRequest) GetContentStream() networking.SizedReadCloser {
+func (DeleteBucketRequest) GetContentStream() networking.ReaderWithSizeDecorator {
     return nil
 }
 

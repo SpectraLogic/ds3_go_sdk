@@ -41,7 +41,7 @@ func (AbortMultipartRequest) Header() *http.Header {
     return &http.Header{}
 }
 
-func (AbortMultipartRequest) GetContentStream() networking.SizedReadCloser {
+func (AbortMultipartRequest) GetContentStream() networking.ReaderWithSizeDecorator {
     return nil
 }
 

@@ -53,14 +53,14 @@ func (CompleteMultipartRequest) Header() *http.Header {
     return &http.Header{}
 }
 
-func (completeMultipartRequest *CompleteMultipartRequest) GetContentStream() networking.SizedReadCloser {
+func (completeMultipartRequest *CompleteMultipartRequest) GetContentStream() networking.ReaderWithSizeDecorator {
     // Create an xml document from the entity.
     xmlBytes, err := xml.Marshal(CompleteMultipartUpload{completeMultipartRequest.parts})
     if err != nil {
         panic(err)
     }
 
-    // Create a SizedReadCloser which the network layer expects.
+    // Create a ReaderWithSizeDecorator which the network layer expects.
     return networking.BuildSizedReadCloser(xmlBytes)
 }
 

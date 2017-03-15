@@ -12,7 +12,7 @@ type PutPartRequest struct {
     objectName string
     partNumber int
     uploadId string
-    content networking.SizedReadCloser
+    content networking.ReaderWithSizeDecorator
     queryParams *url.Values
 }
 
@@ -21,7 +21,7 @@ func NewPutPartRequest(
     objectName string,
     partNumber int,
     uploadId string,
-    content networking.SizedReadCloser,
+    content networking.ReaderWithSizeDecorator,
 ) *PutPartRequest {
     queryParams := &url.Values{}
     queryParams.Set("partNumber", strconv.Itoa(partNumber))
@@ -53,7 +53,7 @@ func (PutPartRequest) Header() *http.Header {
     return &http.Header{}
 }
 
-func (putPartRequest *PutPartRequest) GetContentStream() networking.SizedReadCloser {
+func (putPartRequest *PutPartRequest) GetContentStream() networking.ReaderWithSizeDecorator {
     return putPartRequest.content
 }
 

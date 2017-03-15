@@ -35,7 +35,7 @@ func (DeleteObjectRequest) Header() *http.Header {
     return &http.Header{}
 }
 
-func (DeleteObjectRequest) GetContentStream() networking.SizedReadCloser {
+func (DeleteObjectRequest) GetContentStream() networking.ReaderWithSizeDecorator {
     return nil
 }
 

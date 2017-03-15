@@ -56,7 +56,7 @@ func (GetBucketRequest) Header() *http.Header {
     return &http.Header{}
 }
 
-func (GetBucketRequest) GetContentStream() networking.SizedReadCloser {
+func (GetBucketRequest) GetContentStream() networking.ReaderWithSizeDecorator {
     return nil
 }
 

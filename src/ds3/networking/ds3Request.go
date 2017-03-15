@@ -14,7 +14,7 @@ type Ds3Request interface {
     Path() string
     QueryParams() *url.Values
     Header() *http.Header
-    GetContentStream() SizedReadCloser
+    GetContentStream() ReaderWithSizeDecorator
     GetChecksum() Checksum
 }
 
@@ -32,7 +32,7 @@ func NewNoneChecksum() Checksum {
 // We need a Size method so we can pass the appropriate Content-Length header.
 // Size isn't readily available in Go standard interfaces, so we created a new
 // interface for it.
-type SizedReadCloser interface {
+type ReaderWithSizeDecorator interface {
     io.Reader
     io.Closer
     Size() (int64, error)
@@ -72,32 +72,32 @@ func (verb HttpVerb) String() (string, error) {
     }
 }
 
-// Defines a SizedReadCloser based on an array of bytes.
-type bytesSizedReadCloser struct {
+// Defines a ReaderWithSizeDecorator based on an array of bytes.
+type byteReaderWithSizeDecorator struct {
     reader *bytes.Reader
     size int64
 }
 
-func BuildSizedReadCloser(contentBytes []byte) SizedReadCloser{
-    return &bytesSizedReadCloser{
+func BuildSizedReadCloser(contentBytes []byte) ReaderWithSizeDecorator {
+    return &byteReaderWithSizeDecorator{
         bytes.NewReader(contentBytes),
         int64(len(contentBytes)),
     }
 }
 
-func (bytesSizedReadCloser *bytesSizedReadCloser) Read(b []byte) (int, error) {
-    return bytesSizedReadCloser.reader.Read(b)
+func (byteReaderWithSizeDecorator *byteReaderWithSizeDecorator) Read(b []byte) (int, error) {
+    return byteReaderWithSizeDecorator.reader.Read(b)
 }
 
-func (bytesSizedReadCloser) Close() error {
+func (byteReaderWithSizeDecorator) Close() error {
     return nil
 }
 
-func (bytesSizedReadCloser *bytesSizedReadCloser) Seek(offset int64, whence int) (int64, error) {
-    return bytesSizedReadCloser.reader.Seek(offset, whence)
+func (byteReaderWithSizeDecorator *byteReaderWithSizeDecorator) Seek(offset int64, whence int) (int64, error) {
+    return byteReaderWithSizeDecorator.reader.Seek(offset, whence)
 }
 
-func (bytesSizedReadCloser *bytesSizedReadCloser) Size() (int64, error) {
-    return bytesSizedReadCloser.size, nil
+func (byteReaderWithSizeDecorator *byteReaderWithSizeDecorator) Size() (int64, error) {
+    return byteReaderWithSizeDecorator.size, nil
 }
 

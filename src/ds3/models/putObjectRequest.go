@@ -9,12 +9,12 @@ import (
 type PutObjectRequest struct {
     bucketName string
     objectName string
-    content networking.SizedReadCloser
+    content networking.ReaderWithSizeDecorator
     checksum networking.Checksum
     queryParams *url.Values
 }
 
-func NewPutObjectRequest(bucketName string, objectName string, content networking.SizedReadCloser) *PutObjectRequest {
+func NewPutObjectRequest(bucketName string, objectName string, content networking.ReaderWithSizeDecorator) *PutObjectRequest {
     return &PutObjectRequest{
         bucketName: bucketName,
         objectName:objectName,
@@ -46,7 +46,7 @@ func (PutObjectRequest) Header() *http.Header {
     return &http.Header{}
 }
 
-func (putObjectRequest *PutObjectRequest) GetContentStream() networking.SizedReadCloser {
+func (putObjectRequest *PutObjectRequest) GetContentStream() networking.ReaderWithSizeDecorator {
     return putObjectRequest.content
 }
 
