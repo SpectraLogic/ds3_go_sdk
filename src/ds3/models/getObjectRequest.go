@@ -12,6 +12,7 @@ type GetObjectRequest struct {
     objectName string
     rangeHeader *rangeHeader
     checksum networking.Checksum
+    queryParams *url.Values
 }
 
 type rangeHeader struct {
@@ -23,6 +24,7 @@ func NewGetObjectRequest(bucketName string, objectName string) *GetObjectRequest
         bucketName: bucketName,
         objectName: objectName,
         checksum:   networking.NewNoneChecksum(), //Default checksum type of None
+        queryParams: &url.Values{},
     }
 }
 
@@ -45,8 +47,8 @@ func (getObjectRequest *GetObjectRequest) Path() string {
     return "/" + getObjectRequest.bucketName + "/" + getObjectRequest.objectName
 }
 
-func (GetObjectRequest) QueryParams() *url.Values {
-    return new(url.Values)
+func (getObjectRequest GetObjectRequest) QueryParams() *url.Values {
+    return getObjectRequest.queryParams
 }
 
 func (getObjectRequest GetObjectRequest) Header() *http.Header {

@@ -10,13 +10,18 @@ type AbortMultipartRequest struct {
     bucketName string
     objectName string
     uploadId string
+    queryParams *url.Values
 }
 
 func NewAbortMultipartRequest(bucketName string, objectName string, uploadId string) *AbortMultipartRequest {
+    queryParams := &url.Values{}
+    queryParams.Set("", uploadId)
+
     return &AbortMultipartRequest{
         bucketName: bucketName,
         objectName: objectName,
         uploadId: uploadId,
+        queryParams: queryParams,
     }
 }
 
@@ -29,7 +34,7 @@ func (abortMultipartRequest *AbortMultipartRequest) Path() string {
 }
 
 func (abortMultipartRequest *AbortMultipartRequest) QueryParams() *url.Values {
-    return &url.Values{"uploadId": []string{abortMultipartRequest.uploadId}}
+    return abortMultipartRequest.queryParams
 }
 
 func (AbortMultipartRequest) Header() *http.Header {

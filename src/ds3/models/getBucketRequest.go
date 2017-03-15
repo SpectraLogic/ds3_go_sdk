@@ -12,26 +12,31 @@ type GetBucketRequest struct {
     marker string
     prefix string
     maxKeys int
+    queryParams *url.Values
 }
 
 func NewGetBucketRequest(bucketName string) *GetBucketRequest {
     return &GetBucketRequest{
         bucketName: bucketName,
+        queryParams: &url.Values{},
     }
 }
 
 func (getBucketRequest *GetBucketRequest) WithMarker(marker string) *GetBucketRequest {
     getBucketRequest.marker = marker
+    getBucketRequest.queryParams.Set("marker", marker)
     return getBucketRequest
 }
 
 func (getBucketRequest *GetBucketRequest) WithPrefix(prefix string) *GetBucketRequest {
     getBucketRequest.prefix = prefix
+    getBucketRequest.queryParams.Set("prefix", prefix)
     return getBucketRequest
 }
 
 func (getBucketRequest *GetBucketRequest) WithMaxKeys(maxKeys int) *GetBucketRequest {
     getBucketRequest.maxKeys = maxKeys
+    getBucketRequest.queryParams.Set("max-keys", strconv.Itoa(getBucketRequest.maxKeys))
     return getBucketRequest
 }
 
@@ -44,17 +49,7 @@ func (getBucketRequest *GetBucketRequest) Path() string {
 }
 
 func (getBucketRequest *GetBucketRequest) QueryParams() *url.Values {
-    values := make(url.Values)
-    if getBucketRequest.marker != "" {
-        values.Add("marker", getBucketRequest.marker)
-    }
-    if getBucketRequest.prefix != "" {
-        values.Add("prefix", getBucketRequest.prefix)
-    }
-    if getBucketRequest.maxKeys > 0 {
-        values.Add("max-keys", strconv.Itoa(getBucketRequest.maxKeys))
-    }
-    return &values
+    return getBucketRequest.queryParams
 }
 
 func (GetBucketRequest) Header() *http.Header {

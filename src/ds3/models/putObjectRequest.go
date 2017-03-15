@@ -11,6 +11,7 @@ type PutObjectRequest struct {
     objectName string
     content networking.SizedReadCloser
     checksum networking.Checksum
+    queryParams *url.Values
 }
 
 func NewPutObjectRequest(bucketName string, objectName string, content networking.SizedReadCloser) *PutObjectRequest {
@@ -19,6 +20,7 @@ func NewPutObjectRequest(bucketName string, objectName string, content networkin
         objectName:objectName,
         content:content,
         checksum: networking.NewNoneChecksum(), //Default checksum type of None
+        queryParams: &url.Values{},
     }
 }
 
@@ -36,8 +38,8 @@ func (putObjectRequest *PutObjectRequest) Path() string {
     return "/" + putObjectRequest.bucketName + "/" + putObjectRequest.objectName
 }
 
-func (PutObjectRequest) QueryParams() *url.Values {
-    return new(url.Values)
+func (putObjectRequest *PutObjectRequest) QueryParams() *url.Values {
+    return putObjectRequest.queryParams
 }
 
 func (PutObjectRequest) Header() *http.Header {

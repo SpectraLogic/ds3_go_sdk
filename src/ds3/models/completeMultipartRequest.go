@@ -12,6 +12,7 @@ type CompleteMultipartRequest struct {
     objectName string
     uploadId string
     parts []Part
+    queryParams *url.Values
 }
 
 type CompleteMultipartUpload struct {
@@ -24,11 +25,15 @@ type Part struct {
 }
 
 func NewCompleteMultipartRequest(bucketName string, objectName string, uploadId string, parts []Part) *CompleteMultipartRequest {
+    queryParams := &url.Values{}
+    queryParams.Set("uploadId", uploadId)
+
     return &CompleteMultipartRequest{
         bucketName: bucketName,
         objectName: objectName,
         uploadId: uploadId,
         parts: parts,
+        queryParams: queryParams,
     }
 }
 
@@ -41,7 +46,7 @@ func (completeMultipartRequest *CompleteMultipartRequest) Path() string {
 }
 
 func (completeMultipartRequest *CompleteMultipartRequest) QueryParams() *url.Values {
-    return &url.Values{"uploadId": []string{completeMultipartRequest.uploadId}}
+    return completeMultipartRequest.queryParams
 }
 
 func (CompleteMultipartRequest) Header() *http.Header {

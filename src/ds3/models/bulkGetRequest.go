@@ -9,10 +9,18 @@ import (
 type BulkGetRequest struct {
     bucketName string
     content networking.SizedReadCloser
+    queryParams *url.Values
 }
 
 func NewBulkGetRequest(bucketName string, objects []Object) *BulkGetRequest {
-    return &BulkGetRequest{bucketName, buildObjectListStream(objects)}
+    queryParams := &url.Values{}
+    queryParams.Set("operation", "start_bulk_get")
+
+    return &BulkGetRequest{
+        bucketName: bucketName,
+        content: buildObjectListStream(objects),
+        queryParams: queryParams,
+    }
 }
 
 func (BulkGetRequest) Verb() networking.HttpVerb {
@@ -23,8 +31,8 @@ func (bulkGetRequest *BulkGetRequest) Path() string {
     return "/_rest_/buckets/" + bulkGetRequest.bucketName
 }
 
-func (BulkGetRequest) QueryParams() *url.Values {
-    return &url.Values{"operation": []string{"start_bulk_get"}}
+func (bulkGetRequest *BulkGetRequest) QueryParams() *url.Values {
+    return bulkGetRequest.queryParams
 }
 
 func (BulkGetRequest) Header() *http.Header {

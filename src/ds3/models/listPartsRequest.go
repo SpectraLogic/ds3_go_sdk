@@ -10,13 +10,18 @@ type ListPartsRequest struct {
     bucketName string
     objectName string
     uploadId string
+    queryParams *url.Values
 }
 
 func NewListPartsRequest(bucketName string, objectName string, uploadId string) *ListPartsRequest {
+    queryParams := &url.Values{}
+    queryParams.Set("uploadId", uploadId)
+
     return &ListPartsRequest{
         bucketName: bucketName,
         objectName: objectName,
         uploadId: uploadId,
+        queryParams: queryParams,
     }
 }
 
@@ -29,7 +34,7 @@ func (listPartsRequest *ListPartsRequest) Path() string {
 }
 
 func (listPartsRequest *ListPartsRequest) QueryParams() *url.Values {
-    return &url.Values{"uploadId": []string{listPartsRequest.uploadId}}
+    return listPartsRequest.queryParams
 }
 
 func (ListPartsRequest) Header() *http.Header {

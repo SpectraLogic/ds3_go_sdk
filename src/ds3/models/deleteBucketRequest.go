@@ -8,11 +8,13 @@ import (
 
 type DeleteBucketRequest struct {
     bucketName string
+    queryParams *url.Values
 }
 
 func NewDeleteBucketRequest(bucketName string) *DeleteBucketRequest {
     return &DeleteBucketRequest{
         bucketName: bucketName,
+        queryParams: &url.Values{},
     }
 }
 
@@ -25,7 +27,7 @@ func (deleteBucketRequest *DeleteBucketRequest) Path() string {
 }
 
 func (deleteBucketRequest *DeleteBucketRequest) QueryParams() *url.Values {
-    return new(url.Values)
+    return deleteBucketRequest.queryParams
 }
 
 func (DeleteBucketRequest) Header() *http.Header {
