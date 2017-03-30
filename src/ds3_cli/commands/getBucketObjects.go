@@ -9,7 +9,7 @@ import (
 // Gets all objects in a bucket, performing multiple requests if the results
 // are paged. Also supports limiting to an arbitrary number of keys independent
 // of page size.
-func getBucketObjects(client *ds3.Client, args *Arguments) ([]models.Object, error) {
+func getBucketObjects(client *ds3.Client, args *Arguments) ([]models.Ds3Object, error) {
     // Validate arguments.
     if args.Bucket == "" {
         return nil, errors.New("Must specify a bucket name when doing get_bucket.")
@@ -22,7 +22,7 @@ func getBucketObjects(client *ds3.Client, args *Arguments) ([]models.Object, err
     }
 
     // Do a do...while pattern to do as many requests as needed.
-    var results []models.Object
+    var results []models.Ds3Object
     marker := ""
     for {
         // Build the request.
@@ -36,7 +36,8 @@ func getBucketObjects(client *ds3.Client, args *Arguments) ([]models.Object, err
 
         // Output the results.
         for _, obj := range response.Contents {
-            results = append(results, obj)
+            ds3object := models.Ds3Object{Name:obj.Key, Size:obj.Size}
+            results = append(results, ds3object)
         }
 
         // Subtract the number of keys that we got from the number of keys that

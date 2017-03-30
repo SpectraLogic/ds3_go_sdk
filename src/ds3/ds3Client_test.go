@@ -325,7 +325,7 @@ func TestPutObject(t *testing.T) {
         PutObject(models.NewPutObjectRequest(
             "bucketName",
             "object",
-        networking.BuildSizedReadCloser([]byte(stringResponse)),
+        networking.BuildByteReaderWithSizeDecorator([]byte(stringResponse)),
         ))
 
     // Check the error result.
@@ -343,7 +343,7 @@ func TestBulkPut(t *testing.T) {
     runBulkTest(
         t,
         "start_bulk_put",
-        func(client *Client, objects []models.Object) ([][]models.Object, error) {
+        func(client *Client, objects []models.Ds3Object) ([][]models.Object, error) {
             request, err := client.BulkPut(models.NewBulkPutRequest("bucketName", objects))
             return request.Objects, err
         },
@@ -354,14 +354,14 @@ func TestBulkGet(t *testing.T) {
     runBulkTest(
         t,
         "start_bulk_get",
-        func(client *Client, objects []models.Object) ([][]models.Object, error) {
+        func(client *Client, objects []models.Ds3Object) ([][]models.Object, error) {
             request, err := client.BulkGet(models.NewBulkGetRequest("bucketName", objects))
             return request.Objects, err
         },
     )
 }
 
-type bulkTest func(*Client, []models.Object) ([][]models.Object, error)
+type bulkTest func(*Client, []models.Ds3Object) ([][]models.Object, error)
 
 func runBulkTest(t *testing.T, operation string, callToTest bulkTest) {
     keys := []string { "file2", "file1", "file3" }
@@ -370,10 +370,10 @@ func runBulkTest(t *testing.T, operation string, callToTest bulkTest) {
     stringRequest := "<objects><object name=\"file1\" size=\"256\"></object><object name=\"file2\" size=\"1202\"></object><object name=\"file3\" size=\"2523\"></object></objects>"
     stringResponse := "<masterobjectlist><objects><object name='file2' size='1202'/><object name='file1' size='256'/><object name='file3' size='2523'/></objects></masterobjectlist>"
 
-    inputObjects := []models.Object {
-        {Key: "file1", Size: 256 },
-        {Key: "file2", Size: 1202 },
-        {Key: "file3", Size: 2523 },
+    inputObjects := []models.Ds3Object {
+        {Name: "file1", Size: 256 },
+        {Name: "file2", Size: 1202 },
+        {Name: "file3", Size: 2523 },
     }
 
     // Create and run the mocked client.
@@ -464,7 +464,7 @@ func TestPutPart(t *testing.T) {
             "object",
             partNumber,
             uploadId,
-            networking.BuildSizedReadCloser([]byte(content)),
+            networking.BuildByteReaderWithSizeDecorator([]byte(content)),
         ))
 
     // Check the error result.

@@ -22,7 +22,7 @@ func getBucket(client *ds3.Client, args *Arguments) error {
         return err
     }
     for _, obj := range objects {
-        fmt.Println(obj.Key)
+        fmt.Println(obj.Name)
     }
     return nil
 }

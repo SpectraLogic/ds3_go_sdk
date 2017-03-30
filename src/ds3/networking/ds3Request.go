@@ -78,7 +78,7 @@ type byteReaderWithSizeDecorator struct {
     size int64
 }
 
-func BuildSizedReadCloser(contentBytes []byte) ReaderWithSizeDecorator {
+func BuildByteReaderWithSizeDecorator(contentBytes []byte) ReaderWithSizeDecorator {
     return &byteReaderWithSizeDecorator{
         bytes.NewReader(contentBytes),
         int64(len(contentBytes)),

@@ -61,7 +61,7 @@ func (completeMultipartRequest *CompleteMultipartRequest) GetContentStream() net
     }
 
     // Create a ReaderWithSizeDecorator which the network layer expects.
-    return networking.BuildSizedReadCloser(xmlBytes)
+    return networking.BuildByteReaderWithSizeDecorator(xmlBytes)
 }
 
 func (CompleteMultipartRequest) GetChecksum() networking.Checksum {

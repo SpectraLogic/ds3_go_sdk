@@ -107,7 +107,7 @@ func (mockedNet *mockedNet) StatusCode() int {
 }
 
 func (mockedNet *mockedNet) Body() io.ReadCloser {
-    return networking.BuildSizedReadCloser([]byte(mockedNet.response))
+    return networking.BuildByteReaderWithSizeDecorator([]byte(mockedNet.response))
 }
 
 func (mockedNet *mockedNet) Header() *http.Header {
