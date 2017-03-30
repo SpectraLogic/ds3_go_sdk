@@ -12,13 +12,13 @@ type BulkGetRequest struct {
     queryParams *url.Values
 }
 
-func NewBulkGetRequest(bucketName string, objects []Object) *BulkGetRequest {
+func NewBulkGetRequest(bucketName string, objects []Ds3Object) *BulkGetRequest {
     queryParams := &url.Values{}
     queryParams.Set("operation", "start_bulk_get")
 
     return &BulkGetRequest{
         bucketName: bucketName,
-        content: buildObjectListStream(objects),
+        content: buildDs3ObjectListStream(objects),
         queryParams: queryParams,
     }
 }

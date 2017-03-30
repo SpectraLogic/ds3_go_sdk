@@ -40,7 +40,7 @@ func PutObjectLogError(t *testing.T, client *ds3.Client, bucketName string, obje
 
 // Puts the specified object. Returns an error if not successful.
 func PutObject(client *ds3.Client, bucketName string, objectName string, data []byte) (error) {
-    putObjectResponse, putErr := client.PutObject(models.NewPutObjectRequest(bucketName, objectName, networking.BuildSizedReadCloser(data)))
+    putObjectResponse, putErr := client.PutObject(models.NewPutObjectRequest(bucketName, objectName, networking.BuildByteReaderWithSizeDecorator(data)))
     if putErr != nil {
         return putErr
     }
