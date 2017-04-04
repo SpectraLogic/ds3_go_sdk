@@ -3,7 +3,6 @@ package models
 import (
     "net/url"
     "net/http"
-    "encoding/xml"
     "ds3/networking"
 )
 
@@ -11,17 +10,8 @@ type CompleteMultipartRequest struct {
     bucketName string
     objectName string
     uploadId string
-    parts []Part
+    content networking.ReaderWithSizeDecorator
     queryParams *url.Values
-}
-
-type CompleteMultipartUpload struct {
-    Parts []Part `xml:"Part"`
-}
-
-type Part struct {
-    PartNumber int
-    ETag string
 }
 
 func NewCompleteMultipartRequest(bucketName string, objectName string, uploadId string, parts []Part) *CompleteMultipartRequest {
@@ -32,7 +22,7 @@ func NewCompleteMultipartRequest(bucketName string, objectName string, uploadId 
         bucketName: bucketName,
         objectName: objectName,
         uploadId: uploadId,
-        parts: parts,
+        content: buildPartsListStream(parts),
         queryParams: queryParams,
     }
 }
@@ -54,14 +44,7 @@ func (CompleteMultipartRequest) Header() *http.Header {
 }
 
 func (completeMultipartRequest *CompleteMultipartRequest) GetContentStream() networking.ReaderWithSizeDecorator {
-    // Create an xml document from the entity.
-    xmlBytes, err := xml.Marshal(CompleteMultipartUpload{completeMultipartRequest.parts})
-    if err != nil {
-        panic(err)
-    }
-
-    // Create a ReaderWithSizeDecorator which the network layer expects.
-    return networking.BuildByteReaderWithSizeDecorator(xmlBytes)
+    return completeMultipartRequest.content
 }
 
 func (CompleteMultipartRequest) GetChecksum() networking.Checksum {
