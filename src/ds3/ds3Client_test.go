@@ -8,6 +8,7 @@ import (
     "io/ioutil"
     "ds3/models"
     "ds3/networking"
+    "reflect"
 )
 
 func TestGetService(t *testing.T) {
@@ -530,3 +531,46 @@ func TestCompleteMultipart(t *testing.T) {
     }
 }
 
+func TestDeleteObjects(t *testing.T) {
+    bucket := "bucketName"
+    objectNames := []string {"obj1", "obj2", "obj3"}
+    expectedRequest := "<Delete><Object><Key>obj1</Key></Object><Object><Key>obj2</Key></Object><Object><Key>obj3</Key></Object></Delete>"
+    expectedResponse := "<DeleteResult><Deleted><Key>obj1</Key></Deleted><Deleted><Key>obj2</Key></Deleted><Error><Code>ObjectNotFound</Code><Key>obj3</Key><Message>Object not found</Message></Error></DeleteResult>"
+
+    expectedDeleted := []models.DeletedObject{{"obj1"}, {"obj2"}}
+
+    expectedErrors := []models.DeleteError {
+        {
+            Code:    "ObjectNotFound",
+            Key:     "obj3",
+            Message: "Object not found",
+        },
+    }
+
+    // Create and run the mocked client.
+    qs := &url.Values{
+        "delete": []string{""},
+    }
+    response, err := mockedClient(t).
+        Expecting(networking.POST, "/bucketName", qs, &expectedRequest).
+        Returning(200, expectedResponse, &http.Header{}).
+        DeleteObjects(models.NewDeleteObjectsRequest(bucket, objectNames))
+
+    // Check the error result.
+    if err != nil {
+        t.Errorf("Unexpected error '%s'.", err.Error())
+    }
+
+    // Check the response value.
+    if response == nil {
+        t.Error("Response was unexpectedly nil.")
+    }
+
+    if !reflect.DeepEqual(response.Deleted, expectedDeleted) {
+        t.Errorf("Expected '%s' but got '%s'", expectedDeleted, response.Deleted)
+    }
+
+    if !reflect.DeepEqual(response.Errors, expectedErrors) {
+        t.Errorf("Expected '%s' but got '%s'", expectedErrors, response.Errors)
+    }
+}
