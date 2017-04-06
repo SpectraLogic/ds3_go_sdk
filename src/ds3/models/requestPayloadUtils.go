@@ -31,6 +31,26 @@ func newDs3ObjectList(ds3objects []Ds3Object) *ds3ObjectList {
     }
 }
 
+type deleteObjectList struct {
+    XMLName xml.Name
+    Objects []deleteObject `xml:"Object"`
+}
+
+type deleteObject struct {
+    Key string `xml:"Key"`
+}
+
+func newDeleteObjectList(objectNames []string) *deleteObjectList {
+    objects := make([]deleteObject, len(objectNames))
+    for index, name := range objectNames {
+        objects[index].Key = name
+    }
+    return &deleteObjectList{
+        XMLName: xml.Name{Local:"Delete"},
+        Objects: objects,
+    }
+}
+
 // Converts the ds3 object list into a request payload stream.
 func buildDs3ObjectListStream(ds3Objects []Ds3Object) networking.ReaderWithSizeDecorator {
     // Build the ds3 object list entity.
@@ -62,5 +82,16 @@ func buildPartsListStream(parts []Part) networking.ReaderWithSizeDecorator {
     }
 
     // Create a ReaderWithSizeDecorator which the network layer expects.
+    return networking.BuildByteReaderWithSizeDecorator(xmlBytes)
+}
+
+// Converts a list of object names into a request payload stream for delete objects
+func buildDeleteObjectsPayload(objectNames []string) networking.ReaderWithSizeDecorator {
+    deleteObjects := newDeleteObjectList(objectNames)
+    xmlBytes, err := xml.Marshal(deleteObjects)
+    if err != nil {
+        // Should never happen
+        panic(err)
+    }
     return networking.BuildByteReaderWithSizeDecorator(xmlBytes)
 }
