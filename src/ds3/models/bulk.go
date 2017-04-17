@@ -1,7 +1,6 @@
 package models
 
 import (
-    "net/http"
     "ds3/networking"
 )
 
@@ -27,7 +26,7 @@ type bulkObject struct {
 func getObjectsFromBulkResponse(webResponse networking.WebResponse) ([][]Object, error) {
     // Parse the master object list response body.
     var mol masterobjectlist
-    if err := readResponseBody(webResponse, http.StatusOK, &mol); err != nil {
+    if err := readResponseBody(webResponse, &mol); err != nil {
         return nil, err
     }
 

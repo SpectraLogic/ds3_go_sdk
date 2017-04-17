@@ -2,7 +2,6 @@ package models
 
 import (
     "ds3/networking"
-    "net/http"
 )
 
 type DeleteObjectsResponse struct {
@@ -21,9 +20,21 @@ type DeleteError struct {
 }
 
 func NewDeleteObjectsResponse(webResponse networking.WebResponse) (*DeleteObjectsResponse, error) {
-    var body DeleteObjectsResponse //DeleteResult
-    if err := readResponseBody(webResponse, http.StatusOK, &body); err != nil {
+    expectedStatusCodes := []int { 200 }
+
+    if err := checkStatusCode(webResponse, expectedStatusCodes); err != nil {
         return nil, err
     }
-    return &body, nil
+
+    switch code := webResponse.StatusCode(); code {
+    case 200:
+        var body DeleteObjectsResponse //DeleteResult
+        if err := readResponseBody(webResponse, &body); err != nil {
+            return nil, err
+        }
+        return &body, nil
+    default:
+        //Should never get here
+        return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
+    }
 }

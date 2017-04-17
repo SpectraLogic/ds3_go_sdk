@@ -6,7 +6,7 @@ import (
 )
 
 type BadStatusCodeError struct {
-    ExpectedStatusCode int
+    ExpectedStatusCode []int
     ActualStatusCode int
     ErrorBody *Error
 }
@@ -18,7 +18,7 @@ type Error struct {
     RequestId string
 }
 
-func buildBadStatusCodeError(webResponse networking.WebResponse, expectedStatusCode int) *BadStatusCodeError {
+func buildBadStatusCodeError(webResponse networking.WebResponse, expectedStatusCodes []int) *BadStatusCodeError {
     var errorBody Error
     var errorBodyPtr *Error
 
@@ -30,7 +30,7 @@ func buildBadStatusCodeError(webResponse networking.WebResponse, expectedStatusC
 
     // Return the bad status code entity.
     return &BadStatusCodeError{
-        expectedStatusCode,
+        expectedStatusCodes,
         webResponse.StatusCode(),
         errorBodyPtr,
     }
@@ -39,14 +39,14 @@ func buildBadStatusCodeError(webResponse networking.WebResponse, expectedStatusC
 func (err BadStatusCodeError) Error() string {
     if err.ErrorBody != nil {
         return fmt.Sprintf(
-            "Received a status code of %d when %d was expected. Error message: \"%s\"",
+            "Received a status code of %d when %v was expected. Error message: \"%s\"",
             err.ActualStatusCode,
             err.ExpectedStatusCode,
             err.ErrorBody.Message,
         )
     } else {
         return fmt.Sprintf(
-            "Received a status code of %d when %d was expected. Could not parse the response for additional information.",
+            "Received a status code of %d when %v was expected. Could not parse the response for additional information.",
             err.ActualStatusCode,
             err.ExpectedStatusCode,
         )

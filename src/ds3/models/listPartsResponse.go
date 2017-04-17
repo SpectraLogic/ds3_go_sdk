@@ -1,7 +1,6 @@
 package models
 
 import (
-    "net/http"
     "ds3/networking"
 )
 
@@ -27,10 +26,22 @@ type UploadedPart struct {
 }
 
 func NewListPartsResponse(webResponse networking.WebResponse) (*ListPartsResponse, error) {
-    var body ListPartsResponse
-    if err := readResponseBody(webResponse, http.StatusOK, &body); err != nil {
+    expectedStatusCodes := []int { 200 }
+
+    if err := checkStatusCode(webResponse, expectedStatusCodes); err != nil {
         return nil, err
     }
-    return &body, nil
+
+    switch code := webResponse.StatusCode(); code {
+    case 200:
+        var body ListPartsResponse
+        if err := readResponseBody(webResponse, &body); err != nil {
+            return nil, err
+        }
+        return &body, nil
+    default:
+        //Should never get here
+        return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
+    }
 }
 

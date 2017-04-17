@@ -2,7 +2,6 @@ package models
 
 import (
     "strings"
-    "net/http"
     "ds3/networking"
 )
 
@@ -11,15 +10,22 @@ type PutPartResponse struct {
 }
 
 func NewPutPartResponse(webResponse networking.WebResponse) (*PutPartResponse, error) {
-    if err := checkStatusCode(webResponse, http.StatusOK); err != nil {
+    expectedStatusCodes := []int { 200 }
+
+    if err := checkStatusCode(webResponse, expectedStatusCodes); err != nil {
         return nil, err
-    } else {
+    }
+
+    switch code := webResponse.StatusCode(); code {
+    case 200:
         etags := (*webResponse.Header())["etag"]
         var etag string
         if len(etags) > 0 {
             etag = strings.Trim(etags[0], "\"")
         }
         return &PutPartResponse{etag}, nil
+    default:
+        //Should never get here
+        return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }
 }
-
