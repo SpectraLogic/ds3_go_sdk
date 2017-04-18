@@ -27,10 +27,6 @@ type Upload struct {
 func NewListMultipartResponse(webResponse networking.WebResponse) (*ListMultipartResponse, error) {
     expectedStatusCodes := []int { 200 }
 
-    if err := checkStatusCode(webResponse, expectedStatusCodes); err != nil {
-        return nil, err
-    }
-
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body ListMultipartResponse
@@ -39,7 +35,6 @@ func NewListMultipartResponse(webResponse networking.WebResponse) (*ListMultipar
         }
         return &body, nil
     default:
-        //Should never get here
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }
 }

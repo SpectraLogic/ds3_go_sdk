@@ -15,10 +15,6 @@ type CompleteMultipartResponse struct {
 func NewCompleteMultipartResponse(webResponse networking.WebResponse) (*CompleteMultipartResponse, error) {
     expectedStatusCodes := []int { 200 }
 
-    if err := checkStatusCode(webResponse, expectedStatusCodes); err != nil {
-        return nil, err
-    }
-
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body CompleteMultipartResponse
@@ -28,7 +24,6 @@ func NewCompleteMultipartResponse(webResponse networking.WebResponse) (*Complete
         body.ETag = strings.Trim(body.ETag, "\"")
         return &body, nil
     default:
-        //Should never get here
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }
 }

@@ -22,10 +22,6 @@ type DeleteError struct {
 func NewDeleteObjectsResponse(webResponse networking.WebResponse) (*DeleteObjectsResponse, error) {
     expectedStatusCodes := []int { 200 }
 
-    if err := checkStatusCode(webResponse, expectedStatusCodes); err != nil {
-        return nil, err
-    }
-
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body DeleteObjectsResponse //DeleteResult
@@ -34,7 +30,6 @@ func NewDeleteObjectsResponse(webResponse networking.WebResponse) (*DeleteObject
         }
         return &body, nil
     default:
-        //Should never get here
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }
 }

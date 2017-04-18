@@ -7,16 +7,6 @@ import (
     "ds3/networking"
 )
 
-func checkStatusCode(webResponse networking.WebResponse, expectedStatusCodes []int) error {
-    code := webResponse.StatusCode()
-    for _, expectedCode := range expectedStatusCodes {
-        if code == expectedCode {
-            return nil
-        }
-    }
-    return buildBadStatusCodeError(webResponse, expectedStatusCodes)
-}
-
 func readResponseBody(webResponse networking.WebResponse, parsedBody interface{}) error {
     // Clean up the response body.
     body := webResponse.Body()

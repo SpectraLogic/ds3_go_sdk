@@ -28,10 +28,6 @@ type UploadedPart struct {
 func NewListPartsResponse(webResponse networking.WebResponse) (*ListPartsResponse, error) {
     expectedStatusCodes := []int { 200 }
 
-    if err := checkStatusCode(webResponse, expectedStatusCodes); err != nil {
-        return nil, err
-    }
-
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body ListPartsResponse
@@ -40,7 +36,6 @@ func NewListPartsResponse(webResponse networking.WebResponse) (*ListPartsRespons
         }
         return &body, nil
     default:
-        //Should never get here
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }
 }

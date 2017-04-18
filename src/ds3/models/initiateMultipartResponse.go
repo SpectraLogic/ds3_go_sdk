@@ -13,10 +13,6 @@ type InitiateMultipartResponse struct {
 func NewInitiateMultipartResponse(webResponse networking.WebResponse) (*InitiateMultipartResponse, error) {
     expectedStatusCodes := []int { 200 }
 
-    if err := checkStatusCode(webResponse, expectedStatusCodes); err != nil {
-        return nil, err
-    }
-
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body InitiateMultipartResponse
@@ -25,7 +21,6 @@ func NewInitiateMultipartResponse(webResponse networking.WebResponse) (*Initiate
         }
         return &body, nil
     default:
-        //Should never get here
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }
 }

@@ -17,10 +17,6 @@ type Bucket struct {
 func NewGetServiceResponse(webResponse networking.WebResponse) (*GetServiceResponse, error) {
     expectedStatusCodes := []int { 200 }
 
-    if err := checkStatusCode(webResponse, expectedStatusCodes); err != nil {
-        return nil, err
-    }
-
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetServiceResponse
@@ -29,7 +25,6 @@ func NewGetServiceResponse(webResponse networking.WebResponse) (*GetServiceRespo
         }
         return &body, nil
     default:
-        //Should never get here
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }
 }

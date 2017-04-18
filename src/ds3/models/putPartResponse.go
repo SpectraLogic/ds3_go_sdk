@@ -12,10 +12,6 @@ type PutPartResponse struct {
 func NewPutPartResponse(webResponse networking.WebResponse) (*PutPartResponse, error) {
     expectedStatusCodes := []int { 200 }
 
-    if err := checkStatusCode(webResponse, expectedStatusCodes); err != nil {
-        return nil, err
-    }
-
     switch code := webResponse.StatusCode(); code {
     case 200:
         etags := (*webResponse.Header())["etag"]
@@ -25,7 +21,6 @@ func NewPutPartResponse(webResponse networking.WebResponse) (*PutPartResponse, e
         }
         return &PutPartResponse{etag}, nil
     default:
-        //Should never get here
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }
 }
