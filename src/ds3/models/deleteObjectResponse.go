@@ -1,18 +1,18 @@
 package models
 
 import (
-    "net/http"
     "ds3/networking"
 )
 
 type DeleteObjectResponse struct {}
 
 func NewDeleteObjectResponse(webResponse networking.WebResponse) (*DeleteObjectResponse, error) {
-    if err := checkStatusCode(webResponse, http.StatusNoContent); err != nil {
-        return nil, err
-    } else {
+    expectedStatusCodes := []int { 204 }
+
+    switch code := webResponse.StatusCode(); code {
+    case 204:
         return &DeleteObjectResponse{}, nil
+    default:
+        return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }
 }
-
-

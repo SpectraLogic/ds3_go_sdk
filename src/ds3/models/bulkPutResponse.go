@@ -9,7 +9,15 @@ type BulkPutResponse struct {
 }
 
 func NewBulkPutResponse(webResponse networking.WebResponse) (*BulkPutResponse, error) {
-    objects, err := getObjectsFromBulkResponse(webResponse)
-    return &BulkPutResponse{objects}, err
+    expectedStatusCodes := []int { 200 }
+
+    switch code := webResponse.StatusCode(); code {
+    case 200:
+        objects, err := getObjectsFromBulkResponse(webResponse)
+        return &BulkPutResponse{objects}, err
+    default:
+        return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
+    }
+
 }
 

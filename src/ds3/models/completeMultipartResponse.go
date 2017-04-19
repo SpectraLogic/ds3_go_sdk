@@ -2,7 +2,6 @@ package models
 
 import (
     "strings"
-    "net/http"
     "ds3/networking"
 )
 
@@ -14,12 +13,19 @@ type CompleteMultipartResponse struct {
 }
 
 func NewCompleteMultipartResponse(webResponse networking.WebResponse) (*CompleteMultipartResponse, error) {
-    var body CompleteMultipartResponse
-    if err := readResponseBody(webResponse, http.StatusOK, &body); err != nil {
-        return nil, err
+    expectedStatusCodes := []int { 200 }
+
+    switch code := webResponse.StatusCode(); code {
+    case 200:
+        var body CompleteMultipartResponse
+        if err := readResponseBody(webResponse, &body); err != nil {
+            return nil, err
+        }
+        body.ETag = strings.Trim(body.ETag, "\"")
+        return &body, nil
+    default:
+        return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }
-    body.ETag = strings.Trim(body.ETag, "\"")
-    return &body, nil
 }
 
 

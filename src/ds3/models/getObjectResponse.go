@@ -2,7 +2,6 @@ package models
 
 import (
     "io"
-    "net/http"
     "ds3/networking"
 )
 
@@ -11,9 +10,13 @@ type GetObjectResponse struct {
 }
 
 func NewGetObjectResponse(webResponse networking.WebResponse) (*GetObjectResponse, error) {
-    if err := checkStatusCode(webResponse, http.StatusOK); err != nil {
-        return nil, err
+    expectedStatusCodes := []int { 200 }
+
+    switch code := webResponse.StatusCode(); code {
+    case 200:
+        return &GetObjectResponse{webResponse.Body()}, nil
+    default:
+        return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }
-    return &GetObjectResponse{webResponse.Body()}, nil
 }
 

@@ -90,7 +90,7 @@ func TestGetBadService(t *testing.T) {
     if err == nil {
         t.Error("Expected an error but didn't get one.")
     } else {
-        expectedError := "Received a status code of 400 when 200 was expected. Could not parse the response for additional information."
+        expectedError := "Received a status code of 400 when [200] was expected. Could not parse the response for additional information."
         actualError := err.Error()
         if actualError != expectedError {
             t.Errorf("Expected a different error message than received: '%s'", actualError)
@@ -241,7 +241,7 @@ func TestGetBadBucket(t *testing.T) {
     if err == nil {
         t.Error("Expected an error but got nil.")
     } else {
-        expectedError := "Received a status code of 400 when 200 was expected. Could not parse the response for additional information."
+        expectedError := "Received a status code of 400 when [200] was expected. Could not parse the response for additional information."
         actualError := err.Error()
         if actualError != expectedError {
             t.Errorf("Expected a different error message than received: '%s'", actualError)

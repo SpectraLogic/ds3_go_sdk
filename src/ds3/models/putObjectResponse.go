@@ -1,17 +1,19 @@
 package models
 
 import (
-    "net/http"
     "ds3/networking"
 )
 
 type PutObjectResponse struct {}
 
 func NewPutObjectResponse(webResponse networking.WebResponse) (*PutObjectResponse, error) {
-    if err := checkStatusCode(webResponse, http.StatusOK); err != nil {
-        return nil, err
-    } else {
+    expectedStatusCodes := []int { 200 }
+
+    switch code := webResponse.StatusCode(); code {
+    case 200:
         return &PutObjectResponse{}, nil
+    default:
+        return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }
 }
 

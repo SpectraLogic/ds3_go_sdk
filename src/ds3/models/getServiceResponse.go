@@ -1,7 +1,6 @@
 package models
 
 import (
-    "net/http"
     "ds3/networking"
 )
 
@@ -16,10 +15,16 @@ type Bucket struct {
 }
 
 func NewGetServiceResponse(webResponse networking.WebResponse) (*GetServiceResponse, error) {
-    var body GetServiceResponse
-    if err := readResponseBody(webResponse, http.StatusOK, &body); err != nil {
-        return nil, err
-    }
-    return &body, nil
-}
+    expectedStatusCodes := []int { 200 }
 
+    switch code := webResponse.StatusCode(); code {
+    case 200:
+        var body GetServiceResponse
+        if err := readResponseBody(webResponse, &body); err != nil {
+            return nil, err
+        }
+        return &body, nil
+    default:
+        return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
+    }
+}
