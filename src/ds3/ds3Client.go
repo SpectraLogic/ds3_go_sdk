@@ -20,6 +20,9 @@ type ClientPolicy struct {
     maxRedirect int // Maximum number of times to attempt redirect retries
 }
 
+const DEFAULT_MAX_RETRIES = 5
+const DEFAULT_MAX_REDIRECTS = 5
+
 func NewClientBuilder(endpoint *url.URL, creds networking.Credentials) *ClientBuilder {
     return &ClientBuilder{
         &networking.ConnectionInfo{
@@ -27,8 +30,8 @@ func NewClientBuilder(endpoint *url.URL, creds networking.Credentials) *ClientBu
             Creds: creds,
             Proxy: nil},
         &ClientPolicy{
-            maxRetries: 5,
-            maxRedirect: 5}}
+            maxRetries: DEFAULT_MAX_RETRIES,
+            maxRedirect: DEFAULT_MAX_REDIRECTS}}
 }
 
 func (clientBuilder *ClientBuilder) WithProxy(proxy *url.URL) *ClientBuilder {
