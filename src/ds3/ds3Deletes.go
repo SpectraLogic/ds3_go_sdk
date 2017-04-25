@@ -1,10 +1,15 @@
 package ds3
 
-import "ds3/models"
+import (
+    "ds3/models"
+    "ds3/networking"
+)
 
 func (client *Client) DeleteBucket(request *models.DeleteBucketRequest) (*models.DeleteBucketResponse, error) {
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.netLayer), client.clientPolicy.maxRetries)
+
     // Invoke the HTTP request.
-    response, requestErr := client.netLayer.Invoke(request)
+    response, requestErr := networkRetryDecorator.Invoke(request)
     if requestErr != nil {
         return nil, requestErr
     }
@@ -14,8 +19,10 @@ func (client *Client) DeleteBucket(request *models.DeleteBucketRequest) (*models
 }
 
 func (client *Client) DeleteObject(request *models.DeleteObjectRequest) (*models.DeleteObjectResponse, error) {
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.netLayer), client.clientPolicy.maxRetries)
+
     // Invoke the HTTP request.
-    response, requestErr := client.netLayer.Invoke(request)
+    response, requestErr := networkRetryDecorator.Invoke(request)
     if requestErr != nil {
         return nil, requestErr
     }
@@ -25,8 +32,10 @@ func (client *Client) DeleteObject(request *models.DeleteObjectRequest) (*models
 }
 
 func (client *Client) AbortMultipart(request *models.AbortMultipartRequest) (*models.AbortMultipartResponse, error) {
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.netLayer), client.clientPolicy.maxRetries)
+
     // Invoke the HTTP request.
-    response, requestErr := client.netLayer.Invoke(request)
+    response, requestErr := networkRetryDecorator.Invoke(request)
     if requestErr != nil {
         return nil, requestErr
     }
@@ -36,8 +45,10 @@ func (client *Client) AbortMultipart(request *models.AbortMultipartRequest) (*mo
 }
 
 func (client *Client) DeleteObjects(request *models.DeleteObjectsRequest) (*models.DeleteObjectsResponse, error) {
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.netLayer), client.clientPolicy.maxRetries)
+
     // Invoke the HTTP request.
-    response, requestErr := client.netLayer.Invoke(request)
+    response, requestErr := networkRetryDecorator.Invoke(request)
     if requestErr != nil {
         return nil, requestErr
     }

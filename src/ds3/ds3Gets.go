@@ -1,10 +1,16 @@
 package ds3
 
-import "ds3/models"
+import (
+    "ds3/models"
+    networking "ds3/networking"
+)
 
 func (client *Client) GetService(request *models.GetServiceRequest) (*models.GetServiceResponse, error) {
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.netLayer), client.clientPolicy.maxRetries)
+    httpRedirectDecorator := networking.NewHttpTempRedirectDecorator(&networkRetryDecorator, client.clientPolicy.maxRedirect)
+
     // Invoke the HTTP request.
-    response, requestErr := client.netLayer.Invoke(request)
+    response, requestErr := httpRedirectDecorator.Invoke(request)
     if requestErr != nil {
         return nil, requestErr
     }
@@ -14,8 +20,11 @@ func (client *Client) GetService(request *models.GetServiceRequest) (*models.Get
 }
 
 func (client *Client) GetBucket(request *models.GetBucketRequest) (*models.GetBucketResponse, error) {
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.netLayer), client.clientPolicy.maxRetries)
+    httpRedirectDecorator := networking.NewHttpTempRedirectDecorator(&networkRetryDecorator, client.clientPolicy.maxRedirect)
+
     // Invoke the HTTP request.
-    response, requestErr := client.netLayer.Invoke(request)
+    response, requestErr := httpRedirectDecorator.Invoke(request)
     if requestErr != nil {
         return nil, requestErr
     }
@@ -25,8 +34,10 @@ func (client *Client) GetBucket(request *models.GetBucketRequest) (*models.GetBu
 }
 
 func (client *Client) GetObject(request *models.GetObjectRequest) (*models.GetObjectResponse, error) {
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.netLayer), client.clientPolicy.maxRetries)
+
     // Invoke the HTTP request.
-    response, requestErr := client.netLayer.Invoke(request)
+    response, requestErr := networkRetryDecorator.Invoke(request)
     if requestErr != nil {
         return nil, requestErr
     }
@@ -36,8 +47,11 @@ func (client *Client) GetObject(request *models.GetObjectRequest) (*models.GetOb
 }
 
 func (client *Client) ListParts(request *models.ListPartsRequest) (*models.ListPartsResponse, error) {
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.netLayer), client.clientPolicy.maxRetries)
+    httpRedirectDecorator := networking.NewHttpTempRedirectDecorator(&networkRetryDecorator, client.clientPolicy.maxRedirect)
+
     // Invoke the HTTP request.
-    response, requestErr := client.netLayer.Invoke(request)
+    response, requestErr := httpRedirectDecorator.Invoke(request)
     if requestErr != nil {
         return nil, requestErr
     }
@@ -47,8 +61,11 @@ func (client *Client) ListParts(request *models.ListPartsRequest) (*models.ListP
 }
 
 func (client *Client) ListMultipart(request *models.ListMultipartRequest) (*models.ListMultipartResponse, error) {
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.netLayer), client.clientPolicy.maxRetries)
+    httpRedirectDecorator := networking.NewHttpTempRedirectDecorator(&networkRetryDecorator, client.clientPolicy.maxRedirect)
+
     // Invoke the HTTP request.
-    response, requestErr := client.netLayer.Invoke(request)
+    response, requestErr := httpRedirectDecorator.Invoke(request)
     if requestErr != nil {
         return nil, requestErr
     }
