@@ -74,3 +74,17 @@ func (client *Client) ListMultipart(request *models.ListMultipartRequest) (*mode
     return models.NewListMultipartResponse(response)
 }
 
+func (client *Client) GetJobToReplicateSpectraS3(request *models.GetJobToReplicateSpectraS3Request) (*models.GetJobToReplicateSpectraS3Response, error) {
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.netLayer), client.clientPolicy.maxRetries)
+    httpRedirectDecorator := networking.NewHttpTempRedirectDecorator(&networkRetryDecorator, client.clientPolicy.maxRedirect)
+
+    // Invoke the HTTP request.
+    response, requestErr := httpRedirectDecorator.Invoke(request)
+    if requestErr != nil {
+        return nil, requestErr
+    }
+
+    // Create a response object based on the result.
+    return models.NewGetJobToReplicateSpectraS3Response(response)
+}
+

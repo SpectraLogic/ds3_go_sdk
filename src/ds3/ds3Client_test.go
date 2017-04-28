@@ -316,6 +316,33 @@ func TestGetObjectRange(t *testing.T) {
     }
 }
 
+func TestGetJobToReplicateSpectraS3(t *testing.T) {
+    stringResponse := "object contents"
+
+    // Create and run the mocked client.
+    request := models.NewGetJobToReplicateSpectraS3Request("23a876ec-2fac-4dc8-b8e6-98d6026e7f4a")
+
+    expectedParams := &url.Values{"replicate": []string{""}}
+    response, err := mockedClient(t).
+        Expecting(networking.GET, "/_rest_/job/23a876ec-2fac-4dc8-b8e6-98d6026e7f4a", expectedParams, nil).
+        Returning(200, stringResponse, nil).
+        GetJobToReplicateSpectraS3(request)
+
+    // Check the error result.
+    if err != nil {
+        t.Errorf("Unexpected error '%s'.", err.Error())
+    }
+
+    // Check the response value.
+    if response == nil {
+        t.Error("Response was unexpectedly nil.")
+    } else {
+        if response.Content != stringResponse {
+            t.Errorf("Unexpected response: expected '%s' but was '%s'", stringResponse, response.Content)
+        }
+    }
+}
+
 func TestPutObject(t *testing.T) {
     stringResponse := "object contents"
 
