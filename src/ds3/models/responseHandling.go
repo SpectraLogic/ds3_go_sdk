@@ -31,3 +31,17 @@ func parseResponseBody(reader io.ReadCloser, body interface{}) error {
     return nil
 }
 
+func getResponseBodyAsString(webResponse networking.WebResponse) (string, error) {
+    // Clean up the response body.
+    body := webResponse.Body()
+    defer body.Close()
+
+    // Get the bytes or forward the error
+    bytes, err := ioutil.ReadAll(body)
+    if err != nil {
+        return "", err
+    }
+
+    // Convert the bytes into a string
+    return string(bytes), nil
+}
