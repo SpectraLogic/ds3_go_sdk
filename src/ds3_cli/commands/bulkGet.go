@@ -22,27 +22,27 @@ func bulkGet(client *ds3.Client, args *Arguments) error {
     }
 
     // Run request.
-    response, err := client.BulkGet(models.NewBulkGetRequest(args.Bucket, objects))
+    response, err := client.GetBulkJobSpectraS3(models.NewGetBulkJobSpectraS3Request(args.Bucket, objects))
     if err != nil {
         return err
     }
 
     // Handle the responses in parallel
-    return handleBulkResponse(response.Objects, buildBulkHandler(client, args.Bucket))
+    return handleBulkResponse(response.MasterObjectList.Objects, buildBulkHandler(client, args.Bucket))
 }
 
 // Returns a function that gets an object from a bulk get.
 func buildBulkHandler(client *ds3.Client, bucketName string) bulkHandler {
-    return func(obj models.Object) error {
+    return func(obj models.BulkObject) error {
         // Perform the request.
-        response, requestErr := client.GetObject(models.NewGetObjectRequest(bucketName, obj.Key))
+        response, requestErr := client.GetObject(models.NewGetObjectRequest(bucketName, *obj.Name))
         if requestErr != nil {
             return requestErr
         }
         defer response.Content.Close()
 
         // Get a file to write to.
-        file, fileErr := ensureDirectoryAndOpenFile(obj.Key)
+        file, fileErr := ensureDirectoryAndOpenFile(*obj.Name)
         if fileErr != nil {
             return fileErr
         }

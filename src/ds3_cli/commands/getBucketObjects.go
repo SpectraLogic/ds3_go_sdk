@@ -35,20 +35,20 @@ func getBucketObjects(client *ds3.Client, args *Arguments) ([]models.Ds3Object, 
         }
 
         // Output the results.
-        for _, obj := range response.Contents {
-            ds3object := models.Ds3Object{Name:obj.Key, Size:obj.Size}
+        for _, obj := range response.ListBucketResult.Objects {
+            ds3object := models.Ds3Object{Name:*obj.Key, Size:obj.Size}
             results = append(results, ds3object)
         }
 
         // Subtract the number of keys that we got from the number of keys that
         // we need to get.
-        remainingKeys -= len(response.Contents)
+        remainingKeys -= len(response.ListBucketResult.Objects)
 
         // Take note of the next marker to get.
-        marker = response.NextMarker
+        marker = *response.ListBucketResult.NextMarker
 
         // Take care of the do...while.
-        if response.IsTruncated == false || remainingKeys <= 0 {
+        if response.ListBucketResult.Truncated == false || remainingKeys <= 0 {
             break
         }
     }
@@ -60,10 +60,10 @@ func buildRequest(args *Arguments, remainingKeys int, marker string) *models.Get
     request := models.NewGetBucketRequest(args.Bucket)
     request.WithMaxKeys(getMinInt(remainingKeys, defaultMaxKeys))
     if args.KeyPrefix != "" {
-        request.WithPrefix(args.KeyPrefix)
+        request.WithPrefix(&args.KeyPrefix)
     }
     if marker != "" {
-        request.WithMarker(marker)
+        request.WithMarker(&marker)
     }
     return request
 }

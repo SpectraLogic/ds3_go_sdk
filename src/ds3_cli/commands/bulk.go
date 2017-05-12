@@ -2,9 +2,9 @@ package commands
 
 import "ds3/models"
 
-type bulkHandler func(models.Object) error
+type bulkHandler func(object models.BulkObject) error
 
-func handleBulkResponse(objectLists [][]models.Object, objectHandler bulkHandler) error {
+func handleBulkResponse(objectLists []models.Objects, objectHandler bulkHandler) error {
     // Make a channel to keep track of the errors and how many goroutines have finished.
     finish := make(chan error)
 
@@ -12,7 +12,7 @@ func handleBulkResponse(objectLists [][]models.Object, objectHandler bulkHandler
     for _, objectList := range objectLists {
         go func() {
             // Loop over each object and call the bulk handler.
-            for _, obj := range objectList {
+            for _, obj := range objectList.Objects {
                 // If there was an error, pass it onto the error channel and
                 // terminate the goroutine.
                 if err := objectHandler(obj); err != nil {

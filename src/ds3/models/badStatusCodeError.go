@@ -11,13 +11,6 @@ type BadStatusCodeError struct {
     ErrorBody *Error
 }
 
-type Error struct {
-    Code string
-    Message string
-    Resource string
-    RequestId string
-}
-
 func buildBadStatusCodeError(webResponse networking.WebResponse, expectedStatusCodes []int) *BadStatusCodeError {
     var errorBody Error
     var errorBodyPtr *Error

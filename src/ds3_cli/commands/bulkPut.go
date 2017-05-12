@@ -29,20 +29,20 @@ func bulkPut(client *ds3.Client, args *Arguments) error {
     }
 
     // Run request.
-    response, err := client.BulkPut(models.NewBulkPutRequest(args.Bucket, objects))
+    response, err := client.PutBulkJobSpectraS3(models.NewPutBulkJobSpectraS3Request(args.Bucket, objects))
     if err != nil {
         return err
     }
 
     // Handle the responses in parallel
-    return handleBulkResponse(response.Objects, buildFilePutter(client, args.Bucket))
+    return handleBulkResponse(response.MasterObjectList.Objects, buildFilePutter(client, args.Bucket))
 }
 
 // Returns a function that puts an object for a bulk put.
 func buildFilePutter(client *ds3.Client, bucketName string) bulkHandler {
-    return func(obj models.Object) error {
+    return func(obj models.BulkObject) error {
         // Read the file.
-        sizeReadCloser, fileErr := readFile(obj.Key)
+        sizeReadCloser, fileErr := readFile(*obj.Name)
         if fileErr != nil {
             return fileErr
         }
@@ -50,7 +50,7 @@ func buildFilePutter(client *ds3.Client, bucketName string) bulkHandler {
         // Submit the put object request.
         _, putErr := client.PutObject(models.NewPutObjectRequest(
             bucketName,
-            obj.Key,
+            *obj.Name,
             sizeReadCloser,
         ))
         return putErr
