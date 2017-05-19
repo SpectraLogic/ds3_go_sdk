@@ -490,9 +490,9 @@ func TestPutPart(t *testing.T) {
         PutMultiPartUploadPart(models.NewPutMultiPartUploadPartRequest(
             "bucketName",
             "object",
+            networking.BuildByteReaderWithSizeDecorator([]byte(content)),
             partNumber,
             uploadId,
-            networking.BuildByteReaderWithSizeDecorator([]byte(content)),
         ))
 
     // Check the error result.
