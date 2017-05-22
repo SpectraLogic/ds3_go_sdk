@@ -17,5 +17,5 @@ type Objects struct {
     ChunkId string `xml:"ChunkId,attr"`
     ChunkNumber int `xml:"ChunkNumber,attr"`
     NodeId *string `xml:"NodeId,attr"`
-    Objects []BulkObject `xml:"object"`
+    Objects []BulkObject `xml:"Object"`
 }

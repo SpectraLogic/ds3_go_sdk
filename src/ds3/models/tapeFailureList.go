@@ -14,5 +14,5 @@
 package models
 
 type TapeFailureList struct {
-    Failures []TapeFailure `xml:"failure"`
+    Failures []TapeFailure `xml:"Failure"`
 }
