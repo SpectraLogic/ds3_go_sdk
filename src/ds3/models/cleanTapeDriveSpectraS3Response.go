@@ -18,7 +18,7 @@ import (
 )
 
 type CleanTapeDriveSpectraS3Response struct {
-    TapeDrive TapeDrive `xml:"TapeDrive"`
+    TapeDrive TapeDrive
 }
 
 func NewCleanTapeDriveSpectraS3Response(webResponse networking.WebResponse) (*CleanTapeDriveSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewCleanTapeDriveSpectraS3Response(webResponse networking.WebResponse) (*Cl
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body CleanTapeDriveSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.TapeDrive); err != nil {
             return nil, err
         }
         return &body, nil

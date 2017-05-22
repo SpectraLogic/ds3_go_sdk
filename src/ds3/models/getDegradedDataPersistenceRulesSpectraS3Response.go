@@ -18,7 +18,7 @@ import (
 )
 
 type GetDegradedDataPersistenceRulesSpectraS3Response struct {
-    DataPersistenceRuleList DataPersistenceRuleList `xml:"DataPersistenceRuleList"`
+    DataPersistenceRuleList DataPersistenceRuleList
 }
 
 func NewGetDegradedDataPersistenceRulesSpectraS3Response(webResponse networking.WebResponse) (*GetDegradedDataPersistenceRulesSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewGetDegradedDataPersistenceRulesSpectraS3Response(webResponse networking.
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetDegradedDataPersistenceRulesSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.DataPersistenceRuleList); err != nil {
             return nil, err
         }
         return &body, nil

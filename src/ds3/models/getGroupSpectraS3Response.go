@@ -18,7 +18,7 @@ import (
 )
 
 type GetGroupSpectraS3Response struct {
-    Group Group `xml:"Group"`
+    Group Group
 }
 
 func NewGetGroupSpectraS3Response(webResponse networking.WebResponse) (*GetGroupSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewGetGroupSpectraS3Response(webResponse networking.WebResponse) (*GetGroup
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetGroupSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.Group); err != nil {
             return nil, err
         }
         return &body, nil

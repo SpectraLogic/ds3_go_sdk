@@ -18,7 +18,7 @@ import (
 )
 
 type PutObjectPersistedNotificationRegistrationSpectraS3Response struct {
-    S3ObjectPersistedNotificationRegistration S3ObjectPersistedNotificationRegistration `xml:"S3ObjectPersistedNotificationRegistration"`
+    S3ObjectPersistedNotificationRegistration S3ObjectPersistedNotificationRegistration
 }
 
 func NewPutObjectPersistedNotificationRegistrationSpectraS3Response(webResponse networking.WebResponse) (*PutObjectPersistedNotificationRegistrationSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewPutObjectPersistedNotificationRegistrationSpectraS3Response(webResponse 
     switch code := webResponse.StatusCode(); code {
     case 201:
         var body PutObjectPersistedNotificationRegistrationSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.S3ObjectPersistedNotificationRegistration); err != nil {
             return nil, err
         }
         return &body, nil

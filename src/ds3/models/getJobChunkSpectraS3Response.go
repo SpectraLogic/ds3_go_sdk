@@ -18,7 +18,7 @@ import (
 )
 
 type GetJobChunkSpectraS3Response struct {
-    Objects Objects `xml:"Objects"`
+    Objects Objects
 }
 
 func NewGetJobChunkSpectraS3Response(webResponse networking.WebResponse) (*GetJobChunkSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewGetJobChunkSpectraS3Response(webResponse networking.WebResponse) (*GetJo
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetJobChunkSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.Objects); err != nil {
             return nil, err
         }
         return &body, nil

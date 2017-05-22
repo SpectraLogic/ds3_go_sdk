@@ -18,7 +18,7 @@ import (
 )
 
 type GetBlobsOnTapeSpectraS3Response struct {
-    BulkObjectList BulkObjectList `xml:"BulkObjectList"`
+    BulkObjectList BulkObjectList
 }
 
 func NewGetBlobsOnTapeSpectraS3Response(webResponse networking.WebResponse) (*GetBlobsOnTapeSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewGetBlobsOnTapeSpectraS3Response(webResponse networking.WebResponse) (*Ge
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetBlobsOnTapeSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.BulkObjectList); err != nil {
             return nil, err
         }
         return &body, nil

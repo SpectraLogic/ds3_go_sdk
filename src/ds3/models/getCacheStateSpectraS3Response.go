@@ -18,7 +18,7 @@ import (
 )
 
 type GetCacheStateSpectraS3Response struct {
-    CacheInformation CacheInformation `xml:"CacheInformation"`
+    CacheInformation CacheInformation
 }
 
 func NewGetCacheStateSpectraS3Response(webResponse networking.WebResponse) (*GetCacheStateSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewGetCacheStateSpectraS3Response(webResponse networking.WebResponse) (*Get
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetCacheStateSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.CacheInformation); err != nil {
             return nil, err
         }
         return &body, nil

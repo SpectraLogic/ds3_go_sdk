@@ -18,7 +18,7 @@ import (
 )
 
 type ResetInstanceIdentifierSpectraS3Response struct {
-    DataPathBackend DataPathBackend `xml:"DataPathBackend"`
+    DataPathBackend DataPathBackend
 }
 
 func NewResetInstanceIdentifierSpectraS3Response(webResponse networking.WebResponse) (*ResetInstanceIdentifierSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewResetInstanceIdentifierSpectraS3Response(webResponse networking.WebRespo
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body ResetInstanceIdentifierSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.DataPathBackend); err != nil {
             return nil, err
         }
         return &body, nil

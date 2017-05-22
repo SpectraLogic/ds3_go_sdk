@@ -18,7 +18,7 @@ import (
 )
 
 type ModifyStorageDomainMemberSpectraS3Response struct {
-    StorageDomainMember StorageDomainMember `xml:"StorageDomainMember"`
+    StorageDomainMember StorageDomainMember
 }
 
 func NewModifyStorageDomainMemberSpectraS3Response(webResponse networking.WebResponse) (*ModifyStorageDomainMemberSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewModifyStorageDomainMemberSpectraS3Response(webResponse networking.WebRes
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body ModifyStorageDomainMemberSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.StorageDomainMember); err != nil {
             return nil, err
         }
         return &body, nil

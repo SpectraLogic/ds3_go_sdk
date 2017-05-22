@@ -18,7 +18,7 @@ import (
 )
 
 type GetDataPoliciesSpectraS3Response struct {
-    DataPolicyList DataPolicyList `xml:"DataPolicyList"`
+    DataPolicyList DataPolicyList
 }
 
 func NewGetDataPoliciesSpectraS3Response(webResponse networking.WebResponse) (*GetDataPoliciesSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewGetDataPoliciesSpectraS3Response(webResponse networking.WebResponse) (*G
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetDataPoliciesSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.DataPolicyList); err != nil {
             return nil, err
         }
         return &body, nil

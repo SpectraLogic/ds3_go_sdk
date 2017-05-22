@@ -18,7 +18,7 @@ import (
 )
 
 type GetPoolFailureNotificationRegistrationsSpectraS3Response struct {
-    PoolFailureNotificationRegistrationList PoolFailureNotificationRegistrationList `xml:"PoolFailureNotificationRegistrationList"`
+    PoolFailureNotificationRegistrationList PoolFailureNotificationRegistrationList
 }
 
 func NewGetPoolFailureNotificationRegistrationsSpectraS3Response(webResponse networking.WebResponse) (*GetPoolFailureNotificationRegistrationsSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewGetPoolFailureNotificationRegistrationsSpectraS3Response(webResponse net
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetPoolFailureNotificationRegistrationsSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.PoolFailureNotificationRegistrationList); err != nil {
             return nil, err
         }
         return &body, nil

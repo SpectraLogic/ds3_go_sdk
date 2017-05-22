@@ -18,7 +18,7 @@ import (
 )
 
 type GetDs3DataReplicationRulesSpectraS3Response struct {
-    Ds3DataReplicationRuleList Ds3DataReplicationRuleList `xml:"Ds3DataReplicationRuleList"`
+    Ds3DataReplicationRuleList Ds3DataReplicationRuleList
 }
 
 func NewGetDs3DataReplicationRulesSpectraS3Response(webResponse networking.WebResponse) (*GetDs3DataReplicationRulesSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewGetDs3DataReplicationRulesSpectraS3Response(webResponse networking.WebRe
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetDs3DataReplicationRulesSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.Ds3DataReplicationRuleList); err != nil {
             return nil, err
         }
         return &body, nil

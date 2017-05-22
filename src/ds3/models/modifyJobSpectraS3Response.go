@@ -18,7 +18,7 @@ import (
 )
 
 type ModifyJobSpectraS3Response struct {
-    MasterObjectList MasterObjectList `xml:"MasterObjectList"`
+    MasterObjectList MasterObjectList
 }
 
 func NewModifyJobSpectraS3Response(webResponse networking.WebResponse) (*ModifyJobSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewModifyJobSpectraS3Response(webResponse networking.WebResponse) (*ModifyJ
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body ModifyJobSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.MasterObjectList); err != nil {
             return nil, err
         }
         return &body, nil

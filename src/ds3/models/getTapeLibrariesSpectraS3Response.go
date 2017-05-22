@@ -18,7 +18,7 @@ import (
 )
 
 type GetTapeLibrariesSpectraS3Response struct {
-    TapeLibraryList TapeLibraryList `xml:"TapeLibraryList"`
+    TapeLibraryList TapeLibraryList
 }
 
 func NewGetTapeLibrariesSpectraS3Response(webResponse networking.WebResponse) (*GetTapeLibrariesSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewGetTapeLibrariesSpectraS3Response(webResponse networking.WebResponse) (*
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetTapeLibrariesSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.TapeLibraryList); err != nil {
             return nil, err
         }
         return &body, nil

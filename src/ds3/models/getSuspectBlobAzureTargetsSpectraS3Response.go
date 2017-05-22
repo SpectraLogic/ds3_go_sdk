@@ -18,7 +18,7 @@ import (
 )
 
 type GetSuspectBlobAzureTargetsSpectraS3Response struct {
-    SuspectBlobAzureTargetList SuspectBlobAzureTargetList `xml:"SuspectBlobAzureTargetList"`
+    SuspectBlobAzureTargetList SuspectBlobAzureTargetList
 }
 
 func NewGetSuspectBlobAzureTargetsSpectraS3Response(webResponse networking.WebResponse) (*GetSuspectBlobAzureTargetsSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewGetSuspectBlobAzureTargetsSpectraS3Response(webResponse networking.WebRe
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetSuspectBlobAzureTargetsSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.SuspectBlobAzureTargetList); err != nil {
             return nil, err
         }
         return &body, nil

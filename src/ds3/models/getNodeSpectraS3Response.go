@@ -18,7 +18,7 @@ import (
 )
 
 type GetNodeSpectraS3Response struct {
-    Node Node `xml:"Node"`
+    Node Node
 }
 
 func NewGetNodeSpectraS3Response(webResponse networking.WebResponse) (*GetNodeSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewGetNodeSpectraS3Response(webResponse networking.WebResponse) (*GetNodeSp
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetNodeSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.Node); err != nil {
             return nil, err
         }
         return &body, nil

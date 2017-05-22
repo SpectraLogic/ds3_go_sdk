@@ -18,7 +18,7 @@ import (
 )
 
 type GetAzureTargetFailuresSpectraS3Response struct {
-    AzureTargetFailureList AzureTargetFailureList `xml:"AzureTargetFailureList"`
+    AzureTargetFailureList AzureTargetFailureList
 }
 
 func NewGetAzureTargetFailuresSpectraS3Response(webResponse networking.WebResponse) (*GetAzureTargetFailuresSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewGetAzureTargetFailuresSpectraS3Response(webResponse networking.WebRespon
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetAzureTargetFailuresSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.AzureTargetFailureList); err != nil {
             return nil, err
         }
         return &body, nil

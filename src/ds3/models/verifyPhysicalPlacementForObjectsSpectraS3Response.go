@@ -18,7 +18,7 @@ import (
 )
 
 type VerifyPhysicalPlacementForObjectsSpectraS3Response struct {
-    PhysicalPlacement PhysicalPlacement `xml:"PhysicalPlacement"`
+    PhysicalPlacement PhysicalPlacement
 }
 
 func NewVerifyPhysicalPlacementForObjectsSpectraS3Response(webResponse networking.WebResponse) (*VerifyPhysicalPlacementForObjectsSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewVerifyPhysicalPlacementForObjectsSpectraS3Response(webResponse networkin
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body VerifyPhysicalPlacementForObjectsSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.PhysicalPlacement); err != nil {
             return nil, err
         }
         return &body, nil

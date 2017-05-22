@@ -18,7 +18,7 @@ import (
 )
 
 type GetSuspectBlobDs3TargetsSpectraS3Response struct {
-    SuspectBlobDs3TargetList SuspectBlobDs3TargetList `xml:"SuspectBlobDs3TargetList"`
+    SuspectBlobDs3TargetList SuspectBlobDs3TargetList
 }
 
 func NewGetSuspectBlobDs3TargetsSpectraS3Response(webResponse networking.WebResponse) (*GetSuspectBlobDs3TargetsSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewGetSuspectBlobDs3TargetsSpectraS3Response(webResponse networking.WebResp
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetSuspectBlobDs3TargetsSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.SuspectBlobDs3TargetList); err != nil {
             return nil, err
         }
         return &body, nil

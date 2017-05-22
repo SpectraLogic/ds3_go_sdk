@@ -18,7 +18,7 @@ import (
 )
 
 type AllocateJobChunkSpectraS3Response struct {
-    Objects Objects `xml:"Objects"`
+    Objects Objects
 }
 
 func NewAllocateJobChunkSpectraS3Response(webResponse networking.WebResponse) (*AllocateJobChunkSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewAllocateJobChunkSpectraS3Response(webResponse networking.WebResponse) (*
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body AllocateJobChunkSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.Objects); err != nil {
             return nil, err
         }
         return &body, nil

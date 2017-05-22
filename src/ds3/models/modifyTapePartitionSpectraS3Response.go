@@ -18,7 +18,7 @@ import (
 )
 
 type ModifyTapePartitionSpectraS3Response struct {
-    TapePartition TapePartition `xml:"TapePartition"`
+    TapePartition TapePartition
 }
 
 func NewModifyTapePartitionSpectraS3Response(webResponse networking.WebResponse) (*ModifyTapePartitionSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewModifyTapePartitionSpectraS3Response(webResponse networking.WebResponse)
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body ModifyTapePartitionSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.TapePartition); err != nil {
             return nil, err
         }
         return &body, nil

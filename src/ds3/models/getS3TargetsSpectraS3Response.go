@@ -18,7 +18,7 @@ import (
 )
 
 type GetS3TargetsSpectraS3Response struct {
-    S3TargetList S3TargetList `xml:"S3TargetList"`
+    S3TargetList S3TargetList
 }
 
 func NewGetS3TargetsSpectraS3Response(webResponse networking.WebResponse) (*GetS3TargetsSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewGetS3TargetsSpectraS3Response(webResponse networking.WebResponse) (*GetS
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetS3TargetsSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.S3TargetList); err != nil {
             return nil, err
         }
         return &body, nil

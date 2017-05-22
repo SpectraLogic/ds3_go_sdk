@@ -18,7 +18,7 @@ import (
 )
 
 type CancelImportOnAllTapesSpectraS3Response struct {
-    TapeFailureList *TapeFailureList `xml:"TapeFailureList"`
+    TapeFailureList *TapeFailureList
 }
 
 func NewCancelImportOnAllTapesSpectraS3Response(webResponse networking.WebResponse) (*CancelImportOnAllTapesSpectraS3Response, error) {
@@ -29,7 +29,7 @@ func NewCancelImportOnAllTapesSpectraS3Response(webResponse networking.WebRespon
         return &CancelImportOnAllTapesSpectraS3Response{}, nil
     case 207:
         var body CancelImportOnAllTapesSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.TapeFailureList); err != nil {
             return nil, err
         }
         return &body, nil

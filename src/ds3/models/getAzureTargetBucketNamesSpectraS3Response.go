@@ -18,7 +18,7 @@ import (
 )
 
 type GetAzureTargetBucketNamesSpectraS3Response struct {
-    AzureTargetBucketNameList AzureTargetBucketNameList `xml:"AzureTargetBucketNameList"`
+    AzureTargetBucketNameList AzureTargetBucketNameList
 }
 
 func NewGetAzureTargetBucketNamesSpectraS3Response(webResponse networking.WebResponse) (*GetAzureTargetBucketNamesSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewGetAzureTargetBucketNamesSpectraS3Response(webResponse networking.WebRes
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetAzureTargetBucketNamesSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.AzureTargetBucketNameList); err != nil {
             return nil, err
         }
         return &body, nil

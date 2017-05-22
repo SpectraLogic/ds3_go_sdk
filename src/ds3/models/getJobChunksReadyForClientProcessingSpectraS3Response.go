@@ -18,7 +18,7 @@ import (
 )
 
 type GetJobChunksReadyForClientProcessingSpectraS3Response struct {
-    MasterObjectList MasterObjectList `xml:"MasterObjectList"`
+    MasterObjectList MasterObjectList
 }
 
 func NewGetJobChunksReadyForClientProcessingSpectraS3Response(webResponse networking.WebResponse) (*GetJobChunksReadyForClientProcessingSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewGetJobChunksReadyForClientProcessingSpectraS3Response(webResponse networ
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetJobChunksReadyForClientProcessingSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.MasterObjectList); err != nil {
             return nil, err
         }
         return &body, nil

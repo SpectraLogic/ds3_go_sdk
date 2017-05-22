@@ -18,7 +18,7 @@ import (
 )
 
 type GetDegradedS3DataReplicationRulesSpectraS3Response struct {
-    S3DataReplicationRuleList S3DataReplicationRuleList `xml:"S3DataReplicationRuleList"`
+    S3DataReplicationRuleList S3DataReplicationRuleList
 }
 
 func NewGetDegradedS3DataReplicationRulesSpectraS3Response(webResponse networking.WebResponse) (*GetDegradedS3DataReplicationRulesSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewGetDegradedS3DataReplicationRulesSpectraS3Response(webResponse networkin
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetDegradedS3DataReplicationRulesSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.S3DataReplicationRuleList); err != nil {
             return nil, err
         }
         return &body, nil

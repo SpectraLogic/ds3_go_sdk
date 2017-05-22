@@ -18,7 +18,7 @@ import (
 )
 
 type RegenerateUserSecretKeySpectraS3Response struct {
-    SpectraUser SpectraUser `xml:"SpectraUser"`
+    SpectraUser SpectraUser
 }
 
 func NewRegenerateUserSecretKeySpectraS3Response(webResponse networking.WebResponse) (*RegenerateUserSecretKeySpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewRegenerateUserSecretKeySpectraS3Response(webResponse networking.WebRespo
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body RegenerateUserSecretKeySpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.SpectraUser); err != nil {
             return nil, err
         }
         return &body, nil

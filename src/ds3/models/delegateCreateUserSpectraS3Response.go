@@ -18,7 +18,7 @@ import (
 )
 
 type DelegateCreateUserSpectraS3Response struct {
-    SpectraUser SpectraUser `xml:"SpectraUser"`
+    SpectraUser SpectraUser
 }
 
 func NewDelegateCreateUserSpectraS3Response(webResponse networking.WebResponse) (*DelegateCreateUserSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewDelegateCreateUserSpectraS3Response(webResponse networking.WebResponse) 
     switch code := webResponse.StatusCode(); code {
     case 201:
         var body DelegateCreateUserSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.SpectraUser); err != nil {
             return nil, err
         }
         return &body, nil

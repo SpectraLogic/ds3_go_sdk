@@ -18,7 +18,7 @@ import (
 )
 
 type PutSystemFailureNotificationRegistrationSpectraS3Response struct {
-    SystemFailureNotificationRegistration SystemFailureNotificationRegistration `xml:"SystemFailureNotificationRegistration"`
+    SystemFailureNotificationRegistration SystemFailureNotificationRegistration
 }
 
 func NewPutSystemFailureNotificationRegistrationSpectraS3Response(webResponse networking.WebResponse) (*PutSystemFailureNotificationRegistrationSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewPutSystemFailureNotificationRegistrationSpectraS3Response(webResponse ne
     switch code := webResponse.StatusCode(); code {
     case 201:
         var body PutSystemFailureNotificationRegistrationSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.SystemFailureNotificationRegistration); err != nil {
             return nil, err
         }
         return &body, nil

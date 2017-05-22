@@ -18,7 +18,7 @@ import (
 )
 
 type EjectAllTapesSpectraS3Response struct {
-    TapeFailureList *TapeFailureList `xml:"TapeFailureList"`
+    TapeFailureList *TapeFailureList
 }
 
 func NewEjectAllTapesSpectraS3Response(webResponse networking.WebResponse) (*EjectAllTapesSpectraS3Response, error) {
@@ -29,7 +29,7 @@ func NewEjectAllTapesSpectraS3Response(webResponse networking.WebResponse) (*Eje
         return &EjectAllTapesSpectraS3Response{}, nil
     case 207:
         var body EjectAllTapesSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.TapeFailureList); err != nil {
             return nil, err
         }
         return &body, nil

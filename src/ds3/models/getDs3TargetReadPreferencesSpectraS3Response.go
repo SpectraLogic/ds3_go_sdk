@@ -18,7 +18,7 @@ import (
 )
 
 type GetDs3TargetReadPreferencesSpectraS3Response struct {
-    Ds3TargetReadPreferenceList Ds3TargetReadPreferenceList `xml:"Ds3TargetReadPreferenceList"`
+    Ds3TargetReadPreferenceList Ds3TargetReadPreferenceList
 }
 
 func NewGetDs3TargetReadPreferencesSpectraS3Response(webResponse networking.WebResponse) (*GetDs3TargetReadPreferencesSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewGetDs3TargetReadPreferencesSpectraS3Response(webResponse networking.WebR
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetDs3TargetReadPreferencesSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.Ds3TargetReadPreferenceList); err != nil {
             return nil, err
         }
         return &body, nil

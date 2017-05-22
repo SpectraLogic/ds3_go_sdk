@@ -18,7 +18,7 @@ import (
 )
 
 type ModifyTapeSpectraS3Response struct {
-    Tape Tape `xml:"Tape"`
+    Tape Tape
 }
 
 func NewModifyTapeSpectraS3Response(webResponse networking.WebResponse) (*ModifyTapeSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewModifyTapeSpectraS3Response(webResponse networking.WebResponse) (*Modify
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body ModifyTapeSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.Tape); err != nil {
             return nil, err
         }
         return &body, nil

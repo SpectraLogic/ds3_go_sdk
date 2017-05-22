@@ -18,7 +18,7 @@ import (
 )
 
 type GetTapeDensityDirectiveSpectraS3Response struct {
-    TapeDensityDirective TapeDensityDirective `xml:"TapeDensityDirective"`
+    TapeDensityDirective TapeDensityDirective
 }
 
 func NewGetTapeDensityDirectiveSpectraS3Response(webResponse networking.WebResponse) (*GetTapeDensityDirectiveSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewGetTapeDensityDirectiveSpectraS3Response(webResponse networking.WebRespo
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetTapeDensityDirectiveSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.TapeDensityDirective); err != nil {
             return nil, err
         }
         return &body, nil

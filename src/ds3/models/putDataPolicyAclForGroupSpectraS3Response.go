@@ -18,7 +18,7 @@ import (
 )
 
 type PutDataPolicyAclForGroupSpectraS3Response struct {
-    DataPolicyAcl DataPolicyAcl `xml:"DataPolicyAcl"`
+    DataPolicyAcl DataPolicyAcl
 }
 
 func NewPutDataPolicyAclForGroupSpectraS3Response(webResponse networking.WebResponse) (*PutDataPolicyAclForGroupSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewPutDataPolicyAclForGroupSpectraS3Response(webResponse networking.WebResp
     switch code := webResponse.StatusCode(); code {
     case 201:
         var body PutDataPolicyAclForGroupSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.DataPolicyAcl); err != nil {
             return nil, err
         }
         return &body, nil

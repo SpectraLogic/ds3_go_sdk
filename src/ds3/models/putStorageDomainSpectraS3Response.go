@@ -18,7 +18,7 @@ import (
 )
 
 type PutStorageDomainSpectraS3Response struct {
-    StorageDomain StorageDomain `xml:"StorageDomain"`
+    StorageDomain StorageDomain
 }
 
 func NewPutStorageDomainSpectraS3Response(webResponse networking.WebResponse) (*PutStorageDomainSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewPutStorageDomainSpectraS3Response(webResponse networking.WebResponse) (*
     switch code := webResponse.StatusCode(); code {
     case 201:
         var body PutStorageDomainSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.StorageDomain); err != nil {
             return nil, err
         }
         return &body, nil

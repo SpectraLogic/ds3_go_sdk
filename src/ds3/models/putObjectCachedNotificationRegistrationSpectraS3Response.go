@@ -18,7 +18,7 @@ import (
 )
 
 type PutObjectCachedNotificationRegistrationSpectraS3Response struct {
-    S3ObjectCachedNotificationRegistration S3ObjectCachedNotificationRegistration `xml:"S3ObjectCachedNotificationRegistration"`
+    S3ObjectCachedNotificationRegistration S3ObjectCachedNotificationRegistration
 }
 
 func NewPutObjectCachedNotificationRegistrationSpectraS3Response(webResponse networking.WebResponse) (*PutObjectCachedNotificationRegistrationSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewPutObjectCachedNotificationRegistrationSpectraS3Response(webResponse net
     switch code := webResponse.StatusCode(); code {
     case 201:
         var body PutObjectCachedNotificationRegistrationSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.S3ObjectCachedNotificationRegistration); err != nil {
             return nil, err
         }
         return &body, nil

@@ -18,7 +18,7 @@ import (
 )
 
 type GetTapeFailuresSpectraS3Response struct {
-    DetailedTapeFailureList DetailedTapeFailureList `xml:"DetailedTapeFailureList"`
+    DetailedTapeFailureList DetailedTapeFailureList
 }
 
 func NewGetTapeFailuresSpectraS3Response(webResponse networking.WebResponse) (*GetTapeFailuresSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewGetTapeFailuresSpectraS3Response(webResponse networking.WebResponse) (*G
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetTapeFailuresSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.DetailedTapeFailureList); err != nil {
             return nil, err
         }
         return &body, nil

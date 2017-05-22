@@ -18,7 +18,7 @@ import (
 )
 
 type GetJobCompletedNotificationRegistrationsSpectraS3Response struct {
-    JobCompletedNotificationRegistrationList JobCompletedNotificationRegistrationList `xml:"JobCompletedNotificationRegistrationList"`
+    JobCompletedNotificationRegistrationList JobCompletedNotificationRegistrationList
 }
 
 func NewGetJobCompletedNotificationRegistrationsSpectraS3Response(webResponse networking.WebResponse) (*GetJobCompletedNotificationRegistrationsSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewGetJobCompletedNotificationRegistrationsSpectraS3Response(webResponse ne
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetJobCompletedNotificationRegistrationsSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.JobCompletedNotificationRegistrationList); err != nil {
             return nil, err
         }
         return &body, nil

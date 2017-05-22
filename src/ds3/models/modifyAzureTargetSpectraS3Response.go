@@ -18,7 +18,7 @@ import (
 )
 
 type ModifyAzureTargetSpectraS3Response struct {
-    AzureTarget AzureTarget `xml:"AzureTarget"`
+    AzureTarget AzureTarget
 }
 
 func NewModifyAzureTargetSpectraS3Response(webResponse networking.WebResponse) (*ModifyAzureTargetSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewModifyAzureTargetSpectraS3Response(webResponse networking.WebResponse) (
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body ModifyAzureTargetSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.AzureTarget); err != nil {
             return nil, err
         }
         return &body, nil

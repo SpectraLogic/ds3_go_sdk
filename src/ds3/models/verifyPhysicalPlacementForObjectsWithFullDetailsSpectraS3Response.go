@@ -18,7 +18,7 @@ import (
 )
 
 type VerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Response struct {
-    BulkObjectList BulkObjectList `xml:"BulkObjectList"`
+    BulkObjectList BulkObjectList
 }
 
 func NewVerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Response(webResponse networking.WebResponse) (*VerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewVerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Response(webRes
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body VerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.BulkObjectList); err != nil {
             return nil, err
         }
         return &body, nil

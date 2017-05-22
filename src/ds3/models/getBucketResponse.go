@@ -18,7 +18,7 @@ import (
 )
 
 type GetBucketResponse struct {
-    ListBucketResult ListBucketResult `xml:"ListBucketResult"`
+    ListBucketResult ListBucketResult
 }
 
 func NewGetBucketResponse(webResponse networking.WebResponse) (*GetBucketResponse, error) {
@@ -27,7 +27,7 @@ func NewGetBucketResponse(webResponse networking.WebResponse) (*GetBucketRespons
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetBucketResponse
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.ListBucketResult); err != nil {
             return nil, err
         }
         return &body, nil

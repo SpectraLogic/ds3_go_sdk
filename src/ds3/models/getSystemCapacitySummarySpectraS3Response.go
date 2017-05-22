@@ -18,7 +18,7 @@ import (
 )
 
 type GetSystemCapacitySummarySpectraS3Response struct {
-    CapacitySummaryContainer CapacitySummaryContainer `xml:"CapacitySummaryContainer"`
+    CapacitySummaryContainer CapacitySummaryContainer
 }
 
 func NewGetSystemCapacitySummarySpectraS3Response(webResponse networking.WebResponse) (*GetSystemCapacitySummarySpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewGetSystemCapacitySummarySpectraS3Response(webResponse networking.WebResp
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetSystemCapacitySummarySpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.CapacitySummaryContainer); err != nil {
             return nil, err
         }
         return &body, nil

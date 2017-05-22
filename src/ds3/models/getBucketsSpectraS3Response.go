@@ -18,7 +18,7 @@ import (
 )
 
 type GetBucketsSpectraS3Response struct {
-    BucketList BucketList `xml:"BucketList"`
+    BucketList BucketList
 }
 
 func NewGetBucketsSpectraS3Response(webResponse networking.WebResponse) (*GetBucketsSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewGetBucketsSpectraS3Response(webResponse networking.WebResponse) (*GetBuc
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetBucketsSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.BucketList); err != nil {
             return nil, err
         }
         return &body, nil

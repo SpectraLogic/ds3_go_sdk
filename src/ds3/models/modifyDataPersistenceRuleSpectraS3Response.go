@@ -18,7 +18,7 @@ import (
 )
 
 type ModifyDataPersistenceRuleSpectraS3Response struct {
-    DataPersistenceRule DataPersistenceRule `xml:"DataPersistenceRule"`
+    DataPersistenceRule DataPersistenceRule
 }
 
 func NewModifyDataPersistenceRuleSpectraS3Response(webResponse networking.WebResponse) (*ModifyDataPersistenceRuleSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewModifyDataPersistenceRuleSpectraS3Response(webResponse networking.WebRes
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body ModifyDataPersistenceRuleSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.DataPersistenceRule); err != nil {
             return nil, err
         }
         return &body, nil

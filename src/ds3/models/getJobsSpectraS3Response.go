@@ -18,7 +18,7 @@ import (
 )
 
 type GetJobsSpectraS3Response struct {
-    JobList JobList `xml:""`
+    JobList JobList
 }
 
 func NewGetJobsSpectraS3Response(webResponse networking.WebResponse) (*GetJobsSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewGetJobsSpectraS3Response(webResponse networking.WebResponse) (*GetJobsSp
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetJobsSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.JobList); err != nil {
             return nil, err
         }
         return &body, nil

@@ -18,7 +18,7 @@ import (
 )
 
 type GetBlobsOnDs3TargetSpectraS3Response struct {
-    BulkObjectList BulkObjectList `xml:"BulkObjectList"`
+    BulkObjectList BulkObjectList
 }
 
 func NewGetBlobsOnDs3TargetSpectraS3Response(webResponse networking.WebResponse) (*GetBlobsOnDs3TargetSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewGetBlobsOnDs3TargetSpectraS3Response(webResponse networking.WebResponse)
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetBlobsOnDs3TargetSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.BulkObjectList); err != nil {
             return nil, err
         }
         return &body, nil

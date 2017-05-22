@@ -18,7 +18,7 @@ import (
 )
 
 type GetAzureTargetReadPreferencesSpectraS3Response struct {
-    AzureTargetReadPreferenceList AzureTargetReadPreferenceList `xml:"AzureTargetReadPreferenceList"`
+    AzureTargetReadPreferenceList AzureTargetReadPreferenceList
 }
 
 func NewGetAzureTargetReadPreferencesSpectraS3Response(webResponse networking.WebResponse) (*GetAzureTargetReadPreferencesSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewGetAzureTargetReadPreferencesSpectraS3Response(webResponse networking.We
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetAzureTargetReadPreferencesSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.AzureTargetReadPreferenceList); err != nil {
             return nil, err
         }
         return &body, nil

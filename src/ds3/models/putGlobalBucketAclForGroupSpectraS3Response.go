@@ -18,7 +18,7 @@ import (
 )
 
 type PutGlobalBucketAclForGroupSpectraS3Response struct {
-    BucketAcl BucketAcl `xml:"BucketAcl"`
+    BucketAcl BucketAcl
 }
 
 func NewPutGlobalBucketAclForGroupSpectraS3Response(webResponse networking.WebResponse) (*PutGlobalBucketAclForGroupSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewPutGlobalBucketAclForGroupSpectraS3Response(webResponse networking.WebRe
     switch code := webResponse.StatusCode(); code {
     case 201:
         var body PutGlobalBucketAclForGroupSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.BucketAcl); err != nil {
             return nil, err
         }
         return &body, nil

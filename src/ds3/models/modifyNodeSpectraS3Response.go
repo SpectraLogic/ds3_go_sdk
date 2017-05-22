@@ -18,7 +18,7 @@ import (
 )
 
 type ModifyNodeSpectraS3Response struct {
-    Node Node `xml:"Node"`
+    Node Node
 }
 
 func NewModifyNodeSpectraS3Response(webResponse networking.WebResponse) (*ModifyNodeSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewModifyNodeSpectraS3Response(webResponse networking.WebResponse) (*Modify
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body ModifyNodeSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.Node); err != nil {
             return nil, err
         }
         return &body, nil

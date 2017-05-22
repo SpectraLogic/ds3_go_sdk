@@ -18,7 +18,7 @@ import (
 )
 
 type DeleteObjectsResponse struct {
-    DeleteResult DeleteResult `xml:"DeleteResult"`
+    DeleteResult DeleteResult
 }
 
 func NewDeleteObjectsResponse(webResponse networking.WebResponse) (*DeleteObjectsResponse, error) {
@@ -27,7 +27,7 @@ func NewDeleteObjectsResponse(webResponse networking.WebResponse) (*DeleteObject
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body DeleteObjectsResponse
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.DeleteResult); err != nil {
             return nil, err
         }
         return &body, nil

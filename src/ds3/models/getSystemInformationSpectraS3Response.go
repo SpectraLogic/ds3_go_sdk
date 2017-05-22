@@ -18,7 +18,7 @@ import (
 )
 
 type GetSystemInformationSpectraS3Response struct {
-    SystemInformation SystemInformation `xml:"SystemInformation"`
+    SystemInformation SystemInformation
 }
 
 func NewGetSystemInformationSpectraS3Response(webResponse networking.WebResponse) (*GetSystemInformationSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewGetSystemInformationSpectraS3Response(webResponse networking.WebResponse
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetSystemInformationSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.SystemInformation); err != nil {
             return nil, err
         }
         return &body, nil

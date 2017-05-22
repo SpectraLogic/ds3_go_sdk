@@ -18,7 +18,7 @@ import (
 )
 
 type GetObjectsWithFullDetailsSpectraS3Response struct {
-    DetailedS3ObjectList DetailedS3ObjectList `xml:"DetailedS3ObjectList"`
+    DetailedS3ObjectList DetailedS3ObjectList
 }
 
 func NewGetObjectsWithFullDetailsSpectraS3Response(webResponse networking.WebResponse) (*GetObjectsWithFullDetailsSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewGetObjectsWithFullDetailsSpectraS3Response(webResponse networking.WebRes
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetObjectsWithFullDetailsSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.DetailedS3ObjectList); err != nil {
             return nil, err
         }
         return &body, nil

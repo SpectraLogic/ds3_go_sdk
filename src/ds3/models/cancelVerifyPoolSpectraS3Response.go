@@ -18,7 +18,7 @@ import (
 )
 
 type CancelVerifyPoolSpectraS3Response struct {
-    Pool Pool `xml:"Pool"`
+    Pool Pool
 }
 
 func NewCancelVerifyPoolSpectraS3Response(webResponse networking.WebResponse) (*CancelVerifyPoolSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewCancelVerifyPoolSpectraS3Response(webResponse networking.WebResponse) (*
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body CancelVerifyPoolSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.Pool); err != nil {
             return nil, err
         }
         return &body, nil

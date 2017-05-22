@@ -18,7 +18,7 @@ import (
 )
 
 type GetStorageDomainFailureNotificationRegistrationsSpectraS3Response struct {
-    StorageDomainFailureNotificationRegistrationList StorageDomainFailureNotificationRegistrationList `xml:"StorageDomainFailureNotificationRegistrationList"`
+    StorageDomainFailureNotificationRegistrationList StorageDomainFailureNotificationRegistrationList
 }
 
 func NewGetStorageDomainFailureNotificationRegistrationsSpectraS3Response(webResponse networking.WebResponse) (*GetStorageDomainFailureNotificationRegistrationsSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewGetStorageDomainFailureNotificationRegistrationsSpectraS3Response(webRes
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetStorageDomainFailureNotificationRegistrationsSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.StorageDomainFailureNotificationRegistrationList); err != nil {
             return nil, err
         }
         return &body, nil

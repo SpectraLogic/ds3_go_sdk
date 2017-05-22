@@ -18,7 +18,7 @@ import (
 )
 
 type GetServiceResponse struct {
-    ListAllMyBucketsResult ListAllMyBucketsResult `xml:"ListAllMyBucketsResult"`
+    ListAllMyBucketsResult ListAllMyBucketsResult
 }
 
 func NewGetServiceResponse(webResponse networking.WebResponse) (*GetServiceResponse, error) {
@@ -27,7 +27,7 @@ func NewGetServiceResponse(webResponse networking.WebResponse) (*GetServiceRespo
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetServiceResponse
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.ListAllMyBucketsResult); err != nil {
             return nil, err
         }
         return &body, nil

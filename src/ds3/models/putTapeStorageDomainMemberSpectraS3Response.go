@@ -18,7 +18,7 @@ import (
 )
 
 type PutTapeStorageDomainMemberSpectraS3Response struct {
-    StorageDomainMember StorageDomainMember `xml:"StorageDomainMember"`
+    StorageDomainMember StorageDomainMember
 }
 
 func NewPutTapeStorageDomainMemberSpectraS3Response(webResponse networking.WebResponse) (*PutTapeStorageDomainMemberSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewPutTapeStorageDomainMemberSpectraS3Response(webResponse networking.WebRe
     switch code := webResponse.StatusCode(); code {
     case 201:
         var body PutTapeStorageDomainMemberSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.StorageDomainMember); err != nil {
             return nil, err
         }
         return &body, nil

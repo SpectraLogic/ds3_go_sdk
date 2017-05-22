@@ -18,7 +18,7 @@ import (
 )
 
 type GetDs3TargetsSpectraS3Response struct {
-    Ds3TargetList Ds3TargetList `xml:"Ds3TargetList"`
+    Ds3TargetList Ds3TargetList
 }
 
 func NewGetDs3TargetsSpectraS3Response(webResponse networking.WebResponse) (*GetDs3TargetsSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewGetDs3TargetsSpectraS3Response(webResponse networking.WebResponse) (*Get
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetDs3TargetsSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.Ds3TargetList); err != nil {
             return nil, err
         }
         return &body, nil

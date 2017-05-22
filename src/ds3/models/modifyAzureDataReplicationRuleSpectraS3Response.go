@@ -18,7 +18,7 @@ import (
 )
 
 type ModifyAzureDataReplicationRuleSpectraS3Response struct {
-    AzureDataReplicationRule AzureDataReplicationRule `xml:"AzureDataReplicationRule"`
+    AzureDataReplicationRule AzureDataReplicationRule
 }
 
 func NewModifyAzureDataReplicationRuleSpectraS3Response(webResponse networking.WebResponse) (*ModifyAzureDataReplicationRuleSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewModifyAzureDataReplicationRuleSpectraS3Response(webResponse networking.W
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body ModifyAzureDataReplicationRuleSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.AzureDataReplicationRule); err != nil {
             return nil, err
         }
         return &body, nil

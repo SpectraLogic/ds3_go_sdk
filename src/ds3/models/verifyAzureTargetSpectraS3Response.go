@@ -18,7 +18,7 @@ import (
 )
 
 type VerifyAzureTargetSpectraS3Response struct {
-    AzureTarget AzureTarget `xml:"AzureTarget"`
+    AzureTarget AzureTarget
 }
 
 func NewVerifyAzureTargetSpectraS3Response(webResponse networking.WebResponse) (*VerifyAzureTargetSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewVerifyAzureTargetSpectraS3Response(webResponse networking.WebResponse) (
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body VerifyAzureTargetSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.AzureTarget); err != nil {
             return nil, err
         }
         return &body, nil

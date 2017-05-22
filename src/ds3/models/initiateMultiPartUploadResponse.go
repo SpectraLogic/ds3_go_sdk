@@ -18,7 +18,7 @@ import (
 )
 
 type InitiateMultiPartUploadResponse struct {
-    InitiateMultipartUploadResult InitiateMultipartUploadResult `xml:"InitiateMultipartUploadResult"`
+    InitiateMultipartUploadResult InitiateMultipartUploadResult
 }
 
 func NewInitiateMultiPartUploadResponse(webResponse networking.WebResponse) (*InitiateMultiPartUploadResponse, error) {
@@ -27,7 +27,7 @@ func NewInitiateMultiPartUploadResponse(webResponse networking.WebResponse) (*In
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body InitiateMultiPartUploadResponse
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.InitiateMultipartUploadResult); err != nil {
             return nil, err
         }
         return &body, nil

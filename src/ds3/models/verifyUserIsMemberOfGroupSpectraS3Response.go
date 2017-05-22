@@ -18,7 +18,7 @@ import (
 )
 
 type VerifyUserIsMemberOfGroupSpectraS3Response struct {
-    Group *Group `xml:"Group"`
+    Group *Group
 }
 
 func NewVerifyUserIsMemberOfGroupSpectraS3Response(webResponse networking.WebResponse) (*VerifyUserIsMemberOfGroupSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewVerifyUserIsMemberOfGroupSpectraS3Response(webResponse networking.WebRes
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body VerifyUserIsMemberOfGroupSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.Group); err != nil {
             return nil, err
         }
         return &body, nil

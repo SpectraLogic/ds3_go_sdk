@@ -18,7 +18,7 @@ import (
 )
 
 type GetFeatureKeysSpectraS3Response struct {
-    FeatureKeyList FeatureKeyList `xml:"FeatureKeyList"`
+    FeatureKeyList FeatureKeyList
 }
 
 func NewGetFeatureKeysSpectraS3Response(webResponse networking.WebResponse) (*GetFeatureKeysSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewGetFeatureKeysSpectraS3Response(webResponse networking.WebResponse) (*Ge
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetFeatureKeysSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.FeatureKeyList); err != nil {
             return nil, err
         }
         return &body, nil

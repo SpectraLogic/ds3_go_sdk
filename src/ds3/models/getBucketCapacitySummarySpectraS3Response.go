@@ -18,7 +18,7 @@ import (
 )
 
 type GetBucketCapacitySummarySpectraS3Response struct {
-    CapacitySummaryContainer CapacitySummaryContainer `xml:"CapacitySummaryContainer"`
+    CapacitySummaryContainer CapacitySummaryContainer
 }
 
 func NewGetBucketCapacitySummarySpectraS3Response(webResponse networking.WebResponse) (*GetBucketCapacitySummarySpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewGetBucketCapacitySummarySpectraS3Response(webResponse networking.WebResp
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetBucketCapacitySummarySpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.CapacitySummaryContainer); err != nil {
             return nil, err
         }
         return &body, nil

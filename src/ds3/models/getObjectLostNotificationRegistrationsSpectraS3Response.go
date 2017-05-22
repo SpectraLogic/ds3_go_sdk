@@ -18,7 +18,7 @@ import (
 )
 
 type GetObjectLostNotificationRegistrationsSpectraS3Response struct {
-    S3ObjectLostNotificationRegistrationList S3ObjectLostNotificationRegistrationList `xml:"S3ObjectLostNotificationRegistrationList"`
+    S3ObjectLostNotificationRegistrationList S3ObjectLostNotificationRegistrationList
 }
 
 func NewGetObjectLostNotificationRegistrationsSpectraS3Response(webResponse networking.WebResponse) (*GetObjectLostNotificationRegistrationsSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewGetObjectLostNotificationRegistrationsSpectraS3Response(webResponse netw
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetObjectLostNotificationRegistrationsSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.S3ObjectLostNotificationRegistrationList); err != nil {
             return nil, err
         }
         return &body, nil

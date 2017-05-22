@@ -18,7 +18,7 @@ import (
 )
 
 type CompleteMultiPartUploadResponse struct {
-    CompleteMultipartUploadResult CompleteMultipartUploadResult `xml:"CompleteMultipartUploadResult"`
+    CompleteMultipartUploadResult CompleteMultipartUploadResult
 }
 
 func NewCompleteMultiPartUploadResponse(webResponse networking.WebResponse) (*CompleteMultiPartUploadResponse, error) {
@@ -27,7 +27,7 @@ func NewCompleteMultiPartUploadResponse(webResponse networking.WebResponse) (*Co
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body CompleteMultiPartUploadResponse
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.CompleteMultipartUploadResult); err != nil {
             return nil, err
         }
         return &body, nil

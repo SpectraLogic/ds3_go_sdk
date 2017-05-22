@@ -18,7 +18,7 @@ import (
 )
 
 type ModifyCacheFilesystemSpectraS3Response struct {
-    CacheFilesystem CacheFilesystem `xml:"CacheFilesystem"`
+    CacheFilesystem CacheFilesystem
 }
 
 func NewModifyCacheFilesystemSpectraS3Response(webResponse networking.WebResponse) (*ModifyCacheFilesystemSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewModifyCacheFilesystemSpectraS3Response(webResponse networking.WebRespons
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body ModifyCacheFilesystemSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.CacheFilesystem); err != nil {
             return nil, err
         }
         return &body, nil

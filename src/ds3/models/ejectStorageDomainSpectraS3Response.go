@@ -18,7 +18,7 @@ import (
 )
 
 type EjectStorageDomainSpectraS3Response struct {
-    TapeFailureList *TapeFailureList `xml:"TapeFailureList"`
+    TapeFailureList *TapeFailureList
 }
 
 func NewEjectStorageDomainSpectraS3Response(webResponse networking.WebResponse) (*EjectStorageDomainSpectraS3Response, error) {
@@ -29,7 +29,7 @@ func NewEjectStorageDomainSpectraS3Response(webResponse networking.WebResponse) 
         return &EjectStorageDomainSpectraS3Response{}, nil
     case 207:
         var body EjectStorageDomainSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.TapeFailureList); err != nil {
             return nil, err
         }
         return &body, nil

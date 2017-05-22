@@ -18,7 +18,7 @@ import (
 )
 
 type GetCacheFilesystemsSpectraS3Response struct {
-    CacheFilesystemList CacheFilesystemList `xml:"CacheFilesystemList"`
+    CacheFilesystemList CacheFilesystemList
 }
 
 func NewGetCacheFilesystemsSpectraS3Response(webResponse networking.WebResponse) (*GetCacheFilesystemsSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewGetCacheFilesystemsSpectraS3Response(webResponse networking.WebResponse)
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetCacheFilesystemsSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.CacheFilesystemList); err != nil {
             return nil, err
         }
         return &body, nil

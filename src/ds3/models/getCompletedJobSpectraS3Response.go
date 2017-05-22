@@ -18,7 +18,7 @@ import (
 )
 
 type GetCompletedJobSpectraS3Response struct {
-    CompletedJob CompletedJob `xml:"CompletedJob"`
+    CompletedJob CompletedJob
 }
 
 func NewGetCompletedJobSpectraS3Response(webResponse networking.WebResponse) (*GetCompletedJobSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewGetCompletedJobSpectraS3Response(webResponse networking.WebResponse) (*G
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetCompletedJobSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.CompletedJob); err != nil {
             return nil, err
         }
         return &body, nil

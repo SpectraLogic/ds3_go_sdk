@@ -18,7 +18,7 @@ import (
 )
 
 type GetDataPlannerBlobStoreTasksSpectraS3Response struct {
-    BlobStoreTasksInformation BlobStoreTasksInformation `xml:"BlobStoreTasksInformation"`
+    BlobStoreTasksInformation BlobStoreTasksInformation
 }
 
 func NewGetDataPlannerBlobStoreTasksSpectraS3Response(webResponse networking.WebResponse) (*GetDataPlannerBlobStoreTasksSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewGetDataPlannerBlobStoreTasksSpectraS3Response(webResponse networking.Web
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetDataPlannerBlobStoreTasksSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.BlobStoreTasksInformation); err != nil {
             return nil, err
         }
         return &body, nil

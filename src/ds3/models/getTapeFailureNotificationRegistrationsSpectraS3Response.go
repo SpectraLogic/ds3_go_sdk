@@ -18,7 +18,7 @@ import (
 )
 
 type GetTapeFailureNotificationRegistrationsSpectraS3Response struct {
-    TapeFailureNotificationRegistrationList TapeFailureNotificationRegistrationList `xml:"TapeFailureNotificationRegistrationList"`
+    TapeFailureNotificationRegistrationList TapeFailureNotificationRegistrationList
 }
 
 func NewGetTapeFailureNotificationRegistrationsSpectraS3Response(webResponse networking.WebResponse) (*GetTapeFailureNotificationRegistrationsSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewGetTapeFailureNotificationRegistrationsSpectraS3Response(webResponse net
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetTapeFailureNotificationRegistrationsSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.TapeFailureNotificationRegistrationList); err != nil {
             return nil, err
         }
         return &body, nil

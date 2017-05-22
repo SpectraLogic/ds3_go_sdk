@@ -18,7 +18,7 @@ import (
 )
 
 type GetPoolPartitionsSpectraS3Response struct {
-    PoolPartitionList PoolPartitionList `xml:"PoolPartitionList"`
+    PoolPartitionList PoolPartitionList
 }
 
 func NewGetPoolPartitionsSpectraS3Response(webResponse networking.WebResponse) (*GetPoolPartitionsSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewGetPoolPartitionsSpectraS3Response(webResponse networking.WebResponse) (
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetPoolPartitionsSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.PoolPartitionList); err != nil {
             return nil, err
         }
         return &body, nil

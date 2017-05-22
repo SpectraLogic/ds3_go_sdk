@@ -18,7 +18,7 @@ import (
 )
 
 type GetTapePartitionWithFullDetailsSpectraS3Response struct {
-    DetailedTapePartition DetailedTapePartition `xml:"DetailedTapePartition"`
+    DetailedTapePartition DetailedTapePartition
 }
 
 func NewGetTapePartitionWithFullDetailsSpectraS3Response(webResponse networking.WebResponse) (*GetTapePartitionWithFullDetailsSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewGetTapePartitionWithFullDetailsSpectraS3Response(webResponse networking.
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetTapePartitionWithFullDetailsSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.DetailedTapePartition); err != nil {
             return nil, err
         }
         return &body, nil

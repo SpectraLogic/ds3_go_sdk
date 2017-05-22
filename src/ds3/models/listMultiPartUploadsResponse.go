@@ -18,7 +18,7 @@ import (
 )
 
 type ListMultiPartUploadsResponse struct {
-    ListMultiPartUploadsResult ListMultiPartUploadsResult `xml:"ListMultipartUploadsResult"`
+    ListMultiPartUploadsResult ListMultiPartUploadsResult
 }
 
 func NewListMultiPartUploadsResponse(webResponse networking.WebResponse) (*ListMultiPartUploadsResponse, error) {
@@ -27,7 +27,7 @@ func NewListMultiPartUploadsResponse(webResponse networking.WebResponse) (*ListM
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body ListMultiPartUploadsResponse
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.ListMultiPartUploadsResult); err != nil {
             return nil, err
         }
         return &body, nil

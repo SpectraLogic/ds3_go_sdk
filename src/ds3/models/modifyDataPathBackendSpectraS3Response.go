@@ -18,7 +18,7 @@ import (
 )
 
 type ModifyDataPathBackendSpectraS3Response struct {
-    DataPathBackend DataPathBackend `xml:"DataPathBackend"`
+    DataPathBackend DataPathBackend
 }
 
 func NewModifyDataPathBackendSpectraS3Response(webResponse networking.WebResponse) (*ModifyDataPathBackendSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewModifyDataPathBackendSpectraS3Response(webResponse networking.WebRespons
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body ModifyDataPathBackendSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.DataPathBackend); err != nil {
             return nil, err
         }
         return &body, nil

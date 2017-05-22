@@ -18,7 +18,7 @@ import (
 )
 
 type CompactPoolSpectraS3Response struct {
-    Pool Pool `xml:"Pool"`
+    Pool Pool
 }
 
 func NewCompactPoolSpectraS3Response(webResponse networking.WebResponse) (*CompactPoolSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewCompactPoolSpectraS3Response(webResponse networking.WebResponse) (*Compa
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body CompactPoolSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.Pool); err != nil {
             return nil, err
         }
         return &body, nil

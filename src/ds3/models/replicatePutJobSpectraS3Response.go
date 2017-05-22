@@ -18,7 +18,7 @@ import (
 )
 
 type ReplicatePutJobSpectraS3Response struct {
-    MasterObjectList *MasterObjectList `xml:"MasterObjectList"`
+    MasterObjectList *MasterObjectList
 }
 
 func NewReplicatePutJobSpectraS3Response(webResponse networking.WebResponse) (*ReplicatePutJobSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewReplicatePutJobSpectraS3Response(webResponse networking.WebResponse) (*R
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body ReplicatePutJobSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.MasterObjectList); err != nil {
             return nil, err
         }
         return &body, nil

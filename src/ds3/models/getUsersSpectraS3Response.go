@@ -18,7 +18,7 @@ import (
 )
 
 type GetUsersSpectraS3Response struct {
-    SpectraUserList SpectraUserList `xml:"SpectraUserList"`
+    SpectraUserList SpectraUserList
 }
 
 func NewGetUsersSpectraS3Response(webResponse networking.WebResponse) (*GetUsersSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewGetUsersSpectraS3Response(webResponse networking.WebResponse) (*GetUsers
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetUsersSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.SpectraUserList); err != nil {
             return nil, err
         }
         return &body, nil

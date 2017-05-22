@@ -18,7 +18,7 @@ import (
 )
 
 type GetS3TargetBucketNamesSpectraS3Response struct {
-    S3TargetBucketNameList S3TargetBucketNameList `xml:"S3TargetBucketNameList"`
+    S3TargetBucketNameList S3TargetBucketNameList
 }
 
 func NewGetS3TargetBucketNamesSpectraS3Response(webResponse networking.WebResponse) (*GetS3TargetBucketNamesSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewGetS3TargetBucketNamesSpectraS3Response(webResponse networking.WebRespon
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetS3TargetBucketNamesSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.S3TargetBucketNameList); err != nil {
             return nil, err
         }
         return &body, nil

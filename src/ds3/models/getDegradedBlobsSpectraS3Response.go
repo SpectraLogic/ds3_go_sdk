@@ -18,7 +18,7 @@ import (
 )
 
 type GetDegradedBlobsSpectraS3Response struct {
-    DegradedBlobList DegradedBlobList `xml:"DegradedBlobList"`
+    DegradedBlobList DegradedBlobList
 }
 
 func NewGetDegradedBlobsSpectraS3Response(webResponse networking.WebResponse) (*GetDegradedBlobsSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewGetDegradedBlobsSpectraS3Response(webResponse networking.WebResponse) (*
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetDegradedBlobsSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.DegradedBlobList); err != nil {
             return nil, err
         }
         return &body, nil

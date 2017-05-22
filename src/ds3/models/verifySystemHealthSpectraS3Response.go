@@ -18,7 +18,7 @@ import (
 )
 
 type VerifySystemHealthSpectraS3Response struct {
-    HealthVerificationResult HealthVerificationResult `xml:"HealthVerificationResult"`
+    HealthVerificationResult HealthVerificationResult
 }
 
 func NewVerifySystemHealthSpectraS3Response(webResponse networking.WebResponse) (*VerifySystemHealthSpectraS3Response, error) {
@@ -27,7 +27,7 @@ func NewVerifySystemHealthSpectraS3Response(webResponse networking.WebResponse) 
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body VerifySystemHealthSpectraS3Response
-        if err := readResponseBody(webResponse, &body); err != nil {
+        if err := readResponseBody(webResponse, &body.HealthVerificationResult); err != nil {
             return nil, err
         }
         return &body, nil
