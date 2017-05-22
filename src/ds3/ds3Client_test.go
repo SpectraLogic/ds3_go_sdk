@@ -46,18 +46,23 @@ func TestGetService(t *testing.T) {
         Returning(200, stringResponse, nil).
         GetService(models.NewGetServiceRequest())
 
+    // Validate the error contents.
+    if err != nil {
+        t.Fatalf("Received an unexpected error: %s", err.Error())
+    }
+
     // Check the response.
     if response == nil {
-        t.Error("Received an unexpected nil response.")
+        t.Fatalf("Received an unexpected nil response.")
     }
     if response.ListAllMyBucketsResult.Owner.Id != "ryan" {
-        t.Errorf("Expected owner id of 'ryan' but got '%s'.", response.ListAllMyBucketsResult.Owner.Id)
+        t.Fatalf("Expected owner id of 'ryan' but got '%s'.", response.ListAllMyBucketsResult.Owner.Id)
     }
     if *response.ListAllMyBucketsResult.Owner.DisplayName != "ryan" {
-        t.Errorf("Expected owner display name of 'ryan' but got '%s'.", response.ListAllMyBucketsResult.Owner.DisplayName)
+        t.Fatalf("Expected owner display name of 'ryan' but got '%s'.", response.ListAllMyBucketsResult.Owner.DisplayName)
     }
     if len(response.ListAllMyBucketsResult.Buckets) != len(expectedBucketNames) {
-        t.Errorf("Parsed an unexpected number (%d) of buckets.", len(response.ListAllMyBucketsResult.Buckets))
+        t.Fatalf("Parsed an unexpected number (%d) of buckets.", len(response.ListAllMyBucketsResult.Buckets))
     }
     for i, bucket := range response.ListAllMyBucketsResult.Buckets {
         if *bucket.Name != expectedBucketNames[i] {
@@ -66,11 +71,6 @@ func TestGetService(t *testing.T) {
         if *bucket.CreationDate != expectedCreationDates[i] {
             t.Errorf("%dth bucket creation date is incorrect (%s).", i + 1, bucket.CreationDate)
         }
-    }
-
-    // Validate the error contents.
-    if err != nil {
-        t.Errorf("Received an unexpected error: %s", err.Error())
     }
 }
 
@@ -83,17 +83,17 @@ func TestGetBadService(t *testing.T) {
 
     // Check the response.
     if response != nil {
-        t.Error("Expected a nil response but received a value.")
+        t.Fatal("Expected a nil response but received a value.")
     }
 
     // Validate the error contents.
     if err == nil {
-        t.Error("Expected an error but didn't get one.")
+        t.Fatal("Expected an error but didn't get one.")
     } else {
         expectedError := "Received a status code of 400 when [200] was expected. Could not parse the response for additional information."
         actualError := err.Error()
         if actualError != expectedError {
-            t.Errorf("Expected a different error message than received: '%s'", actualError)
+            t.Fatalf("Expected a different error message than received: '%s'", actualError)
         }
     }
 }
@@ -124,52 +124,52 @@ func TestGetBucket(t *testing.T) {
 
     // Check the error result.
     if err != nil {
-        t.Errorf("Unexpected error '%s'.", err.Error())
+        t.Fatalf("Unexpected error '%s'.", err.Error())
     }
 
     // Check the response value.
     if response == nil {
-        t.Error("Response was unexpectedly nil.")
+        t.Fatal("Response was unexpectedly nil.")
     } else {
         if len(response.ListBucketResult.Objects) != len(keys) {
-            t.Errorf("Expected %d objects but got %d.", len(keys), len(response.ListBucketResult.Objects))
+            t.Fatalf("Expected %d objects but got %d.", len(keys), len(response.ListBucketResult.Objects))
         } else {
             if *response.ListBucketResult.Name != "remoteTest16" {
-                t.Errorf("Expected bucket name 'remoteTest16' but got '%s'.", response.ListBucketResult.Name)
+                t.Fatalf("Expected bucket name 'remoteTest16' but got '%s'.", response.ListBucketResult.Name)
             }
             if *response.ListBucketResult.Prefix != "" {
-                t.Errorf("Expected empty prefix but got '%s'.", response.ListBucketResult.Prefix)
+                t.Fatalf("Expected empty prefix but got '%s'.", response.ListBucketResult.Prefix)
             }
             if *response.ListBucketResult.Marker != "" {
-                t.Errorf("Expected empty marker but got '%s'.", response.ListBucketResult.Marker)
+                t.Fatalf("Expected empty marker but got '%s'.", response.ListBucketResult.Marker)
             }
             if response.ListBucketResult.MaxKeys != 1000 {
-                t.Errorf("Expected max keys of 1000 but got %d.", response.ListBucketResult.MaxKeys)
+                t.Fatalf("Expected max keys of 1000 but got %d.", response.ListBucketResult.MaxKeys)
             }
             if response.ListBucketResult.Truncated != false {
-                t.Error("Expected that the result would not be truncated, but it was.")
+                t.Fatalf("Expected that the result would not be truncated, but it was.")
             }
             for i, object := range response.ListBucketResult.Objects {
                 if *object.Key != keys[i] {
-                    t.Errorf("Expected key '%s' but got '%s'.", keys[i], object.Key)
+                    t.Fatalf("Expected key '%s' but got '%s'.", keys[i], object.Key)
                 }
                 if *object.LastModified != lastModifieds[i] {
-                    t.Errorf("Expected last modified '%s' but got '%s'.", lastModifieds[i], object.LastModified)
+                    t.Fatalf("Expected last modified '%s' but got '%s'.", lastModifieds[i], object.LastModified)
                 }
                 if *object.ETag != etags[i] {
-                    t.Errorf("Expected ETag '%s' but got '%s'.", etags[i], object.ETag)
+                    t.Fatalf("Expected ETag '%s' but got '%s'.", etags[i], object.ETag)
                 }
                 if object.Size != sizes[i] {
-                    t.Errorf("Expected size %d but got %d.", sizes[i], object.Size)
+                    t.Fatalf("Expected size %d but got %d.", sizes[i], object.Size)
                 }
                 if *object.StorageClass != storageClasses[i] {
-                    t.Errorf("Expected storage class '%s' but got '%s'.", storageClasses[i], object.StorageClass)
+                    t.Fatalf("Expected storage class '%s' but got '%s'.", storageClasses[i], object.StorageClass)
                 }
                 if object.Owner.Id != ids[i] {
-                    t.Errorf("Expected owner id '%s' but got '%s'.", ids[i], object.Owner.Id)
+                    t.Fatalf("Expected owner id '%s' but got '%s'.", ids[i], object.Owner.Id)
                 }
                 if *object.Owner.DisplayName != displayNames[i] {
-                    t.Errorf("Expected owner display name '%s' but got '%s'.", displayNames[i], object.Owner.DisplayName)
+                    t.Fatalf("Expected owner display name '%s' but got '%s'.", displayNames[i], object.Owner.DisplayName)
                 }
             }
         }
@@ -185,12 +185,12 @@ func TestPutBucket(t *testing.T) {
 
     // Check the error result.
     if err != nil {
-        t.Errorf("Unexpected error '%s'.", err.Error())
+        t.Fatalf("Unexpected error '%s'.", err.Error())
     }
 
     // Check the response value.
     if response == nil {
-        t.Error("Response was unexpectedly nil.")
+        t.Fatal("Response was unexpectedly nil.")
     }
 }
 
@@ -203,12 +203,12 @@ func TestDeleteBucket(t *testing.T) {
 
     // Check the error result.
     if err != nil {
-        t.Errorf("Unexpected error '%s'.", err.Error())
+        t.Fatalf("Unexpected error '%s'.", err.Error())
     }
 
     // Check the response value.
     if response == nil {
-        t.Error("Response was unexpectedly nil.")
+        t.Fatal("Response was unexpectedly nil.")
     }
 }
 
@@ -221,12 +221,12 @@ func TestDeleteObject(t *testing.T) {
 
     // Check the error result.
     if err != nil {
-        t.Errorf("Unexpected error '%s'.", err.Error())
+        t.Fatalf("Unexpected error '%s'.", err.Error())
     }
 
     // Check the response value.
     if response == nil {
-        t.Error("Response was unexpectedly nil.")
+        t.Fatal("Response was unexpectedly nil.")
     }
 }
 
@@ -239,18 +239,18 @@ func TestGetBadBucket(t *testing.T) {
 
     // Check the error result.
     if err == nil {
-        t.Error("Expected an error but got nil.")
+        t.Fatal("Expected an error but got nil.")
     } else {
         expectedError := "Received a status code of 400 when [200] was expected. Could not parse the response for additional information."
         actualError := err.Error()
         if actualError != expectedError {
-            t.Errorf("Expected a different error message than received: '%s'", actualError)
+            t.Fatalf("Expected a different error message than received: '%s'", actualError)
         }
     }
 
     // Check the response value.
     if response != nil {
-        t.Error("Response was supposed to be nil.")
+        t.Fatal("Response was supposed to be nil.")
     }
 }
 
@@ -265,21 +265,21 @@ func TestGetObject(t *testing.T) {
 
     // Check the error result.
     if err != nil {
-        t.Errorf("Unexpected error '%s'.", err.Error())
+        t.Fatalf("Unexpected error '%s'.", err.Error())
     }
 
     // Check the response value.
     if response == nil {
-        t.Error("Response was unexpectedly nil.")
+        t.Fatal("Response was unexpectedly nil.")
     } else if response.Content == nil {
-        t.Error("Response content was unexpectedly nil.")
+        t.Fatal("Response content was unexpectedly nil.")
     } else {
         defer response.Content.Close()
         bs, readErr := ioutil.ReadAll(response.Content)
         if readErr != nil {
-            t.Errorf("Unexpected error '%s'.", readErr.Error())
+            t.Fatalf("Unexpected error '%s'.", readErr.Error())
         } else if string(bs) != stringResponse {
-            t.Errorf("Expected '%s' but got '%s'.", stringResponse, string(bs))
+            t.Fatalf("Expected '%s' but got '%s'.", stringResponse, string(bs))
         }
     }
 }
@@ -297,21 +297,21 @@ func TestGetObjectRange(t *testing.T) {
 
     // Check the error result.
     if err != nil {
-        t.Errorf("Unexpected error '%s'.", err.Error())
+        t.Fatalf("Unexpected error '%s'.", err.Error())
     }
 
     // Check the response value.
     if response == nil {
-        t.Error("Response was unexpectedly nil.")
+        t.Fatal("Response was unexpectedly nil.")
     } else if response.Content == nil {
-        t.Error("Response content was unexpectedly nil.")
+        t.Fatal("Response content was unexpectedly nil.")
     } else {
         defer response.Content.Close()
         bs, readErr := ioutil.ReadAll(response.Content)
         if readErr != nil {
-            t.Errorf("Unexpected error '%s'.", readErr.Error())
+            t.Fatalf("Unexpected error '%s'.", readErr.Error())
         } else if string(bs) != stringResponse {
-            t.Errorf("Expected '%s' but got '%s'.", stringResponse, string(bs))
+            t.Fatalf("Expected '%s' but got '%s'.", stringResponse, string(bs))
         }
     }
 }
@@ -330,15 +330,15 @@ func TestGetJobToReplicateSpectraS3(t *testing.T) {
 
     // Check the error result.
     if err != nil {
-        t.Errorf("Unexpected error '%s'.", err.Error())
+        t.Fatalf("Unexpected error '%s'.", err.Error())
     }
 
     // Check the response value.
     if response == nil {
-        t.Error("Response was unexpectedly nil.")
+        t.Fatal("Response was unexpectedly nil.")
     } else {
         if response.Content != stringResponse {
-            t.Errorf("Unexpected response: expected '%s' but was '%s'", stringResponse, response.Content)
+            t.Fatalf("Unexpected response: expected '%s' but was '%s'", stringResponse, response.Content)
         }
     }
 }
@@ -358,12 +358,12 @@ func TestPutObject(t *testing.T) {
 
     // Check the error result.
     if err != nil {
-        t.Errorf("Unexpected error '%s'.", err.Error())
+        t.Fatalf("Unexpected error '%s'.", err.Error())
     }
 
     // Check the response value.
     if response == nil {
-        t.Error("Response was unexpectedly nil.")
+        t.Fatal("Response was unexpectedly nil.")
     }
 }
 
@@ -396,7 +396,7 @@ func runBulkTest(t *testing.T, operation string, callToTest bulkTest) {
     sizes := []int64 { 1202, 256, 2523 }
 
     stringRequest := "<objects><object name=\"file1\" size=\"256\"></object><object name=\"file2\" size=\"1202\"></object><object name=\"file3\" size=\"2523\"></object></objects>"
-    stringResponse := "<masterobjectlist><objects><object name='file2' size='1202'/><object name='file1' size='256'/><object name='file3' size='2523'/></objects></masterobjectlist>"
+    stringResponse := "<MasterObjectList><Objects><Object Name='file2' Length='1202'/><Object Name='file1' Length='256'/><Object Name='file3' Length='2523'/></Objects></MasterObjectList>"
 
     inputObjects := []models.Ds3Object {
         {Name: "file1", Size: 256 },
@@ -408,7 +408,7 @@ func runBulkTest(t *testing.T, operation string, callToTest bulkTest) {
     client := mockedClient(t).
         Expecting(
         networking.PUT,
-            "/_rest_/buckets/bucketName",
+            "/_rest_/bucket/bucketName",
             &url.Values{"operation": []string{operation}},
             &stringRequest,
         ).
@@ -417,18 +417,18 @@ func runBulkTest(t *testing.T, operation string, callToTest bulkTest) {
 
     // Check the error result.
     if err != nil {
-        t.Errorf("Unexpected error '%s'.", err.Error())
+        t.Fatalf("Unexpected error '%s'.", err.Error())
     }
 
     // Check the response value.
     if response == nil {
-        t.Error("Response was unexpectedly nil.")
+        t.Fatalf("Response was unexpectedly nil.")
     }
     if len(response) != 1 {
-        t.Errorf("Expected 1 object list but got %d.", len(response))
+        t.Fatalf("Expected 1 object list but got %d.", len(response))
     }
     if len(response[0].Objects) != len(keys) {
-        t.Errorf("Expected %d objects but got %d.", len(keys), len(response[0].Objects))
+        t.Fatalf("Expected %d objects but got %d.", len(keys), len(response[0].Objects))
     }
     for i, obj := range response[0].Objects {
         if *obj.Name != keys[i] {
@@ -455,21 +455,24 @@ func TestInitiateMultipart(t *testing.T) {
 
     // Check the error result.
     if err != nil {
-        t.Errorf("Unexpected error '%s'.", err.Error())
+        t.Fatalf("Unexpected error '%s'.", err.Error())
     }
 
     // Check the response value.
     if response == nil {
-        t.Error("Response was unexpectedly nil.")
+        t.Fatalf("Response was unexpectedly nil.")
+    }
+    if response.InitiateMultipartUploadResult.Bucket == nil {
+        t.Fatal("Expected bucket 'example-bucket' but got 'nil'.")
     }
     if *response.InitiateMultipartUploadResult.Bucket != "example-bucket" {
-        t.Errorf("Expected bucket 'example-bucket' but got '%s'.", response.InitiateMultipartUploadResult.Bucket)
+        t.Fatalf("Expected bucket 'example-bucket' but got '%s'.", response.InitiateMultipartUploadResult.Bucket)
     }
     if *response.InitiateMultipartUploadResult.Key != "example-object" {
-        t.Errorf("Expected key 'example-object' but got '%s'.", response.InitiateMultipartUploadResult.Key)
+        t.Fatalf("Expected key 'example-object' but got '%s'.", response.InitiateMultipartUploadResult.Key)
     }
     if *response.InitiateMultipartUploadResult.UploadId != "VXBsb2FkIElEIGZvciA2aWWpbmcncyBteS1tb3ZpZS5tMnRzIHVwbG9hZA" {
-        t.Errorf("Expected upload id 'VXBsb2FkIElEIGZvciA2aWWpbmcncyBteS1tb3ZpZS5tMnRzIHVwbG9hZA' but got '%s'.", response.InitiateMultipartUploadResult.UploadId)
+        t.Fatalf("Expected upload id 'VXBsb2FkIElEIGZvciA2aWWpbmcncyBteS1tb3ZpZS5tMnRzIHVwbG9hZA' but got '%s'.", response.InitiateMultipartUploadResult.UploadId)
     }
 }
 
@@ -481,8 +484,8 @@ func TestPutPart(t *testing.T) {
 
     // Create and run the mocked client.
     qs := &url.Values{
-        "partNumber": []string{strconv.Itoa(partNumber)},
-        "uploadId": []string{uploadId},
+        "part_number": []string{strconv.Itoa(partNumber)},
+        "upload_id": []string{uploadId},
     }
     response, err := mockedClient(t).
         Expecting(networking.PUT, "/bucketName/object", qs, nil).
@@ -497,12 +500,12 @@ func TestPutPart(t *testing.T) {
 
     // Check the error result.
     if err != nil {
-        t.Errorf("Unexpected error '%s'.", err.Error())
+        t.Fatalf("Unexpected error '%s'.", err.Error())
     }
 
     // Check the response value.
     if response == nil {
-        t.Error("Response was unexpectedly nil.")
+        t.Fatalf("Response was unexpectedly nil.")
     }
     /* TODO add header handling (eTag in headers)
     if response.ETag != etag {
@@ -518,11 +521,11 @@ func TestCompleteMultipart(t *testing.T) {
     etag := "b54357faf0632cce46e942fa68356b38"
     uploadId := "VXBsb2FkIElEIGZvciA2aWWpbmcncyBteS1tb3ZpZS5tMnRzIHVwbG9hZA"
     expectedRequest := "<CompleteMultipartUpload><Part><PartNumber>1</PartNumber><ETag>7a112844c1a2327e617f530cb06dccf8</ETag></Part><Part><PartNumber>2</PartNumber><ETag>7162e29f4e40da7f521d0794b57770ba</ETag></Part></CompleteMultipartUpload>"
-    expectedResponse := "<?xml version=\"1.0\" encoding=\"UTF-8\"?><CompleteMultipartUploadResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Location>http://my-server/bucketName/object</Location><Bucket>bucketName</Bucket><Key>object</Key><ETag>\"b54357faf0632cce46e942fa68356b38\"</ETag></CompleteMultipartUploadResult>"
+    expectedResponse := "<?xml version=\"1.0\" encoding=\"UTF-8\"?><CompleteMultipartUploadResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Location>http://my-server/bucketName/object</Location><Bucket>bucketName</Bucket><Key>object</Key><ETag>b54357faf0632cce46e942fa68356b38</ETag></CompleteMultipartUploadResult>"
 
     // Create and run the mocked client.
     qs := &url.Values{
-        "uploadId": []string{uploadId},
+        "upload_id": []string{uploadId},
     }
     response, err := mockedClient(t).
         Expecting(networking.POST, "/bucketName/object", qs, &expectedRequest).
@@ -539,24 +542,30 @@ func TestCompleteMultipart(t *testing.T) {
 
     // Check the error result.
     if err != nil {
-        t.Errorf("Unexpected error '%s'.", err.Error())
+        t.Fatalf("Unexpected error '%s'.", err.Error())
     }
 
     // Check the response value.
     if response == nil {
-        t.Error("Response was unexpectedly nil.")
+        t.Fatalf("Response was unexpectedly nil.")
+    }
+    if response.CompleteMultipartUploadResult.Location == nil {
+        t.Fatalf("Expected location '%s' but got 'nil'.", location)
     }
     if *response.CompleteMultipartUploadResult.Location != location {
-        t.Errorf("Expected location '%s' but got '%s'.", location, response.CompleteMultipartUploadResult.Location)
+        t.Fatalf("Expected location '%s' but got '%s'.", location, response.CompleteMultipartUploadResult.Location)
     }
     if *response.CompleteMultipartUploadResult.Bucket != bucket {
-        t.Errorf("Expected bucket '%s' but got '%s'.", bucket, response.CompleteMultipartUploadResult.Bucket)
+        t.Fatalf("Expected bucket '%s' but got '%s'.", bucket, response.CompleteMultipartUploadResult.Bucket)
     }
     if *response.CompleteMultipartUploadResult.Key != key {
-        t.Errorf("Expected key '%s' but got '%s'.", key, response.CompleteMultipartUploadResult.Key)
+        t.Fatalf("Expected key '%s' but got '%s'.", key, response.CompleteMultipartUploadResult.Key)
+    }
+    if response.CompleteMultipartUploadResult.ETag == nil {
+        t.Fatalf("Expected etag '%s' but got 'nil'.", etag)
     }
     if *response.CompleteMultipartUploadResult.ETag != etag {
-        t.Errorf("Expected etag '%s' but got '%s'.", etag, response.CompleteMultipartUploadResult.ETag)
+        t.Fatalf("Expected etag '%s' but got '%s'.", etag, response.CompleteMultipartUploadResult.ETag)
     }
 }
 
@@ -566,13 +575,15 @@ func TestDeleteObjects(t *testing.T) {
     expectedRequest := "<Delete><Object><Key>obj1</Key></Object><Object><Key>obj2</Key></Object><Object><Key>obj3</Key></Object></Delete>"
     expectedResponse := "<DeleteResult><Deleted><Key>obj1</Key></Deleted><Deleted><Key>obj2</Key></Deleted><Error><Code>ObjectNotFound</Code><Key>obj3</Key><Message>Object not found</Message></Error></DeleteResult>"
 
-    expectedDeleted := []models.S3ObjectToDelete{{&"obj1"}, {&"obj2"}}
+    expectedDeleted := []models.S3ObjectToDelete{{&objectNames[0]}, {&objectNames[1]}}
 
+    code := "ObjectNotFound"
+    message := "Object not found"
     expectedErrors := []models.DeleteObjectError {
         {
-            Code:    &"ObjectNotFound",
-            Key:     &"obj3",
-            Message: &"Object not found",
+            Code:    &code,
+            Key:     &objectNames[2],
+            Message: &message,
         },
     }
 
@@ -587,19 +598,27 @@ func TestDeleteObjects(t *testing.T) {
 
     // Check the error result.
     if err != nil {
-        t.Errorf("Unexpected error '%s'.", err.Error())
+        t.Fatalf("Unexpected error '%s'.", err.Error())
     }
 
     // Check the response value.
     if response == nil {
-        t.Error("Response was unexpectedly nil.")
+        t.Fatal("Response was unexpectedly nil.")
+    }
+
+    if response.DeleteResult.DeletedObjects == nil {
+        t.Fatalf("Expected '%s' but got 'nil'", expectedDeleted)
     }
 
     if !reflect.DeepEqual(response.DeleteResult.DeletedObjects, expectedDeleted) {
-        t.Errorf("Expected '%s' but got '%s'", expectedDeleted, response.DeleteResult.DeletedObjects)
+        t.Fatalf("Expected '%s' but got '%s'", expectedDeleted, response.DeleteResult.DeletedObjects)
+    }
+
+    if response.DeleteResult.Errors == nil {
+        t.Fatalf("Expected '%s' but got 'nil'", expectedErrors)
     }
 
     if !reflect.DeepEqual(response.DeleteResult.Errors, expectedErrors) {
-        t.Errorf("Expected '%s' but got '%s'", expectedErrors, response.DeleteResult.Errors)
+        t.Fatalf("Expected '%s' but got '%s'", expectedErrors, response.DeleteResult.Errors)
     }
 }
