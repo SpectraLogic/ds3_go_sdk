@@ -21,18 +21,18 @@ import (
 )
 
 type ModifyDataPersistenceRuleSpectraS3Request struct {
-    dataPersistenceRule string
+    dataPersistenceRuleId string
     dataPersistenceRuleType DataPersistenceRuleType
     isolationLevel DataIsolationLevel
     minimumDaysToRetain *int
     queryParams *url.Values
 }
 
-func NewModifyDataPersistenceRuleSpectraS3Request(dataPersistenceRule string) *ModifyDataPersistenceRuleSpectraS3Request {
+func NewModifyDataPersistenceRuleSpectraS3Request(dataPersistenceRuleId string) *ModifyDataPersistenceRuleSpectraS3Request {
     queryParams := &url.Values{}
 
     return &ModifyDataPersistenceRuleSpectraS3Request{
-        dataPersistenceRule: dataPersistenceRule,
+        dataPersistenceRuleId: dataPersistenceRuleId,
         queryParams: queryParams,
     }
 }
@@ -64,7 +64,7 @@ func (ModifyDataPersistenceRuleSpectraS3Request) Verb() networking.HttpVerb {
 }
 
 func (modifyDataPersistenceRuleSpectraS3Request *ModifyDataPersistenceRuleSpectraS3Request) Path() string {
-    return "/_rest_/data_persistence_rule/" + modifyDataPersistenceRuleSpectraS3Request.dataPersistenceRule
+    return "/_rest_/data_persistence_rule/" + modifyDataPersistenceRuleSpectraS3Request.dataPersistenceRuleId
 }
 
 func (modifyDataPersistenceRuleSpectraS3Request *ModifyDataPersistenceRuleSpectraS3Request) QueryParams() *url.Values {
