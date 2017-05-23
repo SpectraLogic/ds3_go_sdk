@@ -73,8 +73,8 @@ func TestBucket(t *testing.T) {
 
     //Verify that bucket exists
     getBucketResponse, getErr := testutils.GetBucketLogError(t, client, bucketName)
-    if getErr == nil && getBucketResponse.Name != bucketName {
-        t.Errorf("Unexpected bucket name: expected `%s` but got `%s`.", bucketName, getBucketResponse.Name)
+    if getErr == nil && *getBucketResponse.ListBucketResult.Name != bucketName {
+        t.Errorf("Unexpected bucket name: expected `%s` but got `%s`.", bucketName, getBucketResponse.ListBucketResult.Name)
     }
 
     //Delete bucket
