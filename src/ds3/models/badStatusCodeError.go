@@ -30,12 +30,12 @@ func buildBadStatusCodeError(webResponse networking.WebResponse, expectedStatusC
 }
 
 func (err BadStatusCodeError) Error() string {
-    if err.ErrorBody != nil {
+    if err.ErrorBody != nil && err.ErrorBody.Message != nil {
         return fmt.Sprintf(
             "Received a status code of %d when %v was expected. Error message: \"%s\"",
             err.ActualStatusCode,
             err.ExpectedStatusCode,
-            err.ErrorBody.Message,
+            *err.ErrorBody.Message,
         )
     } else {
         return fmt.Sprintf(
