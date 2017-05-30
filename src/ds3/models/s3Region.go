@@ -41,6 +41,7 @@ const (
 func (s3Region *S3Region) UnmarshalText(text []byte) error {
     var str string = string(bytes.ToUpper(text))
     switch str {
+        case "": *s3Region = UNDEFINED
         case "GOV_CLOUD": *s3Region = S3_REGION_GOV_CLOUD
         case "US_EAST_1": *s3Region = S3_REGION_US_EAST_1
         case "US_WEST_1": *s3Region = S3_REGION_US_WEST_1

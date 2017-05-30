@@ -40,6 +40,7 @@ const (
 func (poolFailureType *PoolFailureType) UnmarshalText(text []byte) error {
     var str string = string(bytes.ToUpper(text))
     switch str {
+        case "": *poolFailureType = UNDEFINED
         case "BLOB_READ_FAILED": *poolFailureType = POOL_FAILURE_TYPE_BLOB_READ_FAILED
         case "DATA_CHECKPOINT_FAILURE": *poolFailureType = POOL_FAILURE_TYPE_DATA_CHECKPOINT_FAILURE
         case "DATA_CHECKPOINT_MISSING": *poolFailureType = POOL_FAILURE_TYPE_DATA_CHECKPOINT_MISSING

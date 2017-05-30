@@ -30,6 +30,7 @@ const (
 func (cacheEntryState *CacheEntryState) UnmarshalText(text []byte) error {
     var str string = string(bytes.ToUpper(text))
     switch str {
+        case "": *cacheEntryState = UNDEFINED
         case "ALLOCATED": *cacheEntryState = CACHE_ENTRY_STATE_ALLOCATED
         case "IN_CACHE": *cacheEntryState = CACHE_ENTRY_STATE_IN_CACHE
         default:

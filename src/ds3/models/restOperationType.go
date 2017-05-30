@@ -51,6 +51,7 @@ const (
 func (restOperationType *RestOperationType) UnmarshalText(text []byte) error {
     var str string = string(bytes.ToUpper(text))
     switch str {
+        case "": *restOperationType = UNDEFINED
         case "ALLOCATE": *restOperationType = REST_OPERATION_TYPE_ALLOCATE
         case "CANCEL_EJECT": *restOperationType = REST_OPERATION_TYPE_CANCEL_EJECT
         case "CANCEL_FORMAT": *restOperationType = REST_OPERATION_TYPE_CANCEL_FORMAT

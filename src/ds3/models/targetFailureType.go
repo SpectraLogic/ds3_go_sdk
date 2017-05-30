@@ -35,6 +35,7 @@ const (
 func (targetFailureType *TargetFailureType) UnmarshalText(text []byte) error {
     var str string = string(bytes.ToUpper(text))
     switch str {
+        case "": *targetFailureType = UNDEFINED
         case "IMPORT_FAILED": *targetFailureType = TARGET_FAILURE_TYPE_IMPORT_FAILED
         case "NOT_ONLINE": *targetFailureType = TARGET_FAILURE_TYPE_NOT_ONLINE
         case "WRITE_FAILED": *targetFailureType = TARGET_FAILURE_TYPE_WRITE_FAILED

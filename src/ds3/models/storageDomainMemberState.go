@@ -30,6 +30,7 @@ const (
 func (storageDomainMemberState *StorageDomainMemberState) UnmarshalText(text []byte) error {
     var str string = string(bytes.ToUpper(text))
     switch str {
+        case "": *storageDomainMemberState = UNDEFINED
         case "NORMAL": *storageDomainMemberState = STORAGE_DOMAIN_MEMBER_STATE_NORMAL
         case "EXCLUSION_IN_PROGRESS": *storageDomainMemberState = STORAGE_DOMAIN_MEMBER_STATE_EXCLUSION_IN_PROGRESS
         default:

@@ -31,6 +31,7 @@ const (
 func (tapePartitionState *TapePartitionState) UnmarshalText(text []byte) error {
     var str string = string(bytes.ToUpper(text))
     switch str {
+        case "": *tapePartitionState = UNDEFINED
         case "ONLINE": *tapePartitionState = TAPE_PARTITION_STATE_ONLINE
         case "OFFLINE": *tapePartitionState = TAPE_PARTITION_STATE_OFFLINE
         case "ERROR": *tapePartitionState = TAPE_PARTITION_STATE_ERROR

@@ -31,6 +31,7 @@ const (
 func (autoInspectMode *AutoInspectMode) UnmarshalText(text []byte) error {
     var str string = string(bytes.ToUpper(text))
     switch str {
+        case "": *autoInspectMode = UNDEFINED
         case "NEVER": *autoInspectMode = AUTO_INSPECT_MODE_NEVER
         case "MINIMAL": *autoInspectMode = AUTO_INSPECT_MODE_MINIMAL
         case "FULL": *autoInspectMode = AUTO_INSPECT_MODE_FULL

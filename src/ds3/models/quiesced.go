@@ -31,6 +31,7 @@ const (
 func (quiesced *Quiesced) UnmarshalText(text []byte) error {
     var str string = string(bytes.ToUpper(text))
     switch str {
+        case "": *quiesced = UNDEFINED
         case "NO": *quiesced = QUIESCED_NO
         case "PENDING": *quiesced = QUIESCED_PENDING
         case "YES": *quiesced = QUIESCED_YES

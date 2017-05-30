@@ -33,6 +33,7 @@ const (
 func (namingConventionType *NamingConventionType) UnmarshalText(text []byte) error {
     var str string = string(bytes.ToUpper(text))
     switch str {
+        case "": *namingConventionType = UNDEFINED
         case "CONCAT_LOWERCASE": *namingConventionType = NAMING_CONVENTION_TYPE_CONCAT_LOWERCASE
         case "CONSTANT": *namingConventionType = NAMING_CONVENTION_TYPE_CONSTANT
         case "UNDERSCORED": *namingConventionType = NAMING_CONVENTION_TYPE_UNDERSCORED

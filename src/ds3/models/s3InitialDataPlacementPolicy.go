@@ -32,6 +32,7 @@ const (
 func (s3InitialDataPlacementPolicy *S3InitialDataPlacementPolicy) UnmarshalText(text []byte) error {
     var str string = string(bytes.ToUpper(text))
     switch str {
+        case "": *s3InitialDataPlacementPolicy = UNDEFINED
         case "STANDARD": *s3InitialDataPlacementPolicy = S3_INITIAL_DATA_PLACEMENT_POLICY_STANDARD
         case "REDUCED_REDUNDANCY": *s3InitialDataPlacementPolicy = S3_INITIAL_DATA_PLACEMENT_POLICY_REDUCED_REDUNDANCY
         case "STANDARD_IA": *s3InitialDataPlacementPolicy = S3_INITIAL_DATA_PLACEMENT_POLICY_STANDARD_IA

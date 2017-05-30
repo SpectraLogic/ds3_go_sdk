@@ -30,6 +30,7 @@ const (
 func (dataReplicationRuleType *DataReplicationRuleType) UnmarshalText(text []byte) error {
     var str string = string(bytes.ToUpper(text))
     switch str {
+        case "": *dataReplicationRuleType = UNDEFINED
         case "PERMANENT": *dataReplicationRuleType = DATA_REPLICATION_RULE_TYPE_PERMANENT
         case "RETIRED": *dataReplicationRuleType = DATA_REPLICATION_RULE_TYPE_RETIRED
         default:

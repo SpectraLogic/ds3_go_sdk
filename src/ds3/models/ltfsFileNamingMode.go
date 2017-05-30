@@ -30,6 +30,7 @@ const (
 func (ltfsFileNamingMode *LtfsFileNamingMode) UnmarshalText(text []byte) error {
     var str string = string(bytes.ToUpper(text))
     switch str {
+        case "": *ltfsFileNamingMode = UNDEFINED
         case "OBJECT_NAME": *ltfsFileNamingMode = LTFS_FILE_NAMING_MODE_OBJECT_NAME
         case "OBJECT_ID": *ltfsFileNamingMode = LTFS_FILE_NAMING_MODE_OBJECT_ID
         default:

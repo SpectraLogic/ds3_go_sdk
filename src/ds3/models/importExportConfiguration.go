@@ -30,6 +30,7 @@ const (
 func (importExportConfiguration *ImportExportConfiguration) UnmarshalText(text []byte) error {
     var str string = string(bytes.ToUpper(text))
     switch str {
+        case "": *importExportConfiguration = UNDEFINED
         case "SUPPORTED": *importExportConfiguration = IMPORT_EXPORT_CONFIGURATION_SUPPORTED
         case "NOT_SUPPORTED": *importExportConfiguration = IMPORT_EXPORT_CONFIGURATION_NOT_SUPPORTED
         default:

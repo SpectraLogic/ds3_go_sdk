@@ -31,6 +31,7 @@ const (
 func (jobChunkBlobStoreState *JobChunkBlobStoreState) UnmarshalText(text []byte) error {
     var str string = string(bytes.ToUpper(text))
     switch str {
+        case "": *jobChunkBlobStoreState = UNDEFINED
         case "PENDING": *jobChunkBlobStoreState = JOB_CHUNK_BLOB_STORE_STATE_PENDING
         case "IN_PROGRESS": *jobChunkBlobStoreState = JOB_CHUNK_BLOB_STORE_STATE_IN_PROGRESS
         case "COMPLETED": *jobChunkBlobStoreState = JOB_CHUNK_BLOB_STORE_STATE_COMPLETED

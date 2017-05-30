@@ -31,6 +31,7 @@ const (
 func (unavailableMediaUsagePolicy *UnavailableMediaUsagePolicy) UnmarshalText(text []byte) error {
     var str string = string(bytes.ToUpper(text))
     switch str {
+        case "": *unavailableMediaUsagePolicy = UNDEFINED
         case "ALLOW": *unavailableMediaUsagePolicy = UNAVAILABLE_MEDIA_USAGE_POLICY_ALLOW
         case "DISCOURAGED": *unavailableMediaUsagePolicy = UNAVAILABLE_MEDIA_USAGE_POLICY_DISCOURAGED
         case "DISALLOW": *unavailableMediaUsagePolicy = UNAVAILABLE_MEDIA_USAGE_POLICY_DISALLOW

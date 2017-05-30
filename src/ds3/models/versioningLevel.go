@@ -30,6 +30,7 @@ const (
 func (versioningLevel *VersioningLevel) UnmarshalText(text []byte) error {
     var str string = string(bytes.ToUpper(text))
     switch str {
+        case "": *versioningLevel = UNDEFINED
         case "NONE": *versioningLevel = VERSIONING_LEVEL_NONE
         case "KEEP_LATEST": *versioningLevel = VERSIONING_LEVEL_KEEP_LATEST
         default:

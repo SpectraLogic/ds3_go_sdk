@@ -30,6 +30,7 @@ const (
 func (jobChunkClientProcessingOrderGuarantee *JobChunkClientProcessingOrderGuarantee) UnmarshalText(text []byte) error {
     var str string = string(bytes.ToUpper(text))
     switch str {
+        case "": *jobChunkClientProcessingOrderGuarantee = UNDEFINED
         case "NONE": *jobChunkClientProcessingOrderGuarantee = JOB_CHUNK_CLIENT_PROCESSING_ORDER_GUARANTEE_NONE
         case "IN_ORDER": *jobChunkClientProcessingOrderGuarantee = JOB_CHUNK_CLIENT_PROCESSING_ORDER_GUARANTEE_IN_ORDER
         default:

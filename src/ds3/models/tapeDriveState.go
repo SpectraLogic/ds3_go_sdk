@@ -32,6 +32,7 @@ const (
 func (tapeDriveState *TapeDriveState) UnmarshalText(text []byte) error {
     var str string = string(bytes.ToUpper(text))
     switch str {
+        case "": *tapeDriveState = UNDEFINED
         case "OFFLINE": *tapeDriveState = TAPE_DRIVE_STATE_OFFLINE
         case "NORMAL": *tapeDriveState = TAPE_DRIVE_STATE_NORMAL
         case "ERROR": *tapeDriveState = TAPE_DRIVE_STATE_ERROR

@@ -34,6 +34,7 @@ const (
 func (systemFailureType *SystemFailureType) UnmarshalText(text []byte) error {
     var str string = string(bytes.ToUpper(text))
     switch str {
+        case "": *systemFailureType = UNDEFINED
         case "RECONCILE_TAPE_ENVIRONMENT_FAILED": *systemFailureType = SYSTEM_FAILURE_TYPE_RECONCILE_TAPE_ENVIRONMENT_FAILED
         case "RECONCILE_POOL_ENVIRONMENT_FAILED": *systemFailureType = SYSTEM_FAILURE_TYPE_RECONCILE_POOL_ENVIRONMENT_FAILED
         case "CRITICAL_DATA_VERIFICATION_ERROR_REQUIRES_USER_CONFIRMATION": *systemFailureType = SYSTEM_FAILURE_TYPE_CRITICAL_DATA_VERIFICATION_ERROR_REQUIRES_USER_CONFIRMATION

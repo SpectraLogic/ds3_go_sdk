@@ -41,6 +41,7 @@ const (
 func (tapeType *TapeType) UnmarshalText(text []byte) error {
     var str string = string(bytes.ToUpper(text))
     switch str {
+        case "": *tapeType = UNDEFINED
         case "LTO5": *tapeType = TAPE_TYPE_LTO5
         case "LTO6": *tapeType = TAPE_TYPE_LTO6
         case "LTO7": *tapeType = TAPE_TYPE_LTO7

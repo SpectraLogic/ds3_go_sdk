@@ -30,6 +30,7 @@ const (
 func (dataIsolationLevel *DataIsolationLevel) UnmarshalText(text []byte) error {
     var str string = string(bytes.ToUpper(text))
     switch str {
+        case "": *dataIsolationLevel = UNDEFINED
         case "STANDARD": *dataIsolationLevel = DATA_ISOLATION_LEVEL_STANDARD
         case "BUCKET_ISOLATED": *dataIsolationLevel = DATA_ISOLATION_LEVEL_BUCKET_ISOLATED
         default:

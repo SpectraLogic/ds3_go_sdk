@@ -34,6 +34,7 @@ const (
 func (targetReadPreferenceType *TargetReadPreferenceType) UnmarshalText(text []byte) error {
     var str string = string(bytes.ToUpper(text))
     switch str {
+        case "": *targetReadPreferenceType = UNDEFINED
         case "MINIMUM_LATENCY": *targetReadPreferenceType = TARGET_READ_PREFERENCE_TYPE_MINIMUM_LATENCY
         case "AFTER_ONLINE_POOL": *targetReadPreferenceType = TARGET_READ_PREFERENCE_TYPE_AFTER_ONLINE_POOL
         case "AFTER_NEARLINE_POOL": *targetReadPreferenceType = TARGET_READ_PREFERENCE_TYPE_AFTER_NEARLINE_POOL

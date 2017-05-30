@@ -33,6 +33,7 @@ const (
 func (requestType *RequestType) UnmarshalText(text []byte) error {
     var str string = string(bytes.ToUpper(text))
     switch str {
+        case "": *requestType = UNDEFINED
         case "DELETE": *requestType = REQUEST_TYPE_DELETE
         case "GET": *requestType = REQUEST_TYPE_GET
         case "HEAD": *requestType = REQUEST_TYPE_HEAD

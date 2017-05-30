@@ -30,6 +30,7 @@ const (
 func (s3ObjectType *S3ObjectType) UnmarshalText(text []byte) error {
     var str string = string(bytes.ToUpper(text))
     switch str {
+        case "": *s3ObjectType = UNDEFINED
         case "DATA": *s3ObjectType = S3_OBJECT_TYPE_DATA
         case "FOLDER": *s3ObjectType = S3_OBJECT_TYPE_FOLDER
         default:

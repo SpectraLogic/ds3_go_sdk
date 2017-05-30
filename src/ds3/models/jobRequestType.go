@@ -31,6 +31,7 @@ const (
 func (jobRequestType *JobRequestType) UnmarshalText(text []byte) error {
     var str string = string(bytes.ToUpper(text))
     switch str {
+        case "": *jobRequestType = UNDEFINED
         case "PUT": *jobRequestType = JOB_REQUEST_TYPE_PUT
         case "GET": *jobRequestType = JOB_REQUEST_TYPE_GET
         case "VERIFY": *jobRequestType = JOB_REQUEST_TYPE_VERIFY

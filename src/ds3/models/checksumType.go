@@ -33,6 +33,7 @@ const (
 func (checksumType *ChecksumType) UnmarshalText(text []byte) error {
     var str string = string(bytes.ToUpper(text))
     switch str {
+        case "": *checksumType = UNDEFINED
         case "CRC_32": *checksumType = CHECKSUM_TYPE_CRC_32
         case "CRC_32C": *checksumType = CHECKSUM_TYPE_CRC_32C
         case "MD5": *checksumType = CHECKSUM_TYPE_MD5
