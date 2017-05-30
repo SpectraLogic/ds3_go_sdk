@@ -7,6 +7,7 @@ import (
     "net/url"
     "net/http"
     "ds3/networking"
+    "reflect"
 )
 
 func mockedClient(t *testing.T) mockedClientWithTest {
@@ -14,7 +15,7 @@ func mockedClient(t *testing.T) mockedClientWithTest {
 }
 
 type mockedClientWithTest interface {
-    Expecting(verb networking.HttpVerb, path string, queryParams *url.Values, request *string) mockedClientWithExpectation
+    Expecting(verb networking.HttpVerb, path string, queryParams *url.Values, requestHeaders *http.Header, request *string) mockedClientWithExpectation
 }
 
 type mockedClientWithExpectation interface {
@@ -29,6 +30,7 @@ type mockedNet struct {
     verb networking.HttpVerb
     path string
     queryParams *url.Values
+    requestHeaders *http.Header
     request *string
 
     // Response data to return.
@@ -37,10 +39,11 @@ type mockedNet struct {
     headers *http.Header
 }
 
-func (mockedNet *mockedNet) Expecting(verb networking.HttpVerb, path string, queryParams *url.Values, request *string) mockedClientWithExpectation {
+func (mockedNet *mockedNet) Expecting(verb networking.HttpVerb, path string, queryParams *url.Values, requestHeaders *http.Header, request *string) mockedClientWithExpectation {
     mockedNet.verb = verb
     mockedNet.path = path
     mockedNet.queryParams = queryParams
+    mockedNet.requestHeaders = requestHeaders
     mockedNet.request = request
     return mockedNet
 }
@@ -80,6 +83,29 @@ func (mockedNet *mockedNet) Invoke(ds3Request networking.Ds3Request) (networking
             expectedQueryParams,
             actualQueryParams,
         )
+    }
+
+    // Verify request headers
+    actualRequestHeaders := *ds3Request.Header()
+    expectedRequestHeaders := *mockedNet.requestHeaders
+    if len(actualRequestHeaders) != len(expectedRequestHeaders) {
+        mockedNet.t.Errorf(
+            "Expected request headers '%s' but got '%s'.",
+            expectedRequestHeaders,
+            actualRequestHeaders,
+        )
+    } else {
+        for key, expectedValues := range expectedRequestHeaders {
+            actualValues := actualRequestHeaders[key]
+            if !reflect.DeepEqual(actualValues, expectedValues) {
+                mockedNet.t.Errorf(
+                    "For request header with key '%s', expected values '%v' but got '%v'.",
+                    key,
+                    expectedValues,
+                    actualValues,
+                )
+            }
+        }
     }
 
     // Verify the request contents.
