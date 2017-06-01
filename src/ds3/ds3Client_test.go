@@ -11,63 +11,6 @@ import (
     "reflect"
 )
 
-func assertNonNilBoolPtr(t *testing.T, xmlTag string, expected bool, actual *bool) {
-    if actual == nil {
-        t.Fatalf("Expected %s to be '%t' but was 'nil'.", xmlTag, expected)
-    }
-    assertBool(t, xmlTag, expected, *actual)
-}
-
-func assertBoolPtrIsNil(t *testing.T, xmlTag bool, actual *bool) {
-    if actual != nil {
-        t.Fatalf("Expected %s to be 'nil' but was '%t'.", xmlTag, *actual)
-    }
-}
-
-func assertBool(t *testing.T, xmlTag string, expected bool, actual bool) {
-    if expected != actual {
-        t.Fatalf("Expected %s to be '%t' but was '%t'.", xmlTag, expected, actual)
-    }
-}
-
-func assertNonNilIntPtr(t *testing.T, xmlTag string, expected int64, actual *int64) {
-    if actual == nil {
-        t.Fatalf("Expected %s to be '%d' but was 'nil'.", xmlTag, expected)
-    }
-    assertInt(t, xmlTag, expected, *actual)
-}
-
-func assertIntPtrIsNil(t *testing.T, xmlTag int64, actual *int64) {
-    if actual != nil && *actual != 0 { //TODO remove default value check once nil ptr parsing is fixed
-        t.Fatalf("Expected %s to be 'nil' but was '%d'.", xmlTag, *actual)
-    }
-}
-
-func assertInt(t *testing.T, xmlTag string, expected int64, actual int64) {
-    if expected != actual {
-        t.Fatalf("Expected %s to be '%d' but was '%d'.", xmlTag, expected, actual)
-    }
-}
-
-func assertNonNilStringPtr(t *testing.T, xmlTag string, expected string, actual *string) {
-    if actual == nil {
-        t.Fatalf("Expected %s to be '%s' but was 'nil'.", xmlTag, expected)
-    }
-    assertString(t, xmlTag, expected, *actual)
-}
-
-func assertStringPtrIsNil(t *testing.T, xmlTag string, actual *string) {
-    if actual != nil && *actual != "" { //TODO remove empty string comparison once nil ptr parsing is fixed
-        t.Fatalf("Expected %s to be 'nil' but was '%s'.", xmlTag, *actual)
-    }
-}
-
-func assertString(t *testing.T, xmlTag string, expected string, actual string) {
-    if expected != actual {
-        t.Fatalf("Expected %s to be '%s' but was '%s'.", xmlTag, expected, actual)
-    }
-}
-
 func TestGetService(t *testing.T) {
     stringResponse := "<ListAllMyBucketsResult xmlns=\"http://doc.s3.amazonaws.com/2006-03-01\"><Owner><ID>ryan</ID><DisplayName>ryan</DisplayName></Owner><Buckets><Bucket><Name>testBucket2</Name><CreationDate>2013-12-11T23:20:09</CreationDate></Bucket><Bucket><Name>bulkTest</Name><CreationDate>2013-12-11T23:20:09</CreationDate></Bucket><Bucket><Name>bulkTest1</Name><CreationDate>2013-12-11T23:20:09</CreationDate></Bucket><Bucket><Name>bulkTest2</Name><CreationDate>2013-12-11T23:20:09</CreationDate></Bucket><Bucket><Name>bulkTest3</Name><CreationDate>2013-12-11T23:20:09</CreationDate></Bucket><Bucket><Name>bulkTest4</Name><CreationDate>2013-12-11T23:20:09</CreationDate></Bucket><Bucket><Name>bulkTest5</Name><CreationDate>2013-12-11T23:20:09</CreationDate></Bucket><Bucket><Name>bulkTest6</Name><CreationDate>2013-12-11T23:20:09</CreationDate></Bucket><Bucket><Name>testBucket3</Name><CreationDate>2013-12-11T23:20:09</CreationDate></Bucket><Bucket><Name>testBucket1</Name><CreationDate>2013-12-11T23:20:09</CreationDate></Bucket><Bucket><Name>testbucket</Name><CreationDate>2013-12-11T23:20:09</CreationDate></Bucket></Buckets></ListAllMyBucketsResult>"
     expectedBucketNames := []string {
