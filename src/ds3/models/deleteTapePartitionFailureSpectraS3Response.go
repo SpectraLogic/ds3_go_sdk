@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type DeleteTapePartitionFailureSpectraS3Response struct {
     
+    Headers *http.Header
 }
 
 func NewDeleteTapePartitionFailureSpectraS3Response(webResponse networking.WebResponse) (*DeleteTapePartitionFailureSpectraS3Response, error) {
@@ -26,7 +28,7 @@ func NewDeleteTapePartitionFailureSpectraS3Response(webResponse networking.WebRe
 
     switch code := webResponse.StatusCode(); code {
     case 204:
-        return &DeleteTapePartitionFailureSpectraS3Response{}, nil
+        return &DeleteTapePartitionFailureSpectraS3Response{Headers: webResponse.Header()}, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }

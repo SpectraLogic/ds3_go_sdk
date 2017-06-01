@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type ListMultiPartUploadsResponse struct {
     ListMultiPartUploadsResult ListMultiPartUploadsResult
+    Headers *http.Header
 }
 
 func NewListMultiPartUploadsResponse(webResponse networking.WebResponse) (*ListMultiPartUploadsResponse, error) {
@@ -30,6 +32,7 @@ func NewListMultiPartUploadsResponse(webResponse networking.WebResponse) (*ListM
         if err := readResponseBody(webResponse, &body.ListMultiPartUploadsResult); err != nil {
             return nil, err
         }
+        body.Headers = webResponse.Header()
         return &body, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)

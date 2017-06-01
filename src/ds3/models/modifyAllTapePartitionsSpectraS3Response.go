@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type ModifyAllTapePartitionsSpectraS3Response struct {
     
+    Headers *http.Header
 }
 
 func NewModifyAllTapePartitionsSpectraS3Response(webResponse networking.WebResponse) (*ModifyAllTapePartitionsSpectraS3Response, error) {
@@ -26,7 +28,7 @@ func NewModifyAllTapePartitionsSpectraS3Response(webResponse networking.WebRespo
 
     switch code := webResponse.StatusCode(); code {
     case 204:
-        return &ModifyAllTapePartitionsSpectraS3Response{}, nil
+        return &ModifyAllTapePartitionsSpectraS3Response{Headers: webResponse.Header()}, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }

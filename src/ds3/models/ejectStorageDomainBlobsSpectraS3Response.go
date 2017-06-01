@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type EjectStorageDomainBlobsSpectraS3Response struct {
     
+    Headers *http.Header
 }
 
 func NewEjectStorageDomainBlobsSpectraS3Response(webResponse networking.WebResponse) (*EjectStorageDomainBlobsSpectraS3Response, error) {
@@ -26,7 +28,7 @@ func NewEjectStorageDomainBlobsSpectraS3Response(webResponse networking.WebRespo
 
     switch code := webResponse.StatusCode(); code {
     case 204:
-        return &EjectStorageDomainBlobsSpectraS3Response{}, nil
+        return &EjectStorageDomainBlobsSpectraS3Response{Headers: webResponse.Header()}, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }

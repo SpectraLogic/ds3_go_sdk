@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type ModifyAzureDataReplicationRuleSpectraS3Response struct {
     AzureDataReplicationRule AzureDataReplicationRule
+    Headers *http.Header
 }
 
 func NewModifyAzureDataReplicationRuleSpectraS3Response(webResponse networking.WebResponse) (*ModifyAzureDataReplicationRuleSpectraS3Response, error) {
@@ -30,6 +32,7 @@ func NewModifyAzureDataReplicationRuleSpectraS3Response(webResponse networking.W
         if err := readResponseBody(webResponse, &body.AzureDataReplicationRule); err != nil {
             return nil, err
         }
+        body.Headers = webResponse.Header()
         return &body, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)

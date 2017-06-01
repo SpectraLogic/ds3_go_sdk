@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type DeleteFolderRecursivelySpectraS3Response struct {
     
+    Headers *http.Header
 }
 
 func NewDeleteFolderRecursivelySpectraS3Response(webResponse networking.WebResponse) (*DeleteFolderRecursivelySpectraS3Response, error) {
@@ -26,7 +28,7 @@ func NewDeleteFolderRecursivelySpectraS3Response(webResponse networking.WebRespo
 
     switch code := webResponse.StatusCode(); code {
     case 204:
-        return &DeleteFolderRecursivelySpectraS3Response{}, nil
+        return &DeleteFolderRecursivelySpectraS3Response{Headers: webResponse.Header()}, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }

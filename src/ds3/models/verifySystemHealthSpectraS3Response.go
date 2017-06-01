@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type VerifySystemHealthSpectraS3Response struct {
     HealthVerificationResult HealthVerificationResult
+    Headers *http.Header
 }
 
 func NewVerifySystemHealthSpectraS3Response(webResponse networking.WebResponse) (*VerifySystemHealthSpectraS3Response, error) {
@@ -30,6 +32,7 @@ func NewVerifySystemHealthSpectraS3Response(webResponse networking.WebResponse) 
         if err := readResponseBody(webResponse, &body.HealthVerificationResult); err != nil {
             return nil, err
         }
+        body.Headers = webResponse.Header()
         return &body, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)

@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type GetDataPolicyAclsSpectraS3Response struct {
     DataPolicyAclList DataPolicyAclList
+    Headers *http.Header
 }
 
 func NewGetDataPolicyAclsSpectraS3Response(webResponse networking.WebResponse) (*GetDataPolicyAclsSpectraS3Response, error) {
@@ -30,6 +32,7 @@ func NewGetDataPolicyAclsSpectraS3Response(webResponse networking.WebResponse) (
         if err := readResponseBody(webResponse, &body.DataPolicyAclList); err != nil {
             return nil, err
         }
+        body.Headers = webResponse.Header()
         return &body, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)

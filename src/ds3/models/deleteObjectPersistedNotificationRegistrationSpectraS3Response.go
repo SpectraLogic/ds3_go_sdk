@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type DeleteObjectPersistedNotificationRegistrationSpectraS3Response struct {
     
+    Headers *http.Header
 }
 
 func NewDeleteObjectPersistedNotificationRegistrationSpectraS3Response(webResponse networking.WebResponse) (*DeleteObjectPersistedNotificationRegistrationSpectraS3Response, error) {
@@ -26,7 +28,7 @@ func NewDeleteObjectPersistedNotificationRegistrationSpectraS3Response(webRespon
 
     switch code := webResponse.StatusCode(); code {
     case 204:
-        return &DeleteObjectPersistedNotificationRegistrationSpectraS3Response{}, nil
+        return &DeleteObjectPersistedNotificationRegistrationSpectraS3Response{Headers: webResponse.Header()}, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }

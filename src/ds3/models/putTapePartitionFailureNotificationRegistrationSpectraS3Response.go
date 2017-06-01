@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type PutTapePartitionFailureNotificationRegistrationSpectraS3Response struct {
     TapePartitionFailureNotificationRegistration TapePartitionFailureNotificationRegistration
+    Headers *http.Header
 }
 
 func NewPutTapePartitionFailureNotificationRegistrationSpectraS3Response(webResponse networking.WebResponse) (*PutTapePartitionFailureNotificationRegistrationSpectraS3Response, error) {
@@ -30,6 +32,7 @@ func NewPutTapePartitionFailureNotificationRegistrationSpectraS3Response(webResp
         if err := readResponseBody(webResponse, &body.TapePartitionFailureNotificationRegistration); err != nil {
             return nil, err
         }
+        body.Headers = webResponse.Header()
         return &body, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)

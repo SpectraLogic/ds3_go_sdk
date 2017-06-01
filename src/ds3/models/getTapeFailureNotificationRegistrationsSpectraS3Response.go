@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type GetTapeFailureNotificationRegistrationsSpectraS3Response struct {
     TapeFailureNotificationRegistrationList TapeFailureNotificationRegistrationList
+    Headers *http.Header
 }
 
 func NewGetTapeFailureNotificationRegistrationsSpectraS3Response(webResponse networking.WebResponse) (*GetTapeFailureNotificationRegistrationsSpectraS3Response, error) {
@@ -30,6 +32,7 @@ func NewGetTapeFailureNotificationRegistrationsSpectraS3Response(webResponse net
         if err := readResponseBody(webResponse, &body.TapeFailureNotificationRegistrationList); err != nil {
             return nil, err
         }
+        body.Headers = webResponse.Header()
         return &body, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)

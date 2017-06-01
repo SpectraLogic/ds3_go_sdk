@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type CancelAllJobsSpectraS3Response struct {
     
+    Headers *http.Header
 }
 
 func NewCancelAllJobsSpectraS3Response(webResponse networking.WebResponse) (*CancelAllJobsSpectraS3Response, error) {
@@ -26,7 +28,7 @@ func NewCancelAllJobsSpectraS3Response(webResponse networking.WebResponse) (*Can
 
     switch code := webResponse.StatusCode(); code {
     case 204:
-        return &CancelAllJobsSpectraS3Response{}, nil
+        return &CancelAllJobsSpectraS3Response{Headers: webResponse.Header()}, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }

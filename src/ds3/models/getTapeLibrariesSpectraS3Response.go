@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type GetTapeLibrariesSpectraS3Response struct {
     TapeLibraryList TapeLibraryList
+    Headers *http.Header
 }
 
 func NewGetTapeLibrariesSpectraS3Response(webResponse networking.WebResponse) (*GetTapeLibrariesSpectraS3Response, error) {
@@ -30,6 +32,7 @@ func NewGetTapeLibrariesSpectraS3Response(webResponse networking.WebResponse) (*
         if err := readResponseBody(webResponse, &body.TapeLibraryList); err != nil {
             return nil, err
         }
+        body.Headers = webResponse.Header()
         return &body, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)

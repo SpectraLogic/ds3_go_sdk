@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type DeleteTapeDensityDirectiveSpectraS3Response struct {
     
+    Headers *http.Header
 }
 
 func NewDeleteTapeDensityDirectiveSpectraS3Response(webResponse networking.WebResponse) (*DeleteTapeDensityDirectiveSpectraS3Response, error) {
@@ -26,7 +28,7 @@ func NewDeleteTapeDensityDirectiveSpectraS3Response(webResponse networking.WebRe
 
     switch code := webResponse.StatusCode(); code {
     case 204:
-        return &DeleteTapeDensityDirectiveSpectraS3Response{}, nil
+        return &DeleteTapeDensityDirectiveSpectraS3Response{Headers: webResponse.Header()}, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }

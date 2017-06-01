@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type CancelFormatOnAllTapesSpectraS3Response struct {
     TapeFailureList *TapeFailureList
+    Headers *http.Header
 }
 
 func NewCancelFormatOnAllTapesSpectraS3Response(webResponse networking.WebResponse) (*CancelFormatOnAllTapesSpectraS3Response, error) {
@@ -26,12 +28,13 @@ func NewCancelFormatOnAllTapesSpectraS3Response(webResponse networking.WebRespon
 
     switch code := webResponse.StatusCode(); code {
     case 204:
-        return &CancelFormatOnAllTapesSpectraS3Response{}, nil
+        return &CancelFormatOnAllTapesSpectraS3Response{Headers: webResponse.Header()}, nil
     case 207:
         var body CancelFormatOnAllTapesSpectraS3Response
         if err := readResponseBody(webResponse, &body.TapeFailureList); err != nil {
             return nil, err
         }
+        body.Headers = webResponse.Header()
         return &body, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)

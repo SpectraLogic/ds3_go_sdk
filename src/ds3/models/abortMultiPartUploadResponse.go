@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type AbortMultiPartUploadResponse struct {
     
+    Headers *http.Header
 }
 
 func NewAbortMultiPartUploadResponse(webResponse networking.WebResponse) (*AbortMultiPartUploadResponse, error) {
@@ -26,7 +28,7 @@ func NewAbortMultiPartUploadResponse(webResponse networking.WebResponse) (*Abort
 
     switch code := webResponse.StatusCode(); code {
     case 204:
-        return &AbortMultiPartUploadResponse{}, nil
+        return &AbortMultiPartUploadResponse{Headers: webResponse.Header()}, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }

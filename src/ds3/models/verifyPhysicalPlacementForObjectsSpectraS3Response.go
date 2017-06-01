@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type VerifyPhysicalPlacementForObjectsSpectraS3Response struct {
     PhysicalPlacement PhysicalPlacement
+    Headers *http.Header
 }
 
 func NewVerifyPhysicalPlacementForObjectsSpectraS3Response(webResponse networking.WebResponse) (*VerifyPhysicalPlacementForObjectsSpectraS3Response, error) {
@@ -30,6 +32,7 @@ func NewVerifyPhysicalPlacementForObjectsSpectraS3Response(webResponse networkin
         if err := readResponseBody(webResponse, &body.PhysicalPlacement); err != nil {
             return nil, err
         }
+        body.Headers = webResponse.Header()
         return &body, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)

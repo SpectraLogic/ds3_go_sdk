@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type ModifyCacheFilesystemSpectraS3Response struct {
     CacheFilesystem CacheFilesystem
+    Headers *http.Header
 }
 
 func NewModifyCacheFilesystemSpectraS3Response(webResponse networking.WebResponse) (*ModifyCacheFilesystemSpectraS3Response, error) {
@@ -30,6 +32,7 @@ func NewModifyCacheFilesystemSpectraS3Response(webResponse networking.WebRespons
         if err := readResponseBody(webResponse, &body.CacheFilesystem); err != nil {
             return nil, err
         }
+        body.Headers = webResponse.Header()
         return &body, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)

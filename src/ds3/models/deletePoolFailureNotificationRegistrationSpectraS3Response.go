@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type DeletePoolFailureNotificationRegistrationSpectraS3Response struct {
     
+    Headers *http.Header
 }
 
 func NewDeletePoolFailureNotificationRegistrationSpectraS3Response(webResponse networking.WebResponse) (*DeletePoolFailureNotificationRegistrationSpectraS3Response, error) {
@@ -26,7 +28,7 @@ func NewDeletePoolFailureNotificationRegistrationSpectraS3Response(webResponse n
 
     switch code := webResponse.StatusCode(); code {
     case 204:
-        return &DeletePoolFailureNotificationRegistrationSpectraS3Response{}, nil
+        return &DeletePoolFailureNotificationRegistrationSpectraS3Response{Headers: webResponse.Header()}, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }

@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type GetBucketCapacitySummarySpectraS3Response struct {
     CapacitySummaryContainer CapacitySummaryContainer
+    Headers *http.Header
 }
 
 func NewGetBucketCapacitySummarySpectraS3Response(webResponse networking.WebResponse) (*GetBucketCapacitySummarySpectraS3Response, error) {
@@ -30,6 +32,7 @@ func NewGetBucketCapacitySummarySpectraS3Response(webResponse networking.WebResp
         if err := readResponseBody(webResponse, &body.CapacitySummaryContainer); err != nil {
             return nil, err
         }
+        body.Headers = webResponse.Header()
         return &body, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)

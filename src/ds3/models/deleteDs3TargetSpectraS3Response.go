@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type DeleteDs3TargetSpectraS3Response struct {
     
+    Headers *http.Header
 }
 
 func NewDeleteDs3TargetSpectraS3Response(webResponse networking.WebResponse) (*DeleteDs3TargetSpectraS3Response, error) {
@@ -26,7 +28,7 @@ func NewDeleteDs3TargetSpectraS3Response(webResponse networking.WebResponse) (*D
 
     switch code := webResponse.StatusCode(); code {
     case 204:
-        return &DeleteDs3TargetSpectraS3Response{}, nil
+        return &DeleteDs3TargetSpectraS3Response{Headers: webResponse.Header()}, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }

@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type RawImportAllTapesSpectraS3Response struct {
     
+    Headers *http.Header
 }
 
 func NewRawImportAllTapesSpectraS3Response(webResponse networking.WebResponse) (*RawImportAllTapesSpectraS3Response, error) {
@@ -26,7 +28,7 @@ func NewRawImportAllTapesSpectraS3Response(webResponse networking.WebResponse) (
 
     switch code := webResponse.StatusCode(); code {
     case 204:
-        return &RawImportAllTapesSpectraS3Response{}, nil
+        return &RawImportAllTapesSpectraS3Response{Headers: webResponse.Header()}, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }

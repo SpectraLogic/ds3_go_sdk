@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type ClearSuspectBlobTapesSpectraS3Response struct {
     
+    Headers *http.Header
 }
 
 func NewClearSuspectBlobTapesSpectraS3Response(webResponse networking.WebResponse) (*ClearSuspectBlobTapesSpectraS3Response, error) {
@@ -26,7 +28,7 @@ func NewClearSuspectBlobTapesSpectraS3Response(webResponse networking.WebRespons
 
     switch code := webResponse.StatusCode(); code {
     case 204:
-        return &ClearSuspectBlobTapesSpectraS3Response{}, nil
+        return &ClearSuspectBlobTapesSpectraS3Response{Headers: webResponse.Header()}, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }

@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type ForcePoolEnvironmentRefreshSpectraS3Response struct {
     
+    Headers *http.Header
 }
 
 func NewForcePoolEnvironmentRefreshSpectraS3Response(webResponse networking.WebResponse) (*ForcePoolEnvironmentRefreshSpectraS3Response, error) {
@@ -26,7 +28,7 @@ func NewForcePoolEnvironmentRefreshSpectraS3Response(webResponse networking.WebR
 
     switch code := webResponse.StatusCode(); code {
     case 204:
-        return &ForcePoolEnvironmentRefreshSpectraS3Response{}, nil
+        return &ForcePoolEnvironmentRefreshSpectraS3Response{Headers: webResponse.Header()}, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }

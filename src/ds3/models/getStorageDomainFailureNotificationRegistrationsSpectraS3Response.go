@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type GetStorageDomainFailureNotificationRegistrationsSpectraS3Response struct {
     StorageDomainFailureNotificationRegistrationList StorageDomainFailureNotificationRegistrationList
+    Headers *http.Header
 }
 
 func NewGetStorageDomainFailureNotificationRegistrationsSpectraS3Response(webResponse networking.WebResponse) (*GetStorageDomainFailureNotificationRegistrationsSpectraS3Response, error) {
@@ -30,6 +32,7 @@ func NewGetStorageDomainFailureNotificationRegistrationsSpectraS3Response(webRes
         if err := readResponseBody(webResponse, &body.StorageDomainFailureNotificationRegistrationList); err != nil {
             return nil, err
         }
+        body.Headers = webResponse.Header()
         return &body, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)

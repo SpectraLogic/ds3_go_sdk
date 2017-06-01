@@ -14,5 +14,5 @@
 package models
 
 type JobList struct {
-    Jobs []Job `xml:"Jobs>Job"`
+    Jobs []Job `xml:"Job"`
 }

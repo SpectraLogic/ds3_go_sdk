@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type GetPoolFailuresSpectraS3Response struct {
     PoolFailureList PoolFailureList
+    Headers *http.Header
 }
 
 func NewGetPoolFailuresSpectraS3Response(webResponse networking.WebResponse) (*GetPoolFailuresSpectraS3Response, error) {
@@ -30,6 +32,7 @@ func NewGetPoolFailuresSpectraS3Response(webResponse networking.WebResponse) (*G
         if err := readResponseBody(webResponse, &body.PoolFailureList); err != nil {
             return nil, err
         }
+        body.Headers = webResponse.Header()
         return &body, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)

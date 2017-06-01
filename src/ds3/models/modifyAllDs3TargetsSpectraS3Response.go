@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type ModifyAllDs3TargetsSpectraS3Response struct {
     
+    Headers *http.Header
 }
 
 func NewModifyAllDs3TargetsSpectraS3Response(webResponse networking.WebResponse) (*ModifyAllDs3TargetsSpectraS3Response, error) {
@@ -26,7 +28,7 @@ func NewModifyAllDs3TargetsSpectraS3Response(webResponse networking.WebResponse)
 
     switch code := webResponse.StatusCode(); code {
     case 204:
-        return &ModifyAllDs3TargetsSpectraS3Response{}, nil
+        return &ModifyAllDs3TargetsSpectraS3Response{Headers: webResponse.Header()}, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }

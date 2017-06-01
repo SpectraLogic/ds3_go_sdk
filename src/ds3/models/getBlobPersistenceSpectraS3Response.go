@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type GetBlobPersistenceSpectraS3Response struct {
     Content string
+    Headers *http.Header
 }
 
 func NewGetBlobPersistenceSpectraS3Response(webResponse networking.WebResponse) (*GetBlobPersistenceSpectraS3Response, error) {
@@ -30,7 +32,7 @@ func NewGetBlobPersistenceSpectraS3Response(webResponse networking.WebResponse) 
         if err != nil {
             return nil, err
         }
-        return &GetBlobPersistenceSpectraS3Response{Content: content}, nil
+        return &GetBlobPersistenceSpectraS3Response{Content: content, Headers: webResponse.Header()}, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }

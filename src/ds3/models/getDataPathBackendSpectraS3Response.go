@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type GetDataPathBackendSpectraS3Response struct {
     DataPathBackend DataPathBackend
+    Headers *http.Header
 }
 
 func NewGetDataPathBackendSpectraS3Response(webResponse networking.WebResponse) (*GetDataPathBackendSpectraS3Response, error) {
@@ -30,6 +32,7 @@ func NewGetDataPathBackendSpectraS3Response(webResponse networking.WebResponse) 
         if err := readResponseBody(webResponse, &body.DataPathBackend); err != nil {
             return nil, err
         }
+        body.Headers = webResponse.Header()
         return &body, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)

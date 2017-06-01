@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type GetActiveJobsSpectraS3Response struct {
     ActiveJobList ActiveJobList
+    Headers *http.Header
 }
 
 func NewGetActiveJobsSpectraS3Response(webResponse networking.WebResponse) (*GetActiveJobsSpectraS3Response, error) {
@@ -30,6 +32,7 @@ func NewGetActiveJobsSpectraS3Response(webResponse networking.WebResponse) (*Get
         if err := readResponseBody(webResponse, &body.ActiveJobList); err != nil {
             return nil, err
         }
+        body.Headers = webResponse.Header()
         return &body, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)

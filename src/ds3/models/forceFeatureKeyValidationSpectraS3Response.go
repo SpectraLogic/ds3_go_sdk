@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type ForceFeatureKeyValidationSpectraS3Response struct {
     
+    Headers *http.Header
 }
 
 func NewForceFeatureKeyValidationSpectraS3Response(webResponse networking.WebResponse) (*ForceFeatureKeyValidationSpectraS3Response, error) {
@@ -26,7 +28,7 @@ func NewForceFeatureKeyValidationSpectraS3Response(webResponse networking.WebRes
 
     switch code := webResponse.StatusCode(); code {
     case 204:
-        return &ForceFeatureKeyValidationSpectraS3Response{}, nil
+        return &ForceFeatureKeyValidationSpectraS3Response{Headers: webResponse.Header()}, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }

@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type DeleteDataPolicyAclSpectraS3Response struct {
     
+    Headers *http.Header
 }
 
 func NewDeleteDataPolicyAclSpectraS3Response(webResponse networking.WebResponse) (*DeleteDataPolicyAclSpectraS3Response, error) {
@@ -26,7 +28,7 @@ func NewDeleteDataPolicyAclSpectraS3Response(webResponse networking.WebResponse)
 
     switch code := webResponse.StatusCode(); code {
     case 204:
-        return &DeleteDataPolicyAclSpectraS3Response{}, nil
+        return &DeleteDataPolicyAclSpectraS3Response{Headers: webResponse.Header()}, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }

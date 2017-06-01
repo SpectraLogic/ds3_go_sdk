@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type GetDataPersistenceRulesSpectraS3Response struct {
     DataPersistenceRuleList DataPersistenceRuleList
+    Headers *http.Header
 }
 
 func NewGetDataPersistenceRulesSpectraS3Response(webResponse networking.WebResponse) (*GetDataPersistenceRulesSpectraS3Response, error) {
@@ -30,6 +32,7 @@ func NewGetDataPersistenceRulesSpectraS3Response(webResponse networking.WebRespo
         if err := readResponseBody(webResponse, &body.DataPersistenceRuleList); err != nil {
             return nil, err
         }
+        body.Headers = webResponse.Header()
         return &body, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)

@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type HeadObjectResponse struct {
     
+    Headers *http.Header
 }
 
 func NewHeadObjectResponse(webResponse networking.WebResponse) (*HeadObjectResponse, error) {
@@ -26,7 +28,7 @@ func NewHeadObjectResponse(webResponse networking.WebResponse) (*HeadObjectRespo
 
     switch code := webResponse.StatusCode(); code {
     case 200:
-        return &HeadObjectResponse{}, nil
+        return &HeadObjectResponse{Headers: webResponse.Header()}, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }

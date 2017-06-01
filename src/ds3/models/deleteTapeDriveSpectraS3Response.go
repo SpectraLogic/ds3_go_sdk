@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type DeleteTapeDriveSpectraS3Response struct {
     
+    Headers *http.Header
 }
 
 func NewDeleteTapeDriveSpectraS3Response(webResponse networking.WebResponse) (*DeleteTapeDriveSpectraS3Response, error) {
@@ -26,7 +28,7 @@ func NewDeleteTapeDriveSpectraS3Response(webResponse networking.WebResponse) (*D
 
     switch code := webResponse.StatusCode(); code {
     case 204:
-        return &DeleteTapeDriveSpectraS3Response{}, nil
+        return &DeleteTapeDriveSpectraS3Response{Headers: webResponse.Header()}, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }

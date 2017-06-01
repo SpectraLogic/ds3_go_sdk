@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type DeleteBucketAclSpectraS3Response struct {
     
+    Headers *http.Header
 }
 
 func NewDeleteBucketAclSpectraS3Response(webResponse networking.WebResponse) (*DeleteBucketAclSpectraS3Response, error) {
@@ -26,7 +28,7 @@ func NewDeleteBucketAclSpectraS3Response(webResponse networking.WebResponse) (*D
 
     switch code := webResponse.StatusCode(); code {
     case 204:
-        return &DeleteBucketAclSpectraS3Response{}, nil
+        return &DeleteBucketAclSpectraS3Response{Headers: webResponse.Header()}, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }

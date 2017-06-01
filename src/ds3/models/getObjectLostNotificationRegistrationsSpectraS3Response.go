@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type GetObjectLostNotificationRegistrationsSpectraS3Response struct {
     S3ObjectLostNotificationRegistrationList S3ObjectLostNotificationRegistrationList
+    Headers *http.Header
 }
 
 func NewGetObjectLostNotificationRegistrationsSpectraS3Response(webResponse networking.WebResponse) (*GetObjectLostNotificationRegistrationsSpectraS3Response, error) {
@@ -30,6 +32,7 @@ func NewGetObjectLostNotificationRegistrationsSpectraS3Response(webResponse netw
         if err := readResponseBody(webResponse, &body.S3ObjectLostNotificationRegistrationList); err != nil {
             return nil, err
         }
+        body.Headers = webResponse.Header()
         return &body, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)

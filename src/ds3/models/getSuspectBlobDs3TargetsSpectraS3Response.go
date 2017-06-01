@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type GetSuspectBlobDs3TargetsSpectraS3Response struct {
     SuspectBlobDs3TargetList SuspectBlobDs3TargetList
+    Headers *http.Header
 }
 
 func NewGetSuspectBlobDs3TargetsSpectraS3Response(webResponse networking.WebResponse) (*GetSuspectBlobDs3TargetsSpectraS3Response, error) {
@@ -30,6 +32,7 @@ func NewGetSuspectBlobDs3TargetsSpectraS3Response(webResponse networking.WebResp
         if err := readResponseBody(webResponse, &body.SuspectBlobDs3TargetList); err != nil {
             return nil, err
         }
+        body.Headers = webResponse.Header()
         return &body, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)

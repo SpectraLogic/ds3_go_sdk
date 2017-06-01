@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type PutJobCreatedNotificationRegistrationSpectraS3Response struct {
     JobCreatedNotificationRegistration JobCreatedNotificationRegistration
+    Headers *http.Header
 }
 
 func NewPutJobCreatedNotificationRegistrationSpectraS3Response(webResponse networking.WebResponse) (*PutJobCreatedNotificationRegistrationSpectraS3Response, error) {
@@ -30,6 +32,7 @@ func NewPutJobCreatedNotificationRegistrationSpectraS3Response(webResponse netwo
         if err := readResponseBody(webResponse, &body.JobCreatedNotificationRegistration); err != nil {
             return nil, err
         }
+        body.Headers = webResponse.Header()
         return &body, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)

@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type GetJobChunkSpectraS3Response struct {
     Objects Objects
+    Headers *http.Header
 }
 
 func NewGetJobChunkSpectraS3Response(webResponse networking.WebResponse) (*GetJobChunkSpectraS3Response, error) {
@@ -30,6 +32,7 @@ func NewGetJobChunkSpectraS3Response(webResponse networking.WebResponse) (*GetJo
         if err := readResponseBody(webResponse, &body.Objects); err != nil {
             return nil, err
         }
+        body.Headers = webResponse.Header()
         return &body, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)

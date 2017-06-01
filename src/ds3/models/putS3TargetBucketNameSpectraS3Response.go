@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type PutS3TargetBucketNameSpectraS3Response struct {
     S3TargetBucketName S3TargetBucketName
+    Headers *http.Header
 }
 
 func NewPutS3TargetBucketNameSpectraS3Response(webResponse networking.WebResponse) (*PutS3TargetBucketNameSpectraS3Response, error) {
@@ -30,6 +32,7 @@ func NewPutS3TargetBucketNameSpectraS3Response(webResponse networking.WebRespons
         if err := readResponseBody(webResponse, &body.S3TargetBucketName); err != nil {
             return nil, err
         }
+        body.Headers = webResponse.Header()
         return &body, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)

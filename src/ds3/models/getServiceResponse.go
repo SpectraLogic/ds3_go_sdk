@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type GetServiceResponse struct {
     ListAllMyBucketsResult ListAllMyBucketsResult
+    Headers *http.Header
 }
 
 func NewGetServiceResponse(webResponse networking.WebResponse) (*GetServiceResponse, error) {
@@ -30,6 +32,7 @@ func NewGetServiceResponse(webResponse networking.WebResponse) (*GetServiceRespo
         if err := readResponseBody(webResponse, &body.ListAllMyBucketsResult); err != nil {
             return nil, err
         }
+        body.Headers = webResponse.Header()
         return &body, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)

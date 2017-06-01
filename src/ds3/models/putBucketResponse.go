@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type PutBucketResponse struct {
     
+    Headers *http.Header
 }
 
 func NewPutBucketResponse(webResponse networking.WebResponse) (*PutBucketResponse, error) {
@@ -26,7 +28,7 @@ func NewPutBucketResponse(webResponse networking.WebResponse) (*PutBucketRespons
 
     switch code := webResponse.StatusCode(); code {
     case 200:
-        return &PutBucketResponse{}, nil
+        return &PutBucketResponse{Headers: webResponse.Header()}, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }
