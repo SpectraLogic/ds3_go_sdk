@@ -665,16 +665,19 @@ func TestPutPart(t *testing.T) {
     content := "this is the part content"
     partNumber := 2
     uploadId := "VXBsb2FkIElEIGZvciA2aWWpbmcncyBteS1tb3ZpZS5tMnRzIHVwbG9hZA"
-    etag := "b54357faf0632cce46e942fa68356b38"
+    eTag := "b54357faf0632cce46e942fa68356b38"
 
     // Create and run the mocked client.
     qs := &url.Values{
         "part_number": []string{strconv.Itoa(partNumber)},
         "upload_id": []string{uploadId},
     }
+    responseHeaders := &http.Header{}
+    responseHeaders.Add("ETag", eTag)
+
     response, err := mockedClient(t).
         Expecting(networking.PUT, "/bucketName/object", qs, &http.Header{}, nil).
-        Returning(200, "", &http.Header{"etag": []string{"\"" + etag + "\""}}).
+        Returning(200, "", responseHeaders).
         PutMultiPartUploadPart(models.NewPutMultiPartUploadPartRequest(
             "bucketName",
             "object",
@@ -692,11 +695,8 @@ func TestPutPart(t *testing.T) {
     if response == nil {
         t.Fatalf("Response was unexpectedly nil.")
     }
-    /* TODO add header handling (eTag in headers)
-    if response.ETag != etag {
-        t.Errorf("Expected etag '%s' but got '%s'.", etag, response.ETag)
-    }
-    */
+
+    assertString(t, "etag header", eTag, response.Headers.Get("etag"))
 }
 
 func TestCompleteMultipart(t *testing.T) {
@@ -1361,7 +1361,9 @@ func TestGetTapeLibrariesSpectraS3(t *testing.T) {
             "<TapeLibrary><Id>82bdab72-d79a-4b43-95d7-f2c16cd9aa45</Id><ManagementUrl>a</ManagementUrl><Name>test library 2</Name><SerialNumber>test library 2</SerialNumber></TapeLibrary>" +
             "</Data>"
 
-    responseHeaders := &http.Header{"page-truncated": []string{"2"}, "total-result-count": []string{"3"}}
+    responseHeaders := &http.Header{}
+    responseHeaders.Add("Page-Truncated", "2")
+    responseHeaders.Add("Total-Result-Count", "3")
 
     response, err := mockedClient(t).
             Expecting(networking.GET, "/_rest_/tape_library", &url.Values{}, &http.Header{}, nil).
@@ -1377,7 +1379,7 @@ func TestGetTapeLibrariesSpectraS3(t *testing.T) {
     if response == nil {
         t.Fatal("Response was unexpectedly nil.")
     }
-    //TODO test parsing headers once headers are properly included in response parsing
+
     if len(response.TapeLibraryList.TapeLibraries) != 2 {
         t.Fatalf("Expected '2' tape libraries but got '%d'.", len(response.TapeLibraryList.TapeLibraries))
     }
@@ -1409,6 +1411,9 @@ func TestGetTapeLibrariesSpectraS3(t *testing.T) {
     if lib2.SerialNumber == nil || *lib2.SerialNumber != "test library 2" {
         t.Fatalf("Expected serial number 'test library 2' but was '%s'.", *lib2.SerialNumber)
     }
+
+    assertString(t, "Page-Truncated header", "2", response.Headers.Get("Page-Truncated"))
+    assertString(t, "Total-Result-Count header", "3", response.Headers.Get("Total-Result-Count"))
 }
 
 func TestGetTapeLibrarySpectraS3(t *testing.T) {
@@ -1514,7 +1519,9 @@ func TestGetTapesSpectraS3(t *testing.T) {
             "<WriteProtected>false</WriteProtected>" +
             "</Tape></Data>"
 
-    responseHeaders := &http.Header{"page-truncated": []string{"2"}, "total-result-count": []string{"3"}}
+    responseHeaders := &http.Header{}
+    responseHeaders.Add("Page-Truncated", "2")
+    responseHeaders.Add("Total-Result-Count", "3")
 
     response, err := mockedClient(t).
             Expecting(networking.GET, "/_rest_/tape", &url.Values{}, &http.Header{}, nil).
@@ -1530,7 +1537,6 @@ func TestGetTapesSpectraS3(t *testing.T) {
     if response == nil {
         t.Fatal("Response was unexpectedly nil.")
     }
-    //TODO test parsing headers once headers are properly included in response parsing
 
     if len(response.TapeList.Tapes) != 1 {
         t.Fatalf("Expected '1' tapes but got '%d'.", len(response.TapeList.Tapes))
@@ -1561,6 +1567,9 @@ func TestGetTapesSpectraS3(t *testing.T) {
     assertNonNilIntPtr(t, "TotalRawCapacity", 2408088338432, tape.TotalRawCapacity)
     assertString(t, "Type", models.TAPE_TYPE_LTO6.String(), tape.Type.String())
     assertBool(t, "WriteProtected", false, tape.WriteProtected)
+
+    assertString(t, "Page-Truncated header", "2", response.Headers.Get("Page-Truncated"))
+    assertString(t, "Total-Result-Count header", "3", response.Headers.Get("Total-Result-Count"))
 }
 
 func TestDeletePermanentlyLostTapeSpectraS3(t *testing.T) {
