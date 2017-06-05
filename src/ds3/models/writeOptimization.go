@@ -30,6 +30,7 @@ const (
 func (writeOptimization *WriteOptimization) UnmarshalText(text []byte) error {
     var str string = string(bytes.ToUpper(text))
     switch str {
+        case "": *writeOptimization = UNDEFINED
         case "CAPACITY": *writeOptimization = WRITE_OPTIMIZATION_CAPACITY
         case "PERFORMANCE": *writeOptimization = WRITE_OPTIMIZATION_PERFORMANCE
         default:

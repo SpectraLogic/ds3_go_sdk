@@ -30,6 +30,7 @@ const (
 func (targetState *TargetState) UnmarshalText(text []byte) error {
     var str string = string(bytes.ToUpper(text))
     switch str {
+        case "": *targetState = UNDEFINED
         case "ONLINE": *targetState = TARGET_STATE_ONLINE
         case "OFFLINE": *targetState = TARGET_STATE_OFFLINE
         default:

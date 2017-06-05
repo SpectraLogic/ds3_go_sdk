@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type ClearSuspectBlobAzureTargetsSpectraS3Response struct {
     
+    Headers *http.Header
 }
 
 func NewClearSuspectBlobAzureTargetsSpectraS3Response(webResponse networking.WebResponse) (*ClearSuspectBlobAzureTargetsSpectraS3Response, error) {
@@ -26,7 +28,7 @@ func NewClearSuspectBlobAzureTargetsSpectraS3Response(webResponse networking.Web
 
     switch code := webResponse.StatusCode(); code {
     case 204:
-        return &ClearSuspectBlobAzureTargetsSpectraS3Response{}, nil
+        return &ClearSuspectBlobAzureTargetsSpectraS3Response{Headers: webResponse.Header()}, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }

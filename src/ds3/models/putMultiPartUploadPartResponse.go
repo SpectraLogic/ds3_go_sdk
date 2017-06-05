@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type PutMultiPartUploadPartResponse struct {
     
+    Headers *http.Header
 }
 
 func NewPutMultiPartUploadPartResponse(webResponse networking.WebResponse) (*PutMultiPartUploadPartResponse, error) {
@@ -26,7 +28,7 @@ func NewPutMultiPartUploadPartResponse(webResponse networking.WebResponse) (*Put
 
     switch code := webResponse.StatusCode(); code {
     case 200:
-        return &PutMultiPartUploadPartResponse{}, nil
+        return &PutMultiPartUploadPartResponse{Headers: webResponse.Header()}, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }

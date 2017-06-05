@@ -31,6 +31,7 @@ const (
 func (httpResponseFormatType *HttpResponseFormatType) UnmarshalText(text []byte) error {
     var str string = string(bytes.ToUpper(text))
     switch str {
+        case "": *httpResponseFormatType = UNDEFINED
         case "DEFAULT": *httpResponseFormatType = HTTP_RESPONSE_FORMAT_TYPE_DEFAULT
         case "JSON": *httpResponseFormatType = HTTP_RESPONSE_FORMAT_TYPE_JSON
         case "XML": *httpResponseFormatType = HTTP_RESPONSE_FORMAT_TYPE_XML

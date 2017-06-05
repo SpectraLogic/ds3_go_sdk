@@ -30,6 +30,7 @@ const (
 func (ds3TargetAccessControlReplication *Ds3TargetAccessControlReplication) UnmarshalText(text []byte) error {
     var str string = string(bytes.ToUpper(text))
     switch str {
+        case "": *ds3TargetAccessControlReplication = UNDEFINED
         case "NONE": *ds3TargetAccessControlReplication = DS3_TARGET_ACCESS_CONTROL_REPLICATION_NONE
         case "USERS": *ds3TargetAccessControlReplication = DS3_TARGET_ACCESS_CONTROL_REPLICATION_USERS
         default:

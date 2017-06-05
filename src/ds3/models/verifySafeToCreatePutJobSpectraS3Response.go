@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type VerifySafeToCreatePutJobSpectraS3Response struct {
     
+    Headers *http.Header
 }
 
 func NewVerifySafeToCreatePutJobSpectraS3Response(webResponse networking.WebResponse) (*VerifySafeToCreatePutJobSpectraS3Response, error) {
@@ -26,7 +28,7 @@ func NewVerifySafeToCreatePutJobSpectraS3Response(webResponse networking.WebResp
 
     switch code := webResponse.StatusCode(); code {
     case 200:
-        return &VerifySafeToCreatePutJobSpectraS3Response{}, nil
+        return &VerifySafeToCreatePutJobSpectraS3Response{Headers: webResponse.Header()}, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }

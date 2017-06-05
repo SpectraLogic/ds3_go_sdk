@@ -32,6 +32,7 @@ const (
 func (databasePhysicalSpaceState *DatabasePhysicalSpaceState) UnmarshalText(text []byte) error {
     var str string = string(bytes.ToUpper(text))
     switch str {
+        case "": *databasePhysicalSpaceState = UNDEFINED
         case "CRITICAL": *databasePhysicalSpaceState = DATABASE_PHYSICAL_SPACE_STATE_CRITICAL
         case "LOW": *databasePhysicalSpaceState = DATABASE_PHYSICAL_SPACE_STATE_LOW
         case "NEAR_LOW": *databasePhysicalSpaceState = DATABASE_PHYSICAL_SPACE_STATE_NEAR_LOW

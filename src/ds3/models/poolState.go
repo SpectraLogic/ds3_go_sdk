@@ -34,6 +34,7 @@ const (
 func (poolState *PoolState) UnmarshalText(text []byte) error {
     var str string = string(bytes.ToUpper(text))
     switch str {
+        case "": *poolState = UNDEFINED
         case "BLANK": *poolState = POOL_STATE_BLANK
         case "NORMAL": *poolState = POOL_STATE_NORMAL
         case "LOST": *poolState = POOL_STATE_LOST

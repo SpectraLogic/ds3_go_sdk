@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type ReplicatePutJobSpectraS3Response struct {
     MasterObjectList *MasterObjectList
+    Headers *http.Header
 }
 
 func NewReplicatePutJobSpectraS3Response(webResponse networking.WebResponse) (*ReplicatePutJobSpectraS3Response, error) {
@@ -30,9 +32,10 @@ func NewReplicatePutJobSpectraS3Response(webResponse networking.WebResponse) (*R
         if err := readResponseBody(webResponse, &body.MasterObjectList); err != nil {
             return nil, err
         }
+        body.Headers = webResponse.Header()
         return &body, nil
     case 204:
-        return &ReplicatePutJobSpectraS3Response{}, nil
+        return &ReplicatePutJobSpectraS3Response{Headers: webResponse.Header()}, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }

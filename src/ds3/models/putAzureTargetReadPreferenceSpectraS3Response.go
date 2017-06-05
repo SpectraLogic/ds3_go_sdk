@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type PutAzureTargetReadPreferenceSpectraS3Response struct {
     AzureTargetReadPreference AzureTargetReadPreference
+    Headers *http.Header
 }
 
 func NewPutAzureTargetReadPreferenceSpectraS3Response(webResponse networking.WebResponse) (*PutAzureTargetReadPreferenceSpectraS3Response, error) {
@@ -30,6 +32,7 @@ func NewPutAzureTargetReadPreferenceSpectraS3Response(webResponse networking.Web
         if err := readResponseBody(webResponse, &body.AzureTargetReadPreference); err != nil {
             return nil, err
         }
+        body.Headers = webResponse.Header()
         return &body, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)

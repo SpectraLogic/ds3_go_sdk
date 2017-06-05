@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type GetDegradedDs3DataReplicationRulesSpectraS3Response struct {
     Ds3DataReplicationRuleList Ds3DataReplicationRuleList
+    Headers *http.Header
 }
 
 func NewGetDegradedDs3DataReplicationRulesSpectraS3Response(webResponse networking.WebResponse) (*GetDegradedDs3DataReplicationRulesSpectraS3Response, error) {
@@ -30,6 +32,7 @@ func NewGetDegradedDs3DataReplicationRulesSpectraS3Response(webResponse networki
         if err := readResponseBody(webResponse, &body.Ds3DataReplicationRuleList); err != nil {
             return nil, err
         }
+        body.Headers = webResponse.Header()
         return &body, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)

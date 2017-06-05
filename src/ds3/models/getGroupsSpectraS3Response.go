@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type GetGroupsSpectraS3Response struct {
     GroupList GroupList
+    Headers *http.Header
 }
 
 func NewGetGroupsSpectraS3Response(webResponse networking.WebResponse) (*GetGroupsSpectraS3Response, error) {
@@ -30,6 +32,7 @@ func NewGetGroupsSpectraS3Response(webResponse networking.WebResponse) (*GetGrou
         if err := readResponseBody(webResponse, &body.GroupList); err != nil {
             return nil, err
         }
+        body.Headers = webResponse.Header()
         return &body, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)

@@ -34,6 +34,7 @@ const (
 func (tapeDriveType *TapeDriveType) UnmarshalText(text []byte) error {
     var str string = string(bytes.ToUpper(text))
     switch str {
+        case "": *tapeDriveType = UNDEFINED
         case "UNKNOWN": *tapeDriveType = TAPE_DRIVE_TYPE_UNKNOWN
         case "LTO5": *tapeDriveType = TAPE_DRIVE_TYPE_LTO5
         case "LTO6": *tapeDriveType = TAPE_DRIVE_TYPE_LTO6

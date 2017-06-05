@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type GetTapeDensityDirectivesSpectraS3Response struct {
     TapeDensityDirectiveList TapeDensityDirectiveList
+    Headers *http.Header
 }
 
 func NewGetTapeDensityDirectivesSpectraS3Response(webResponse networking.WebResponse) (*GetTapeDensityDirectivesSpectraS3Response, error) {
@@ -30,6 +32,7 @@ func NewGetTapeDensityDirectivesSpectraS3Response(webResponse networking.WebResp
         if err := readResponseBody(webResponse, &body.TapeDensityDirectiveList); err != nil {
             return nil, err
         }
+        body.Headers = webResponse.Header()
         return &body, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)

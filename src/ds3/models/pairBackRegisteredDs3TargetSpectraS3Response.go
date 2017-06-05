@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type PairBackRegisteredDs3TargetSpectraS3Response struct {
     
+    Headers *http.Header
 }
 
 func NewPairBackRegisteredDs3TargetSpectraS3Response(webResponse networking.WebResponse) (*PairBackRegisteredDs3TargetSpectraS3Response, error) {
@@ -26,7 +28,7 @@ func NewPairBackRegisteredDs3TargetSpectraS3Response(webResponse networking.WebR
 
     switch code := webResponse.StatusCode(); code {
     case 204:
-        return &PairBackRegisteredDs3TargetSpectraS3Response{}, nil
+        return &PairBackRegisteredDs3TargetSpectraS3Response{Headers: webResponse.Header()}, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }

@@ -30,6 +30,7 @@ const (
 func (poolType *PoolType) UnmarshalText(text []byte) error {
     var str string = string(bytes.ToUpper(text))
     switch str {
+        case "": *poolType = UNDEFINED
         case "NEARLINE": *poolType = POOL_TYPE_NEARLINE
         case "ONLINE": *poolType = POOL_TYPE_ONLINE
         default:

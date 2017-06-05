@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type GetTapePartitionWithFullDetailsSpectraS3Response struct {
     DetailedTapePartition DetailedTapePartition
+    Headers *http.Header
 }
 
 func NewGetTapePartitionWithFullDetailsSpectraS3Response(webResponse networking.WebResponse) (*GetTapePartitionWithFullDetailsSpectraS3Response, error) {
@@ -30,6 +32,7 @@ func NewGetTapePartitionWithFullDetailsSpectraS3Response(webResponse networking.
         if err := readResponseBody(webResponse, &body.DetailedTapePartition); err != nil {
             return nil, err
         }
+        body.Headers = webResponse.Header()
         return &body, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)

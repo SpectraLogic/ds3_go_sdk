@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type ImportAzureTargetSpectraS3Response struct {
     
+    Headers *http.Header
 }
 
 func NewImportAzureTargetSpectraS3Response(webResponse networking.WebResponse) (*ImportAzureTargetSpectraS3Response, error) {
@@ -26,7 +28,7 @@ func NewImportAzureTargetSpectraS3Response(webResponse networking.WebResponse) (
 
     switch code := webResponse.StatusCode(); code {
     case 204:
-        return &ImportAzureTargetSpectraS3Response{}, nil
+        return &ImportAzureTargetSpectraS3Response{Headers: webResponse.Header()}, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }

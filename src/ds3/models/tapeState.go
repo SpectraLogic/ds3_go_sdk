@@ -54,6 +54,7 @@ const (
 func (tapeState *TapeState) UnmarshalText(text []byte) error {
     var str string = string(bytes.ToUpper(text))
     switch str {
+        case "": *tapeState = UNDEFINED
         case "NORMAL": *tapeState = TAPE_STATE_NORMAL
         case "OFFLINE": *tapeState = TAPE_STATE_OFFLINE
         case "ONLINE_PENDING": *tapeState = TAPE_STATE_ONLINE_PENDING

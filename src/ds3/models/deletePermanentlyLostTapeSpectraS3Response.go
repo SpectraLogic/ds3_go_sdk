@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type DeletePermanentlyLostTapeSpectraS3Response struct {
     
+    Headers *http.Header
 }
 
 func NewDeletePermanentlyLostTapeSpectraS3Response(webResponse networking.WebResponse) (*DeletePermanentlyLostTapeSpectraS3Response, error) {
@@ -26,7 +28,7 @@ func NewDeletePermanentlyLostTapeSpectraS3Response(webResponse networking.WebRes
 
     switch code := webResponse.StatusCode(); code {
     case 204:
-        return &DeletePermanentlyLostTapeSpectraS3Response{}, nil
+        return &DeletePermanentlyLostTapeSpectraS3Response{Headers: webResponse.Header()}, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }

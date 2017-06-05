@@ -31,6 +31,7 @@ const (
 func (jobStatus *JobStatus) UnmarshalText(text []byte) error {
     var str string = string(bytes.ToUpper(text))
     switch str {
+        case "": *jobStatus = UNDEFINED
         case "IN_PROGRESS": *jobStatus = JOB_STATUS_IN_PROGRESS
         case "COMPLETED": *jobStatus = JOB_STATUS_COMPLETED
         case "CANCELED": *jobStatus = JOB_STATUS_CANCELED

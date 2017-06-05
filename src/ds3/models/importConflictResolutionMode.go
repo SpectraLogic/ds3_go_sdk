@@ -31,6 +31,7 @@ const (
 func (importConflictResolutionMode *ImportConflictResolutionMode) UnmarshalText(text []byte) error {
     var str string = string(bytes.ToUpper(text))
     switch str {
+        case "": *importConflictResolutionMode = UNDEFINED
         case "CANCEL": *importConflictResolutionMode = IMPORT_CONFLICT_RESOLUTION_MODE_CANCEL
         case "ACCEPT_MOST_RECENT": *importConflictResolutionMode = IMPORT_CONFLICT_RESOLUTION_MODE_ACCEPT_MOST_RECENT
         case "ACCEPT_EXISTING": *importConflictResolutionMode = IMPORT_CONFLICT_RESOLUTION_MODE_ACCEPT_EXISTING

@@ -30,6 +30,7 @@ const (
 func (poolHealth *PoolHealth) UnmarshalText(text []byte) error {
     var str string = string(bytes.ToUpper(text))
     switch str {
+        case "": *poolHealth = UNDEFINED
         case "OK": *poolHealth = POOL_HEALTH_OK
         case "DEGRADED": *poolHealth = POOL_HEALTH_DEGRADED
         default:

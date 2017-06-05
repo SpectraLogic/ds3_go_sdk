@@ -42,6 +42,7 @@ const (
 func (tapePartitionFailureType *TapePartitionFailureType) UnmarshalText(text []byte) error {
     var str string = string(bytes.ToUpper(text))
     switch str {
+        case "": *tapePartitionFailureType = UNDEFINED
         case "CLEANING_TAPE_REQUIRED": *tapePartitionFailureType = TAPE_PARTITION_FAILURE_TYPE_CLEANING_TAPE_REQUIRED
         case "DUPLICATE_TAPE_BAR_CODES_DETECTED": *tapePartitionFailureType = TAPE_PARTITION_FAILURE_TYPE_DUPLICATE_TAPE_BAR_CODES_DETECTED
         case "EJECT_STALLED_DUE_TO_OFFLINE_TAPES": *tapePartitionFailureType = TAPE_PARTITION_FAILURE_TYPE_EJECT_STALLED_DUE_TO_OFFLINE_TAPES

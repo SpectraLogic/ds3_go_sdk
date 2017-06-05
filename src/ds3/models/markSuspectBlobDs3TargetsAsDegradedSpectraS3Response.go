@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type MarkSuspectBlobDs3TargetsAsDegradedSpectraS3Response struct {
     
+    Headers *http.Header
 }
 
 func NewMarkSuspectBlobDs3TargetsAsDegradedSpectraS3Response(webResponse networking.WebResponse) (*MarkSuspectBlobDs3TargetsAsDegradedSpectraS3Response, error) {
@@ -26,7 +28,7 @@ func NewMarkSuspectBlobDs3TargetsAsDegradedSpectraS3Response(webResponse network
 
     switch code := webResponse.StatusCode(); code {
     case 204:
-        return &MarkSuspectBlobDs3TargetsAsDegradedSpectraS3Response{}, nil
+        return &MarkSuspectBlobDs3TargetsAsDegradedSpectraS3Response{Headers: webResponse.Header()}, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }

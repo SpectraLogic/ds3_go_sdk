@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type ConvertStorageDomainToDs3TargetSpectraS3Response struct {
     
+    Headers *http.Header
 }
 
 func NewConvertStorageDomainToDs3TargetSpectraS3Response(webResponse networking.WebResponse) (*ConvertStorageDomainToDs3TargetSpectraS3Response, error) {
@@ -26,7 +28,7 @@ func NewConvertStorageDomainToDs3TargetSpectraS3Response(webResponse networking.
 
     switch code := webResponse.StatusCode(); code {
     case 204:
-        return &ConvertStorageDomainToDs3TargetSpectraS3Response{}, nil
+        return &ConvertStorageDomainToDs3TargetSpectraS3Response{Headers: webResponse.Header()}, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }

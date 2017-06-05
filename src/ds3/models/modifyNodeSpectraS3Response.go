@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type ModifyNodeSpectraS3Response struct {
     Node Node
+    Headers *http.Header
 }
 
 func NewModifyNodeSpectraS3Response(webResponse networking.WebResponse) (*ModifyNodeSpectraS3Response, error) {
@@ -30,6 +32,7 @@ func NewModifyNodeSpectraS3Response(webResponse networking.WebResponse) (*Modify
         if err := readResponseBody(webResponse, &body.Node); err != nil {
             return nil, err
         }
+        body.Headers = webResponse.Header()
         return &body, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)

@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type DeleteObjectsResponse struct {
     DeleteResult DeleteResult
+    Headers *http.Header
 }
 
 func NewDeleteObjectsResponse(webResponse networking.WebResponse) (*DeleteObjectsResponse, error) {
@@ -30,6 +32,7 @@ func NewDeleteObjectsResponse(webResponse networking.WebResponse) (*DeleteObject
         if err := readResponseBody(webResponse, &body.DeleteResult); err != nil {
             return nil, err
         }
+        body.Headers = webResponse.Header()
         return &body, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)

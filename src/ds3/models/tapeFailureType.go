@@ -48,6 +48,7 @@ const (
 func (tapeFailureType *TapeFailureType) UnmarshalText(text []byte) error {
     var str string = string(bytes.ToUpper(text))
     switch str {
+        case "": *tapeFailureType = UNDEFINED
         case "BAR_CODE_CHANGED": *tapeFailureType = TAPE_FAILURE_TYPE_BAR_CODE_CHANGED
         case "BAR_CODE_DUPLICATE": *tapeFailureType = TAPE_FAILURE_TYPE_BAR_CODE_DUPLICATE
         case "BLOB_READ_FAILED": *tapeFailureType = TAPE_FAILURE_TYPE_BLOB_READ_FAILED

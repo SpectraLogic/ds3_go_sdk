@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type ModifyAzureTargetSpectraS3Response struct {
     AzureTarget AzureTarget
+    Headers *http.Header
 }
 
 func NewModifyAzureTargetSpectraS3Response(webResponse networking.WebResponse) (*ModifyAzureTargetSpectraS3Response, error) {
@@ -30,6 +32,7 @@ func NewModifyAzureTargetSpectraS3Response(webResponse networking.WebResponse) (
         if err := readResponseBody(webResponse, &body.AzureTarget); err != nil {
             return nil, err
         }
+        body.Headers = webResponse.Header()
         return &body, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)

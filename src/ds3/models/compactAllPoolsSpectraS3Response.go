@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type CompactAllPoolsSpectraS3Response struct {
     
+    Headers *http.Header
 }
 
 func NewCompactAllPoolsSpectraS3Response(webResponse networking.WebResponse) (*CompactAllPoolsSpectraS3Response, error) {
@@ -26,7 +28,7 @@ func NewCompactAllPoolsSpectraS3Response(webResponse networking.WebResponse) (*C
 
     switch code := webResponse.StatusCode(); code {
     case 204:
-        return &CompactAllPoolsSpectraS3Response{}, nil
+        return &CompactAllPoolsSpectraS3Response{Headers: webResponse.Header()}, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }

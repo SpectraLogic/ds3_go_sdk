@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type GetPoolPartitionsSpectraS3Response struct {
     PoolPartitionList PoolPartitionList
+    Headers *http.Header
 }
 
 func NewGetPoolPartitionsSpectraS3Response(webResponse networking.WebResponse) (*GetPoolPartitionsSpectraS3Response, error) {
@@ -30,6 +32,7 @@ func NewGetPoolPartitionsSpectraS3Response(webResponse networking.WebResponse) (
         if err := readResponseBody(webResponse, &body.PoolPartitionList); err != nil {
             return nil, err
         }
+        body.Headers = webResponse.Header()
         return &body, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)

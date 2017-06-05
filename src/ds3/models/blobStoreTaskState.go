@@ -33,6 +33,7 @@ const (
 func (blobStoreTaskState *BlobStoreTaskState) UnmarshalText(text []byte) error {
     var str string = string(bytes.ToUpper(text))
     switch str {
+        case "": *blobStoreTaskState = UNDEFINED
         case "NOT_READY": *blobStoreTaskState = BLOB_STORE_TASK_STATE_NOT_READY
         case "READY": *blobStoreTaskState = BLOB_STORE_TASK_STATE_READY
         case "PENDING_EXECUTION": *blobStoreTaskState = BLOB_STORE_TASK_STATE_PENDING_EXECUTION

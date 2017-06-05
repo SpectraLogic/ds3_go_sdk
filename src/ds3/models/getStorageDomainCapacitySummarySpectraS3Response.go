@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type GetStorageDomainCapacitySummarySpectraS3Response struct {
     CapacitySummaryContainer CapacitySummaryContainer
+    Headers *http.Header
 }
 
 func NewGetStorageDomainCapacitySummarySpectraS3Response(webResponse networking.WebResponse) (*GetStorageDomainCapacitySummarySpectraS3Response, error) {
@@ -30,6 +32,7 @@ func NewGetStorageDomainCapacitySummarySpectraS3Response(webResponse networking.
         if err := readResponseBody(webResponse, &body.CapacitySummaryContainer); err != nil {
             return nil, err
         }
+        body.Headers = webResponse.Header()
         return &body, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)

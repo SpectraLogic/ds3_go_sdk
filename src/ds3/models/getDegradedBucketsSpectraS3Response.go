@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type GetDegradedBucketsSpectraS3Response struct {
     BucketList BucketList
+    Headers *http.Header
 }
 
 func NewGetDegradedBucketsSpectraS3Response(webResponse networking.WebResponse) (*GetDegradedBucketsSpectraS3Response, error) {
@@ -30,6 +32,7 @@ func NewGetDegradedBucketsSpectraS3Response(webResponse networking.WebResponse) 
         if err := readResponseBody(webResponse, &body.BucketList); err != nil {
             return nil, err
         }
+        body.Headers = webResponse.Header()
         return &body, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)

@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type VerifyUserIsMemberOfGroupSpectraS3Response struct {
     Group *Group
+    Headers *http.Header
 }
 
 func NewVerifyUserIsMemberOfGroupSpectraS3Response(webResponse networking.WebResponse) (*VerifyUserIsMemberOfGroupSpectraS3Response, error) {
@@ -30,9 +32,10 @@ func NewVerifyUserIsMemberOfGroupSpectraS3Response(webResponse networking.WebRes
         if err := readResponseBody(webResponse, &body.Group); err != nil {
             return nil, err
         }
+        body.Headers = webResponse.Header()
         return &body, nil
     case 204:
-        return &VerifyUserIsMemberOfGroupSpectraS3Response{}, nil
+        return &VerifyUserIsMemberOfGroupSpectraS3Response{Headers: webResponse.Header()}, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }

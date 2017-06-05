@@ -30,6 +30,7 @@ const (
 func (featureKeyType *FeatureKeyType) UnmarshalText(text []byte) error {
     var str string = string(bytes.ToUpper(text))
     switch str {
+        case "": *featureKeyType = UNDEFINED
         case "AWS_S3_CLOUD_OUT": *featureKeyType = FEATURE_KEY_TYPE_AWS_S3_CLOUD_OUT
         case "MICROSOFT_AZURE_CLOUD_OUT": *featureKeyType = FEATURE_KEY_TYPE_MICROSOFT_AZURE_CLOUD_OUT
         default:

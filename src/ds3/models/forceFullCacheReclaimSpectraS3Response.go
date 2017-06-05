@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type ForceFullCacheReclaimSpectraS3Response struct {
     
+    Headers *http.Header
 }
 
 func NewForceFullCacheReclaimSpectraS3Response(webResponse networking.WebResponse) (*ForceFullCacheReclaimSpectraS3Response, error) {
@@ -26,7 +28,7 @@ func NewForceFullCacheReclaimSpectraS3Response(webResponse networking.WebRespons
 
     switch code := webResponse.StatusCode(); code {
     case 204:
-        return &ForceFullCacheReclaimSpectraS3Response{}, nil
+        return &ForceFullCacheReclaimSpectraS3Response{Headers: webResponse.Header()}, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }

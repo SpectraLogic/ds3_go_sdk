@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type DeleteJobCreatedNotificationRegistrationSpectraS3Response struct {
     
+    Headers *http.Header
 }
 
 func NewDeleteJobCreatedNotificationRegistrationSpectraS3Response(webResponse networking.WebResponse) (*DeleteJobCreatedNotificationRegistrationSpectraS3Response, error) {
@@ -26,7 +28,7 @@ func NewDeleteJobCreatedNotificationRegistrationSpectraS3Response(webResponse ne
 
     switch code := webResponse.StatusCode(); code {
     case 204:
-        return &DeleteJobCreatedNotificationRegistrationSpectraS3Response{}, nil
+        return &DeleteJobCreatedNotificationRegistrationSpectraS3Response{Headers: webResponse.Header()}, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }

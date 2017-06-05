@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type PutAzureTargetFailureNotificationRegistrationSpectraS3Response struct {
     AzureTargetFailureNotificationRegistration AzureTargetFailureNotificationRegistration
+    Headers *http.Header
 }
 
 func NewPutAzureTargetFailureNotificationRegistrationSpectraS3Response(webResponse networking.WebResponse) (*PutAzureTargetFailureNotificationRegistrationSpectraS3Response, error) {
@@ -30,6 +32,7 @@ func NewPutAzureTargetFailureNotificationRegistrationSpectraS3Response(webRespon
         if err := readResponseBody(webResponse, &body.AzureTargetFailureNotificationRegistration); err != nil {
             return nil, err
         }
+        body.Headers = webResponse.Header()
         return &body, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)

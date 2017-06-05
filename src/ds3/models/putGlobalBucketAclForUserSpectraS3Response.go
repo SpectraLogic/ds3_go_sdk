@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type PutGlobalBucketAclForUserSpectraS3Response struct {
     BucketAcl BucketAcl
+    Headers *http.Header
 }
 
 func NewPutGlobalBucketAclForUserSpectraS3Response(webResponse networking.WebResponse) (*PutGlobalBucketAclForUserSpectraS3Response, error) {
@@ -30,6 +32,7 @@ func NewPutGlobalBucketAclForUserSpectraS3Response(webResponse networking.WebRes
         if err := readResponseBody(webResponse, &body.BucketAcl); err != nil {
             return nil, err
         }
+        body.Headers = webResponse.Header()
         return &body, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)

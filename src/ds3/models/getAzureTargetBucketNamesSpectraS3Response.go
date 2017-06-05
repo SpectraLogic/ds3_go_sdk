@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type GetAzureTargetBucketNamesSpectraS3Response struct {
     AzureTargetBucketNameList AzureTargetBucketNameList
+    Headers *http.Header
 }
 
 func NewGetAzureTargetBucketNamesSpectraS3Response(webResponse networking.WebResponse) (*GetAzureTargetBucketNamesSpectraS3Response, error) {
@@ -30,6 +32,7 @@ func NewGetAzureTargetBucketNamesSpectraS3Response(webResponse networking.WebRes
         if err := readResponseBody(webResponse, &body.AzureTargetBucketNameList); err != nil {
             return nil, err
         }
+        body.Headers = webResponse.Header()
         return &body, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)

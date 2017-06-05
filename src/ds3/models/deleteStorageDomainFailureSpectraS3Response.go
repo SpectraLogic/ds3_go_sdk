@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type DeleteStorageDomainFailureSpectraS3Response struct {
     
+    Headers *http.Header
 }
 
 func NewDeleteStorageDomainFailureSpectraS3Response(webResponse networking.WebResponse) (*DeleteStorageDomainFailureSpectraS3Response, error) {
@@ -26,7 +28,7 @@ func NewDeleteStorageDomainFailureSpectraS3Response(webResponse networking.WebRe
 
     switch code := webResponse.StatusCode(); code {
     case 204:
-        return &DeleteStorageDomainFailureSpectraS3Response{}, nil
+        return &DeleteStorageDomainFailureSpectraS3Response{Headers: webResponse.Header()}, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }

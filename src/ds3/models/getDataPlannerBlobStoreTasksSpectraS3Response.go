@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type GetDataPlannerBlobStoreTasksSpectraS3Response struct {
     BlobStoreTasksInformation BlobStoreTasksInformation
+    Headers *http.Header
 }
 
 func NewGetDataPlannerBlobStoreTasksSpectraS3Response(webResponse networking.WebResponse) (*GetDataPlannerBlobStoreTasksSpectraS3Response, error) {
@@ -30,6 +32,7 @@ func NewGetDataPlannerBlobStoreTasksSpectraS3Response(webResponse networking.Web
         if err := readResponseBody(webResponse, &body.BlobStoreTasksInformation); err != nil {
             return nil, err
         }
+        body.Headers = webResponse.Header()
         return &body, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)

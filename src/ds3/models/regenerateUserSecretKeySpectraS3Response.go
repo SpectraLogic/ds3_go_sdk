@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type RegenerateUserSecretKeySpectraS3Response struct {
     SpectraUser SpectraUser
+    Headers *http.Header
 }
 
 func NewRegenerateUserSecretKeySpectraS3Response(webResponse networking.WebResponse) (*RegenerateUserSecretKeySpectraS3Response, error) {
@@ -30,6 +32,7 @@ func NewRegenerateUserSecretKeySpectraS3Response(webResponse networking.WebRespo
         if err := readResponseBody(webResponse, &body.SpectraUser); err != nil {
             return nil, err
         }
+        body.Headers = webResponse.Header()
         return &body, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)

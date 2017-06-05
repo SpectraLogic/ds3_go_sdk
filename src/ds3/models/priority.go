@@ -34,6 +34,7 @@ const (
 func (priority *Priority) UnmarshalText(text []byte) error {
     var str string = string(bytes.ToUpper(text))
     switch str {
+        case "": *priority = UNDEFINED
         case "CRITICAL": *priority = PRIORITY_CRITICAL
         case "URGENT": *priority = PRIORITY_URGENT
         case "HIGH": *priority = PRIORITY_HIGH

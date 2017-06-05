@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type FormatAllForeignPoolsSpectraS3Response struct {
     
+    Headers *http.Header
 }
 
 func NewFormatAllForeignPoolsSpectraS3Response(webResponse networking.WebResponse) (*FormatAllForeignPoolsSpectraS3Response, error) {
@@ -26,7 +28,7 @@ func NewFormatAllForeignPoolsSpectraS3Response(webResponse networking.WebRespons
 
     switch code := webResponse.StatusCode(); code {
     case 204:
-        return &FormatAllForeignPoolsSpectraS3Response{}, nil
+        return &FormatAllForeignPoolsSpectraS3Response{Headers: webResponse.Header()}, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }

@@ -30,6 +30,7 @@ const (
 func (dataPlacementRuleState *DataPlacementRuleState) UnmarshalText(text []byte) error {
     var str string = string(bytes.ToUpper(text))
     switch str {
+        case "": *dataPlacementRuleState = UNDEFINED
         case "NORMAL": *dataPlacementRuleState = DATA_PLACEMENT_RULE_STATE_NORMAL
         case "INCLUSION_IN_PROGRESS": *dataPlacementRuleState = DATA_PLACEMENT_RULE_STATE_INCLUSION_IN_PROGRESS
         default:

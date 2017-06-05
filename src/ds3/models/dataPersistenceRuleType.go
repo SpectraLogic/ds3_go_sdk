@@ -31,6 +31,7 @@ const (
 func (dataPersistenceRuleType *DataPersistenceRuleType) UnmarshalText(text []byte) error {
     var str string = string(bytes.ToUpper(text))
     switch str {
+        case "": *dataPersistenceRuleType = UNDEFINED
         case "PERMANENT": *dataPersistenceRuleType = DATA_PERSISTENCE_RULE_TYPE_PERMANENT
         case "TEMPORARY": *dataPersistenceRuleType = DATA_PERSISTENCE_RULE_TYPE_TEMPORARY
         case "RETIRED": *dataPersistenceRuleType = DATA_PERSISTENCE_RULE_TYPE_RETIRED

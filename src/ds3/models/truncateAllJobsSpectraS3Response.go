@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type TruncateAllJobsSpectraS3Response struct {
     
+    Headers *http.Header
 }
 
 func NewTruncateAllJobsSpectraS3Response(webResponse networking.WebResponse) (*TruncateAllJobsSpectraS3Response, error) {
@@ -26,7 +28,7 @@ func NewTruncateAllJobsSpectraS3Response(webResponse networking.WebResponse) (*T
 
     switch code := webResponse.StatusCode(); code {
     case 204:
-        return &TruncateAllJobsSpectraS3Response{}, nil
+        return &TruncateAllJobsSpectraS3Response{Headers: webResponse.Header()}, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }

@@ -34,6 +34,7 @@ const (
 func (bucketAclPermission *BucketAclPermission) UnmarshalText(text []byte) error {
     var str string = string(bytes.ToUpper(text))
     switch str {
+        case "": *bucketAclPermission = UNDEFINED
         case "LIST": *bucketAclPermission = BUCKET_ACL_PERMISSION_LIST
         case "READ": *bucketAclPermission = BUCKET_ACL_PERMISSION_READ
         case "WRITE": *bucketAclPermission = BUCKET_ACL_PERMISSION_WRITE

@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type DeleteObjectCachedNotificationRegistrationSpectraS3Response struct {
     
+    Headers *http.Header
 }
 
 func NewDeleteObjectCachedNotificationRegistrationSpectraS3Response(webResponse networking.WebResponse) (*DeleteObjectCachedNotificationRegistrationSpectraS3Response, error) {
@@ -26,7 +28,7 @@ func NewDeleteObjectCachedNotificationRegistrationSpectraS3Response(webResponse 
 
     switch code := webResponse.StatusCode(); code {
     case 204:
-        return &DeleteObjectCachedNotificationRegistrationSpectraS3Response{}, nil
+        return &DeleteObjectCachedNotificationRegistrationSpectraS3Response{Headers: webResponse.Header()}, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }

@@ -15,10 +15,12 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
 )
 
 type GetSuspectBlobTapesSpectraS3Response struct {
     SuspectBlobTapeList SuspectBlobTapeList
+    Headers *http.Header
 }
 
 func NewGetSuspectBlobTapesSpectraS3Response(webResponse networking.WebResponse) (*GetSuspectBlobTapesSpectraS3Response, error) {
@@ -30,6 +32,7 @@ func NewGetSuspectBlobTapesSpectraS3Response(webResponse networking.WebResponse)
         if err := readResponseBody(webResponse, &body.SuspectBlobTapeList); err != nil {
             return nil, err
         }
+        body.Headers = webResponse.Header()
         return &body, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)

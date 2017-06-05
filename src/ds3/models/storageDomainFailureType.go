@@ -31,6 +31,7 @@ const (
 func (storageDomainFailureType *StorageDomainFailureType) UnmarshalText(text []byte) error {
     var str string = string(bytes.ToUpper(text))
     switch str {
+        case "": *storageDomainFailureType = UNDEFINED
         case "ILLEGAL_EJECTION_OCCURRED": *storageDomainFailureType = STORAGE_DOMAIN_FAILURE_TYPE_ILLEGAL_EJECTION_OCCURRED
         case "MEMBER_BECAME_READ_ONLY": *storageDomainFailureType = STORAGE_DOMAIN_FAILURE_TYPE_MEMBER_BECAME_READ_ONLY
         case "WRITES_STALLED_DUE_TO_NO_FREE_MEDIA_REMAINING": *storageDomainFailureType = STORAGE_DOMAIN_FAILURE_TYPE_WRITES_STALLED_DUE_TO_NO_FREE_MEDIA_REMAINING

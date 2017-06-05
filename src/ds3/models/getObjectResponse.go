@@ -15,11 +15,13 @@ package models
 
 import (
     "ds3/networking"
+    "net/http"
     "io"
 )
 
 type GetObjectResponse struct {
     Content io.ReadCloser
+    Headers *http.Header
 }
 
 func NewGetObjectResponse(webResponse networking.WebResponse) (*GetObjectResponse, error) {
@@ -27,9 +29,9 @@ func NewGetObjectResponse(webResponse networking.WebResponse) (*GetObjectRespons
 
     switch code := webResponse.StatusCode(); code {
     case 200:
-        return &GetObjectResponse{ Content: webResponse.Body() }, nil
+        return &GetObjectResponse{ Content: webResponse.Body(), Headers: webResponse.Header() }, nil
     case 206:
-        return &GetObjectResponse{}, nil
+        return &GetObjectResponse{Headers: webResponse.Header()}, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }

@@ -32,6 +32,7 @@ const (
 func (writePreferenceLevel *WritePreferenceLevel) UnmarshalText(text []byte) error {
     var str string = string(bytes.ToUpper(text))
     switch str {
+        case "": *writePreferenceLevel = UNDEFINED
         case "HIGH": *writePreferenceLevel = WRITE_PREFERENCE_LEVEL_HIGH
         case "NORMAL": *writePreferenceLevel = WRITE_PREFERENCE_LEVEL_NORMAL
         case "LOW": *writePreferenceLevel = WRITE_PREFERENCE_LEVEL_LOW
