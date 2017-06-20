@@ -9,6 +9,7 @@ import (
     "ds3/models"
     "ds3/networking"
     "reflect"
+    "ds3_utils/ds3Testing"
 )
 
 func TestGetService(t *testing.T) {
@@ -639,7 +640,7 @@ func TestPutPart(t *testing.T) {
         t.Fatalf("Response was unexpectedly nil.")
     }
 
-    assertString(t, "etag header", eTag, response.Headers.Get("etag"))
+    ds3Testing.AssertString(t, "etag header", eTag, response.Headers.Get("etag"))
 }
 
 func TestCompleteMultipart(t *testing.T) {
@@ -1355,8 +1356,8 @@ func TestGetTapeLibrariesSpectraS3(t *testing.T) {
         t.Fatalf("Expected serial number 'test library 2' but was '%s'.", *lib2.SerialNumber)
     }
 
-    assertString(t, "Page-Truncated header", "2", response.Headers.Get("Page-Truncated"))
-    assertString(t, "Total-Result-Count header", "3", response.Headers.Get("Total-Result-Count"))
+    ds3Testing.AssertString(t, "Page-Truncated header", "2", response.Headers.Get("Page-Truncated"))
+    ds3Testing.AssertString(t, "Total-Result-Count header", "3", response.Headers.Get("Total-Result-Count"))
 }
 
 func TestGetTapeLibrarySpectraS3(t *testing.T) {
@@ -1486,33 +1487,33 @@ func TestGetTapesSpectraS3(t *testing.T) {
     }
 
     tape := response.TapeList.Tapes[0]
-    assertBool(t, "AssignedToStorageDomain", false, tape.AssignedToStorageDomain)
-    assertNonNilIntPtr(t, "AvailableRawCapacity", 2408082046976, tape.AvailableRawCapacity)
-    assertNonNilStringPtr(t, "BarCode", "101000L6", tape.BarCode)
-    assertStringPtrIsNil(t, "BucketId", tape.BucketId)
-    assertStringPtrIsNil(t, "DescriptionForIdentification", tape.DescriptionForIdentification)
-    assertStringPtrIsNil(t, "EjectDate", tape.EjectDate)
-    assertStringPtrIsNil(t, "EjectLabel", tape.EjectLabel)
-    assertStringPtrIsNil(t, "EjectLocation", tape.EjectLocation)
-    assertStringPtrIsNil(t, "EjectPending", tape.EjectPending)
-    assertBool(t, "FullOfData", false, tape.FullOfData)
-    assertString(t, "Id", "c7c431df-f95d-4533-b350-ffd7a8a5caac", tape.Id)
-    assertNonNilStringPtr(t, "LastAccessed", "2015-09-04T06:53:08.236", tape.LastAccessed)
-    assertNonNilStringPtr(t, "LastCheckpoint", "eb77ea67-3c83-47ec-8714-cd46a97dc392:2", tape.LastCheckpoint)
-    assertNonNilStringPtr(t, "LastModified", "2015-08-21T16:14:30.714", tape.LastModified)
-    assertStringPtrIsNil(t, "LastVerified", tape.LastVerified)
-    assertNonNilStringPtr(t, "PartitionId", "4f8a5cbb-9837-41d9-afd1-cebed41f18f7", tape.PartitionId)
+    ds3Testing.AssertBool(t, "AssignedToStorageDomain", false, tape.AssignedToStorageDomain)
+    ds3Testing.AssertNonNilIntPtr(t, "AvailableRawCapacity", 2408082046976, tape.AvailableRawCapacity)
+    ds3Testing.AssertNonNilStringPtr(t, "BarCode", "101000L6", tape.BarCode)
+    ds3Testing.AssertStringPtrIsNil(t, "BucketId", tape.BucketId)
+    ds3Testing.AssertStringPtrIsNil(t, "DescriptionForIdentification", tape.DescriptionForIdentification)
+    ds3Testing.AssertStringPtrIsNil(t, "EjectDate", tape.EjectDate)
+    ds3Testing.AssertStringPtrIsNil(t, "EjectLabel", tape.EjectLabel)
+    ds3Testing.AssertStringPtrIsNil(t, "EjectLocation", tape.EjectLocation)
+    ds3Testing.AssertStringPtrIsNil(t, "EjectPending", tape.EjectPending)
+    ds3Testing.AssertBool(t, "FullOfData", false, tape.FullOfData)
+    ds3Testing.AssertString(t, "Id", "c7c431df-f95d-4533-b350-ffd7a8a5caac", tape.Id)
+    ds3Testing.AssertNonNilStringPtr(t, "LastAccessed", "2015-09-04T06:53:08.236", tape.LastAccessed)
+    ds3Testing.AssertNonNilStringPtr(t, "LastCheckpoint", "eb77ea67-3c83-47ec-8714-cd46a97dc392:2", tape.LastCheckpoint)
+    ds3Testing.AssertNonNilStringPtr(t, "LastModified", "2015-08-21T16:14:30.714", tape.LastModified)
+    ds3Testing.AssertStringPtrIsNil(t, "LastVerified", tape.LastVerified)
+    ds3Testing.AssertNonNilStringPtr(t, "PartitionId", "4f8a5cbb-9837-41d9-afd1-cebed41f18f7", tape.PartitionId)
     if *tape.PreviousState != models.UNDEFINED {
         t.Fatalf("Expected previous state '%d' but was '%d'.", models.UNDEFINED, *tape.PreviousState)
     }
-    assertNonNilStringPtr(t, "SerialNumber", "HP-W130501213", tape.SerialNumber)
-    assertString(t, "State", models.TAPE_STATE_NORMAL.String(), tape.State.String())
-    assertNonNilIntPtr(t, "TotalRawCapacity", 2408088338432, tape.TotalRawCapacity)
-    assertString(t, "Type", models.TAPE_TYPE_LTO6.String(), tape.Type.String())
-    assertBool(t, "WriteProtected", false, tape.WriteProtected)
+    ds3Testing.AssertNonNilStringPtr(t, "SerialNumber", "HP-W130501213", tape.SerialNumber)
+    ds3Testing.AssertString(t, "State", models.TAPE_STATE_NORMAL.String(), tape.State.String())
+    ds3Testing.AssertNonNilIntPtr(t, "TotalRawCapacity", 2408088338432, tape.TotalRawCapacity)
+    ds3Testing.AssertString(t, "Type", models.TAPE_TYPE_LTO6.String(), tape.Type.String())
+    ds3Testing.AssertBool(t, "WriteProtected", false, tape.WriteProtected)
 
-    assertString(t, "Page-Truncated header", "2", response.Headers.Get("Page-Truncated"))
-    assertString(t, "Total-Result-Count header", "3", response.Headers.Get("Total-Result-Count"))
+    ds3Testing.AssertString(t, "Page-Truncated header", "2", response.Headers.Get("Page-Truncated"))
+    ds3Testing.AssertString(t, "Total-Result-Count header", "3", response.Headers.Get("Total-Result-Count"))
 }
 
 func TestDeletePermanentlyLostTapeSpectraS3(t *testing.T) {
@@ -1556,28 +1557,28 @@ func TestGetTapeSpectraS3(t *testing.T) {
     }
 
     tape := response.Tape
-    assertBool(t, "AssignedToStorageDomain", false, tape.AssignedToStorageDomain)
-    assertNonNilIntPtr(t, "AvailableRawCapacity", 2408082046976, tape.AvailableRawCapacity)
-    assertNonNilStringPtr(t, "BarCode", "101000L6", tape.BarCode)
-    assertStringPtrIsNil(t, "BucketId", tape.BucketId)
-    assertStringPtrIsNil(t, "DescriptionForIdentification", tape.DescriptionForIdentification)
-    assertStringPtrIsNil(t, "EjectDate", tape.EjectDate)
-    assertStringPtrIsNil(t, "EjectLabel", tape.EjectLabel)
-    assertStringPtrIsNil(t, "EjectLocation", tape.EjectLocation)
-    assertStringPtrIsNil(t, "EjectPending", tape.EjectPending)
-    assertBool(t, "FullOfData", false, tape.FullOfData)
-    assertString(t, "Id", "c7c431df-f95d-4533-b350-ffd7a8a5caac", tape.Id)
-    assertNonNilStringPtr(t, "LastAccessed", "2015-09-04T06:53:08.236", tape.LastAccessed)
-    assertNonNilStringPtr(t, "LastCheckpoint", "eb77ea67-3c83-47ec-8714-cd46a97dc392:2", tape.LastCheckpoint)
-    assertNonNilStringPtr(t, "LastModified", "2015-08-21T16:14:30.714", tape.LastModified)
-    assertStringPtrIsNil(t, "LastVerified", tape.LastVerified)
-    assertNonNilStringPtr(t, "PartitionId", "4f8a5cbb-9837-41d9-afd1-cebed41f18f7", tape.PartitionId)
+    ds3Testing.AssertBool(t, "AssignedToStorageDomain", false, tape.AssignedToStorageDomain)
+    ds3Testing.AssertNonNilIntPtr(t, "AvailableRawCapacity", 2408082046976, tape.AvailableRawCapacity)
+    ds3Testing.AssertNonNilStringPtr(t, "BarCode", "101000L6", tape.BarCode)
+    ds3Testing.AssertStringPtrIsNil(t, "BucketId", tape.BucketId)
+    ds3Testing.AssertStringPtrIsNil(t, "DescriptionForIdentification", tape.DescriptionForIdentification)
+    ds3Testing.AssertStringPtrIsNil(t, "EjectDate", tape.EjectDate)
+    ds3Testing.AssertStringPtrIsNil(t, "EjectLabel", tape.EjectLabel)
+    ds3Testing.AssertStringPtrIsNil(t, "EjectLocation", tape.EjectLocation)
+    ds3Testing.AssertStringPtrIsNil(t, "EjectPending", tape.EjectPending)
+    ds3Testing.AssertBool(t, "FullOfData", false, tape.FullOfData)
+    ds3Testing.AssertString(t, "Id", "c7c431df-f95d-4533-b350-ffd7a8a5caac", tape.Id)
+    ds3Testing.AssertNonNilStringPtr(t, "LastAccessed", "2015-09-04T06:53:08.236", tape.LastAccessed)
+    ds3Testing.AssertNonNilStringPtr(t, "LastCheckpoint", "eb77ea67-3c83-47ec-8714-cd46a97dc392:2", tape.LastCheckpoint)
+    ds3Testing.AssertNonNilStringPtr(t, "LastModified", "2015-08-21T16:14:30.714", tape.LastModified)
+    ds3Testing.AssertStringPtrIsNil(t, "LastVerified", tape.LastVerified)
+    ds3Testing.AssertNonNilStringPtr(t, "PartitionId", "4f8a5cbb-9837-41d9-afd1-cebed41f18f7", tape.PartitionId)
     if *tape.PreviousState != models.UNDEFINED {
         t.Fatalf("Expected previous state '%d' but was '%d'.", models.UNDEFINED, *tape.PreviousState)
     }
-    assertNonNilStringPtr(t, "SerialNumber", "HP-W130501213", tape.SerialNumber)
-    assertString(t, "State", models.TAPE_STATE_NORMAL.String(), tape.State.String())
-    assertNonNilIntPtr(t, "TotalRawCapacity", 2408088338432, tape.TotalRawCapacity)
-    assertString(t, "Type", models.TAPE_TYPE_LTO6.String(), tape.Type.String())
-    assertBool(t, "WriteProtected", false, tape.WriteProtected)
+    ds3Testing.AssertNonNilStringPtr(t, "SerialNumber", "HP-W130501213", tape.SerialNumber)
+    ds3Testing.AssertString(t, "State", models.TAPE_STATE_NORMAL.String(), tape.State.String())
+    ds3Testing.AssertNonNilIntPtr(t, "TotalRawCapacity", 2408088338432, tape.TotalRawCapacity)
+    ds3Testing.AssertString(t, "Type", models.TAPE_TYPE_LTO6.String(), tape.Type.String())
+    ds3Testing.AssertBool(t, "WriteProtected", false, tape.WriteProtected)
 }
