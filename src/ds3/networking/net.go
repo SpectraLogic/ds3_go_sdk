@@ -4,6 +4,7 @@ import (
     "io"
     "net/http"
     "net/url"
+    "strings"
 )
 
 type Network interface {
@@ -127,7 +128,14 @@ func (proxiedReader *proxiedReader) Read(p []byte) (n int, err error) {
 func buildUrl(conn *ConnectionInfo, ds3Request Ds3Request) *url.URL {
     httpUrl := conn.Endpoint
     httpUrl.Path = ds3Request.Path()
-    httpUrl.RawQuery = ds3Request.QueryParams().Encode()
+    httpUrl.RawQuery = encodeQueryParams(ds3Request.QueryParams())
     return &httpUrl
 }
 
+// Percent encodes query parameters and constructs encoded string.
+// Spaces are percent encoded as '%20'
+func encodeQueryParams(queryParams *url.Values) string {
+    // url.Encode encodes spaces as plus (+), so after urlEncode we replace plus (+) signs
+    // with percent encoding for spaces (%20)
+    return strings.Replace(queryParams.Encode(), "+", "%20", -1)
+}
