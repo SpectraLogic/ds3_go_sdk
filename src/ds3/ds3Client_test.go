@@ -1573,8 +1573,8 @@ func TestGetTapeSpectraS3(t *testing.T) {
     ds3Testing.AssertNonNilStringPtr(t, "LastModified", "2015-08-21T16:14:30.714", tape.LastModified)
     ds3Testing.AssertStringPtrIsNil(t, "LastVerified", tape.LastVerified)
     ds3Testing.AssertNonNilStringPtr(t, "PartitionId", "4f8a5cbb-9837-41d9-afd1-cebed41f18f7", tape.PartitionId)
-    if *tape.PreviousState != models.UNDEFINED {
-        t.Fatalf("Expected previous state '%d' but was '%d'.", models.UNDEFINED, *tape.PreviousState)
+    if tape.PreviousState != nil {
+        t.Fatalf("Expected previous state '%d' but was '%d'.", "nil", *tape.PreviousState)
     }
     ds3Testing.AssertNonNilStringPtr(t, "SerialNumber", "HP-W130501213", tape.SerialNumber)
     ds3Testing.AssertString(t, "State", models.TAPE_STATE_NORMAL.String(), tape.State.String())
