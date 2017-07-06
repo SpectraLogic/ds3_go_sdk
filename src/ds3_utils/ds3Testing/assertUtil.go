@@ -67,7 +67,7 @@ func AssertNonNilStringPtr(t *testing.T, label string, expected string, actual *
 
 // Asserts if a specified string pointer is nil. If not, Fatal.
 func AssertStringPtrIsNil(t *testing.T, label string, actual *string) {
-    if actual != nil && *actual != "" { //TODO remove empty string comparison once parsing null elements is fixed
+    if actual != nil {
         t.Fatalf("Expected %s to be 'nil' but was '%s'.", label, *actual)
     }
 }
