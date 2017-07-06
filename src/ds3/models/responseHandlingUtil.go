@@ -7,7 +7,7 @@ import (
 )
 
 type modelParser interface {
-    parse(node *XmlNode) error
+    parse(node *XmlNode, aggErr *AggregateError)
 }
 
 //todo update name and test
@@ -23,7 +23,9 @@ func parseResponsePayload2(webResponse networking.WebResponse, parsedBody modelP
     }
 
     // Parse the response
-    return parsedBody.parse(root)
+    var aggErr AggregateError
+    parsedBody.parse(root, &aggErr)
+    return aggErr.GetErrors()
 }
 
 // Converts the contents of the reader into an xml node tree
