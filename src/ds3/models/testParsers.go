@@ -4,10 +4,9 @@ import (
     "strconv"
     "log"
     "fmt"
-    "reflect"
 )
 
-// TODO move to separate file
+// TODO move aggregate error to separate file
 
 type AggregateError struct {
     Errors []error
@@ -97,39 +96,12 @@ func (job *Job) parse(node *XmlNode, aggErr *AggregateError) {
     for _, child := range node.Children {
         switch child.XMLName.Local {
         case "Nodes":
-            var jobNode JobNode
-            var list modelSlice = parseDs3ObjectList("Node", child.Children, &jobNode, aggErr)
-            for _, n := range list {
-                if v, ok := n.(*JobNode); ok {
-                    job.Nodes = append(job.Nodes, *v)
-                }
-            }
+            job.Nodes = parseJobNodeSlice("Node", child.Children, aggErr)
         }
     }
 }
 
-type modelSlice []modelParser
-
-// TODO Convert to generic function using reflection that works for any modelParser type
-func parseDs3ObjectList(tagName string, xmlNodes []XmlNode, model modelParser, aggErr *AggregateError) modelSlice {
-    var list modelSlice
-
-    for _, curXmlNode := range xmlNodes {
-        if curXmlNode.XMLName.Local == tagName {
-            v := reflect.ValueOf(model)
-            curResult := v.Interface().(modelParser)
-            curResult.parse(&curXmlNode, aggErr)
-            list = append(list, curResult)
-        } else {
-            // TODO possibly change from logging to appending to aggregate error
-            log.Printf("WARNING: Discovered unexpected tag '%s' when expected tag '%s'.\n", curXmlNode.XMLName.Local, tagName)
-        }
-    }
-    return list
-}
-
-// TODO Convert to generic function using reflection that works for any modelParser type
-func parseJobNodeList(tagName string, xmlNodes []XmlNode, aggErr *AggregateError) []JobNode {
+func parseJobNodeSlice(tagName string, xmlNodes []XmlNode, aggErr *AggregateError) []JobNode {
     var result []JobNode
     for _, curXmlNode := range xmlNodes {
         if curXmlNode.XMLName.Local == tagName {
