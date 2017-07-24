@@ -23,6 +23,8 @@ type PutBucketResponse struct {
     Headers *http.Header
 }
 
+
+
 func NewPutBucketResponse(webResponse networking.WebResponse) (*PutBucketResponse, error) {
     expectedStatusCodes := []int { 200 }
 

@@ -23,6 +23,8 @@ type DeletePoolPartitionSpectraS3Response struct {
     Headers *http.Header
 }
 
+
+
 func NewDeletePoolPartitionSpectraS3Response(webResponse networking.WebResponse) (*DeletePoolPartitionSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 

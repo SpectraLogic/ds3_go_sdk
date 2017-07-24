@@ -23,6 +23,8 @@ type DeleteDataPersistenceRuleSpectraS3Response struct {
     Headers *http.Header
 }
 
+
+
 func NewDeleteDataPersistenceRuleSpectraS3Response(webResponse networking.WebResponse) (*DeleteDataPersistenceRuleSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 

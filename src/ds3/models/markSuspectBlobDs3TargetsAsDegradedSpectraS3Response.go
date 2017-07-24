@@ -23,6 +23,8 @@ type MarkSuspectBlobDs3TargetsAsDegradedSpectraS3Response struct {
     Headers *http.Header
 }
 
+
+
 func NewMarkSuspectBlobDs3TargetsAsDegradedSpectraS3Response(webResponse networking.WebResponse) (*MarkSuspectBlobDs3TargetsAsDegradedSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 

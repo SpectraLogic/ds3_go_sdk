@@ -23,6 +23,8 @@ type ForceTapeEnvironmentRefreshSpectraS3Response struct {
     Headers *http.Header
 }
 
+
+
 func NewForceTapeEnvironmentRefreshSpectraS3Response(webResponse networking.WebResponse) (*ForceTapeEnvironmentRefreshSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 

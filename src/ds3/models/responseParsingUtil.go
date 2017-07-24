@@ -11,7 +11,10 @@
 
 package models
 
-import "strconv"
+import (
+    "strconv"
+    "log"
+)
 
 // Contains utils used by model parsers to parse response payloads.
 
@@ -94,6 +97,27 @@ func parseNullableInt64(content []byte, aggErr *AggregateError) *int64 {
         return nil
     }
     result := parseInt64(content, aggErr)
+    return &result
+}
+
+// Converts a byte slice into an float64 value. Assumes that a valid float64 value is
+// contained within the byte slice.
+// Used in response payload parsing to convert xml node content into expected types.
+func parseFloat64(content []byte, aggErr *AggregateError) float64 {
+    result, err := strconv.ParseFloat(string(content), 64)
+    if err != nil {
+        aggErr.Append(err)
+    }
+    return result
+}
+
+// Converts a byte slice into an float64 value. An empty slice is converted into a nil value.
+// Used in response payload parsing to convert xml node content into expected types.
+func parseNullableFloat64(content []byte, aggErr *AggregateError) *float64 {
+    if len(content) == 0 {
+        return nil
+    }
+    result := parseFloat64(content, aggErr)
     return &result
 }
 
@@ -223,4 +247,17 @@ func parseNullableBoolFromString(content string, aggErr *AggregateError) *bool {
     }
     result := parseBoolFromString(content, aggErr)
     return &result
+}
+
+func parseStringSlice(tagName string, xmlNodes []XmlNode, aggErr *AggregateError) []string {
+    var result []string
+    for _, curXmlNode := range xmlNodes {
+        if curXmlNode.XMLName.Local == tagName {
+            var curResult string = string(curXmlNode.Content)
+            result = append(result, curResult)
+        } else {
+            log.Printf("WARNING: Discovered unexpected xml tag '%s' when expected tag '%s' when parsing Job struct.\n", curXmlNode.XMLName.Local, tagName)
+        }
+    }
+    return result
 }

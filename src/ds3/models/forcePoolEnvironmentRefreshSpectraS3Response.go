@@ -23,6 +23,8 @@ type ForcePoolEnvironmentRefreshSpectraS3Response struct {
     Headers *http.Header
 }
 
+
+
 func NewForcePoolEnvironmentRefreshSpectraS3Response(webResponse networking.WebResponse) (*ForcePoolEnvironmentRefreshSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 

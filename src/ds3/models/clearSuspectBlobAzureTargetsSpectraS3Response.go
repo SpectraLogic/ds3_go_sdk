@@ -23,6 +23,8 @@ type ClearSuspectBlobAzureTargetsSpectraS3Response struct {
     Headers *http.Header
 }
 
+
+
 func NewClearSuspectBlobAzureTargetsSpectraS3Response(webResponse networking.WebResponse) (*ClearSuspectBlobAzureTargetsSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 

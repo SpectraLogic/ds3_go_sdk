@@ -23,13 +23,17 @@ type CancelImportTapeSpectraS3Response struct {
     Headers *http.Header
 }
 
+func (cancelImportTapeSpectraS3Response *CancelImportTapeSpectraS3Response) parse(webResponse networking.WebResponse) error {
+        return parseResponsePayload(webResponse, &cancelImportTapeSpectraS3Response.Tape)
+}
+
 func NewCancelImportTapeSpectraS3Response(webResponse networking.WebResponse) (*CancelImportTapeSpectraS3Response, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body CancelImportTapeSpectraS3Response
-        if err := readResponseBody(webResponse, &body.Tape); err != nil {
+        if err := body.parse(webResponse); err != nil {
             return nil, err
         }
         body.Headers = webResponse.Header()

@@ -23,13 +23,17 @@ type EjectTapeSpectraS3Response struct {
     Headers *http.Header
 }
 
+func (ejectTapeSpectraS3Response *EjectTapeSpectraS3Response) parse(webResponse networking.WebResponse) error {
+        return parseResponsePayload(webResponse, &ejectTapeSpectraS3Response.Tape)
+}
+
 func NewEjectTapeSpectraS3Response(webResponse networking.WebResponse) (*EjectTapeSpectraS3Response, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body EjectTapeSpectraS3Response
-        if err := readResponseBody(webResponse, &body.Tape); err != nil {
+        if err := body.parse(webResponse); err != nil {
             return nil, err
         }
         body.Headers = webResponse.Header()

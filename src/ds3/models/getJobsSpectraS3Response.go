@@ -24,7 +24,7 @@ type GetJobsSpectraS3Response struct {
 }
 
 func (getJobsSpectraS3Response *GetJobsSpectraS3Response) parse(webResponse networking.WebResponse) error {
-    return parseResponsePayload2(webResponse, &getJobsSpectraS3Response.JobList)
+        return parseResponsePayload(webResponse, &getJobsSpectraS3Response.JobList)
 }
 
 func NewGetJobsSpectraS3Response(webResponse networking.WebResponse) (*GetJobsSpectraS3Response, error) {

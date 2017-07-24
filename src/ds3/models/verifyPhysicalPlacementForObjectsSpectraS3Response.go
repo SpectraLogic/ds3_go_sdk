@@ -23,13 +23,17 @@ type VerifyPhysicalPlacementForObjectsSpectraS3Response struct {
     Headers *http.Header
 }
 
+func (verifyPhysicalPlacementForObjectsSpectraS3Response *VerifyPhysicalPlacementForObjectsSpectraS3Response) parse(webResponse networking.WebResponse) error {
+        return parseResponsePayload(webResponse, &verifyPhysicalPlacementForObjectsSpectraS3Response.PhysicalPlacement)
+}
+
 func NewVerifyPhysicalPlacementForObjectsSpectraS3Response(webResponse networking.WebResponse) (*VerifyPhysicalPlacementForObjectsSpectraS3Response, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body VerifyPhysicalPlacementForObjectsSpectraS3Response
-        if err := readResponseBody(webResponse, &body.PhysicalPlacement); err != nil {
+        if err := body.parse(webResponse); err != nil {
             return nil, err
         }
         body.Headers = webResponse.Header()

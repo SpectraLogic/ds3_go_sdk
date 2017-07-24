@@ -23,13 +23,17 @@ type PutStorageDomainSpectraS3Response struct {
     Headers *http.Header
 }
 
+func (putStorageDomainSpectraS3Response *PutStorageDomainSpectraS3Response) parse(webResponse networking.WebResponse) error {
+        return parseResponsePayload(webResponse, &putStorageDomainSpectraS3Response.StorageDomain)
+}
+
 func NewPutStorageDomainSpectraS3Response(webResponse networking.WebResponse) (*PutStorageDomainSpectraS3Response, error) {
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
     case 201:
         var body PutStorageDomainSpectraS3Response
-        if err := readResponseBody(webResponse, &body.StorageDomain); err != nil {
+        if err := body.parse(webResponse); err != nil {
             return nil, err
         }
         body.Headers = webResponse.Header()

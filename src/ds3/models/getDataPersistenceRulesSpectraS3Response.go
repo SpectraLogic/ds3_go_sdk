@@ -23,13 +23,17 @@ type GetDataPersistenceRulesSpectraS3Response struct {
     Headers *http.Header
 }
 
+func (getDataPersistenceRulesSpectraS3Response *GetDataPersistenceRulesSpectraS3Response) parse(webResponse networking.WebResponse) error {
+        return parseResponsePayload(webResponse, &getDataPersistenceRulesSpectraS3Response.DataPersistenceRuleList)
+}
+
 func NewGetDataPersistenceRulesSpectraS3Response(webResponse networking.WebResponse) (*GetDataPersistenceRulesSpectraS3Response, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetDataPersistenceRulesSpectraS3Response
-        if err := readResponseBody(webResponse, &body.DataPersistenceRuleList); err != nil {
+        if err := body.parse(webResponse); err != nil {
             return nil, err
         }
         body.Headers = webResponse.Header()

@@ -23,6 +23,8 @@ type CancelVerifyOnAllPoolsSpectraS3Response struct {
     Headers *http.Header
 }
 
+
+
 func NewCancelVerifyOnAllPoolsSpectraS3Response(webResponse networking.WebResponse) (*CancelVerifyOnAllPoolsSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 

@@ -23,13 +23,17 @@ type GetJobCreatedNotificationRegistrationsSpectraS3Response struct {
     Headers *http.Header
 }
 
+func (getJobCreatedNotificationRegistrationsSpectraS3Response *GetJobCreatedNotificationRegistrationsSpectraS3Response) parse(webResponse networking.WebResponse) error {
+        return parseResponsePayload(webResponse, &getJobCreatedNotificationRegistrationsSpectraS3Response.JobCreatedNotificationRegistrationList)
+}
+
 func NewGetJobCreatedNotificationRegistrationsSpectraS3Response(webResponse networking.WebResponse) (*GetJobCreatedNotificationRegistrationsSpectraS3Response, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetJobCreatedNotificationRegistrationsSpectraS3Response
-        if err := readResponseBody(webResponse, &body.JobCreatedNotificationRegistrationList); err != nil {
+        if err := body.parse(webResponse); err != nil {
             return nil, err
         }
         body.Headers = webResponse.Header()

@@ -24,7 +24,7 @@ type GetTapeSpectraS3Response struct {
 }
 
 func (getTapeSpectraS3Response *GetTapeSpectraS3Response) parse(webResponse networking.WebResponse) error {
-    return parseResponsePayload2(webResponse, &getTapeSpectraS3Response.Tape)
+        return parseResponsePayload(webResponse, &getTapeSpectraS3Response.Tape)
 }
 
 func NewGetTapeSpectraS3Response(webResponse networking.WebResponse) (*GetTapeSpectraS3Response, error) {

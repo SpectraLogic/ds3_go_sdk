@@ -23,13 +23,17 @@ type GetTapeDriveSpectraS3Response struct {
     Headers *http.Header
 }
 
+func (getTapeDriveSpectraS3Response *GetTapeDriveSpectraS3Response) parse(webResponse networking.WebResponse) error {
+        return parseResponsePayload(webResponse, &getTapeDriveSpectraS3Response.TapeDrive)
+}
+
 func NewGetTapeDriveSpectraS3Response(webResponse networking.WebResponse) (*GetTapeDriveSpectraS3Response, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetTapeDriveSpectraS3Response
-        if err := readResponseBody(webResponse, &body.TapeDrive); err != nil {
+        if err := body.parse(webResponse); err != nil {
             return nil, err
         }
         body.Headers = webResponse.Header()

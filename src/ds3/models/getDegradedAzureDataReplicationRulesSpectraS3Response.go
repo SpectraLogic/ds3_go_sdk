@@ -23,13 +23,17 @@ type GetDegradedAzureDataReplicationRulesSpectraS3Response struct {
     Headers *http.Header
 }
 
+func (getDegradedAzureDataReplicationRulesSpectraS3Response *GetDegradedAzureDataReplicationRulesSpectraS3Response) parse(webResponse networking.WebResponse) error {
+        return parseResponsePayload(webResponse, &getDegradedAzureDataReplicationRulesSpectraS3Response.AzureDataReplicationRuleList)
+}
+
 func NewGetDegradedAzureDataReplicationRulesSpectraS3Response(webResponse networking.WebResponse) (*GetDegradedAzureDataReplicationRulesSpectraS3Response, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetDegradedAzureDataReplicationRulesSpectraS3Response
-        if err := readResponseBody(webResponse, &body.AzureDataReplicationRuleList); err != nil {
+        if err := body.parse(webResponse); err != nil {
             return nil, err
         }
         body.Headers = webResponse.Header()

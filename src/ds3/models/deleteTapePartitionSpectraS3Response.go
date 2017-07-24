@@ -23,6 +23,8 @@ type DeleteTapePartitionSpectraS3Response struct {
     Headers *http.Header
 }
 
+
+
 func NewDeleteTapePartitionSpectraS3Response(webResponse networking.WebResponse) (*DeleteTapePartitionSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 

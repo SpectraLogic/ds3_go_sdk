@@ -23,6 +23,8 @@ type CancelJobSpectraS3Response struct {
     Headers *http.Header
 }
 
+
+
 func NewCancelJobSpectraS3Response(webResponse networking.WebResponse) (*CancelJobSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 

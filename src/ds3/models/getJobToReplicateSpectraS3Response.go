@@ -23,6 +23,8 @@ type GetJobToReplicateSpectraS3Response struct {
     Headers *http.Header
 }
 
+
+
 func NewGetJobToReplicateSpectraS3Response(webResponse networking.WebResponse) (*GetJobToReplicateSpectraS3Response, error) {
     expectedStatusCodes := []int { 200 }
 

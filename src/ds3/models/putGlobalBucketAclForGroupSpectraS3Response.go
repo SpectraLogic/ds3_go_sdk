@@ -23,13 +23,17 @@ type PutGlobalBucketAclForGroupSpectraS3Response struct {
     Headers *http.Header
 }
 
+func (putGlobalBucketAclForGroupSpectraS3Response *PutGlobalBucketAclForGroupSpectraS3Response) parse(webResponse networking.WebResponse) error {
+        return parseResponsePayload(webResponse, &putGlobalBucketAclForGroupSpectraS3Response.BucketAcl)
+}
+
 func NewPutGlobalBucketAclForGroupSpectraS3Response(webResponse networking.WebResponse) (*PutGlobalBucketAclForGroupSpectraS3Response, error) {
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
     case 201:
         var body PutGlobalBucketAclForGroupSpectraS3Response
-        if err := readResponseBody(webResponse, &body.BucketAcl); err != nil {
+        if err := body.parse(webResponse); err != nil {
             return nil, err
         }
         body.Headers = webResponse.Header()

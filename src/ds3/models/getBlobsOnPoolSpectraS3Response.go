@@ -23,13 +23,17 @@ type GetBlobsOnPoolSpectraS3Response struct {
     Headers *http.Header
 }
 
+func (getBlobsOnPoolSpectraS3Response *GetBlobsOnPoolSpectraS3Response) parse(webResponse networking.WebResponse) error {
+        return parseResponsePayload(webResponse, &getBlobsOnPoolSpectraS3Response.BulkObjectList)
+}
+
 func NewGetBlobsOnPoolSpectraS3Response(webResponse networking.WebResponse) (*GetBlobsOnPoolSpectraS3Response, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetBlobsOnPoolSpectraS3Response
-        if err := readResponseBody(webResponse, &body.BulkObjectList); err != nil {
+        if err := body.parse(webResponse); err != nil {
             return nil, err
         }
         body.Headers = webResponse.Header()

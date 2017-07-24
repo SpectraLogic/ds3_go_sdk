@@ -23,6 +23,8 @@ type TruncateJobSpectraS3Response struct {
     Headers *http.Header
 }
 
+
+
 func NewTruncateJobSpectraS3Response(webResponse networking.WebResponse) (*TruncateJobSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 

@@ -23,6 +23,8 @@ type DeleteStorageDomainFailureNotificationRegistrationSpectraS3Response struct 
     Headers *http.Header
 }
 
+
+
 func NewDeleteStorageDomainFailureNotificationRegistrationSpectraS3Response(webResponse networking.WebResponse) (*DeleteStorageDomainFailureNotificationRegistrationSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 

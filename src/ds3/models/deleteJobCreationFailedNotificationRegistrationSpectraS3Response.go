@@ -23,6 +23,8 @@ type DeleteJobCreationFailedNotificationRegistrationSpectraS3Response struct {
     Headers *http.Header
 }
 
+
+
 func NewDeleteJobCreationFailedNotificationRegistrationSpectraS3Response(webResponse networking.WebResponse) (*DeleteJobCreationFailedNotificationRegistrationSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 

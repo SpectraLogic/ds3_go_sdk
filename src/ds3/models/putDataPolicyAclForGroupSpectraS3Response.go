@@ -23,13 +23,17 @@ type PutDataPolicyAclForGroupSpectraS3Response struct {
     Headers *http.Header
 }
 
+func (putDataPolicyAclForGroupSpectraS3Response *PutDataPolicyAclForGroupSpectraS3Response) parse(webResponse networking.WebResponse) error {
+        return parseResponsePayload(webResponse, &putDataPolicyAclForGroupSpectraS3Response.DataPolicyAcl)
+}
+
 func NewPutDataPolicyAclForGroupSpectraS3Response(webResponse networking.WebResponse) (*PutDataPolicyAclForGroupSpectraS3Response, error) {
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
     case 201:
         var body PutDataPolicyAclForGroupSpectraS3Response
-        if err := readResponseBody(webResponse, &body.DataPolicyAcl); err != nil {
+        if err := body.parse(webResponse); err != nil {
             return nil, err
         }
         body.Headers = webResponse.Header()

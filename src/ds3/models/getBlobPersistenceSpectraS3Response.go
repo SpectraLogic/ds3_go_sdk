@@ -23,6 +23,8 @@ type GetBlobPersistenceSpectraS3Response struct {
     Headers *http.Header
 }
 
+
+
 func NewGetBlobPersistenceSpectraS3Response(webResponse networking.WebResponse) (*GetBlobPersistenceSpectraS3Response, error) {
     expectedStatusCodes := []int { 200 }
 

@@ -23,13 +23,17 @@ type RegenerateUserSecretKeySpectraS3Response struct {
     Headers *http.Header
 }
 
+func (regenerateUserSecretKeySpectraS3Response *RegenerateUserSecretKeySpectraS3Response) parse(webResponse networking.WebResponse) error {
+        return parseResponsePayload(webResponse, &regenerateUserSecretKeySpectraS3Response.SpectraUser)
+}
+
 func NewRegenerateUserSecretKeySpectraS3Response(webResponse networking.WebResponse) (*RegenerateUserSecretKeySpectraS3Response, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body RegenerateUserSecretKeySpectraS3Response
-        if err := readResponseBody(webResponse, &body.SpectraUser); err != nil {
+        if err := body.parse(webResponse); err != nil {
             return nil, err
         }
         body.Headers = webResponse.Header()

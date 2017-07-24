@@ -23,13 +23,17 @@ type PutAzureTargetFailureNotificationRegistrationSpectraS3Response struct {
     Headers *http.Header
 }
 
+func (putAzureTargetFailureNotificationRegistrationSpectraS3Response *PutAzureTargetFailureNotificationRegistrationSpectraS3Response) parse(webResponse networking.WebResponse) error {
+        return parseResponsePayload(webResponse, &putAzureTargetFailureNotificationRegistrationSpectraS3Response.AzureTargetFailureNotificationRegistration)
+}
+
 func NewPutAzureTargetFailureNotificationRegistrationSpectraS3Response(webResponse networking.WebResponse) (*PutAzureTargetFailureNotificationRegistrationSpectraS3Response, error) {
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
     case 201:
         var body PutAzureTargetFailureNotificationRegistrationSpectraS3Response
-        if err := readResponseBody(webResponse, &body.AzureTargetFailureNotificationRegistration); err != nil {
+        if err := body.parse(webResponse); err != nil {
             return nil, err
         }
         body.Headers = webResponse.Header()

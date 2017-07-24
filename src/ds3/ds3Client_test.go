@@ -138,12 +138,8 @@ func TestGetBucket(t *testing.T) {
             if *response.ListBucketResult.Name != "remoteTest16" {
                 t.Fatalf("Expected bucket name 'remoteTest16' but got '%s'.", response.ListBucketResult.Name)
             }
-            if *response.ListBucketResult.Prefix != "" {
-                t.Fatalf("Expected empty prefix but got '%s'.", response.ListBucketResult.Prefix)
-            }
-            if *response.ListBucketResult.Marker != "" {
-                t.Fatalf("Expected empty marker but got '%s'.", response.ListBucketResult.Marker)
-            }
+            ds3Testing.AssertStringPtrIsNil(t, "Prefix", response.ListBucketResult.Prefix)
+            ds3Testing.AssertStringPtrIsNil(t, "Marker", response.ListBucketResult.Marker)
             if response.ListBucketResult.MaxKeys != 1000 {
                 t.Fatalf("Expected max keys of 1000 but got %d.", response.ListBucketResult.MaxKeys)
             }

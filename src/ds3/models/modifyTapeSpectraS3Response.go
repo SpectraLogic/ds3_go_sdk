@@ -23,13 +23,17 @@ type ModifyTapeSpectraS3Response struct {
     Headers *http.Header
 }
 
+func (modifyTapeSpectraS3Response *ModifyTapeSpectraS3Response) parse(webResponse networking.WebResponse) error {
+        return parseResponsePayload(webResponse, &modifyTapeSpectraS3Response.Tape)
+}
+
 func NewModifyTapeSpectraS3Response(webResponse networking.WebResponse) (*ModifyTapeSpectraS3Response, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body ModifyTapeSpectraS3Response
-        if err := readResponseBody(webResponse, &body.Tape); err != nil {
+        if err := body.parse(webResponse); err != nil {
             return nil, err
         }
         body.Headers = webResponse.Header()

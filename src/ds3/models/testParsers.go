@@ -1,5 +1,7 @@
 package models
 
+//TODO delete file
+/*
 import (
     "log"
 )
@@ -174,3 +176,4 @@ func (tape *Tape) parse(node *XmlNode, aggErr *AggregateError) {
     }
 }
 
+*/

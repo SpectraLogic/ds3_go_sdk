@@ -15,16 +15,16 @@ import (
     "ds3/networking"
     "encoding/xml"
     "io"
+    "io/ioutil"
 )
 
 type modelParser interface {
     parse(node *XmlNode, aggErr *AggregateError)
 }
 
-//todo update name and test
 // Parses a response payload into the specified model parser. A best effort parsing
 // is performed, and all errors that occur during parsing are captured within an aggregate error.
-func parseResponsePayload2(webResponse networking.WebResponse, parsedBody modelParser) error {
+func parseResponsePayload(webResponse networking.WebResponse, parsedBody modelParser) error {
     // Clean up the response body.
     body := webResponse.Body()
     defer body.Close()
@@ -52,4 +52,19 @@ func parseXmlTree(reader io.ReadCloser) (*XmlNode, error) {
     }
 
     return &xmlNode, nil
+}
+
+func getResponseBodyAsString(webResponse networking.WebResponse) (string, error) {
+    // Clean up the response body.
+    body := webResponse.Body()
+    defer body.Close()
+
+    // Get the bytes or forward the error
+    bytes, err := ioutil.ReadAll(body)
+    if err != nil {
+        return "", err
+    }
+
+    // Convert the bytes into a string
+    return string(bytes), nil
 }

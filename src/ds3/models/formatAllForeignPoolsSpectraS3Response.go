@@ -23,6 +23,8 @@ type FormatAllForeignPoolsSpectraS3Response struct {
     Headers *http.Header
 }
 
+
+
 func NewFormatAllForeignPoolsSpectraS3Response(webResponse networking.WebResponse) (*FormatAllForeignPoolsSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 

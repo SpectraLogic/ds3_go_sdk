@@ -23,13 +23,17 @@ type VerifySystemHealthSpectraS3Response struct {
     Headers *http.Header
 }
 
+func (verifySystemHealthSpectraS3Response *VerifySystemHealthSpectraS3Response) parse(webResponse networking.WebResponse) error {
+        return parseResponsePayload(webResponse, &verifySystemHealthSpectraS3Response.HealthVerificationResult)
+}
+
 func NewVerifySystemHealthSpectraS3Response(webResponse networking.WebResponse) (*VerifySystemHealthSpectraS3Response, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body VerifySystemHealthSpectraS3Response
-        if err := readResponseBody(webResponse, &body.HealthVerificationResult); err != nil {
+        if err := body.parse(webResponse); err != nil {
             return nil, err
         }
         body.Headers = webResponse.Header()

@@ -23,6 +23,8 @@ type EjectStorageDomainBlobsSpectraS3Response struct {
     Headers *http.Header
 }
 
+
+
 func NewEjectStorageDomainBlobsSpectraS3Response(webResponse networking.WebResponse) (*EjectStorageDomainBlobsSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 

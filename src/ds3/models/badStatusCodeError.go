@@ -3,6 +3,9 @@ package models
 import (
     "fmt"
     "ds3/networking"
+    "io"
+    "io/ioutil"
+    "encoding/xml"
 )
 
 type BadStatusCodeError struct {
@@ -16,7 +19,7 @@ func buildBadStatusCodeError(webResponse networking.WebResponse, expectedStatusC
     var errorBodyPtr *Error
 
     // Parse the body and if it worked then use the structure.
-    err := parseResponseBody(webResponse.Body(), &errorBody)
+    err := parseErrorResponseBody(webResponse.Body(), &errorBody)
     if err == nil {
         errorBodyPtr = &errorBody
     }
@@ -27,6 +30,21 @@ func buildBadStatusCodeError(webResponse networking.WebResponse, expectedStatusC
         webResponse.StatusCode(),
         errorBodyPtr,
     }
+}
+
+func parseErrorResponseBody(reader io.ReadCloser, body interface{}) error {
+    // Get the bytes or forward the error.
+    bytes, err := ioutil.ReadAll(reader)
+    if err != nil {
+        return err
+    }
+
+    // Deserialize or forward the error.
+    if err = xml.Unmarshal(bytes, body); err != nil {
+        return err
+    }
+
+    return nil
 }
 
 func (err BadStatusCodeError) Error() string {

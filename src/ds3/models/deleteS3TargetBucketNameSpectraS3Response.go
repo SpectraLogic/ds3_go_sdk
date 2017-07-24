@@ -23,6 +23,8 @@ type DeleteS3TargetBucketNameSpectraS3Response struct {
     Headers *http.Header
 }
 
+
+
 func NewDeleteS3TargetBucketNameSpectraS3Response(webResponse networking.WebResponse) (*DeleteS3TargetBucketNameSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 
