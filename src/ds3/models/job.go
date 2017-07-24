@@ -19,7 +19,7 @@ type Job struct {
     CachedSizeInBytes int64 `xml:"CachedSizeInBytes,attr"`
     ChunkClientProcessingOrderGuarantee JobChunkClientProcessingOrderGuarantee `xml:"ChunkClientProcessingOrderGuarantee,attr"`
     CompletedSizeInBytes int64 `xml:"CompletedSizeInBytes,attr"`
-    EntirelyInCache bool `xml:"EntirelyInCache,attr"`
+    EntirelyInCache *bool `xml:"EntirelyInCache,attr"`
     JobId string `xml:"JobId,attr"`
     Naked bool `xml:"Naked,attr"`
     Name *string `xml:"Name,attr"`

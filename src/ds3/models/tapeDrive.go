@@ -14,11 +14,14 @@
 package models
 
 type TapeDrive struct {
+    CleaningRequired bool `xml:"CleaningRequired"`
     ErrorMessage *string `xml:"ErrorMessage"`
     ForceTapeRemoval bool `xml:"ForceTapeRemoval"`
     Id string `xml:"Id"`
     LastCleaned *string `xml:"LastCleaned"`
+    MfgSerialNumber *string `xml:"MfgSerialNumber"`
     PartitionId string `xml:"PartitionId"`
+    Quiesced Quiesced `xml:"Quiesced"`
     SerialNumber *string `xml:"SerialNumber"`
     State TapeDriveState `xml:"State"`
     TapeId *string `xml:"TapeId"`

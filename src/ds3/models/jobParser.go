@@ -30,7 +30,7 @@ func (job *Job) parse(xmlNode *XmlNode, aggErr *AggregateError) {
         case "CompletedSizeInBytes":
             job.CompletedSizeInBytes = parseInt64FromString(attr.Value, aggErr)
         case "EntirelyInCache":
-            job.EntirelyInCache = parseBoolFromString(attr.Value, aggErr)
+            job.EntirelyInCache = parseNullableBoolFromString(attr.Value, aggErr)
         case "JobId":
             job.JobId = attr.Value
         case "Naked":

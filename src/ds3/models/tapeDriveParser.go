@@ -18,6 +18,8 @@ func (tapeDrive *TapeDrive) parse(xmlNode *XmlNode, aggErr *AggregateError) {
     // Parse Child Nodes
     for _, child := range xmlNode.Children {
         switch child.XMLName.Local {
+        case "CleaningRequired":
+            tapeDrive.CleaningRequired = parseBool(child.Content, aggErr)
         case "ErrorMessage":
             tapeDrive.ErrorMessage = parseNullableString(child.Content)
         case "ForceTapeRemoval":
@@ -26,8 +28,12 @@ func (tapeDrive *TapeDrive) parse(xmlNode *XmlNode, aggErr *AggregateError) {
             tapeDrive.Id = parseString(child.Content)
         case "LastCleaned":
             tapeDrive.LastCleaned = parseNullableString(child.Content)
+        case "MfgSerialNumber":
+            tapeDrive.MfgSerialNumber = parseNullableString(child.Content)
         case "PartitionId":
             tapeDrive.PartitionId = parseString(child.Content)
+        case "Quiesced":
+            parseEnum(child.Content, &tapeDrive.Quiesced, aggErr)
         case "SerialNumber":
             tapeDrive.SerialNumber = parseNullableString(child.Content)
         case "State":

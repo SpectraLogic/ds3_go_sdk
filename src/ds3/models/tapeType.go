@@ -26,6 +26,7 @@ const (
     TAPE_TYPE_LTO5 TapeType = 1 + iota
     TAPE_TYPE_LTO6 TapeType = 1 + iota
     TAPE_TYPE_LTO7 TapeType = 1 + iota
+    TAPE_TYPE_LTO8 TapeType = 1 + iota
     TAPE_TYPE_LTO_CLEANING_TAPE TapeType = 1 + iota
     TAPE_TYPE_TS_JC TapeType = 1 + iota
     TAPE_TYPE_TS_JY TapeType = 1 + iota
@@ -45,6 +46,7 @@ func (tapeType *TapeType) UnmarshalText(text []byte) error {
         case "LTO5": *tapeType = TAPE_TYPE_LTO5
         case "LTO6": *tapeType = TAPE_TYPE_LTO6
         case "LTO7": *tapeType = TAPE_TYPE_LTO7
+        case "LTO8": *tapeType = TAPE_TYPE_LTO8
         case "LTO_CLEANING_TAPE": *tapeType = TAPE_TYPE_LTO_CLEANING_TAPE
         case "TS_JC": *tapeType = TAPE_TYPE_TS_JC
         case "TS_JY": *tapeType = TAPE_TYPE_TS_JY
@@ -67,6 +69,7 @@ func (tapeType TapeType) String() string {
         case TAPE_TYPE_LTO5: return "LTO5"
         case TAPE_TYPE_LTO6: return "LTO6"
         case TAPE_TYPE_LTO7: return "LTO7"
+        case TAPE_TYPE_LTO8: return "LTO8"
         case TAPE_TYPE_LTO_CLEANING_TAPE: return "LTO_CLEANING_TAPE"
         case TAPE_TYPE_TS_JC: return "TS_JC"
         case TAPE_TYPE_TS_JY: return "TS_JY"

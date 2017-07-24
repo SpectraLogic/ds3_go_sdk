@@ -36,6 +36,7 @@ type GetTapesSpectraS3Request struct {
     partitionId string
     previousState TapeState
     serialNumber *string
+    sortBy *string
     state TapeState
     storageDomainId string
     tapeType TapeType
@@ -170,6 +171,15 @@ func (getTapesSpectraS3Request *GetTapesSpectraS3Request) WithSerialNumber(seria
         getTapesSpectraS3Request.queryParams.Set("serial_number", *serialNumber)
     } else {
         getTapesSpectraS3Request.queryParams.Set("serial_number", "")
+    }
+    return getTapesSpectraS3Request
+}
+func (getTapesSpectraS3Request *GetTapesSpectraS3Request) WithSortBy(sortBy *string) *GetTapesSpectraS3Request {
+    getTapesSpectraS3Request.sortBy = sortBy
+    if sortBy != nil {
+        getTapesSpectraS3Request.queryParams.Set("sort_by", *sortBy)
+    } else {
+        getTapesSpectraS3Request.queryParams.Set("sort_by", "")
     }
     return getTapesSpectraS3Request
 }

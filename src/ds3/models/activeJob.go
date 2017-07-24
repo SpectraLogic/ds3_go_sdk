@@ -20,6 +20,7 @@ type ActiveJob struct {
     ChunkClientProcessingOrderGuarantee JobChunkClientProcessingOrderGuarantee `xml:"ChunkClientProcessingOrderGuarantee"`
     CompletedSizeInBytes int64 `xml:"CompletedSizeInBytes"`
     CreatedAt string `xml:"CreatedAt"`
+    DeadJobCleanupAllowed bool `xml:"DeadJobCleanupAllowed"`
     ErrorMessage *string `xml:"ErrorMessage"`
     Id string `xml:"Id"`
     ImplicitJobIdResolution bool `xml:"ImplicitJobIdResolution"`

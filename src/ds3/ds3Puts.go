@@ -258,6 +258,18 @@ func (client *Client) AllocateJobChunkSpectraS3(request *models.AllocateJobChunk
     // Create a response object based on the result.
     return models.NewAllocateJobChunkSpectraS3Response(response)
 }
+func (client *Client) CloseAggregatingJobSpectraS3(request *models.CloseAggregatingJobSpectraS3Request) (*models.CloseAggregatingJobSpectraS3Response, error) {
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.netLayer), client.clientPolicy.maxRetries)
+
+    // Invoke the HTTP request.
+    response, requestErr := networkRetryDecorator.Invoke(request)
+    if requestErr != nil {
+        return nil, requestErr
+    }
+
+    // Create a response object based on the result.
+    return models.NewCloseAggregatingJobSpectraS3Response(response)
+}
 func (client *Client) GetBulkJobSpectraS3(request *models.GetBulkJobSpectraS3Request) (*models.GetBulkJobSpectraS3Response, error) {
     networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.netLayer), client.clientPolicy.maxRetries)
 
@@ -917,6 +929,18 @@ func (client *Client) ModifyAllTapePartitionsSpectraS3(request *models.ModifyAll
 
     // Create a response object based on the result.
     return models.NewModifyAllTapePartitionsSpectraS3Response(response)
+}
+func (client *Client) ModifyTapeDriveSpectraS3(request *models.ModifyTapeDriveSpectraS3Request) (*models.ModifyTapeDriveSpectraS3Response, error) {
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.netLayer), client.clientPolicy.maxRetries)
+
+    // Invoke the HTTP request.
+    response, requestErr := networkRetryDecorator.Invoke(request)
+    if requestErr != nil {
+        return nil, requestErr
+    }
+
+    // Create a response object based on the result.
+    return models.NewModifyTapeDriveSpectraS3Response(response)
 }
 func (client *Client) ModifyTapePartitionSpectraS3(request *models.ModifyTapePartitionSpectraS3Request) (*models.ModifyTapePartitionSpectraS3Response, error) {
     networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.netLayer), client.clientPolicy.maxRetries)

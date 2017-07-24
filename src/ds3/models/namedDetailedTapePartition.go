@@ -22,6 +22,7 @@ type NamedDetailedTapePartition struct {
     LibraryId string `xml:"LibraryId"`
     Name *string `xml:"Name"`
     Quiesced Quiesced `xml:"Quiesced"`
+    SerialId *string `xml:"SerialId"`
     SerialNumber *string `xml:"SerialNumber"`
     State TapePartitionState `xml:"State"`
     TapeTypes []TapeType `xml:"TapeTypes"`

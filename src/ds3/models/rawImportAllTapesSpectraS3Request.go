@@ -21,6 +21,7 @@ import (
 
 type RawImportAllTapesSpectraS3Request struct {
     bucketId string
+    storageDomainId string
     taskPriority Priority
     queryParams *url.Values
 }
@@ -36,6 +37,11 @@ func NewRawImportAllTapesSpectraS3Request(bucketId string) *RawImportAllTapesSpe
     }
 }
 
+func (rawImportAllTapesSpectraS3Request *RawImportAllTapesSpectraS3Request) WithStorageDomainId(storageDomainId string) *RawImportAllTapesSpectraS3Request {
+    rawImportAllTapesSpectraS3Request.storageDomainId = storageDomainId
+    rawImportAllTapesSpectraS3Request.queryParams.Set("storage_domain_id", storageDomainId)
+    return rawImportAllTapesSpectraS3Request
+}
 func (rawImportAllTapesSpectraS3Request *RawImportAllTapesSpectraS3Request) WithTaskPriority(taskPriority Priority) *RawImportAllTapesSpectraS3Request {
     rawImportAllTapesSpectraS3Request.taskPriority = taskPriority
     rawImportAllTapesSpectraS3Request.queryParams.Set("task_priority", taskPriority.String())

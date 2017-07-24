@@ -28,7 +28,7 @@ func (masterObjectList *MasterObjectList) parse(xmlNode *XmlNode, aggErr *Aggreg
         case "CompletedSizeInBytes":
             masterObjectList.CompletedSizeInBytes = parseInt64FromString(attr.Value, aggErr)
         case "EntirelyInCache":
-            masterObjectList.EntirelyInCache = parseBoolFromString(attr.Value, aggErr)
+            masterObjectList.EntirelyInCache = parseNullableBoolFromString(attr.Value, aggErr)
         case "JobId":
             masterObjectList.JobId = attr.Value
         case "Naked":

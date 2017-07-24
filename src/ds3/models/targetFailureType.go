@@ -24,6 +24,7 @@ type TargetFailureType Enum
 
 const (
     TARGET_FAILURE_TYPE_IMPORT_FAILED TargetFailureType = 1 + iota
+    TARGET_FAILURE_TYPE_IMPORT_INCOMPLETE TargetFailureType = 1 + iota
     TARGET_FAILURE_TYPE_NOT_ONLINE TargetFailureType = 1 + iota
     TARGET_FAILURE_TYPE_WRITE_FAILED TargetFailureType = 1 + iota
     TARGET_FAILURE_TYPE_WRITE_INITIATE_FAILED TargetFailureType = 1 + iota
@@ -37,6 +38,7 @@ func (targetFailureType *TargetFailureType) UnmarshalText(text []byte) error {
     switch str {
         case "": *targetFailureType = UNDEFINED
         case "IMPORT_FAILED": *targetFailureType = TARGET_FAILURE_TYPE_IMPORT_FAILED
+        case "IMPORT_INCOMPLETE": *targetFailureType = TARGET_FAILURE_TYPE_IMPORT_INCOMPLETE
         case "NOT_ONLINE": *targetFailureType = TARGET_FAILURE_TYPE_NOT_ONLINE
         case "WRITE_FAILED": *targetFailureType = TARGET_FAILURE_TYPE_WRITE_FAILED
         case "WRITE_INITIATE_FAILED": *targetFailureType = TARGET_FAILURE_TYPE_WRITE_INITIATE_FAILED
@@ -53,6 +55,7 @@ func (targetFailureType *TargetFailureType) UnmarshalText(text []byte) error {
 func (targetFailureType TargetFailureType) String() string {
     switch targetFailureType {
         case TARGET_FAILURE_TYPE_IMPORT_FAILED: return "IMPORT_FAILED"
+        case TARGET_FAILURE_TYPE_IMPORT_INCOMPLETE: return "IMPORT_INCOMPLETE"
         case TARGET_FAILURE_TYPE_NOT_ONLINE: return "NOT_ONLINE"
         case TARGET_FAILURE_TYPE_WRITE_FAILED: return "WRITE_FAILED"
         case TARGET_FAILURE_TYPE_WRITE_INITIATE_FAILED: return "WRITE_INITIATE_FAILED"

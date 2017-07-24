@@ -30,6 +30,8 @@ func (activeJob *ActiveJob) parse(xmlNode *XmlNode, aggErr *AggregateError) {
             activeJob.CompletedSizeInBytes = parseInt64(child.Content, aggErr)
         case "CreatedAt":
             activeJob.CreatedAt = parseString(child.Content)
+        case "DeadJobCleanupAllowed":
+            activeJob.DeadJobCleanupAllowed = parseBool(child.Content, aggErr)
         case "ErrorMessage":
             activeJob.ErrorMessage = parseNullableString(child.Content)
         case "Id":
