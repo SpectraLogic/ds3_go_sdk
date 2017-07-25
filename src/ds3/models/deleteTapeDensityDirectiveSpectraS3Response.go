@@ -23,6 +23,8 @@ type DeleteTapeDensityDirectiveSpectraS3Response struct {
     Headers *http.Header
 }
 
+
+
 func NewDeleteTapeDensityDirectiveSpectraS3Response(webResponse networking.WebResponse) (*DeleteTapeDensityDirectiveSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 

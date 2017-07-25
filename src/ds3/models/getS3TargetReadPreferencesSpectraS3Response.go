@@ -23,13 +23,17 @@ type GetS3TargetReadPreferencesSpectraS3Response struct {
     Headers *http.Header
 }
 
+func (getS3TargetReadPreferencesSpectraS3Response *GetS3TargetReadPreferencesSpectraS3Response) parse(webResponse networking.WebResponse) error {
+        return parseResponsePayload(webResponse, &getS3TargetReadPreferencesSpectraS3Response.S3TargetReadPreferenceList)
+}
+
 func NewGetS3TargetReadPreferencesSpectraS3Response(webResponse networking.WebResponse) (*GetS3TargetReadPreferencesSpectraS3Response, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetS3TargetReadPreferencesSpectraS3Response
-        if err := readResponseBody(webResponse, &body.S3TargetReadPreferenceList); err != nil {
+        if err := body.parse(webResponse); err != nil {
             return nil, err
         }
         body.Headers = webResponse.Header()

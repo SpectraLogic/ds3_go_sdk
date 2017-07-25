@@ -23,13 +23,17 @@ type VerifyAzureTargetSpectraS3Response struct {
     Headers *http.Header
 }
 
+func (verifyAzureTargetSpectraS3Response *VerifyAzureTargetSpectraS3Response) parse(webResponse networking.WebResponse) error {
+        return parseResponsePayload(webResponse, &verifyAzureTargetSpectraS3Response.AzureTarget)
+}
+
 func NewVerifyAzureTargetSpectraS3Response(webResponse networking.WebResponse) (*VerifyAzureTargetSpectraS3Response, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body VerifyAzureTargetSpectraS3Response
-        if err := readResponseBody(webResponse, &body.AzureTarget); err != nil {
+        if err := body.parse(webResponse); err != nil {
             return nil, err
         }
         body.Headers = webResponse.Header()

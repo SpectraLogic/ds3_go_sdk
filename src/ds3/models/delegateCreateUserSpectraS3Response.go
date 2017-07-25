@@ -23,13 +23,17 @@ type DelegateCreateUserSpectraS3Response struct {
     Headers *http.Header
 }
 
+func (delegateCreateUserSpectraS3Response *DelegateCreateUserSpectraS3Response) parse(webResponse networking.WebResponse) error {
+        return parseResponsePayload(webResponse, &delegateCreateUserSpectraS3Response.SpectraUser)
+}
+
 func NewDelegateCreateUserSpectraS3Response(webResponse networking.WebResponse) (*DelegateCreateUserSpectraS3Response, error) {
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
     case 201:
         var body DelegateCreateUserSpectraS3Response
-        if err := readResponseBody(webResponse, &body.SpectraUser); err != nil {
+        if err := body.parse(webResponse); err != nil {
             return nil, err
         }
         body.Headers = webResponse.Header()

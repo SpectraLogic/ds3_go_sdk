@@ -23,13 +23,17 @@ type GetSuspectBlobDs3TargetsSpectraS3Response struct {
     Headers *http.Header
 }
 
+func (getSuspectBlobDs3TargetsSpectraS3Response *GetSuspectBlobDs3TargetsSpectraS3Response) parse(webResponse networking.WebResponse) error {
+        return parseResponsePayload(webResponse, &getSuspectBlobDs3TargetsSpectraS3Response.SuspectBlobDs3TargetList)
+}
+
 func NewGetSuspectBlobDs3TargetsSpectraS3Response(webResponse networking.WebResponse) (*GetSuspectBlobDs3TargetsSpectraS3Response, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetSuspectBlobDs3TargetsSpectraS3Response
-        if err := readResponseBody(webResponse, &body.SuspectBlobDs3TargetList); err != nil {
+        if err := body.parse(webResponse); err != nil {
             return nil, err
         }
         body.Headers = webResponse.Header()

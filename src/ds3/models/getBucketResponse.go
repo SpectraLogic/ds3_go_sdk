@@ -23,13 +23,17 @@ type GetBucketResponse struct {
     Headers *http.Header
 }
 
+func (getBucketResponse *GetBucketResponse) parse(webResponse networking.WebResponse) error {
+        return parseResponsePayload(webResponse, &getBucketResponse.ListBucketResult)
+}
+
 func NewGetBucketResponse(webResponse networking.WebResponse) (*GetBucketResponse, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetBucketResponse
-        if err := readResponseBody(webResponse, &body.ListBucketResult); err != nil {
+        if err := body.parse(webResponse); err != nil {
             return nil, err
         }
         body.Headers = webResponse.Header()

@@ -23,13 +23,17 @@ type GetObjectsWithFullDetailsSpectraS3Response struct {
     Headers *http.Header
 }
 
+func (getObjectsWithFullDetailsSpectraS3Response *GetObjectsWithFullDetailsSpectraS3Response) parse(webResponse networking.WebResponse) error {
+        return parseResponsePayload(webResponse, &getObjectsWithFullDetailsSpectraS3Response.DetailedS3ObjectList)
+}
+
 func NewGetObjectsWithFullDetailsSpectraS3Response(webResponse networking.WebResponse) (*GetObjectsWithFullDetailsSpectraS3Response, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetObjectsWithFullDetailsSpectraS3Response
-        if err := readResponseBody(webResponse, &body.DetailedS3ObjectList); err != nil {
+        if err := body.parse(webResponse); err != nil {
             return nil, err
         }
         body.Headers = webResponse.Header()

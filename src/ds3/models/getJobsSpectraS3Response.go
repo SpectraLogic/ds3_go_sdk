@@ -23,13 +23,17 @@ type GetJobsSpectraS3Response struct {
     Headers *http.Header
 }
 
+func (getJobsSpectraS3Response *GetJobsSpectraS3Response) parse(webResponse networking.WebResponse) error {
+        return parseResponsePayload(webResponse, &getJobsSpectraS3Response.JobList)
+}
+
 func NewGetJobsSpectraS3Response(webResponse networking.WebResponse) (*GetJobsSpectraS3Response, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetJobsSpectraS3Response
-        if err := readResponseBody(webResponse, &body.JobList); err != nil {
+        if err := body.parse(webResponse); err != nil {
             return nil, err
         }
         body.Headers = webResponse.Header()

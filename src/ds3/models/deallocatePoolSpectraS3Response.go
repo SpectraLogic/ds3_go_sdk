@@ -23,6 +23,8 @@ type DeallocatePoolSpectraS3Response struct {
     Headers *http.Header
 }
 
+
+
 func NewDeallocatePoolSpectraS3Response(webResponse networking.WebResponse) (*DeallocatePoolSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 

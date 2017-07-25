@@ -23,6 +23,8 @@ type CancelImportOnAllPoolsSpectraS3Response struct {
     Headers *http.Header
 }
 
+
+
 func NewCancelImportOnAllPoolsSpectraS3Response(webResponse networking.WebResponse) (*CancelImportOnAllPoolsSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 

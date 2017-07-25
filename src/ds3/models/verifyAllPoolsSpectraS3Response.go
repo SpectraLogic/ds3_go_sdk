@@ -23,6 +23,8 @@ type VerifyAllPoolsSpectraS3Response struct {
     Headers *http.Header
 }
 
+
+
 func NewVerifyAllPoolsSpectraS3Response(webResponse networking.WebResponse) (*VerifyAllPoolsSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 

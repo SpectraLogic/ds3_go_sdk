@@ -23,6 +23,8 @@ type DeleteDataPolicyAclSpectraS3Response struct {
     Headers *http.Header
 }
 
+
+
 func NewDeleteDataPolicyAclSpectraS3Response(webResponse networking.WebResponse) (*DeleteDataPolicyAclSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 

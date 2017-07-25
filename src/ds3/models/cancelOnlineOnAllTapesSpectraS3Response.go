@@ -23,6 +23,10 @@ type CancelOnlineOnAllTapesSpectraS3Response struct {
     Headers *http.Header
 }
 
+func (cancelOnlineOnAllTapesSpectraS3Response *CancelOnlineOnAllTapesSpectraS3Response) parse(webResponse networking.WebResponse) error {
+        return parseResponsePayload(webResponse, cancelOnlineOnAllTapesSpectraS3Response.TapeFailureList)
+}
+
 func NewCancelOnlineOnAllTapesSpectraS3Response(webResponse networking.WebResponse) (*CancelOnlineOnAllTapesSpectraS3Response, error) {
     expectedStatusCodes := []int { 204, 207 }
 
@@ -31,7 +35,7 @@ func NewCancelOnlineOnAllTapesSpectraS3Response(webResponse networking.WebRespon
         return &CancelOnlineOnAllTapesSpectraS3Response{Headers: webResponse.Header()}, nil
     case 207:
         var body CancelOnlineOnAllTapesSpectraS3Response
-        if err := readResponseBody(webResponse, &body.TapeFailureList); err != nil {
+        if err := body.parse(webResponse); err != nil {
             return nil, err
         }
         body.Headers = webResponse.Header()

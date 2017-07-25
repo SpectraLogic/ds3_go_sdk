@@ -23,13 +23,17 @@ type GetTapeDensityDirectiveSpectraS3Response struct {
     Headers *http.Header
 }
 
+func (getTapeDensityDirectiveSpectraS3Response *GetTapeDensityDirectiveSpectraS3Response) parse(webResponse networking.WebResponse) error {
+        return parseResponsePayload(webResponse, &getTapeDensityDirectiveSpectraS3Response.TapeDensityDirective)
+}
+
 func NewGetTapeDensityDirectiveSpectraS3Response(webResponse networking.WebResponse) (*GetTapeDensityDirectiveSpectraS3Response, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetTapeDensityDirectiveSpectraS3Response
-        if err := readResponseBody(webResponse, &body.TapeDensityDirective); err != nil {
+        if err := body.parse(webResponse); err != nil {
             return nil, err
         }
         body.Headers = webResponse.Header()

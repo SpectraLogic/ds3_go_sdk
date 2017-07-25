@@ -23,13 +23,17 @@ type GetAzureTargetSpectraS3Response struct {
     Headers *http.Header
 }
 
+func (getAzureTargetSpectraS3Response *GetAzureTargetSpectraS3Response) parse(webResponse networking.WebResponse) error {
+        return parseResponsePayload(webResponse, &getAzureTargetSpectraS3Response.AzureTarget)
+}
+
 func NewGetAzureTargetSpectraS3Response(webResponse networking.WebResponse) (*GetAzureTargetSpectraS3Response, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetAzureTargetSpectraS3Response
-        if err := readResponseBody(webResponse, &body.AzureTarget); err != nil {
+        if err := body.parse(webResponse); err != nil {
             return nil, err
         }
         body.Headers = webResponse.Header()

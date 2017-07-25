@@ -23,6 +23,8 @@ type ModifyAllAzureTargetsSpectraS3Response struct {
     Headers *http.Header
 }
 
+
+
 func NewModifyAllAzureTargetsSpectraS3Response(webResponse networking.WebResponse) (*ModifyAllAzureTargetsSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 

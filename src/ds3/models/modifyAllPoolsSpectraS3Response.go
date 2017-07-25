@@ -23,6 +23,8 @@ type ModifyAllPoolsSpectraS3Response struct {
     Headers *http.Header
 }
 
+
+
 func NewModifyAllPoolsSpectraS3Response(webResponse networking.WebResponse) (*ModifyAllPoolsSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 

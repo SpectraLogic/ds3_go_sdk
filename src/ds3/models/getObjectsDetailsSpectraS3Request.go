@@ -22,7 +22,6 @@ import (
 
 type GetObjectsDetailsSpectraS3Request struct {
     bucketId string
-    folder *string
     latest bool
     name *string
     pageLength int
@@ -77,15 +76,6 @@ func (getObjectsDetailsSpectraS3Request *GetObjectsDetailsSpectraS3Request) With
     return getObjectsDetailsSpectraS3Request
 }
 
-func (getObjectsDetailsSpectraS3Request *GetObjectsDetailsSpectraS3Request) WithFolder(folder *string) *GetObjectsDetailsSpectraS3Request {
-    getObjectsDetailsSpectraS3Request.folder = folder
-    if folder != nil {
-        getObjectsDetailsSpectraS3Request.queryParams.Set("folder", *folder)
-    } else {
-        getObjectsDetailsSpectraS3Request.queryParams.Set("folder", "")
-    }
-    return getObjectsDetailsSpectraS3Request
-}
 func (getObjectsDetailsSpectraS3Request *GetObjectsDetailsSpectraS3Request) WithName(name *string) *GetObjectsDetailsSpectraS3Request {
     getObjectsDetailsSpectraS3Request.name = name
     if name != nil {

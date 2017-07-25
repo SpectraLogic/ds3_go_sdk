@@ -23,13 +23,17 @@ type GetS3DataReplicationRulesSpectraS3Response struct {
     Headers *http.Header
 }
 
+func (getS3DataReplicationRulesSpectraS3Response *GetS3DataReplicationRulesSpectraS3Response) parse(webResponse networking.WebResponse) error {
+        return parseResponsePayload(webResponse, &getS3DataReplicationRulesSpectraS3Response.S3DataReplicationRuleList)
+}
+
 func NewGetS3DataReplicationRulesSpectraS3Response(webResponse networking.WebResponse) (*GetS3DataReplicationRulesSpectraS3Response, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetS3DataReplicationRulesSpectraS3Response
-        if err := readResponseBody(webResponse, &body.S3DataReplicationRuleList); err != nil {
+        if err := body.parse(webResponse); err != nil {
             return nil, err
         }
         body.Headers = webResponse.Header()

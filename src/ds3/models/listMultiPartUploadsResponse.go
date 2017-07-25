@@ -23,13 +23,17 @@ type ListMultiPartUploadsResponse struct {
     Headers *http.Header
 }
 
+func (listMultiPartUploadsResponse *ListMultiPartUploadsResponse) parse(webResponse networking.WebResponse) error {
+        return parseResponsePayload(webResponse, &listMultiPartUploadsResponse.ListMultiPartUploadsResult)
+}
+
 func NewListMultiPartUploadsResponse(webResponse networking.WebResponse) (*ListMultiPartUploadsResponse, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body ListMultiPartUploadsResponse
-        if err := readResponseBody(webResponse, &body.ListMultiPartUploadsResult); err != nil {
+        if err := body.parse(webResponse); err != nil {
             return nil, err
         }
         body.Headers = webResponse.Header()

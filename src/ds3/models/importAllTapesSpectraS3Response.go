@@ -23,6 +23,8 @@ type ImportAllTapesSpectraS3Response struct {
     Headers *http.Header
 }
 
+
+
 func NewImportAllTapesSpectraS3Response(webResponse networking.WebResponse) (*ImportAllTapesSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 

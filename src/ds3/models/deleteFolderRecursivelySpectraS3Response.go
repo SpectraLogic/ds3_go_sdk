@@ -23,6 +23,8 @@ type DeleteFolderRecursivelySpectraS3Response struct {
     Headers *http.Header
 }
 
+
+
 func NewDeleteFolderRecursivelySpectraS3Response(webResponse networking.WebResponse) (*DeleteFolderRecursivelySpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 

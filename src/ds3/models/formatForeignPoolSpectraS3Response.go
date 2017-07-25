@@ -23,13 +23,17 @@ type FormatForeignPoolSpectraS3Response struct {
     Headers *http.Header
 }
 
+func (formatForeignPoolSpectraS3Response *FormatForeignPoolSpectraS3Response) parse(webResponse networking.WebResponse) error {
+        return parseResponsePayload(webResponse, &formatForeignPoolSpectraS3Response.Pool)
+}
+
 func NewFormatForeignPoolSpectraS3Response(webResponse networking.WebResponse) (*FormatForeignPoolSpectraS3Response, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body FormatForeignPoolSpectraS3Response
-        if err := readResponseBody(webResponse, &body.Pool); err != nil {
+        if err := body.parse(webResponse); err != nil {
             return nil, err
         }
         body.Headers = webResponse.Header()

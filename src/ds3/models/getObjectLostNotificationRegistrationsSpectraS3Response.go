@@ -23,13 +23,17 @@ type GetObjectLostNotificationRegistrationsSpectraS3Response struct {
     Headers *http.Header
 }
 
+func (getObjectLostNotificationRegistrationsSpectraS3Response *GetObjectLostNotificationRegistrationsSpectraS3Response) parse(webResponse networking.WebResponse) error {
+        return parseResponsePayload(webResponse, &getObjectLostNotificationRegistrationsSpectraS3Response.S3ObjectLostNotificationRegistrationList)
+}
+
 func NewGetObjectLostNotificationRegistrationsSpectraS3Response(webResponse networking.WebResponse) (*GetObjectLostNotificationRegistrationsSpectraS3Response, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetObjectLostNotificationRegistrationsSpectraS3Response
-        if err := readResponseBody(webResponse, &body.S3ObjectLostNotificationRegistrationList); err != nil {
+        if err := body.parse(webResponse); err != nil {
             return nil, err
         }
         body.Headers = webResponse.Header()

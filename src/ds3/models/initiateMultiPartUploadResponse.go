@@ -23,13 +23,17 @@ type InitiateMultiPartUploadResponse struct {
     Headers *http.Header
 }
 
+func (initiateMultiPartUploadResponse *InitiateMultiPartUploadResponse) parse(webResponse networking.WebResponse) error {
+        return parseResponsePayload(webResponse, &initiateMultiPartUploadResponse.InitiateMultipartUploadResult)
+}
+
 func NewInitiateMultiPartUploadResponse(webResponse networking.WebResponse) (*InitiateMultiPartUploadResponse, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body InitiateMultiPartUploadResponse
-        if err := readResponseBody(webResponse, &body.InitiateMultipartUploadResult); err != nil {
+        if err := body.parse(webResponse); err != nil {
             return nil, err
         }
         body.Headers = webResponse.Header()

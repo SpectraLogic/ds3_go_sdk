@@ -23,13 +23,17 @@ type PutGroupSpectraS3Response struct {
     Headers *http.Header
 }
 
+func (putGroupSpectraS3Response *PutGroupSpectraS3Response) parse(webResponse networking.WebResponse) error {
+        return parseResponsePayload(webResponse, &putGroupSpectraS3Response.Group)
+}
+
 func NewPutGroupSpectraS3Response(webResponse networking.WebResponse) (*PutGroupSpectraS3Response, error) {
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
     case 201:
         var body PutGroupSpectraS3Response
-        if err := readResponseBody(webResponse, &body.Group); err != nil {
+        if err := body.parse(webResponse); err != nil {
             return nil, err
         }
         body.Headers = webResponse.Header()

@@ -23,6 +23,10 @@ type EjectStorageDomainSpectraS3Response struct {
     Headers *http.Header
 }
 
+func (ejectStorageDomainSpectraS3Response *EjectStorageDomainSpectraS3Response) parse(webResponse networking.WebResponse) error {
+        return parseResponsePayload(webResponse, ejectStorageDomainSpectraS3Response.TapeFailureList)
+}
+
 func NewEjectStorageDomainSpectraS3Response(webResponse networking.WebResponse) (*EjectStorageDomainSpectraS3Response, error) {
     expectedStatusCodes := []int { 204, 207 }
 
@@ -31,7 +35,7 @@ func NewEjectStorageDomainSpectraS3Response(webResponse networking.WebResponse) 
         return &EjectStorageDomainSpectraS3Response{Headers: webResponse.Header()}, nil
     case 207:
         var body EjectStorageDomainSpectraS3Response
-        if err := readResponseBody(webResponse, &body.TapeFailureList); err != nil {
+        if err := body.parse(webResponse); err != nil {
             return nil, err
         }
         body.Headers = webResponse.Header()

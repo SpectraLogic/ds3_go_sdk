@@ -23,13 +23,17 @@ type GetTapePartitionFailureNotificationRegistrationSpectraS3Response struct {
     Headers *http.Header
 }
 
+func (getTapePartitionFailureNotificationRegistrationSpectraS3Response *GetTapePartitionFailureNotificationRegistrationSpectraS3Response) parse(webResponse networking.WebResponse) error {
+        return parseResponsePayload(webResponse, &getTapePartitionFailureNotificationRegistrationSpectraS3Response.TapePartitionFailureNotificationRegistration)
+}
+
 func NewGetTapePartitionFailureNotificationRegistrationSpectraS3Response(webResponse networking.WebResponse) (*GetTapePartitionFailureNotificationRegistrationSpectraS3Response, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetTapePartitionFailureNotificationRegistrationSpectraS3Response
-        if err := readResponseBody(webResponse, &body.TapePartitionFailureNotificationRegistration); err != nil {
+        if err := body.parse(webResponse); err != nil {
             return nil, err
         }
         body.Headers = webResponse.Header()

@@ -23,13 +23,17 @@ type GetCacheFilesystemSpectraS3Response struct {
     Headers *http.Header
 }
 
+func (getCacheFilesystemSpectraS3Response *GetCacheFilesystemSpectraS3Response) parse(webResponse networking.WebResponse) error {
+        return parseResponsePayload(webResponse, &getCacheFilesystemSpectraS3Response.CacheFilesystem)
+}
+
 func NewGetCacheFilesystemSpectraS3Response(webResponse networking.WebResponse) (*GetCacheFilesystemSpectraS3Response, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetCacheFilesystemSpectraS3Response
-        if err := readResponseBody(webResponse, &body.CacheFilesystem); err != nil {
+        if err := body.parse(webResponse); err != nil {
             return nil, err
         }
         body.Headers = webResponse.Header()

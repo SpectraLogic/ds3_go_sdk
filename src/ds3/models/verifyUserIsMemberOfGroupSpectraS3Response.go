@@ -23,13 +23,17 @@ type VerifyUserIsMemberOfGroupSpectraS3Response struct {
     Headers *http.Header
 }
 
+func (verifyUserIsMemberOfGroupSpectraS3Response *VerifyUserIsMemberOfGroupSpectraS3Response) parse(webResponse networking.WebResponse) error {
+        return parseResponsePayload(webResponse, verifyUserIsMemberOfGroupSpectraS3Response.Group)
+}
+
 func NewVerifyUserIsMemberOfGroupSpectraS3Response(webResponse networking.WebResponse) (*VerifyUserIsMemberOfGroupSpectraS3Response, error) {
     expectedStatusCodes := []int { 200, 204 }
 
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body VerifyUserIsMemberOfGroupSpectraS3Response
-        if err := readResponseBody(webResponse, &body.Group); err != nil {
+        if err := body.parse(webResponse); err != nil {
             return nil, err
         }
         body.Headers = webResponse.Header()

@@ -23,6 +23,8 @@ type DeleteObjectLostNotificationRegistrationSpectraS3Response struct {
     Headers *http.Header
 }
 
+
+
 func NewDeleteObjectLostNotificationRegistrationSpectraS3Response(webResponse networking.WebResponse) (*DeleteObjectLostNotificationRegistrationSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 

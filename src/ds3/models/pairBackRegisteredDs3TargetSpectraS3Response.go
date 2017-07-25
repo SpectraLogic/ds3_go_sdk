@@ -23,6 +23,8 @@ type PairBackRegisteredDs3TargetSpectraS3Response struct {
     Headers *http.Header
 }
 
+
+
 func NewPairBackRegisteredDs3TargetSpectraS3Response(webResponse networking.WebResponse) (*PairBackRegisteredDs3TargetSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 

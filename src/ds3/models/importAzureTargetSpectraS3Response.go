@@ -23,6 +23,8 @@ type ImportAzureTargetSpectraS3Response struct {
     Headers *http.Header
 }
 
+
+
 func NewImportAzureTargetSpectraS3Response(webResponse networking.WebResponse) (*ImportAzureTargetSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 

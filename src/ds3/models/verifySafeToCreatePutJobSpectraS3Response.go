@@ -23,6 +23,8 @@ type VerifySafeToCreatePutJobSpectraS3Response struct {
     Headers *http.Header
 }
 
+
+
 func NewVerifySafeToCreatePutJobSpectraS3Response(webResponse networking.WebResponse) (*VerifySafeToCreatePutJobSpectraS3Response, error) {
     expectedStatusCodes := []int { 200 }
 

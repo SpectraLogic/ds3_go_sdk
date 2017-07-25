@@ -23,6 +23,8 @@ type DeletePermanentlyLostTapeSpectraS3Response struct {
     Headers *http.Header
 }
 
+
+
 func NewDeletePermanentlyLostTapeSpectraS3Response(webResponse networking.WebResponse) (*DeletePermanentlyLostTapeSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 

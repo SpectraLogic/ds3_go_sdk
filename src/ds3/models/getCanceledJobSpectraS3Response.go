@@ -23,13 +23,17 @@ type GetCanceledJobSpectraS3Response struct {
     Headers *http.Header
 }
 
+func (getCanceledJobSpectraS3Response *GetCanceledJobSpectraS3Response) parse(webResponse networking.WebResponse) error {
+        return parseResponsePayload(webResponse, &getCanceledJobSpectraS3Response.CanceledJob)
+}
+
 func NewGetCanceledJobSpectraS3Response(webResponse networking.WebResponse) (*GetCanceledJobSpectraS3Response, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetCanceledJobSpectraS3Response
-        if err := readResponseBody(webResponse, &body.CanceledJob); err != nil {
+        if err := body.parse(webResponse); err != nil {
             return nil, err
         }
         body.Headers = webResponse.Header()

@@ -23,6 +23,8 @@ type DeleteAzureTargetReadPreferenceSpectraS3Response struct {
     Headers *http.Header
 }
 
+
+
 func NewDeleteAzureTargetReadPreferenceSpectraS3Response(webResponse networking.WebResponse) (*DeleteAzureTargetReadPreferenceSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 

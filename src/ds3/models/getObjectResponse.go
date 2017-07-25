@@ -24,6 +24,8 @@ type GetObjectResponse struct {
     Headers *http.Header
 }
 
+
+
 func NewGetObjectResponse(webResponse networking.WebResponse) (*GetObjectResponse, error) {
     expectedStatusCodes := []int { 200, 206 }
 

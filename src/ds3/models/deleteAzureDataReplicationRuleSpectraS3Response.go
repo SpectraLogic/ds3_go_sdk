@@ -23,6 +23,8 @@ type DeleteAzureDataReplicationRuleSpectraS3Response struct {
     Headers *http.Header
 }
 
+
+
 func NewDeleteAzureDataReplicationRuleSpectraS3Response(webResponse networking.WebResponse) (*DeleteAzureDataReplicationRuleSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 

@@ -23,13 +23,17 @@ type GetDs3TargetFailuresSpectraS3Response struct {
     Headers *http.Header
 }
 
+func (getDs3TargetFailuresSpectraS3Response *GetDs3TargetFailuresSpectraS3Response) parse(webResponse networking.WebResponse) error {
+        return parseResponsePayload(webResponse, &getDs3TargetFailuresSpectraS3Response.Ds3TargetFailureList)
+}
+
 func NewGetDs3TargetFailuresSpectraS3Response(webResponse networking.WebResponse) (*GetDs3TargetFailuresSpectraS3Response, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetDs3TargetFailuresSpectraS3Response
-        if err := readResponseBody(webResponse, &body.Ds3TargetFailureList); err != nil {
+        if err := body.parse(webResponse); err != nil {
             return nil, err
         }
         body.Headers = webResponse.Header()

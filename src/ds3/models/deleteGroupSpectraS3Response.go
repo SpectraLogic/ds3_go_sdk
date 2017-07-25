@@ -23,6 +23,8 @@ type DeleteGroupSpectraS3Response struct {
     Headers *http.Header
 }
 
+
+
 func NewDeleteGroupSpectraS3Response(webResponse networking.WebResponse) (*DeleteGroupSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 

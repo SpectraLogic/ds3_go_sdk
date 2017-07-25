@@ -23,6 +23,8 @@ type ConvertStorageDomainToDs3TargetSpectraS3Response struct {
     Headers *http.Header
 }
 
+
+
 func NewConvertStorageDomainToDs3TargetSpectraS3Response(webResponse networking.WebResponse) (*ConvertStorageDomainToDs3TargetSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 

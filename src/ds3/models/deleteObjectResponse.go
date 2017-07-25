@@ -23,6 +23,8 @@ type DeleteObjectResponse struct {
     Headers *http.Header
 }
 
+
+
 func NewDeleteObjectResponse(webResponse networking.WebResponse) (*DeleteObjectResponse, error) {
     expectedStatusCodes := []int { 204 }
 

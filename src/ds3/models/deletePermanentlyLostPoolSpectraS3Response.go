@@ -23,6 +23,8 @@ type DeletePermanentlyLostPoolSpectraS3Response struct {
     Headers *http.Header
 }
 
+
+
 func NewDeletePermanentlyLostPoolSpectraS3Response(webResponse networking.WebResponse) (*DeletePermanentlyLostPoolSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 

@@ -27,8 +27,10 @@ const (
     TAPE_DRIVE_TYPE_LTO5 TapeDriveType = 1 + iota
     TAPE_DRIVE_TYPE_LTO6 TapeDriveType = 1 + iota
     TAPE_DRIVE_TYPE_LTO7 TapeDriveType = 1 + iota
+    TAPE_DRIVE_TYPE_LTO8 TapeDriveType = 1 + iota
     TAPE_DRIVE_TYPE_TS1140 TapeDriveType = 1 + iota
     TAPE_DRIVE_TYPE_TS1150 TapeDriveType = 1 + iota
+    TAPE_DRIVE_TYPE_TS1155 TapeDriveType = 1 + iota
 )
 
 func (tapeDriveType *TapeDriveType) UnmarshalText(text []byte) error {
@@ -39,8 +41,10 @@ func (tapeDriveType *TapeDriveType) UnmarshalText(text []byte) error {
         case "LTO5": *tapeDriveType = TAPE_DRIVE_TYPE_LTO5
         case "LTO6": *tapeDriveType = TAPE_DRIVE_TYPE_LTO6
         case "LTO7": *tapeDriveType = TAPE_DRIVE_TYPE_LTO7
+        case "LTO8": *tapeDriveType = TAPE_DRIVE_TYPE_LTO8
         case "TS1140": *tapeDriveType = TAPE_DRIVE_TYPE_TS1140
         case "TS1150": *tapeDriveType = TAPE_DRIVE_TYPE_TS1150
+        case "TS1155": *tapeDriveType = TAPE_DRIVE_TYPE_TS1155
         default:
             *tapeDriveType = UNDEFINED
             return errors.New(fmt.Sprintf("Cannot marshal '%s' into TapeDriveType", str))
@@ -54,8 +58,10 @@ func (tapeDriveType TapeDriveType) String() string {
         case TAPE_DRIVE_TYPE_LTO5: return "LTO5"
         case TAPE_DRIVE_TYPE_LTO6: return "LTO6"
         case TAPE_DRIVE_TYPE_LTO7: return "LTO7"
+        case TAPE_DRIVE_TYPE_LTO8: return "LTO8"
         case TAPE_DRIVE_TYPE_TS1140: return "TS1140"
         case TAPE_DRIVE_TYPE_TS1150: return "TS1150"
+        case TAPE_DRIVE_TYPE_TS1155: return "TS1155"
         default:
             log.Printf("Error: invalid TapeDriveType represented by '%d'", tapeDriveType)
             return ""

@@ -23,13 +23,17 @@ type PutPoolFailureNotificationRegistrationSpectraS3Response struct {
     Headers *http.Header
 }
 
+func (putPoolFailureNotificationRegistrationSpectraS3Response *PutPoolFailureNotificationRegistrationSpectraS3Response) parse(webResponse networking.WebResponse) error {
+        return parseResponsePayload(webResponse, &putPoolFailureNotificationRegistrationSpectraS3Response.PoolFailureNotificationRegistration)
+}
+
 func NewPutPoolFailureNotificationRegistrationSpectraS3Response(webResponse networking.WebResponse) (*PutPoolFailureNotificationRegistrationSpectraS3Response, error) {
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
     case 201:
         var body PutPoolFailureNotificationRegistrationSpectraS3Response
-        if err := readResponseBody(webResponse, &body.PoolFailureNotificationRegistration); err != nil {
+        if err := body.parse(webResponse); err != nil {
             return nil, err
         }
         body.Headers = webResponse.Header()

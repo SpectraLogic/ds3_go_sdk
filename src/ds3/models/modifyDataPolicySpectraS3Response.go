@@ -23,13 +23,17 @@ type ModifyDataPolicySpectraS3Response struct {
     Headers *http.Header
 }
 
+func (modifyDataPolicySpectraS3Response *ModifyDataPolicySpectraS3Response) parse(webResponse networking.WebResponse) error {
+        return parseResponsePayload(webResponse, &modifyDataPolicySpectraS3Response.DataPolicy)
+}
+
 func NewModifyDataPolicySpectraS3Response(webResponse networking.WebResponse) (*ModifyDataPolicySpectraS3Response, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body ModifyDataPolicySpectraS3Response
-        if err := readResponseBody(webResponse, &body.DataPolicy); err != nil {
+        if err := body.parse(webResponse); err != nil {
             return nil, err
         }
         body.Headers = webResponse.Header()

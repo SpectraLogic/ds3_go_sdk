@@ -23,6 +23,7 @@ import (
 type GetPoolsSpectraS3Request struct {
     assignedToStorageDomain bool
     bucketId string
+    guid *string
     health PoolHealth
     lastVerified string
     name *string
@@ -106,6 +107,15 @@ func (getPoolsSpectraS3Request *GetPoolsSpectraS3Request) WithPoolType(poolType 
     return getPoolsSpectraS3Request
 }
 
+func (getPoolsSpectraS3Request *GetPoolsSpectraS3Request) WithGuid(guid *string) *GetPoolsSpectraS3Request {
+    getPoolsSpectraS3Request.guid = guid
+    if guid != nil {
+        getPoolsSpectraS3Request.queryParams.Set("guid", *guid)
+    } else {
+        getPoolsSpectraS3Request.queryParams.Set("guid", "")
+    }
+    return getPoolsSpectraS3Request
+}
 func (getPoolsSpectraS3Request *GetPoolsSpectraS3Request) WithName(name *string) *GetPoolsSpectraS3Request {
     getPoolsSpectraS3Request.name = name
     if name != nil {

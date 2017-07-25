@@ -23,6 +23,8 @@ type ForceFullCacheReclaimSpectraS3Response struct {
     Headers *http.Header
 }
 
+
+
 func NewForceFullCacheReclaimSpectraS3Response(webResponse networking.WebResponse) (*ForceFullCacheReclaimSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 

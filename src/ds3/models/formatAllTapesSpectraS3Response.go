@@ -23,6 +23,10 @@ type FormatAllTapesSpectraS3Response struct {
     Headers *http.Header
 }
 
+func (formatAllTapesSpectraS3Response *FormatAllTapesSpectraS3Response) parse(webResponse networking.WebResponse) error {
+        return parseResponsePayload(webResponse, formatAllTapesSpectraS3Response.TapeFailureList)
+}
+
 func NewFormatAllTapesSpectraS3Response(webResponse networking.WebResponse) (*FormatAllTapesSpectraS3Response, error) {
     expectedStatusCodes := []int { 204, 207 }
 
@@ -31,7 +35,7 @@ func NewFormatAllTapesSpectraS3Response(webResponse networking.WebResponse) (*Fo
         return &FormatAllTapesSpectraS3Response{Headers: webResponse.Header()}, nil
     case 207:
         var body FormatAllTapesSpectraS3Response
-        if err := readResponseBody(webResponse, &body.TapeFailureList); err != nil {
+        if err := body.parse(webResponse); err != nil {
             return nil, err
         }
         body.Headers = webResponse.Header()

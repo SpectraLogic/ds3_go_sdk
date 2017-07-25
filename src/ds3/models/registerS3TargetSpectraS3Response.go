@@ -23,13 +23,17 @@ type RegisterS3TargetSpectraS3Response struct {
     Headers *http.Header
 }
 
+func (registerS3TargetSpectraS3Response *RegisterS3TargetSpectraS3Response) parse(webResponse networking.WebResponse) error {
+        return parseResponsePayload(webResponse, &registerS3TargetSpectraS3Response.S3Target)
+}
+
 func NewRegisterS3TargetSpectraS3Response(webResponse networking.WebResponse) (*RegisterS3TargetSpectraS3Response, error) {
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
     case 201:
         var body RegisterS3TargetSpectraS3Response
-        if err := readResponseBody(webResponse, &body.S3Target); err != nil {
+        if err := body.parse(webResponse); err != nil {
             return nil, err
         }
         body.Headers = webResponse.Header()
