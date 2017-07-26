@@ -1,3 +1,14 @@
+// Copyright 2014-2017 Spectra Logic Corporation. All Rights Reserved.
+// Licensed under the Apache License, Version 2.0 (the "License"). You may not use
+// this file except in compliance with the License. A copy of the License is located at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// or in the "license" file accompanying this file.
+// This file is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+// CONDITIONS OF ANY KIND, either express or implied. See the License for the
+// specific language governing permissions and limitations under the License.
+
 package ds3
 
 import (
@@ -48,30 +59,21 @@ func TestGetService(t *testing.T) {
         GetService(models.NewGetServiceRequest())
 
     // Validate the error contents.
-    if err != nil {
-        t.Fatalf("Received an unexpected error: %s", err.Error())
-    }
+    ds3Testing.AssertNilError(t, err)
 
     // Check the response.
     if response == nil {
         t.Fatalf("Received an unexpected nil response.")
     }
-    if response.ListAllMyBucketsResult.Owner.Id != "ryan" {
-        t.Fatalf("Expected owner id of 'ryan' but got '%s'.", response.ListAllMyBucketsResult.Owner.Id)
-    }
-    if *response.ListAllMyBucketsResult.Owner.DisplayName != "ryan" {
-        t.Fatalf("Expected owner display name of 'ryan' but got '%s'.", response.ListAllMyBucketsResult.Owner.DisplayName)
-    }
+
+    ds3Testing.AssertString(t, "Id", "ryan", response.ListAllMyBucketsResult.Owner.Id)
+    ds3Testing.AssertNonNilStringPtr(t, "DisplayName", "ryan", response.ListAllMyBucketsResult.Owner.DisplayName)
     if len(response.ListAllMyBucketsResult.Buckets) != len(expectedBucketNames) {
         t.Fatalf("Parsed an unexpected number (%d) of buckets.", len(response.ListAllMyBucketsResult.Buckets))
     }
     for i, bucket := range response.ListAllMyBucketsResult.Buckets {
-        if *bucket.Name != expectedBucketNames[i] {
-            t.Errorf("%dth bucket name is incorrect (%s).", i + 1, bucket.Name)
-        }
-        if *bucket.CreationDate != expectedCreationDates[i] {
-            t.Errorf("%dth bucket creation date is incorrect (%s).", i + 1, bucket.CreationDate)
-        }
+        ds3Testing.AssertNonNilStringPtr(t, "Name", expectedBucketNames[i], bucket.Name)
+        ds3Testing.AssertNonNilStringPtr(t, "CreationDate", expectedCreationDates[i], bucket.CreationDate)
     }
 }
 
@@ -90,13 +92,10 @@ func TestGetBadService(t *testing.T) {
     // Validate the error contents.
     if err == nil {
         t.Fatal("Expected an error but didn't get one.")
-    } else {
-        expectedError := "Received a status code of 400 when [200] was expected. Could not parse the response for additional information."
-        actualError := err.Error()
-        if actualError != expectedError {
-            t.Fatalf("Expected a different error message than received: '%s'", actualError)
-        }
     }
+
+    expectedError := "Received a status code of 400 when [200] was expected. Could not parse the response for additional information."
+    ds3Testing.AssertString(t, "Error", expectedError, err.Error())
 }
 
 func TestGetBucket(t *testing.T) {
@@ -124,52 +123,29 @@ func TestGetBucket(t *testing.T) {
         GetBucket(models.NewGetBucketRequest("remoteTest16"))
 
     // Check the error result.
-    if err != nil {
-        t.Fatalf("Unexpected error '%s'.", err.Error())
-    }
+    ds3Testing.AssertNilError(t, err)
 
     // Check the response value.
     if response == nil {
         t.Fatal("Response was unexpectedly nil.")
-    } else {
-        if len(response.ListBucketResult.Objects) != len(keys) {
-            t.Fatalf("Expected %d objects but got %d.", len(keys), len(response.ListBucketResult.Objects))
-        } else {
-            if *response.ListBucketResult.Name != "remoteTest16" {
-                t.Fatalf("Expected bucket name 'remoteTest16' but got '%s'.", response.ListBucketResult.Name)
-            }
-            ds3Testing.AssertStringPtrIsNil(t, "Prefix", response.ListBucketResult.Prefix)
-            ds3Testing.AssertStringPtrIsNil(t, "Marker", response.ListBucketResult.Marker)
-            if response.ListBucketResult.MaxKeys != 1000 {
-                t.Fatalf("Expected max keys of 1000 but got %d.", response.ListBucketResult.MaxKeys)
-            }
-            if response.ListBucketResult.Truncated != false {
-                t.Fatalf("Expected that the result would not be truncated, but it was.")
-            }
-            for i, object := range response.ListBucketResult.Objects {
-                if *object.Key != keys[i] {
-                    t.Fatalf("Expected key '%s' but got '%s'.", keys[i], object.Key)
-                }
-                if *object.LastModified != lastModifieds[i] {
-                    t.Fatalf("Expected last modified '%s' but got '%s'.", lastModifieds[i], object.LastModified)
-                }
-                if *object.ETag != etags[i] {
-                    t.Fatalf("Expected ETag '%s' but got '%s'.", etags[i], object.ETag)
-                }
-                if object.Size != sizes[i] {
-                    t.Fatalf("Expected size %d but got %d.", sizes[i], object.Size)
-                }
-                if *object.StorageClass != storageClasses[i] {
-                    t.Fatalf("Expected storage class '%s' but got '%s'.", storageClasses[i], object.StorageClass)
-                }
-                if object.Owner.Id != ids[i] {
-                    t.Fatalf("Expected owner id '%s' but got '%s'.", ids[i], object.Owner.Id)
-                }
-                if *object.Owner.DisplayName != displayNames[i] {
-                    t.Fatalf("Expected owner display name '%s' but got '%s'.", displayNames[i], object.Owner.DisplayName)
-                }
-            }
-        }
+    }
+
+    if len(response.ListBucketResult.Objects) != len(keys) {
+        t.Fatalf("Expected %d objects but got %d.", len(keys), len(response.ListBucketResult.Objects))
+    }
+    ds3Testing.AssertNonNilStringPtr(t, "Name", "remoteTest16", response.ListBucketResult.Name)
+    ds3Testing.AssertStringPtrIsNil(t, "Prefix", response.ListBucketResult.Prefix)
+    ds3Testing.AssertStringPtrIsNil(t, "Marker", response.ListBucketResult.Marker)
+    ds3Testing.AssertInt(t, "MaxKeys", 1000, response.ListBucketResult.MaxKeys)
+    ds3Testing.AssertBool(t, "Truncated", false, response.ListBucketResult.Truncated)
+    for i, object := range response.ListBucketResult.Objects {
+        ds3Testing.AssertNonNilStringPtr(t, "Key", keys[i], object.Key)
+        ds3Testing.AssertNonNilStringPtr(t, "LastModified", lastModifieds[i], object.LastModified)
+        ds3Testing.AssertNonNilStringPtr(t, "ETag", etags[i], object.ETag)
+        ds3Testing.AssertInt64(t, "Size", sizes[i], object.Size)
+        ds3Testing.AssertNonNilStringPtr(t, "StorageClass", storageClasses[i], object.StorageClass)
+        ds3Testing.AssertString(t, "Id", ids[i], object.Owner.Id)
+        ds3Testing.AssertNonNilStringPtr(t, "DisplayName", displayNames[i], object.Owner.DisplayName)
     }
 }
 
@@ -181,9 +157,7 @@ func TestPutBucket(t *testing.T) {
         PutBucket(models.NewPutBucketRequest("bucketName"))
 
     // Check the error result.
-    if err != nil {
-        t.Fatalf("Unexpected error '%s'.", err.Error())
-    }
+    ds3Testing.AssertNilError(t, err)
 
     // Check the response value.
     if response == nil {
@@ -199,9 +173,7 @@ func TestDeleteBucket(t *testing.T) {
         DeleteBucket(models.NewDeleteBucketRequest("bucketName"))
 
     // Check the error result.
-    if err != nil {
-        t.Fatalf("Unexpected error '%s'.", err.Error())
-    }
+    ds3Testing.AssertNilError(t, err)
 
     // Check the response value.
     if response == nil {
@@ -221,9 +193,7 @@ func TestDeleteFolderRecursivelySpectraS3(t *testing.T) {
             DeleteFolderRecursivelySpectraS3(models.NewDeleteFolderRecursivelySpectraS3Request(bucketId, folderName))
 
     // Check the error result.
-    if err != nil {
-        t.Fatalf("Unexpected error '%s'.", err.Error())
-    }
+    ds3Testing.AssertNilError(t, err)
 
     // Check the response value.
     if response == nil {
@@ -239,9 +209,7 @@ func TestDeleteObject(t *testing.T) {
         DeleteObject(models.NewDeleteObjectRequest("bucketName", "my/file.txt"))
 
     // Check the error result.
-    if err != nil {
-        t.Fatalf("Unexpected error '%s'.", err.Error())
-    }
+    ds3Testing.AssertNilError(t, err)
 
     // Check the response value.
     if response == nil {
@@ -259,13 +227,10 @@ func TestGetBadBucket(t *testing.T) {
     // Check the error result.
     if err == nil {
         t.Fatal("Expected an error but got nil.")
-    } else {
-        expectedError := "Received a status code of 400 when [200] was expected. Could not parse the response for additional information."
-        actualError := err.Error()
-        if actualError != expectedError {
-            t.Fatalf("Expected a different error message than received: '%s'", actualError)
-        }
     }
+
+    expectedError := "Received a status code of 400 when [200] was expected. Could not parse the response for additional information."
+    ds3Testing.AssertString(t, "Error", expectedError, err.Error())
 
     // Check the response value.
     if response != nil {
@@ -283,24 +248,19 @@ func TestGetObject(t *testing.T) {
         GetObject(models.NewGetObjectRequest("bucketName", "object"))
 
     // Check the error result.
-    if err != nil {
-        t.Fatalf("Unexpected error '%s'.", err.Error())
-    }
+    ds3Testing.AssertNilError(t, err)
 
     // Check the response value.
     if response == nil {
         t.Fatal("Response was unexpectedly nil.")
-    } else if response.Content == nil {
-        t.Fatal("Response content was unexpectedly nil.")
-    } else {
-        defer response.Content.Close()
-        bs, readErr := ioutil.ReadAll(response.Content)
-        if readErr != nil {
-            t.Fatalf("Unexpected error '%s'.", readErr.Error())
-        } else if string(bs) != stringResponse {
-            t.Fatalf("Expected '%s' but got '%s'.", stringResponse, string(bs))
-        }
     }
+    if response.Content == nil {
+        t.Fatal("Response content was unexpectedly nil.")
+    }
+    defer response.Content.Close()
+    bs, readErr := ioutil.ReadAll(response.Content)
+    ds3Testing.AssertNilError(t, readErr)
+    ds3Testing.AssertString(t, "Response", stringResponse, string(bs))
 }
 
 func TestGetObjectRange(t *testing.T) {
@@ -317,24 +277,19 @@ func TestGetObjectRange(t *testing.T) {
         GetObject(request)
 
     // Check the error result.
-    if err != nil {
-        t.Fatalf("Unexpected error '%s'.", err.Error())
-    }
+    ds3Testing.AssertNilError(t, err)
 
     // Check the response value.
     if response == nil {
         t.Fatal("Response was unexpectedly nil.")
-    } else if response.Content == nil {
-        t.Fatal("Response content was unexpectedly nil.")
-    } else {
-        defer response.Content.Close()
-        bs, readErr := ioutil.ReadAll(response.Content)
-        if readErr != nil {
-            t.Fatalf("Unexpected error '%s'.", readErr.Error())
-        } else if string(bs) != stringResponse {
-            t.Fatalf("Expected '%s' but got '%s'.", stringResponse, string(bs))
-        }
     }
+    if response.Content == nil {
+        t.Fatal("Response content was unexpectedly nil.")
+    }
+    defer response.Content.Close()
+    bs, readErr := ioutil.ReadAll(response.Content)
+    ds3Testing.AssertNilError(t, readErr)
+    ds3Testing.AssertString(t, "Response", stringResponse, string(bs))
 }
 
 func TestGetObjectsDetailsSpectraS3(t *testing.T) {
@@ -355,9 +310,7 @@ func TestGetObjectsDetailsSpectraS3(t *testing.T) {
             GetObjectsDetailsSpectraS3(request)
 
     // Check the error result.
-    if err != nil {
-        t.Fatalf("Unexpected error '%s'.", err.Error())
-    }
+    ds3Testing.AssertNilError(t, err)
 
     // Check the response value.
     if response == nil {
@@ -376,30 +329,14 @@ func TestGetObjectsDetailsSpectraS3(t *testing.T) {
     }
 
     for i, object := range response.S3ObjectList.S3Objects {
-        if object.BucketId != bucketId {
-            t.Fatalf("Expected bucket id to be '%s' but was '%s'.", bucketId, object.BucketId)
-        }
-        if object.CreationDate == nil {
-            t.Fatalf("Expected creation date of '%s' but was nil.", expectedCreationDates[i])
-        }
-        if *object.CreationDate != expectedCreationDates[i] {
-            t.Fatalf("Expected creation date of '%s' but was '%s'.", expectedCreationDates[i], *object.CreationDate)
-        }
-        if object.Id != expectedIds[i] {
-            t.Fatalf("Expected id to be '%s' but was '%s'.", expectedIds[i], object.Id)
-        }
-        if object.Name == nil {
-            t.Fatalf("Expected name of '%s' but was nil.", expectedNames[i])
-        }
-        if *object.Name != expectedNames[i] {
-            t.Fatalf("Expected name of '%s' but was '%s'.", expectedNames[i], *object.Name)
-        }
+        ds3Testing.AssertString(t, "BucketId", bucketId, object.BucketId)
+        ds3Testing.AssertNonNilStringPtr(t, "CreationDate", expectedCreationDates[i], object.CreationDate)
+        ds3Testing.AssertString(t, "Id", expectedIds[i], object.Id)
+        ds3Testing.AssertNonNilStringPtr(t, "Name", expectedNames[i], object.Name)
         if object.Type != models.S3_OBJECT_TYPE_DATA {
             t.Fatalf("Expected type of '%d' but was '%d'.", models.S3_OBJECT_TYPE_DATA, object.Type)
         }
-        if object.Version != 1 {
-            t.Fatalf("Expected version of 1, but was '%d'.", object.Version)
-        }
+        ds3Testing.AssertInt64(t, "Version", 1, object.Version)
     }
 }
 
@@ -416,18 +353,13 @@ func TestGetJobToReplicateSpectraS3(t *testing.T) {
         GetJobToReplicateSpectraS3(request)
 
     // Check the error result.
-    if err != nil {
-        t.Fatalf("Unexpected error '%s'.", err.Error())
-    }
+    ds3Testing.AssertNilError(t, err)
 
     // Check the response value.
     if response == nil {
         t.Fatal("Response was unexpectedly nil.")
-    } else {
-        if response.Content != stringResponse {
-            t.Fatalf("Unexpected response: expected '%s' but was '%s'", stringResponse, response.Content)
-        }
     }
+    ds3Testing.AssertString(t, "Content", stringResponse, response.Content)
 }
 
 func TestPutObject(t *testing.T) {
@@ -444,9 +376,7 @@ func TestPutObject(t *testing.T) {
         ))
 
     // Check the error result.
-    if err != nil {
-        t.Fatalf("Unexpected error '%s'.", err.Error())
-    }
+    ds3Testing.AssertNilError(t, err)
 
     // Check the response value.
     if response == nil {
@@ -481,9 +411,7 @@ func TestPutObjectWithMetaData(t *testing.T) {
             PutObject(request)
 
     // Check the error result.
-    if err != nil {
-        t.Fatalf("Unexpected error '%s'.", err.Error())
-    }
+    ds3Testing.AssertNilError(t, err)
 
     // Check the response value.
     if response == nil {
@@ -541,9 +469,7 @@ func runBulkTest(t *testing.T, operation string, callToTest bulkTest) {
     response, err := callToTest(client, inputObjects)
 
     // Check the error result.
-    if err != nil {
-        t.Fatalf("Unexpected error '%s'.", err.Error())
-    }
+    ds3Testing.AssertNilError(t, err)
 
     // Check the response value.
     if response == nil {
@@ -556,12 +482,8 @@ func runBulkTest(t *testing.T, operation string, callToTest bulkTest) {
         t.Fatalf("Expected %d objects but got %d.", len(keys), len(response[0].Objects))
     }
     for i, obj := range response[0].Objects {
-        if *obj.Name != keys[i] {
-            t.Errorf("Expected key %s but got %s.", keys[i], obj.Name)
-        }
-        if obj.Length != sizes[i] {
-            t.Errorf("Expected size %d but got %d.", sizes[i], obj.Length)
-        }
+        ds3Testing.AssertNonNilStringPtr(t, "Name", keys[i], obj.Name)
+        ds3Testing.AssertInt64(t, "Length", sizes[i], obj.Length)
     }
 }
 
@@ -579,26 +501,15 @@ func TestInitiateMultipart(t *testing.T) {
         ))
 
     // Check the error result.
-    if err != nil {
-        t.Fatalf("Unexpected error '%s'.", err.Error())
-    }
+    ds3Testing.AssertNilError(t, err)
 
     // Check the response value.
     if response == nil {
         t.Fatalf("Response was unexpectedly nil.")
     }
-    if response.InitiateMultipartUploadResult.Bucket == nil {
-        t.Fatal("Expected bucket 'example-bucket' but got 'nil'.")
-    }
-    if *response.InitiateMultipartUploadResult.Bucket != "example-bucket" {
-        t.Fatalf("Expected bucket 'example-bucket' but got '%s'.", response.InitiateMultipartUploadResult.Bucket)
-    }
-    if *response.InitiateMultipartUploadResult.Key != "example-object" {
-        t.Fatalf("Expected key 'example-object' but got '%s'.", response.InitiateMultipartUploadResult.Key)
-    }
-    if *response.InitiateMultipartUploadResult.UploadId != "VXBsb2FkIElEIGZvciA2aWWpbmcncyBteS1tb3ZpZS5tMnRzIHVwbG9hZA" {
-        t.Fatalf("Expected upload id 'VXBsb2FkIElEIGZvciA2aWWpbmcncyBteS1tb3ZpZS5tMnRzIHVwbG9hZA' but got '%s'.", response.InitiateMultipartUploadResult.UploadId)
-    }
+    ds3Testing.AssertNonNilStringPtr(t, "Bucket", "example-bucket", response.InitiateMultipartUploadResult.Bucket)
+    ds3Testing.AssertNonNilStringPtr(t, "Key", "example-object", response.InitiateMultipartUploadResult.Key)
+    ds3Testing.AssertNonNilStringPtr(t, "UploadId", "VXBsb2FkIElEIGZvciA2aWWpbmcncyBteS1tb3ZpZS5tMnRzIHVwbG9hZA", response.InitiateMultipartUploadResult.UploadId)
 }
 
 func TestPutPart(t *testing.T) {
@@ -627,9 +538,7 @@ func TestPutPart(t *testing.T) {
         ))
 
     // Check the error result.
-    if err != nil {
-        t.Fatalf("Unexpected error '%s'.", err.Error())
-    }
+    ds3Testing.AssertNilError(t, err)
 
     // Check the response value.
     if response == nil {
@@ -666,32 +575,17 @@ func TestCompleteMultipart(t *testing.T) {
         ))
 
     // Check the error result.
-    if err != nil {
-        t.Fatalf("Unexpected error '%s'.", err.Error())
-    }
+    ds3Testing.AssertNilError(t, err)
 
     // Check the response value.
     if response == nil {
         t.Fatalf("Response was unexpectedly nil.")
     }
-    if response.CompleteMultipartUploadResult.Location == nil {
-        t.Fatalf("Expected location '%s' but got 'nil'.", location)
-    }
-    if *response.CompleteMultipartUploadResult.Location != location {
-        t.Fatalf("Expected location '%s' but got '%s'.", location, response.CompleteMultipartUploadResult.Location)
-    }
-    if *response.CompleteMultipartUploadResult.Bucket != bucket {
-        t.Fatalf("Expected bucket '%s' but got '%s'.", bucket, response.CompleteMultipartUploadResult.Bucket)
-    }
-    if *response.CompleteMultipartUploadResult.Key != key {
-        t.Fatalf("Expected key '%s' but got '%s'.", key, response.CompleteMultipartUploadResult.Key)
-    }
-    if response.CompleteMultipartUploadResult.ETag == nil {
-        t.Fatalf("Expected etag '%s' but got 'nil'.", etag)
-    }
-    if *response.CompleteMultipartUploadResult.ETag != etag {
-        t.Fatalf("Expected etag '%s' but got '%s'.", etag, response.CompleteMultipartUploadResult.ETag)
-    }
+
+    ds3Testing.AssertNonNilStringPtr(t, "Location", location, response.CompleteMultipartUploadResult.Location)
+    ds3Testing.AssertNonNilStringPtr(t, "Bucket", bucket, response.CompleteMultipartUploadResult.Bucket)
+    ds3Testing.AssertNonNilStringPtr(t, "Key", key, response.CompleteMultipartUploadResult.Key)
+    ds3Testing.AssertNonNilStringPtr(t, "ETag", etag, response.CompleteMultipartUploadResult.ETag)
 }
 
 func TestDeleteObjects(t *testing.T) {
@@ -722,9 +616,7 @@ func TestDeleteObjects(t *testing.T) {
         DeleteObjects(models.NewDeleteObjectsRequest(bucket, objectNames))
 
     // Check the error result.
-    if err != nil {
-        t.Fatalf("Unexpected error '%s'.", err.Error())
-    }
+    ds3Testing.AssertNilError(t, err)
 
     // Check the response value.
     if response == nil {
@@ -769,26 +661,15 @@ func TestAllocateJobChunkSpectraS3(t *testing.T) {
             AllocateJobChunkSpectraS3(request)
 
     // Check the error result.
-    if err != nil {
-        t.Fatalf("Unexpected error '%s'.", err.Error())
-    }
+    ds3Testing.AssertNilError(t, err)
 
     // Check the response value.
     if response == nil {
         t.Fatal("Response was unexpectedly nil.")
     }
-    if response.Objects.ChunkId != chunkId {
-        t.Fatalf("Expected chunk id '%s' but got '%s'.", chunkId, response.Objects.ChunkId)
-    }
-    if response.Objects.ChunkNumber != 3 {
-        t.Fatalf("Expected chunk number 3 but got '%s'.", response.Objects.ChunkNumber)
-    }
-    if response.Objects.NodeId == nil {
-        t.Fatalf("Expected node id '%s' but got nil.", nodeId)
-    }
-    if *response.Objects.NodeId != nodeId {
-        t.Fatalf("Expected node id '%s' but got '%s'.", nodeId, *response.Objects.NodeId)
-    }
+    ds3Testing.AssertString(t, "ChunkId", chunkId, response.Objects.ChunkId)
+    ds3Testing.AssertInt(t, "ChunkNumber", 3, response.Objects.ChunkNumber)
+    ds3Testing.AssertNonNilStringPtr(t, "NodeId", nodeId, response.Objects.NodeId)
 
     expectedNames := []string{"client00obj000004-8000000", "client00obj000004-8000000", "client00obj000003-8000000", "client00obj000003-8000000"}
     expectedOffsets := []int64{0, 5368709120, 5368709120, 0}
@@ -798,24 +679,10 @@ func TestAllocateJobChunkSpectraS3(t *testing.T) {
         t.Fatalf("Expected number of objects '%d' but got '%d'.", len(response.Objects.Objects), len(expectedNames))
     }
     for i, obj := range response.Objects.Objects {
-        if obj.Name == nil {
-            t.Errorf("Expected name '%s' but got nil.", obj.Name)
-        }
-        if *obj.Name != expectedNames[i] {
-            t.Errorf("Expected name '%s' but got '%s'.", obj.Name, expectedNames[i])
-        }
-        if obj.InCache == nil {
-            t.Error("Expected in-cache to be true, but was nil.")
-        }
-        if !*obj.InCache {
-            t.Errorf("Expected in-cache to be true, but was '%t'.", *obj.InCache)
-        }
-        if obj.Offset != expectedOffsets[i] {
-            t.Errorf("Expected offset '%d' but got '%d'.", obj.Offset, expectedOffsets[i])
-        }
-        if obj.Length != expectedLengths[i] {
-            t.Errorf("Expected length '%d' but got '%d'.", obj.Length, expectedLengths[i])
-        }
+        ds3Testing.AssertNonNilStringPtr(t, "Name", expectedNames[i], obj.Name)
+        ds3Testing.AssertNonNilBoolPtr(t, "InCache", true, obj.InCache)
+        ds3Testing.AssertInt64(t, "Offset", expectedOffsets[i], obj.Offset)
+        ds3Testing.AssertInt64(t, "Length", expectedLengths[i], obj.Length)
     }
 }
 
@@ -840,24 +707,15 @@ const (
 func verifyMasterObjectList(t *testing.T, masterObjectList models.MasterObjectList) {
     bucketName := "bucket8192000000"
     startDate := "2014-07-01T20:12:52.000Z"
-    if masterObjectList.BucketName == nil {
-        t.Fatalf("Expected bucket name '%s' but got nil.", bucketName)
-    }
-    if *masterObjectList.BucketName != bucketName {
-        t.Fatalf("Expected bucket name '%s' but got '%s'.", bucketName, masterObjectList.BucketName)
-    }
-    if masterObjectList.JobId != test_master_object_list_id {
-        t.Fatalf("Expected job id '%s' but got '%s'.", test_master_object_list_id, masterObjectList.JobId)
-    }
+    ds3Testing.AssertNonNilStringPtr(t, "BucketName", bucketName, masterObjectList.BucketName)
+    ds3Testing.AssertString(t, "JobId", test_master_object_list_id, masterObjectList.JobId)
     if masterObjectList.Priority != models.PRIORITY_NORMAL {
         t.Fatalf("Expected priority '%d' but got '%d'.", models.PRIORITY_NORMAL, masterObjectList.Priority)
     }
     if masterObjectList.RequestType != models.JOB_REQUEST_TYPE_GET {
         t.Fatalf("Expected request type '%d' but got '%d'.", models.JOB_REQUEST_TYPE_GET, masterObjectList.RequestType)
     }
-    if masterObjectList.StartDate != startDate {
-        t.Fatalf("Expected start date '%s' but got '%s'.", startDate, masterObjectList.StartDate)
-    }
+    ds3Testing.AssertString(t, "StartDate", startDate, masterObjectList.StartDate)
 
     // verify nodes
     if len(masterObjectList.Nodes) != 2 {
@@ -865,31 +723,16 @@ func verifyMasterObjectList(t *testing.T, masterObjectList models.MasterObjectLi
     }
 
     node1 := masterObjectList.Nodes[0]
-    if node1.EndPoint == nil || *node1.EndPoint != "10.1.18.12" {
-        t.Fatalf("Expected end point 10.1.18.12, but got '%s'.", node1.EndPoint)
-    }
-    if node1.HttpPort == nil || *node1.HttpPort != 80 {
-        t.Fatalf("Expected http port 80 but got '%d'.", node1.HttpPort)
-    }
-    if node1.HttpsPort == nil || *node1.HttpsPort != 443 {
-        t.Fatalf("Expected https port 443 but got '%d'.", node1.HttpsPort)
-    }
-    if node1.Id != "a02053b9-0147-11e4-8d6a-002590c1177c" {
-        t.Fatalf("Expected id a02053b9-0147-11e4-8d6a-002590c1177c but got '%s'.", node1.Id)
-    }
+    ds3Testing.AssertNonNilStringPtr(t, "EndPoint", "10.1.18.12", node1.EndPoint)
+    ds3Testing.AssertNonNilIntPtr(t, "HttpPort", 80, node1.HttpPort)
+    ds3Testing.AssertNonNilIntPtr(t, "HttpsPort", 443, node1.HttpsPort)
+    ds3Testing.AssertString(t, "Id", "a02053b9-0147-11e4-8d6a-002590c1177c", node1.Id)
+
     node2 := masterObjectList.Nodes[1]
-    if node2.EndPoint == nil || *node2.EndPoint != "10.1.18.13" {
-        t.Fatalf("Expected end point 10.1.18.13, but got '%s'.", node2.EndPoint)
-    }
-    if node2.HttpPort != nil {
-        t.Fatalf("Expected http port to be nil but got '%d'.", node2.HttpPort)
-    }
-    if node2.HttpsPort == nil || *node2.HttpsPort != 443 {
-        t.Fatalf("Expected https port 443 but got '%d'.", node2.HttpsPort)
-    }
-    if node2.Id != "95e97010-8e70-4733-926c-aeeb21796848" {
-        t.Fatalf("Expected id 95e97010-8e70-4733-926c-aeeb21796848 but got '%s'.", node2.Id)
-    }
+    ds3Testing.AssertNonNilStringPtr(t, "EndPoint", "10.1.18.13", node2.EndPoint)
+    ds3Testing.AssertIntPtrIsNil(t, "HttpPort", node2.HttpPort)
+    ds3Testing.AssertNonNilIntPtr(t, "HttpsPort", 443, node2.HttpsPort)
+    ds3Testing.AssertString(t, "Id", "95e97010-8e70-4733-926c-aeeb21796848", node2.Id)
 
     // verify objects
     if len(masterObjectList.Objects) != 2 {
@@ -897,89 +740,45 @@ func verifyMasterObjectList(t *testing.T, masterObjectList models.MasterObjectLi
     }
 
     obj1 := masterObjectList.Objects[0]
-    if obj1.ChunkId != "f58370c2-2538-4e78-a9f8-e4d2676bdf44" {
-        t.Fatalf("Expected chunk id f58370c2-2538-4e78-a9f8-e4d2676bdf44 but got '%s'.", obj1.ChunkId)
-    }
-    if obj1.ChunkNumber != 0 {
-        t.Fatalf("Expected chunk number 0 but got '%d'.", obj1.ChunkNumber)
-    }
-    if obj1.NodeId == nil || *obj1.NodeId != "a02053b9-0147-11e4-8d6a-002590c1177c" {
-        t.Fatalf("Expected node id a02053b9-0147-11e4-8d6a-002590c1177c but got '%s'.", *obj1.NodeId)
-    }
+    ds3Testing.AssertString(t, "ChunkId", "f58370c2-2538-4e78-a9f8-e4d2676bdf44", obj1.ChunkId)
+    ds3Testing.AssertInt(t, "ChunkNumber", 0, obj1.ChunkNumber)
+    ds3Testing.AssertNonNilStringPtr(t, "NodeId", "a02053b9-0147-11e4-8d6a-002590c1177c", obj1.NodeId)
 
     if len(obj1.Objects) != 2 {
         t.Fatalf("Expected 2 bulk objects but got '%d'.", len(obj1.Objects))
     }
 
     obj1BulkObj1 := obj1.Objects[0]
-    if obj1BulkObj1.Name == nil || *obj1BulkObj1.Name != "client00obj000004-8000000" {
-        t.Fatalf("Expected name 'client00obj000004-8000000' but got '%s'.", obj1BulkObj1.Name)
-    }
-    if obj1BulkObj1.InCache == nil || !*obj1BulkObj1.InCache {
-        t.Fatalf("Expected in cache 'true' but got '%t'", *obj1BulkObj1.InCache)
-    }
-    if obj1BulkObj1.Length != 5368709120 {
-        t.Fatalf("Expected length '5368709120' but got '%d'.", obj1BulkObj1.Length)
-    }
-    if obj1BulkObj1.Offset != 0 {
-        t.Fatalf("Expected offset '0' but got '%d'.", obj1BulkObj1.Offset)
-    }
+    ds3Testing.AssertNonNilStringPtr(t, "Name", "client00obj000004-8000000", obj1BulkObj1.Name)
+    ds3Testing.AssertNonNilBoolPtr(t, "InCache", true, obj1BulkObj1.InCache)
+    ds3Testing.AssertInt64(t, "Length", 5368709120, obj1BulkObj1.Length)
+    ds3Testing.AssertInt64(t, "Offset", 0, obj1BulkObj1.Offset)
 
     obj1BulkObj2 := obj1.Objects[1]
-    if obj1BulkObj2.Name == nil || *obj1BulkObj2.Name != "client00obj000004-8000000" {
-        t.Fatalf("Expected name 'client00obj000004-8000000' but got '%s'.", obj1BulkObj2.Name)
-    }
-    if obj1BulkObj2.InCache == nil || !*obj1BulkObj2.InCache {
-        t.Fatalf("Expected in cache 'true' but got '%t'", *obj1BulkObj2.InCache)
-    }
-    if obj1BulkObj2.Length != 2823290880 {
-        t.Fatalf("Expected length '2823290880' but got '%d'.", obj1BulkObj2.Length)
-    }
-    if obj1BulkObj2.Offset != 5368709120 {
-        t.Fatalf("Expected offset '5368709120' but got '%d'.", obj1BulkObj2.Offset)
-    }
+    ds3Testing.AssertNonNilStringPtr(t, "Name", "client00obj000004-8000000", obj1BulkObj2.Name)
+    ds3Testing.AssertNonNilBoolPtr(t, "InCache", true, obj1BulkObj2.InCache)
+    ds3Testing.AssertInt64(t, "Length", 2823290880, obj1BulkObj2.Length)
+    ds3Testing.AssertInt64(t, "Offset", 5368709120, obj1BulkObj2.Offset)
 
     obj2 := masterObjectList.Objects[1]
-    if obj2.ChunkId != "4137d768-25bb-4942-9d36-b92dfbe75e01" {
-        t.Fatalf("Expected chunk id 4137d768-25bb-4942-9d36-b92dfbe75e01 but got '%s'.", obj2.ChunkId)
-    }
-    if obj2.ChunkNumber != 1 {
-        t.Fatalf("Expected chunk number 1 but got '%d'.", obj2.ChunkNumber)
-    }
-    if obj2.NodeId == nil || *obj2.NodeId != "95e97010-8e70-4733-926c-aeeb21796848" {
-        t.Fatalf("Expected node id 95e97010-8e70-4733-926c-aeeb21796848 but got '%s'.", *obj2.NodeId)
-    }
+    ds3Testing.AssertString(t, "ChunkId", "4137d768-25bb-4942-9d36-b92dfbe75e01", obj2.ChunkId)
+    ds3Testing.AssertInt(t, "ChunkNumber", 1, obj2.ChunkNumber)
+    ds3Testing.AssertNonNilStringPtr(t, "NodeId", "95e97010-8e70-4733-926c-aeeb21796848", obj2.NodeId)
     if len(obj2.Objects) != 2 {
         t.Fatalf("Expected 2 bulk objects but got '%d'.", len(obj2.Objects))
     }
 
     obj2BulkObj1 := obj2.Objects[0]
-    if obj2BulkObj1.Name == nil || *obj2BulkObj1.Name != "client00obj000008-8000000" {
-        t.Fatalf("Expected name 'client00obj000008-8000000' but got '%s'.", obj2BulkObj1.Name)
-    }
-    if obj2BulkObj1.InCache == nil || !*obj2BulkObj1.InCache {
-        t.Fatalf("Expected in cache 'true' but got '%t'", *obj2BulkObj1.InCache)
-    }
-    if obj2BulkObj1.Length != 2823290880 {
-        t.Fatalf("Expected length '2823290880' but got '%d'.", obj2BulkObj1.Length)
-    }
-    if obj2BulkObj1.Offset != 5368709120 {
-        t.Fatalf("Expected offset '5368709120' but got '%d'.", obj2BulkObj1.Offset)
-    }
+    ds3Testing.AssertNonNilStringPtr(t, "Name", "client00obj000008-8000000", obj2BulkObj1.Name)
+    ds3Testing.AssertNonNilBoolPtr(t, "InCache", true, obj2BulkObj1.InCache)
+    ds3Testing.AssertInt64(t, "Length", 2823290880, obj2BulkObj1.Length)
+    ds3Testing.AssertInt64(t, "Offset", 5368709120, obj2BulkObj1.Offset)
 
     obj2BulkObj2 := obj2.Objects[1]
-    if obj2BulkObj2.Name == nil || *obj2BulkObj2.Name != "client00obj000008-8000000" {
-        t.Fatalf("Expected name 'client00obj000008-8000000' but got '%s'.", obj2BulkObj2.Name)
-    }
-    if obj2BulkObj2.InCache == nil || !*obj2BulkObj2.InCache {
-        t.Fatalf("Expected in cache 'true' but got '%t'", *obj2BulkObj2.InCache)
-    }
-    if obj2BulkObj2.Length != 5368709120 {
-        t.Fatalf("Expected length '5368709120' but got '%d'.", obj2BulkObj2.Length)
-    }
-    if obj2BulkObj2.Offset != 0 {
-        t.Fatalf("Expected offset '0' but got '%d'.", obj2BulkObj2.Offset)
-    }
+    ds3Testing.AssertNonNilStringPtr(t, "Name", "client00obj000008-8000000", obj2BulkObj2.Name)
+    ds3Testing.AssertNonNilBoolPtr(t, "InCache", true, obj2BulkObj2.InCache)
+    ds3Testing.AssertInt64(t, "Length", 5368709120, obj2BulkObj2.Length)
+    ds3Testing.AssertInt64(t, "Offset", 0, obj2BulkObj2.Offset)
 }
 
 func TestGetJobChunksReadyForClientProcessingSpectraS3(t *testing.T) {
@@ -992,9 +791,7 @@ func TestGetJobChunksReadyForClientProcessingSpectraS3(t *testing.T) {
             GetJobChunksReadyForClientProcessingSpectraS3(request)
 
     // Check the error result.
-    if err != nil {
-        t.Fatalf("Unexpected error '%s'.", err.Error())
-    }
+    ds3Testing.AssertNilError(t, err)
 
     // Check the response value.
     if response == nil {
@@ -1011,9 +808,7 @@ func TestGetJobSpectraS3(t *testing.T) {
             GetJobSpectraS3(request)
 
     // Check the error result.
-    if err != nil {
-        t.Fatalf("Unexpected error '%s'.", err.Error())
-    }
+    ds3Testing.AssertNilError(t, err)
 
     // Check the response value.
     if response == nil {
@@ -1031,9 +826,7 @@ func TestModifyJobSpectraS3(t *testing.T) {
             ModifyJobSpectraS3(request)
 
     // Check the error result.
-    if err != nil {
-        t.Fatalf("Unexpected error '%s'.", err.Error())
-    }
+    ds3Testing.AssertNilError(t, err)
 
     // Check the response value.
     if response == nil {
@@ -1063,9 +856,7 @@ func TestGetJobsSpectraS3(t *testing.T) {
             GetJobsSpectraS3(models.NewGetJobsSpectraS3Request())
 
     // Check the error result.
-    if err != nil {
-        t.Fatalf("Unexpected error '%s'.", err.Error())
-    }
+    ds3Testing.AssertNilError(t, err)
 
     // Check the response value.
     if response == nil {
@@ -1076,114 +867,66 @@ func TestGetJobsSpectraS3(t *testing.T) {
     }
 
     job1 := response.JobList.Jobs[0]
-    if job1.BucketName == nil || *job1.BucketName != "bucket_1" {
-        t.Fatalf("Expected name 'bucket_1' but got '%s'.", *job1.BucketName)
-    }
-    if job1.CachedSizeInBytes != 69880 {
-        t.Fatalf("Expected cached size in bytes '69880' but got '%d'.", job1.CachedSizeInBytes)
-    }
+    ds3Testing.AssertNonNilStringPtr(t, "BucketName", "bucket_1", job1.BucketName)
+    ds3Testing.AssertInt64(t, "CachedSizeInBytes", 69880, job1.CachedSizeInBytes)
     if job1.ChunkClientProcessingOrderGuarantee != models.JOB_CHUNK_CLIENT_PROCESSING_ORDER_GUARANTEE_IN_ORDER {
         t.Fatalf("Expected chunk client processing order guarantee '%d' but got '%d'.",
             models.JOB_CHUNK_CLIENT_PROCESSING_ORDER_GUARANTEE_IN_ORDER,
             job1.ChunkClientProcessingOrderGuarantee,
         )
     }
-    if job1.CompletedSizeInBytes != 0 {
-        t.Fatalf("Expected completed size in bytes '0' but got '%d'.", job1.CompletedSizeInBytes)
-    }
-    if job1.JobId != "0807ff11-a9f6-4d55-bb92-b452c1bb00c7" {
-        t.Fatalf("Expected job id '0807ff11-a9f6-4d55-bb92-b452c1bb00c7' but got '%s'.", job1.JobId)
-    }
-    if job1.OriginalSizeInBytes != 69880 {
-        t.Fatalf("Expected original size in bytes '69880' but got '%d'.", job1.OriginalSizeInBytes)
-    }
+    ds3Testing.AssertInt64(t, "CompletedSizeInBytes", 0, job1.CompletedSizeInBytes)
+    ds3Testing.AssertString(t, "JobId", "0807ff11-a9f6-4d55-bb92-b452c1bb00c7", job1.JobId)
+    ds3Testing.AssertInt64(t, "OriginalSizeInBytes", 69880, job1.OriginalSizeInBytes)
     if job1.Priority != models.PRIORITY_NORMAL {
         t.Fatalf("Expected priority '%d' but got '%d'.", models.PRIORITY_NORMAL, job1.Priority)
     }
     if job1.RequestType != models.JOB_REQUEST_TYPE_PUT {
         t.Fatalf("Expected request type '%d' but got '%d'.", models.JOB_REQUEST_TYPE_PUT, job1.RequestType)
     }
-    if job1.StartDate != "2014-09-04T17:23:45.000Z" {
-        t.Fatalf("Expected start date '2014-09-04T17:23:45.000Z' but got '%s'.", job1.StartDate)
-    }
-    if job1.UserId != "a7d3eff9-e6d2-4e37-8a0b-84e76211a18a" {
-        t.Fatalf("Expected user id 'a7d3eff9-e6d2-4e37-8a0b-84e76211a18a' but got '%s'.", job1.UserId)
-    }
-    if job1.UserName == nil || *job1.UserName != "spectra" {
-        t.Fatalf("Expected user name 'spectra' but got '%s'.", *job1.UserName)
-    }
+    ds3Testing.AssertString(t, "StartDate", "2014-09-04T17:23:45.000Z", job1.StartDate)
+    ds3Testing.AssertString(t, "UserId", "a7d3eff9-e6d2-4e37-8a0b-84e76211a18a", job1.UserId)
+    ds3Testing.AssertNonNilStringPtr(t, "UserName", "spectra", job1.UserName)
     if len(job1.Nodes) != 1 {
         t.Fatalf("Expected '1' nodes but got '%d'.", len(job1.Nodes))
     }
 
     job1node := job1.Nodes[0]
-    if job1node.EndPoint == nil || *job1node.EndPoint != "10.10.10.10" {
-        t.Fatalf("Expected end point '10.10.10.10' but got '%s'.", *job1node.EndPoint)
-    }
-    if job1node.HttpPort == nil || *job1node.HttpPort != 80{
-        t.Fatalf("Expected http port '80' but got '%d'.", *job1node.HttpPort)
-    }
-    if job1node.HttpsPort == nil || *job1node.HttpsPort != 443 {
-        t.Fatalf("Expected https port '443' but got '%d'.", *job1node.HttpsPort)
-    }
-    if job1node.Id != "edb8cc38-32f2-11e4-bce1-080027ecf0d4" {
-        t.Fatalf("Expected id 'edb8cc38-32f2-11e4-bce1-080027ecf0d4' but got '%s'.", job1node.Id)
-    }
+    ds3Testing.AssertNonNilStringPtr(t, "EndPoint", "10.10.10.10", job1node.EndPoint)
+    ds3Testing.AssertNonNilIntPtr(t, "HttpPort", 80, job1node.HttpPort)
+    ds3Testing.AssertNonNilIntPtr(t, "HttpsPort", 443, job1node.HttpsPort)
+    ds3Testing.AssertString(t, "Id", "edb8cc38-32f2-11e4-bce1-080027ecf0d4", job1node.Id)
 
     job2 := response.JobList.Jobs[1]
-    if job2.BucketName == nil || *job2.BucketName != "bucket_2" {
-        t.Fatalf("Expected name 'bucket_2' but got '%s'.", *job2.BucketName)
-    }
-    if job2.CachedSizeInBytes != 0 {
-        t.Fatalf("Expected cached size in bytes '0' but got '%d'.", job2.CachedSizeInBytes)
-    }
+    ds3Testing.AssertNonNilStringPtr(t, "BucketName", "bucket_2", job2.BucketName)
+    ds3Testing.AssertInt64(t, "CachedSizeInBytes", 0, job2.CachedSizeInBytes)
     if job2.ChunkClientProcessingOrderGuarantee != models.JOB_CHUNK_CLIENT_PROCESSING_ORDER_GUARANTEE_IN_ORDER {
         t.Fatalf("Expected chunk client processing order guarantee '%d' but got '%d'.",
             models.JOB_CHUNK_CLIENT_PROCESSING_ORDER_GUARANTEE_IN_ORDER,
             job2.ChunkClientProcessingOrderGuarantee,
         )
     }
-    if job2.CompletedSizeInBytes != 0 {
-        t.Fatalf("Expected completed size in bytes '0' but got '%d'.", job2.CompletedSizeInBytes)
-    }
-    if job2.JobId != "c18554ba-e3a8-4905-91fd-3e6eec71bf45" {
-        t.Fatalf("Expected job id 'c18554ba-e3a8-4905-91fd-3e6eec71bf45' but got '%s'.", job2.JobId)
-    }
-    if job2.OriginalSizeInBytes != 69880 {
-        t.Fatalf("Expected original size in bytes '69880' but got '%d'.", job2.OriginalSizeInBytes)
-    }
+    ds3Testing.AssertInt64(t, "CompletedSizeInBytes", 0, job2.CompletedSizeInBytes)
+    ds3Testing.AssertString(t, "JobId", "c18554ba-e3a8-4905-91fd-3e6eec71bf45", job2.JobId)
+    ds3Testing.AssertInt64(t, "OriginalSizeInBytes", 69880, job2.OriginalSizeInBytes)
     if job2.Priority != models.PRIORITY_HIGH {
         t.Fatalf("Expected priority '%d' but got '%d'.", models.PRIORITY_HIGH, job2.Priority)
     }
     if job2.RequestType != models.JOB_REQUEST_TYPE_GET {
         t.Fatalf("Expected request type '%d' but got '%d'.", models.JOB_REQUEST_TYPE_GET, job2.RequestType)
     }
-    if job2.StartDate != "2014-09-04T17:24:04.000Z" {
-        t.Fatalf("Expected start date '2014-09-04T17:24:04.000Z' but got '%s'.", job2.StartDate)
-    }
-    if job2.UserId != "a7d3eff9-e6d2-4e37-8a0b-84e76211a18a" {
-        t.Fatalf("Expected user id 'a7d3eff9-e6d2-4e37-8a0b-84e76211a18a' but got '%s'.", job2.UserId)
-    }
-    if job2.UserName == nil || *job1.UserName != "spectra" {
-        t.Fatalf("Expected user name 'spectra' but got '%s'.", *job2.UserName)
-    }
+    ds3Testing.AssertString(t, "StartDate", "2014-09-04T17:24:04.000Z", job2.StartDate)
+    ds3Testing.AssertString(t, "UserId", "a7d3eff9-e6d2-4e37-8a0b-84e76211a18a", job2.UserId)
+    ds3Testing.AssertNonNilStringPtr(t, "UserName", "spectra", job2.UserName)
     if len(job2.Nodes) != 1 {
         t.Fatalf("Expected '1' nodes but got '%d'.", len(job2.Nodes))
     }
 
     job2node := job2.Nodes[0]
-    if job2node.EndPoint == nil || *job2node.EndPoint != "10.10.10.10" {
-        t.Fatalf("Expected end point '10.10.10.10' but got '%s'.", *job2node.EndPoint)
-    }
-    if job2node.HttpPort == nil || *job2node.HttpPort != 80 {
-        t.Fatalf("Expected http port '80' but got '%d'.", *job2node.HttpPort)
-    }
-    if job2node.HttpsPort == nil || *job2node.HttpsPort != 443 {
-        t.Fatalf("Expected https port '443' but got '%d'.", *job2node.HttpsPort)
-    }
-    if job2node.Id != "edb8cc38-32f2-11e4-bce1-080027ecf0d4" {
-        t.Fatalf("Expected id 'edb8cc38-32f2-11e4-bce1-080027ecf0d4' but got '%s'.", job2node.Id)
-    }
+    ds3Testing.AssertNonNilStringPtr(t, "EndPoint", "10.10.10.10", job2node.EndPoint)
+    ds3Testing.AssertNonNilIntPtr(t, "HttpPort", 80, job2node.HttpPort)
+    ds3Testing.AssertNonNilIntPtr(t, "HttpsPort", 443, job2node.HttpsPort)
+    ds3Testing.AssertString(t, "Id", "edb8cc38-32f2-11e4-bce1-080027ecf0d4", job2node.Id)
 }
 
 func TestCancelJobSpectraS3(t *testing.T) {
@@ -1196,9 +939,7 @@ func TestCancelJobSpectraS3(t *testing.T) {
             CancelJobSpectraS3(request)
 
     // Check the error result.
-    if err != nil {
-        t.Fatalf("Unexpected error '%s'.", err.Error())
-    }
+    ds3Testing.AssertNilError(t, err)
 
     // Check the response value.
     if response == nil {
@@ -1216,9 +957,7 @@ func TestDeleteTapeDriveSpectraS3(t *testing.T) {
             DeleteTapeDriveSpectraS3(request)
 
     // Check the error result.
-    if err != nil {
-        t.Fatalf("Unexpected error '%s'.", err.Error())
-    }
+    ds3Testing.AssertNilError(t, err)
 
     // Check the response value.
     if response == nil {
@@ -1236,9 +975,7 @@ func TestDeleteTapePartitionSpectraS3(t *testing.T) {
             DeleteTapePartitionSpectraS3(request)
 
     // Check the error result.
-    if err != nil {
-        t.Fatalf("Unexpected error '%s'.", err.Error())
-    }
+    ds3Testing.AssertNilError(t, err)
 
     // Check the response value.
     if response == nil {
@@ -1254,17 +991,13 @@ func TestVerifySystemHealthSpectraS3(t *testing.T) {
             VerifySystemHealthSpectraS3(models.NewVerifySystemHealthSpectraS3Request())
 
     // Check the error result.
-    if err != nil {
-        t.Fatalf("Unexpected error '%s'.", err.Error())
-    }
+    ds3Testing.AssertNilError(t, err)
 
     // Check the response value.
     if response == nil {
         t.Fatal("Response was unexpectedly nil.")
     }
-    if response.HealthVerificationResult.MsRequiredToVerifyDataPlannerHealth != 10 {
-        t.Fatalf("Expected ms requred to verify data planner health '10' but was '%d'.", response.HealthVerificationResult.MsRequiredToVerifyDataPlannerHealth)
-    }
+    ds3Testing.AssertInt64(t, "MsRequiredToVerifyDataPlannerHealth", 10, response.HealthVerificationResult.MsRequiredToVerifyDataPlannerHealth)
 }
 
 func TestGetSystemInformationSpectraS3(t *testing.T) {
@@ -1279,20 +1012,14 @@ func TestGetSystemInformationSpectraS3(t *testing.T) {
             GetSystemInformationSpectraS3(models.NewGetSystemInformationSpectraS3Request())
 
     // Check the error result.
-    if err != nil {
-        t.Fatalf("Unexpected error '%s'.", err.Error())
-    }
+    ds3Testing.AssertNilError(t, err)
 
     // Check the response value.
     if response == nil {
         t.Fatal("Response was unexpectedly nil.")
     }
-    if response.SystemInformation.ApiVersion == nil || *response.SystemInformation.ApiVersion != "518B3F2A95B71AC7325EFB12B2937376.15F3CC0489CBCD4648ECFF0FBF371B8A" {
-        t.Fatalf("Expected api version '518B3F2A95B71AC7325EFB12B2937376.15F3CC0489CBCD4648ECFF0FBF371B8A' but was '%s'.", response.SystemInformation.ApiVersion)
-    }
-    if response.SystemInformation.SerialNumber == nil || *response.SystemInformation.SerialNumber != "UNKNOWN" {
-        t.Fatalf("Expected serial number 'UNKNOWN' but was '%s'.", *response.SystemInformation.SerialNumber)
-    }
+    ds3Testing.AssertNonNilStringPtr(t, "ApiVersion", "518B3F2A95B71AC7325EFB12B2937376.15F3CC0489CBCD4648ECFF0FBF371B8A", response.SystemInformation.ApiVersion)
+    ds3Testing.AssertNonNilStringPtr(t, "SerialNumber", "UNKNOWN", response.SystemInformation.SerialNumber)
 }
 
 func TestGetTapeLibrariesSpectraS3(t *testing.T) {
@@ -1311,9 +1038,7 @@ func TestGetTapeLibrariesSpectraS3(t *testing.T) {
             GetTapeLibrariesSpectraS3(models.NewGetTapeLibrariesSpectraS3Request())
 
     // Check the error result.
-    if err != nil {
-        t.Fatalf("Unexpected error '%s'.", err.Error())
-    }
+    ds3Testing.AssertNilError(t, err)
 
     // Check the response value.
     if response == nil {
@@ -1325,32 +1050,16 @@ func TestGetTapeLibrariesSpectraS3(t *testing.T) {
     }
 
     lib1 := response.TapeLibraryList.TapeLibraries[0]
-    if lib1.Id != "f4dae25d-e52a-4430-82bd-525e4f15493c" {
-        t.Fatalf("Expected id 'f4dae25d-e52a-4430-82bd-525e4f15493c' but was '%s'.", lib1.Id)
-    }
-    if lib1.ManagementUrl == nil || *lib1.ManagementUrl != "a" {
-        t.Fatalf("Expected management url 'a' but was '%s'.", *lib1.ManagementUrl)
-    }
-    if lib1.Name == nil || *lib1.Name != "test library" {
-        t.Fatalf("Expected name 'test library' but was '%s'.", lib1.Name)
-    }
-    if lib1.SerialNumber == nil || *lib1.SerialNumber != "test library" {
-        t.Fatalf("Expected serial number 'test library' but was '%s'.", *lib1.SerialNumber)
-    }
+    ds3Testing.AssertString(t, "Id", "f4dae25d-e52a-4430-82bd-525e4f15493c", lib1.Id)
+    ds3Testing.AssertNonNilStringPtr(t, "ManagementUrl", "a", lib1.ManagementUrl)
+    ds3Testing.AssertNonNilStringPtr(t, "Name", "test library", lib1.Name)
+    ds3Testing.AssertNonNilStringPtr(t, "SerialNumber", "test library", lib1.SerialNumber)
 
     lib2 := response.TapeLibraryList.TapeLibraries[1]
-    if lib2.Id != "82bdab72-d79a-4b43-95d7-f2c16cd9aa45" {
-        t.Fatalf("Expected id '82bdab72-d79a-4b43-95d7-f2c16cd9aa45' but was '%s'.", lib2.Id)
-    }
-    if lib2.ManagementUrl == nil || *lib2.ManagementUrl != "a" {
-        t.Fatalf("Expected management url 'a' but was '%s'.", *lib2.ManagementUrl)
-    }
-    if lib2.Name == nil || *lib2.Name != "test library 2" {
-        t.Fatalf("Expected name 'test library 2' but was '%s'.", lib2.Name)
-    }
-    if lib2.SerialNumber == nil || *lib2.SerialNumber != "test library 2" {
-        t.Fatalf("Expected serial number 'test library 2' but was '%s'.", *lib2.SerialNumber)
-    }
+    ds3Testing.AssertString(t, "Id", "82bdab72-d79a-4b43-95d7-f2c16cd9aa45", lib2.Id)
+    ds3Testing.AssertNonNilStringPtr(t, "ManagementUrl", "a", lib2.ManagementUrl)
+    ds3Testing.AssertNonNilStringPtr(t, "Name", "test library 2", lib2.Name)
+    ds3Testing.AssertNonNilStringPtr(t, "SerialNumber", "test library 2", lib2.SerialNumber)
 
     ds3Testing.AssertString(t, "Page-Truncated header", "2", response.Headers.Get("Page-Truncated"))
     ds3Testing.AssertString(t, "Total-Result-Count header", "3", response.Headers.Get("Total-Result-Count"))
@@ -1367,9 +1076,7 @@ func TestGetTapeLibrarySpectraS3(t *testing.T) {
             GetTapeLibrarySpectraS3(models.NewGetTapeLibrarySpectraS3Request(id))
 
     // Check the error result.
-    if err != nil {
-        t.Fatalf("Unexpected error '%s'.", err.Error())
-    }
+    ds3Testing.AssertNilError(t, err)
 
     // Check the response value.
     if response == nil {
@@ -1377,18 +1084,10 @@ func TestGetTapeLibrarySpectraS3(t *testing.T) {
     }
 
     library := response.TapeLibrary
-    if library.Id != id {
-        t.Fatalf("Expected id '%s' but was '%s'.", id, library.Id)
-    }
-    if library.ManagementUrl == nil || *library.ManagementUrl != "a" {
-        t.Fatalf("Expected management url 'a' but was '%s'.", *library.ManagementUrl)
-    }
-    if library.Name == nil || *library.Name != "125ca16e-60e3-43b2-a26f-0bc81843745f" {
-        t.Fatalf("Expected name '125ca16e-60e3-43b2-a26f-0bc81843745f' but was '%s'.", library.Name)
-    }
-    if library.SerialNumber == nil || *library.SerialNumber != "test library" {
-        t.Fatalf("Expected serial number 'test library' but was '%s'.", *library.SerialNumber)
-    }
+    ds3Testing.AssertString(t, "Id", id, library.Id)
+    ds3Testing.AssertNonNilStringPtr(t, "ManagementUrl", "a", library.ManagementUrl)
+    ds3Testing.AssertNonNilStringPtr(t, "Name", "125ca16e-60e3-43b2-a26f-0bc81843745f", library.Name)
+    ds3Testing.AssertNonNilStringPtr(t, "SerialNumber", "test library", library.SerialNumber)
 }
 
 func TestGetTapeDriveSpectraS3(t *testing.T) {
@@ -1402,9 +1101,7 @@ func TestGetTapeDriveSpectraS3(t *testing.T) {
             GetTapeDriveSpectraS3(models.NewGetTapeDriveSpectraS3Request(id))
 
     // Check the error result.
-    if err != nil {
-        t.Fatalf("Unexpected error '%s'.", err.Error())
-    }
+    ds3Testing.AssertNilError(t, err)
 
     // Check the response value.
     if response == nil {
@@ -1412,27 +1109,15 @@ func TestGetTapeDriveSpectraS3(t *testing.T) {
     }
 
     drive := response.TapeDrive
-    if drive.ErrorMessage != nil && *drive.ErrorMessage != "" {
-        t.Fatalf("Expected error message to be 'nil' but was '%s'.", *drive.ErrorMessage)
-    }
-    if drive.ForceTapeRemoval {
-        t.Fatalf("Expected force tap removal to be 'false' but was '%t'.", drive.ForceTapeRemoval)
-    }
-    if drive.Id != id {
-        t.Fatalf("Expected id '%s' but was '%s'.", id, drive.Id)
-    }
-    if drive.PartitionId != "ca69b187-47cf-425e-b92f-c09bacc7d3b3" {
-        t.Fatalf("Expected partition id 'ca69b187-47cf-425e-b92f-c09bacc7d3b3' but was '%s'.", drive.PartitionId)
-    }
-    if drive.SerialNumber == nil || *drive.SerialNumber != "test tape drive" {
-        t.Fatalf("Expected serial number 'test tape drive' but was '%s'.", *drive.SerialNumber)
-    }
+    ds3Testing.AssertStringPtrIsNil(t, "ErrorMessage", drive.ErrorMessage)
+    ds3Testing.AssertBool(t, "ForceTapeRemoval", false, drive.ForceTapeRemoval)
+    ds3Testing.AssertString(t, "Id", id, drive.Id)
+    ds3Testing.AssertString(t, "PartitionId", "ca69b187-47cf-425e-b92f-c09bacc7d3b3", drive.PartitionId)
+    ds3Testing.AssertNonNilStringPtr(t, "Serial Number", "test tape drive", drive.SerialNumber)
     if drive.State != models.TAPE_DRIVE_STATE_NORMAL {
         t.Fatalf("Expected drive stat '%d' but was '%d'.", models.TAPE_DRIVE_STATE_NORMAL, drive.State)
     }
-    if drive.TapeId == nil || *drive.TapeId != "0ea07c32-8ff6-443f-b7c8-420667b0df84" {
-        t.Fatalf("Expected tape id '0ea07c32-8ff6-443f-b7c8-420667b0df84' but was '%s'.", *drive.TapeId)
-    }
+    ds3Testing.AssertNonNilStringPtr(t, "TapeId", "0ea07c32-8ff6-443f-b7c8-420667b0df84", drive.TapeId)
     if drive.Type != models.TAPE_DRIVE_TYPE_UNKNOWN {
         t.Fatalf("Expected tape drive type '%d' but was '%d'.", models.TAPE_DRIVE_TYPE_UNKNOWN, drive.Type)
     }
@@ -1469,9 +1154,7 @@ func TestGetTapesSpectraS3(t *testing.T) {
             GetTapesSpectraS3(models.NewGetTapesSpectraS3Request())
 
     // Check the error result.
-    if err != nil {
-        t.Fatalf("Unexpected error '%s'.", err.Error())
-    }
+    ds3Testing.AssertNilError(t, err)
 
     // Check the response value.
     if response == nil {
@@ -1484,7 +1167,7 @@ func TestGetTapesSpectraS3(t *testing.T) {
 
     tape := response.TapeList.Tapes[0]
     ds3Testing.AssertBool(t, "AssignedToStorageDomain", false, tape.AssignedToStorageDomain)
-    ds3Testing.AssertNonNilIntPtr(t, "AvailableRawCapacity", 2408082046976, tape.AvailableRawCapacity)
+    ds3Testing.AssertNonNilInt64Ptr(t, "AvailableRawCapacity", 2408082046976, tape.AvailableRawCapacity)
     ds3Testing.AssertNonNilStringPtr(t, "BarCode", "101000L6", tape.BarCode)
     ds3Testing.AssertStringPtrIsNil(t, "BucketId", tape.BucketId)
     ds3Testing.AssertStringPtrIsNil(t, "DescriptionForIdentification", tape.DescriptionForIdentification)
@@ -1504,7 +1187,7 @@ func TestGetTapesSpectraS3(t *testing.T) {
     }
     ds3Testing.AssertNonNilStringPtr(t, "SerialNumber", "HP-W130501213", tape.SerialNumber)
     ds3Testing.AssertString(t, "State", models.TAPE_STATE_NORMAL.String(), tape.State.String())
-    ds3Testing.AssertNonNilIntPtr(t, "TotalRawCapacity", 2408088338432, tape.TotalRawCapacity)
+    ds3Testing.AssertNonNilInt64Ptr(t, "TotalRawCapacity", 2408088338432, tape.TotalRawCapacity)
     ds3Testing.AssertString(t, "Type", models.TAPE_TYPE_LTO6.String(), tape.Type.String())
     ds3Testing.AssertBool(t, "WriteProtected", false, tape.WriteProtected)
 
@@ -1522,9 +1205,7 @@ func TestDeletePermanentlyLostTapeSpectraS3(t *testing.T) {
         DeletePermanentlyLostTapeSpectraS3(request)
 
     // Check the error result.
-    if err != nil {
-        t.Fatalf("Unexpected error '%s'.", err.Error())
-    }
+    ds3Testing.AssertNilError(t, err)
 
     // Check the response value.
     if response == nil {
@@ -1543,9 +1224,7 @@ func TestGetTapeSpectraS3(t *testing.T) {
         GetTapeSpectraS3(request)
 
     // Check the error result.
-    if err != nil {
-        t.Fatalf("Unexpected error '%s'.", err.Error())
-    }
+    ds3Testing.AssertNilError(t, err)
 
     // Check the response value.
     if response == nil {
@@ -1554,7 +1233,7 @@ func TestGetTapeSpectraS3(t *testing.T) {
 
     tape := response.Tape
     ds3Testing.AssertBool(t, "AssignedToStorageDomain", false, tape.AssignedToStorageDomain)
-    ds3Testing.AssertNonNilIntPtr(t, "AvailableRawCapacity", 2408082046976, tape.AvailableRawCapacity)
+    ds3Testing.AssertNonNilInt64Ptr(t, "AvailableRawCapacity", 2408082046976, tape.AvailableRawCapacity)
     ds3Testing.AssertNonNilStringPtr(t, "BarCode", "101000L6", tape.BarCode)
     ds3Testing.AssertStringPtrIsNil(t, "BucketId", tape.BucketId)
     ds3Testing.AssertStringPtrIsNil(t, "DescriptionForIdentification", tape.DescriptionForIdentification)
@@ -1574,7 +1253,7 @@ func TestGetTapeSpectraS3(t *testing.T) {
     }
     ds3Testing.AssertNonNilStringPtr(t, "SerialNumber", "HP-W130501213", tape.SerialNumber)
     ds3Testing.AssertString(t, "State", models.TAPE_STATE_NORMAL.String(), tape.State.String())
-    ds3Testing.AssertNonNilIntPtr(t, "TotalRawCapacity", 2408088338432, tape.TotalRawCapacity)
+    ds3Testing.AssertNonNilInt64Ptr(t, "TotalRawCapacity", 2408088338432, tape.TotalRawCapacity)
     ds3Testing.AssertString(t, "Type", models.TAPE_TYPE_LTO6.String(), tape.Type.String())
     ds3Testing.AssertBool(t, "WriteProtected", false, tape.WriteProtected)
 }

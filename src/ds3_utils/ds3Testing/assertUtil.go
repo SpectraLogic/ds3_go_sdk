@@ -36,7 +36,7 @@ func AssertBool(t *testing.T, label string, expected bool, actual bool) {
 }
 
 // Asserts if a specified int64 pointer has the expected value. If not, Fatal.
-func AssertNonNilIntPtr(t *testing.T, label string, expected int64, actual *int64) {
+func AssertNonNilIntPtr(t *testing.T, label string, expected int, actual *int) {
     if actual == nil {
         t.Fatalf("Expected %s to be '%d' but was 'nil'.", label, expected)
     }
@@ -44,14 +44,36 @@ func AssertNonNilIntPtr(t *testing.T, label string, expected int64, actual *int6
 }
 
 // Asserts if a specified int64 is nil. If not, Fatal.
-func AssertIntPtrIsNil(t *testing.T, label int64, actual *int64) {
+func AssertIntPtrIsNil(t *testing.T, label string, actual *int) {
     if actual != nil {
         t.Fatalf("Expected %s to be 'nil' but was '%d'.", label, *actual)
     }
 }
 
 // Asserts if a specified int64 has the expected value. If not, Fatal.
-func AssertInt(t *testing.T, label string, expected int64, actual int64) {
+func AssertInt(t *testing.T, label string, expected int, actual int) {
+    if expected != actual {
+        t.Fatalf("Expected %s to be '%d' but was '%d'.", label, expected, actual)
+    }
+}
+
+// Asserts if a specified int64 pointer has the expected value. If not, Fatal.
+func AssertNonNilInt64Ptr(t *testing.T, label string, expected int64, actual *int64) {
+    if actual == nil {
+        t.Fatalf("Expected %s to be '%d' but was 'nil'.", label, expected)
+    }
+    AssertInt64(t, label, expected, *actual)
+}
+
+// Asserts if a specified int64 is nil. If not, Fatal.
+func AssertInt64PtrIsNil(t *testing.T, label int64, actual *int64) {
+    if actual != nil {
+        t.Fatalf("Expected %s to be 'nil' but was '%d'.", label, *actual)
+    }
+}
+
+// Asserts if a specified int64 has the expected value. If not, Fatal.
+func AssertInt64(t *testing.T, label string, expected int64, actual int64) {
     if expected != actual {
         t.Fatalf("Expected %s to be '%d' but was '%d'.", label, expected, actual)
     }
@@ -76,5 +98,12 @@ func AssertStringPtrIsNil(t *testing.T, label string, actual *string) {
 func AssertString(t *testing.T, label string, expected string, actual string) {
     if expected != actual {
         t.Fatalf("Expected %s to be '%s' but was '%s'.", label, expected, actual)
+    }
+}
+
+// Asserts that an error is nil, else Fatal.
+func AssertNilError(t *testing.T, err error) {
+    if err != nil {
+        t.Fatalf("Unexpected error '%s'.", err.Error())
     }
 }
