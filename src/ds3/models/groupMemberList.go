@@ -14,5 +14,5 @@
 package models
 
 type GroupMemberList struct {
-    GroupMembers []GroupMember `xml:"GroupMember"`
+    GroupMembers []GroupMember
 }

@@ -14,16 +14,16 @@
 package models
 
 type S3ObjectPersistedNotificationRegistration struct {
-    CreationDate string `xml:"CreationDate"`
-    Format HttpResponseFormatType `xml:"Format"`
-    Id string `xml:"Id"`
-    JobId *string `xml:"JobId"`
-    LastFailure *string `xml:"LastFailure"`
-    LastHttpResponseCode *int `xml:"LastHttpResponseCode"`
-    LastNotification *string `xml:"LastNotification"`
-    NamingConvention NamingConventionType `xml:"NamingConvention"`
-    NotificationEndPoint *string `xml:"NotificationEndPoint"`
-    NotificationHttpMethod RequestType `xml:"NotificationHttpMethod"`
-    NumberOfFailuresSinceLastSuccess int `xml:"NumberOfFailuresSinceLastSuccess"`
-    UserId *string `xml:"UserId"`
+    CreationDate string
+    Format HttpResponseFormatType
+    Id string
+    JobId *string
+    LastFailure *string
+    LastHttpResponseCode *int
+    LastNotification *string
+    NamingConvention NamingConventionType
+    NotificationEndPoint *string
+    NotificationHttpMethod RequestType
+    NumberOfFailuresSinceLastSuccess int
+    UserId *string
 }

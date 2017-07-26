@@ -14,5 +14,5 @@
 package models
 
 type ActiveJobList struct {
-    ActiveJobs []ActiveJob `xml:"Job"`
+    ActiveJobs []ActiveJob
 }

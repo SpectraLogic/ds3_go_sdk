@@ -14,8 +14,8 @@
 package models
 
 type TapeLibrary struct {
-    Id string `xml:"Id"`
-    ManagementUrl *string `xml:"ManagementUrl"`
-    Name *string `xml:"Name"`
-    SerialNumber *string `xml:"SerialNumber"`
+    Id string
+    ManagementUrl *string
+    Name *string
+    SerialNumber *string
 }

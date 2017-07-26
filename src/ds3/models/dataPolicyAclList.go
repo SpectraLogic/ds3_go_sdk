@@ -14,5 +14,5 @@
 package models
 
 type DataPolicyAclList struct {
-    DataPolicyAcls []DataPolicyAcl `xml:"DataPolicyAcl"`
+    DataPolicyAcls []DataPolicyAcl
 }

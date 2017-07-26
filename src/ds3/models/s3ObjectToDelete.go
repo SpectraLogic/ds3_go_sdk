@@ -14,5 +14,5 @@
 package models
 
 type S3ObjectToDelete struct {
-    Key *string `xml:"Key"`
+    Key *string
 }

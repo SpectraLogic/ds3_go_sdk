@@ -14,5 +14,5 @@
 package models
 
 type NodeList struct {
-    Nodes []Node `xml:"Node"`
+    Nodes []Node
 }

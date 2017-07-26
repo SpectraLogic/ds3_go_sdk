@@ -14,8 +14,8 @@
 package models
 
 type S3TargetBucketName struct {
-    BucketId string `xml:"BucketId"`
-    Id string `xml:"Id"`
-    Name *string `xml:"Name"`
-    TargetId string `xml:"TargetId"`
+    BucketId string
+    Id string
+    Name *string
+    TargetId string
 }

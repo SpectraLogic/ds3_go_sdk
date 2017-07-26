@@ -14,5 +14,5 @@
 package models
 
 type NamedDetailedTapePartitionList struct {
-    NamedDetailedTapePartitions []NamedDetailedTapePartition `xml:"TapePartition"`
+    NamedDetailedTapePartitions []NamedDetailedTapePartition
 }

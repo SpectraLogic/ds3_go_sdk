@@ -14,5 +14,5 @@
 package models
 
 type AzureDataReplicationRuleList struct {
-    AzureDataReplicationRules []AzureDataReplicationRule `xml:"AzureDataReplicationRule"`
+    AzureDataReplicationRules []AzureDataReplicationRule
 }

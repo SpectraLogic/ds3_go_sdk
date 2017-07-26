@@ -14,6 +14,6 @@
 package models
 
 type CacheEntryInformation struct {
-    Blob *Blob `xml:"Blob"`
-    State CacheEntryState `xml:"State"`
+    Blob *Blob
+    State CacheEntryState
 }

@@ -14,5 +14,5 @@
 package models
 
 type Ds3DataReplicationRuleList struct {
-    Ds3DataReplicationRules []Ds3DataReplicationRule `xml:"Ds3DataReplicationRule"`
+    Ds3DataReplicationRules []Ds3DataReplicationRule
 }

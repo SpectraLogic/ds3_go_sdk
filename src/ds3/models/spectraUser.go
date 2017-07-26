@@ -14,9 +14,9 @@
 package models
 
 type SpectraUser struct {
-    AuthId *string `xml:"AuthId"`
-    DefaultDataPolicyId *string `xml:"DefaultDataPolicyId"`
-    Id string `xml:"Id"`
-    Name *string `xml:"Name"`
-    SecretKey *string `xml:"SecretKey"`
+    AuthId *string
+    DefaultDataPolicyId *string
+    Id string
+    Name *string
+    SecretKey *string
 }

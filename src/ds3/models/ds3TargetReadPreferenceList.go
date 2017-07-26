@@ -14,5 +14,5 @@
 package models
 
 type Ds3TargetReadPreferenceList struct {
-    Ds3TargetReadPreferences []Ds3TargetReadPreference `xml:"Ds3TargetReadPreference"`
+    Ds3TargetReadPreferences []Ds3TargetReadPreference
 }

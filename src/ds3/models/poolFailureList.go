@@ -14,5 +14,5 @@
 package models
 
 type PoolFailureList struct {
-    PoolFailures []PoolFailure `xml:"PoolFailure"`
+    PoolFailures []PoolFailure
 }

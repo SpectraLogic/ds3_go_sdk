@@ -14,5 +14,5 @@
 package models
 
 type SystemFailureNotificationRegistrationList struct {
-    SystemFailureNotificationRegistrations []SystemFailureNotificationRegistration `xml:"SystemFailureNotificationRegistration"`
+    SystemFailureNotificationRegistrations []SystemFailureNotificationRegistration
 }

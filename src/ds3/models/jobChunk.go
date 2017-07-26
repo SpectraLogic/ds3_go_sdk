@@ -14,16 +14,16 @@
 package models
 
 type JobChunk struct {
-    BlobStoreState JobChunkBlobStoreState `xml:"BlobStoreState"`
-    ChunkNumber int `xml:"ChunkNumber"`
-    Id string `xml:"Id"`
-    JobCreationDate string `xml:"JobCreationDate"`
-    JobId string `xml:"JobId"`
-    NodeId *string `xml:"NodeId"`
-    PendingTargetCommit bool `xml:"PendingTargetCommit"`
-    ReadFromAzureTargetId *string `xml:"ReadFromAzureTargetId"`
-    ReadFromDs3TargetId *string `xml:"ReadFromDs3TargetId"`
-    ReadFromPoolId *string `xml:"ReadFromPoolId"`
-    ReadFromS3TargetId *string `xml:"ReadFromS3TargetId"`
-    ReadFromTapeId *string `xml:"ReadFromTapeId"`
+    BlobStoreState JobChunkBlobStoreState
+    ChunkNumber int
+    Id string
+    JobCreationDate string
+    JobId string
+    NodeId *string
+    PendingTargetCommit bool
+    ReadFromAzureTargetId *string
+    ReadFromDs3TargetId *string
+    ReadFromPoolId *string
+    ReadFromS3TargetId *string
+    ReadFromTapeId *string
 }

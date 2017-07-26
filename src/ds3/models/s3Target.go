@@ -14,26 +14,26 @@
 package models
 
 type S3Target struct {
-    AccessKey *string `xml:"AccessKey"`
-    AutoVerifyFrequencyInDays *int `xml:"AutoVerifyFrequencyInDays"`
-    CloudBucketPrefix *string `xml:"CloudBucketPrefix"`
-    CloudBucketSuffix *string `xml:"CloudBucketSuffix"`
-    DataPathEndPoint *string `xml:"DataPathEndPoint"`
-    DefaultReadPreference TargetReadPreferenceType `xml:"DefaultReadPreference"`
-    Https bool `xml:"Https"`
-    Id string `xml:"Id"`
-    LastFullyVerified *string `xml:"LastFullyVerified"`
-    Name *string `xml:"Name"`
-    OfflineDataStagingWindowInTb int `xml:"OfflineDataStagingWindowInTb"`
-    PermitGoingOutOfSync bool `xml:"PermitGoingOutOfSync"`
-    ProxyDomain *string `xml:"ProxyDomain"`
-    ProxyHost *string `xml:"ProxyHost"`
-    ProxyPassword *string `xml:"ProxyPassword"`
-    ProxyPort *int `xml:"ProxyPort"`
-    ProxyUsername *string `xml:"ProxyUsername"`
-    Quiesced Quiesced `xml:"Quiesced"`
-    Region S3Region `xml:"Region"`
-    SecretKey *string `xml:"SecretKey"`
-    StagedDataExpirationInDays int `xml:"StagedDataExpirationInDays"`
-    State TargetState `xml:"State"`
+    AccessKey *string
+    AutoVerifyFrequencyInDays *int
+    CloudBucketPrefix *string
+    CloudBucketSuffix *string
+    DataPathEndPoint *string
+    DefaultReadPreference TargetReadPreferenceType
+    Https bool
+    Id string
+    LastFullyVerified *string
+    Name *string
+    OfflineDataStagingWindowInTb int
+    PermitGoingOutOfSync bool
+    ProxyDomain *string
+    ProxyHost *string
+    ProxyPassword *string
+    ProxyPort *int
+    ProxyUsername *string
+    Quiesced Quiesced
+    Region S3Region
+    SecretKey *string
+    StagedDataExpirationInDays int
+    State TargetState
 }

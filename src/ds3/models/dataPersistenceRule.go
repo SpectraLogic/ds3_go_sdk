@@ -14,11 +14,11 @@
 package models
 
 type DataPersistenceRule struct {
-    DataPolicyId string `xml:"DataPolicyId"`
-    Id string `xml:"Id"`
-    IsolationLevel DataIsolationLevel `xml:"IsolationLevel"`
-    MinimumDaysToRetain *int `xml:"MinimumDaysToRetain"`
-    State DataPlacementRuleState `xml:"State"`
-    StorageDomainId string `xml:"StorageDomainId"`
-    Type DataPersistenceRuleType `xml:"Type"`
+    DataPolicyId string
+    Id string
+    IsolationLevel DataIsolationLevel
+    MinimumDaysToRetain *int
+    State DataPlacementRuleState
+    StorageDomainId string
+    Type DataPersistenceRuleType
 }

@@ -14,6 +14,6 @@
 package models
 
 type User struct {
-    DisplayName *string `xml:"DisplayName"`
-    Id string `xml:"ID"`
+    DisplayName *string
+    Id string
 }

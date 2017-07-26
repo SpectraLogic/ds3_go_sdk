@@ -14,8 +14,8 @@
 package models
 
 type SystemFailure struct {
-    Date string `xml:"Date"`
-    ErrorMessage *string `xml:"ErrorMessage"`
-    Id string `xml:"Id"`
-    Type SystemFailureType `xml:"Type"`
+    Date string
+    ErrorMessage *string
+    Id string
+    Type SystemFailureType
 }

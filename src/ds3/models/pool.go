@@ -14,24 +14,24 @@
 package models
 
 type Pool struct {
-    AssignedToStorageDomain bool `xml:"AssignedToStorageDomain"`
-    AvailableCapacity int64 `xml:"AvailableCapacity"`
-    BucketId *string `xml:"BucketId"`
-    Guid *string `xml:"Guid"`
-    Health PoolHealth `xml:"Health"`
-    Id string `xml:"Id"`
-    LastAccessed *string `xml:"LastAccessed"`
-    LastModified *string `xml:"LastModified"`
-    LastVerified *string `xml:"LastVerified"`
-    Mountpoint *string `xml:"Mountpoint"`
-    Name *string `xml:"Name"`
-    PartitionId *string `xml:"PartitionId"`
-    PoweredOn bool `xml:"PoweredOn"`
-    Quiesced Quiesced `xml:"Quiesced"`
-    ReservedCapacity int64 `xml:"ReservedCapacity"`
-    State PoolState `xml:"State"`
-    StorageDomainId *string `xml:"StorageDomainId"`
-    TotalCapacity int64 `xml:"TotalCapacity"`
-    Type PoolType `xml:"Type"`
-    UsedCapacity int64 `xml:"UsedCapacity"`
+    AssignedToStorageDomain bool
+    AvailableCapacity int64
+    BucketId *string
+    Guid *string
+    Health PoolHealth
+    Id string
+    LastAccessed *string
+    LastModified *string
+    LastVerified *string
+    Mountpoint *string
+    Name *string
+    PartitionId *string
+    PoweredOn bool
+    Quiesced Quiesced
+    ReservedCapacity int64
+    State PoolState
+    StorageDomainId *string
+    TotalCapacity int64
+    Type PoolType
+    UsedCapacity int64
 }

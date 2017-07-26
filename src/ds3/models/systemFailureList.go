@@ -14,5 +14,5 @@
 package models
 
 type SystemFailureList struct {
-    SystemFailures []SystemFailure `xml:"SystemFailure"`
+    SystemFailures []SystemFailure
 }

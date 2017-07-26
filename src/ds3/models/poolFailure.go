@@ -14,9 +14,9 @@
 package models
 
 type PoolFailure struct {
-    Date string `xml:"Date"`
-    ErrorMessage *string `xml:"ErrorMessage"`
-    Id string `xml:"Id"`
-    PoolId string `xml:"PoolId"`
-    Type PoolFailureType `xml:"Type"`
+    Date string
+    ErrorMessage *string
+    Id string
+    PoolId string
+    Type PoolFailureType
 }

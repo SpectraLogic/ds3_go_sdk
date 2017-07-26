@@ -14,5 +14,5 @@
 package models
 
 type BlobStoreTasksInformation struct {
-    Tasks []BlobStoreTaskInformation `xml:"Tasks"`
+    Tasks []BlobStoreTaskInformation
 }

@@ -14,9 +14,9 @@
 package models
 
 type AzureTargetFailure struct {
-    Date string `xml:"Date"`
-    ErrorMessage *string `xml:"ErrorMessage"`
-    Id string `xml:"Id"`
-    TargetId string `xml:"TargetId"`
-    Type TargetFailureType `xml:"Type"`
+    Date string
+    ErrorMessage *string
+    Id string
+    TargetId string
+    Type TargetFailureType
 }

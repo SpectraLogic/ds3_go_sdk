@@ -14,5 +14,5 @@
 package models
 
 type TapeDriveList struct {
-    TapeDrives []TapeDrive `xml:"TapeDrive"`
+    TapeDrives []TapeDrive
 }

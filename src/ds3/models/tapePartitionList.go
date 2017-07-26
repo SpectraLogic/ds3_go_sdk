@@ -14,5 +14,5 @@
 package models
 
 type TapePartitionList struct {
-    TapePartitions []TapePartition `xml:"TapePartition"`
+    TapePartitions []TapePartition
 }

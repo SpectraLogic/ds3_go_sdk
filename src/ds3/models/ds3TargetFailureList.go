@@ -14,5 +14,5 @@
 package models
 
 type Ds3TargetFailureList struct {
-    Ds3TargetFailures []Ds3TargetFailure `xml:"Ds3TargetFailure"`
+    Ds3TargetFailures []Ds3TargetFailure
 }

@@ -14,14 +14,14 @@
 package models
 
 type ListBucketResult struct {
-    CommonPrefixes []string `xml:"CommonPrefixes>Prefix"`
-    CreationDate *string `xml:"CreationDate"`
-    Delimiter *string `xml:"Delimiter"`
-    Marker *string `xml:"Marker"`
-    MaxKeys int `xml:"MaxKeys"`
-    Name *string `xml:"Name"`
-    NextMarker *string `xml:"NextMarker"`
-    Objects []Contents `xml:"Contents"`
-    Prefix *string `xml:"Prefix"`
-    Truncated bool `xml:"IsTruncated"`
+    CommonPrefixes []string
+    CreationDate *string
+    Delimiter *string
+    Marker *string
+    MaxKeys int
+    Name *string
+    NextMarker *string
+    Objects []Contents
+    Prefix *string
+    Truncated bool
 }

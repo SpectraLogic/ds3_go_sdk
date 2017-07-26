@@ -14,10 +14,10 @@
 package models
 
 type FeatureKey struct {
-    CurrentValue *int64 `xml:"CurrentValue"`
-    ErrorMessage *string `xml:"ErrorMessage"`
-    ExpirationDate *string `xml:"ExpirationDate"`
-    Id string `xml:"Id"`
-    Key FeatureKeyType `xml:"Key"`
-    LimitValue *int64 `xml:"LimitValue"`
+    CurrentValue *int64
+    ErrorMessage *string
+    ExpirationDate *string
+    Id string
+    Key FeatureKeyType
+    LimitValue *int64
 }

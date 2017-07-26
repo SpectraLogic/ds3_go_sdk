@@ -14,7 +14,7 @@
 package models
 
 type SuspectBlobAzureTarget struct {
-    BlobId string `xml:"BlobId"`
-    Id string `xml:"Id"`
-    TargetId string `xml:"TargetId"`
+    BlobId string
+    Id string
+    TargetId string
 }

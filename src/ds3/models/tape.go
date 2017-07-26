@@ -14,30 +14,30 @@
 package models
 
 type Tape struct {
-    AssignedToStorageDomain bool `xml:"AssignedToStorageDomain"`
-    AvailableRawCapacity *int64 `xml:"AvailableRawCapacity"`
-    BarCode *string `xml:"BarCode"`
-    BucketId *string `xml:"BucketId"`
-    DescriptionForIdentification *string `xml:"DescriptionForIdentification"`
-    EjectDate *string `xml:"EjectDate"`
-    EjectLabel *string `xml:"EjectLabel"`
-    EjectLocation *string `xml:"EjectLocation"`
-    EjectPending *string `xml:"EjectPending"`
-    FullOfData bool `xml:"FullOfData"`
-    Id string `xml:"Id"`
-    LastAccessed *string `xml:"LastAccessed"`
-    LastCheckpoint *string `xml:"LastCheckpoint"`
-    LastModified *string `xml:"LastModified"`
-    LastVerified *string `xml:"LastVerified"`
-    PartiallyVerifiedEndOfTape *string `xml:"PartiallyVerifiedEndOfTape"`
-    PartitionId *string `xml:"PartitionId"`
-    PreviousState *TapeState `xml:"PreviousState"`
-    SerialNumber *string `xml:"SerialNumber"`
-    State TapeState `xml:"State"`
-    StorageDomainId *string `xml:"StorageDomainId"`
-    TakeOwnershipPending bool `xml:"TakeOwnershipPending"`
-    TotalRawCapacity *int64 `xml:"TotalRawCapacity"`
-    Type TapeType `xml:"Type"`
-    VerifyPending *Priority `xml:"VerifyPending"`
-    WriteProtected bool `xml:"WriteProtected"`
+    AssignedToStorageDomain bool
+    AvailableRawCapacity *int64
+    BarCode *string
+    BucketId *string
+    DescriptionForIdentification *string
+    EjectDate *string
+    EjectLabel *string
+    EjectLocation *string
+    EjectPending *string
+    FullOfData bool
+    Id string
+    LastAccessed *string
+    LastCheckpoint *string
+    LastModified *string
+    LastVerified *string
+    PartiallyVerifiedEndOfTape *string
+    PartitionId *string
+    PreviousState *TapeState
+    SerialNumber *string
+    State TapeState
+    StorageDomainId *string
+    TakeOwnershipPending bool
+    TotalRawCapacity *int64
+    Type TapeType
+    VerifyPending *Priority
+    WriteProtected bool
 }

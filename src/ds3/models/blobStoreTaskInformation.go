@@ -14,16 +14,16 @@
 package models
 
 type BlobStoreTaskInformation struct {
-    DateScheduled string `xml:"DateScheduled"`
-    DateStarted *string `xml:"DateStarted"`
-    Description *string `xml:"Description"`
-    DriveId *string `xml:"DriveId"`
-    Id int64 `xml:"Id"`
-    Name *string `xml:"Name"`
-    PoolId *string `xml:"PoolId"`
-    Priority Priority `xml:"Priority"`
-    State BlobStoreTaskState `xml:"State"`
-    TapeId *string `xml:"TapeId"`
-    TargetId *string `xml:"TargetId"`
-    TargetType *string `xml:"TargetType"`
+    DateScheduled string
+    DateStarted *string
+    Description *string
+    DriveId *string
+    Id int64
+    Name *string
+    PoolId *string
+    Priority Priority
+    State BlobStoreTaskState
+    TapeId *string
+    TargetId *string
+    TargetType *string
 }

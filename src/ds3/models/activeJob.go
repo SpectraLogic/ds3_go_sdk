@@ -14,26 +14,26 @@
 package models
 
 type ActiveJob struct {
-    Aggregating bool `xml:"Aggregating"`
-    BucketId string `xml:"BucketId"`
-    CachedSizeInBytes int64 `xml:"CachedSizeInBytes"`
-    ChunkClientProcessingOrderGuarantee JobChunkClientProcessingOrderGuarantee `xml:"ChunkClientProcessingOrderGuarantee"`
-    CompletedSizeInBytes int64 `xml:"CompletedSizeInBytes"`
-    CreatedAt string `xml:"CreatedAt"`
-    DeadJobCleanupAllowed bool `xml:"DeadJobCleanupAllowed"`
-    ErrorMessage *string `xml:"ErrorMessage"`
-    Id string `xml:"Id"`
-    ImplicitJobIdResolution bool `xml:"ImplicitJobIdResolution"`
-    MinimizeSpanningAcrossMedia bool `xml:"MinimizeSpanningAcrossMedia"`
-    Naked bool `xml:"Naked"`
-    Name *string `xml:"Name"`
-    OriginalSizeInBytes int64 `xml:"OriginalSizeInBytes"`
-    Priority Priority `xml:"Priority"`
-    Rechunked *string `xml:"Rechunked"`
-    Replicating bool `xml:"Replicating"`
-    RequestType JobRequestType `xml:"RequestType"`
-    Truncated bool `xml:"Truncated"`
-    TruncatedDueToTimeout bool `xml:"TruncatedDueToTimeout"`
-    UserId string `xml:"UserId"`
-    VerifyAfterWrite bool `xml:"VerifyAfterWrite"`
+    Aggregating bool
+    BucketId string
+    CachedSizeInBytes int64
+    ChunkClientProcessingOrderGuarantee JobChunkClientProcessingOrderGuarantee
+    CompletedSizeInBytes int64
+    CreatedAt string
+    DeadJobCleanupAllowed bool
+    ErrorMessage *string
+    Id string
+    ImplicitJobIdResolution bool
+    MinimizeSpanningAcrossMedia bool
+    Naked bool
+    Name *string
+    OriginalSizeInBytes int64
+    Priority Priority
+    Rechunked *string
+    Replicating bool
+    RequestType JobRequestType
+    Truncated bool
+    TruncatedDueToTimeout bool
+    UserId string
+    VerifyAfterWrite bool
 }

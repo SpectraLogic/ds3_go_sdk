@@ -14,12 +14,12 @@
 package models
 
 type Node struct {
-    DataPathHttpPort *int `xml:"DataPathHttpPort"`
-    DataPathHttpsPort *int `xml:"DataPathHttpsPort"`
-    DataPathIpAddress *string `xml:"DataPathIpAddress"`
-    DnsName *string `xml:"DnsName"`
-    Id string `xml:"Id"`
-    LastHeartbeat string `xml:"LastHeartbeat"`
-    Name *string `xml:"Name"`
-    SerialNumber *string `xml:"SerialNumber"`
+    DataPathHttpPort *int
+    DataPathHttpsPort *int
+    DataPathIpAddress *string
+    DnsName *string
+    Id string
+    LastHeartbeat string
+    Name *string
+    SerialNumber *string
 }

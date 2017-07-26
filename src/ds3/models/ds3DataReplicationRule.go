@@ -14,11 +14,11 @@
 package models
 
 type Ds3DataReplicationRule struct {
-    DataPolicyId string `xml:"DataPolicyId"`
-    Id string `xml:"Id"`
-    ReplicateDeletes bool `xml:"ReplicateDeletes"`
-    State DataPlacementRuleState `xml:"State"`
-    TargetDataPolicy *string `xml:"TargetDataPolicy"`
-    TargetId string `xml:"TargetId"`
-    Type DataReplicationRuleType `xml:"Type"`
+    DataPolicyId string
+    Id string
+    ReplicateDeletes bool
+    State DataPlacementRuleState
+    TargetDataPolicy *string
+    TargetId string
+    Type DataReplicationRuleType
 }

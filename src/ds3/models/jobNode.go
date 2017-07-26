@@ -14,8 +14,8 @@
 package models
 
 type JobNode struct {
-    EndPoint *string `xml:"EndPoint,attr"`
-    HttpPort *int `xml:"HttpPort,attr"`
-    HttpsPort *int `xml:"HttpsPort,attr"`
-    Id string `xml:"Id,attr"`
+    EndPoint *string
+    HttpPort *int
+    HttpsPort *int
+    Id string
 }

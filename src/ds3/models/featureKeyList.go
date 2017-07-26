@@ -14,5 +14,5 @@
 package models
 
 type FeatureKeyList struct {
-    FeatureKeys []FeatureKey `xml:"FeatureKey"`
+    FeatureKeys []FeatureKey
 }

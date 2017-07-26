@@ -14,10 +14,10 @@
 package models
 
 type Blob struct {
-    ByteOffset int64 `xml:"ByteOffset"`
-    Checksum *string `xml:"Checksum"`
-    ChecksumType *ChecksumType `xml:"ChecksumType"`
-    Id string `xml:"Id"`
-    Length int64 `xml:"Length"`
-    ObjectId string `xml:"ObjectId"`
+    ByteOffset int64
+    Checksum *string
+    ChecksumType *ChecksumType
+    Id string
+    Length int64
+    ObjectId string
 }

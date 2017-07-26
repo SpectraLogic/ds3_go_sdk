@@ -14,8 +14,8 @@
 package models
 
 type GroupMember struct {
-    GroupId string `xml:"GroupId"`
-    Id string `xml:"Id"`
-    MemberGroupId *string `xml:"MemberGroupId"`
-    MemberUserId *string `xml:"MemberUserId"`
+    GroupId string
+    Id string
+    MemberGroupId *string
+    MemberUserId *string
 }

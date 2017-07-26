@@ -14,11 +14,11 @@
 package models
 
 type StorageDomainMember struct {
-    Id string `xml:"Id"`
-    PoolPartitionId *string `xml:"PoolPartitionId"`
-    State StorageDomainMemberState `xml:"State"`
-    StorageDomainId string `xml:"StorageDomainId"`
-    TapePartitionId *string `xml:"TapePartitionId"`
-    TapeType *TapeType `xml:"TapeType"`
-    WritePreference WritePreferenceLevel `xml:"WritePreference"`
+    Id string
+    PoolPartitionId *string
+    State StorageDomainMemberState
+    StorageDomainId string
+    TapePartitionId *string
+    TapeType *TapeType
+    WritePreference WritePreferenceLevel
 }

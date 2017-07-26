@@ -14,11 +14,11 @@
 package models
 
 type AzureDataReplicationRule struct {
-    DataPolicyId string `xml:"DataPolicyId"`
-    Id string `xml:"Id"`
-    MaxBlobPartSizeInBytes int64 `xml:"MaxBlobPartSizeInBytes"`
-    ReplicateDeletes bool `xml:"ReplicateDeletes"`
-    State DataPlacementRuleState `xml:"State"`
-    TargetId string `xml:"TargetId"`
-    Type DataReplicationRuleType `xml:"Type"`
+    DataPolicyId string
+    Id string
+    MaxBlobPartSizeInBytes int64
+    ReplicateDeletes bool
+    State DataPlacementRuleState
+    TargetId string
+    Type DataReplicationRuleType
 }

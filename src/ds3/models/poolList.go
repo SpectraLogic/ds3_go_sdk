@@ -14,5 +14,5 @@
 package models
 
 type PoolList struct {
-    Pools []Pool `xml:"Pool"`
+    Pools []Pool
 }

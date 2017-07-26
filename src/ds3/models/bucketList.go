@@ -14,5 +14,5 @@
 package models
 
 type BucketList struct {
-    Buckets []Bucket `xml:"Bucket"`
+    Buckets []Bucket
 }

@@ -14,5 +14,5 @@
 package models
 
 type SpectraUserList struct {
-    SpectraUsers []SpectraUser `xml:"User"`
+    SpectraUsers []SpectraUser
 }

@@ -14,9 +14,9 @@
 package models
 
 type BucketAcl struct {
-    BucketId *string `xml:"BucketId"`
-    GroupId *string `xml:"GroupId"`
-    Id string `xml:"Id"`
-    Permission BucketAclPermission `xml:"Permission"`
-    UserId *string `xml:"UserId"`
+    BucketId *string
+    GroupId *string
+    Id string
+    Permission BucketAclPermission
+    UserId *string
 }

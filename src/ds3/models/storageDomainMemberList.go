@@ -14,5 +14,5 @@
 package models
 
 type StorageDomainMemberList struct {
-    StorageDomainMembers []StorageDomainMember `xml:"StorageDomainMember"`
+    StorageDomainMembers []StorageDomainMember
 }

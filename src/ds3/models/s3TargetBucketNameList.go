@@ -14,5 +14,5 @@
 package models
 
 type S3TargetBucketNameList struct {
-    S3TargetBucketNames []S3TargetBucketName `xml:"S3TargetBucketName"`
+    S3TargetBucketNames []S3TargetBucketName
 }

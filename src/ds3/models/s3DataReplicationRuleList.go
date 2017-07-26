@@ -14,5 +14,5 @@
 package models
 
 type S3DataReplicationRuleList struct {
-    S3DataReplicationRules []S3DataReplicationRule `xml:"S3DataReplicationRule"`
+    S3DataReplicationRules []S3DataReplicationRule
 }

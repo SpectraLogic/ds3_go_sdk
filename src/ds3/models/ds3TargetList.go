@@ -14,5 +14,5 @@
 package models
 
 type Ds3TargetList struct {
-    Ds3Targets []Ds3Target `xml:"Ds3Target"`
+    Ds3Targets []Ds3Target
 }

@@ -14,7 +14,7 @@
 package models
 
 type StorageDomainCapacitySummary struct {
-    PhysicalAllocated int64 `xml:"PhysicalAllocated"`
-    PhysicalFree int64 `xml:"PhysicalFree"`
-    PhysicalUsed int64 `xml:"PhysicalUsed"`
+    PhysicalAllocated int64
+    PhysicalFree int64
+    PhysicalUsed int64
 }

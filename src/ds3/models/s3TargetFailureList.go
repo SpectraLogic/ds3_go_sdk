@@ -14,5 +14,5 @@
 package models
 
 type S3TargetFailureList struct {
-    S3TargetFailures []S3TargetFailure `xml:"S3TargetFailure"`
+    S3TargetFailures []S3TargetFailure
 }

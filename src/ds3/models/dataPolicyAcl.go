@@ -14,8 +14,8 @@
 package models
 
 type DataPolicyAcl struct {
-    DataPolicyId *string `xml:"DataPolicyId"`
-    GroupId *string `xml:"GroupId"`
-    Id string `xml:"Id"`
-    UserId *string `xml:"UserId"`
+    DataPolicyId *string
+    GroupId *string
+    Id string
+    UserId *string
 }

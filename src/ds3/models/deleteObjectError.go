@@ -14,7 +14,7 @@
 package models
 
 type DeleteObjectError struct {
-    Code *string `xml:"Code"`
-    Key *string `xml:"Key"`
-    Message *string `xml:"Message"`
+    Code *string
+    Key *string
+    Message *string
 }

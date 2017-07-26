@@ -14,5 +14,5 @@
 package models
 
 type AzureTargetFailureNotificationRegistrationList struct {
-    AzureTargetFailureNotificationRegistrations []AzureTargetFailureNotificationRegistration `xml:"AzureTargetFailureNotificationRegistration"`
+    AzureTargetFailureNotificationRegistrations []AzureTargetFailureNotificationRegistration
 }

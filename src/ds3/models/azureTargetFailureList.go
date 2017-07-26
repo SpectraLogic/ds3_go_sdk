@@ -14,5 +14,5 @@
 package models
 
 type AzureTargetFailureList struct {
-    AzureTargetFailures []AzureTargetFailure `xml:"AzureTargetFailure"`
+    AzureTargetFailures []AzureTargetFailure
 }

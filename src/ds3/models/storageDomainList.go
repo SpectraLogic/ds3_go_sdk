@@ -14,5 +14,5 @@
 package models
 
 type StorageDomainList struct {
-    StorageDomains []StorageDomain `xml:"StorageDomain"`
+    StorageDomains []StorageDomain
 }

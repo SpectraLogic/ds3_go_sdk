@@ -14,5 +14,5 @@
 package models
 
 type SuspectBlobPoolList struct {
-    SuspectBlobPools []SuspectBlobPool `xml:"SuspectBlobPool"`
+    SuspectBlobPools []SuspectBlobPool
 }

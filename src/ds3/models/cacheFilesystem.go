@@ -14,12 +14,12 @@
 package models
 
 type CacheFilesystem struct {
-    AutoReclaimInitiateThreshold float64 `xml:"AutoReclaimInitiateThreshold"`
-    AutoReclaimTerminateThreshold float64 `xml:"AutoReclaimTerminateThreshold"`
-    BurstThreshold float64 `xml:"BurstThreshold"`
-    Id string `xml:"Id"`
-    MaxCapacityInBytes *int64 `xml:"MaxCapacityInBytes"`
-    MaxPercentUtilizationOfFilesystem *float64 `xml:"MaxPercentUtilizationOfFilesystem"`
-    NodeId string `xml:"NodeId"`
-    Path *string `xml:"Path"`
+    AutoReclaimInitiateThreshold float64
+    AutoReclaimTerminateThreshold float64
+    BurstThreshold float64
+    Id string
+    MaxCapacityInBytes *int64
+    MaxPercentUtilizationOfFilesystem *float64
+    NodeId string
+    Path *string
 }

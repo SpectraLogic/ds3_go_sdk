@@ -14,6 +14,6 @@
 package models
 
 type CapacitySummaryContainer struct {
-    Pool StorageDomainCapacitySummary `xml:"Pool"`
-    Tape StorageDomainCapacitySummary `xml:"Tape"`
+    Pool StorageDomainCapacitySummary
+    Tape StorageDomainCapacitySummary
 }

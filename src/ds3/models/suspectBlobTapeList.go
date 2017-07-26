@@ -14,5 +14,5 @@
 package models
 
 type SuspectBlobTapeList struct {
-    SuspectBlobTapes []SuspectBlobTape `xml:"SuspectBlobTape"`
+    SuspectBlobTapes []SuspectBlobTape
 }

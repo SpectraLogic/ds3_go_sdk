@@ -14,5 +14,5 @@
 package models
 
 type Ds3TargetFailureNotificationRegistrationList struct {
-    Ds3TargetFailureNotificationRegistrations []Ds3TargetFailureNotificationRegistration `xml:"Ds3TargetFailureNotificationRegistration"`
+    Ds3TargetFailureNotificationRegistrations []Ds3TargetFailureNotificationRegistration
 }

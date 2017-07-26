@@ -14,5 +14,5 @@
 package models
 
 type S3TargetReadPreferenceList struct {
-    S3TargetReadPreferences []S3TargetReadPreference `xml:"S3TargetReadPreference"`
+    S3TargetReadPreferences []S3TargetReadPreference
 }

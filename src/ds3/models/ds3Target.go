@@ -14,19 +14,19 @@
 package models
 
 type Ds3Target struct {
-    AccessControlReplication Ds3TargetAccessControlReplication `xml:"AccessControlReplication"`
-    AdminAuthId *string `xml:"AdminAuthId"`
-    AdminSecretKey *string `xml:"AdminSecretKey"`
-    DataPathEndPoint *string `xml:"DataPathEndPoint"`
-    DataPathHttps bool `xml:"DataPathHttps"`
-    DataPathPort *int `xml:"DataPathPort"`
-    DataPathProxy *string `xml:"DataPathProxy"`
-    DataPathVerifyCertificate bool `xml:"DataPathVerifyCertificate"`
-    DefaultReadPreference TargetReadPreferenceType `xml:"DefaultReadPreference"`
-    Id string `xml:"Id"`
-    Name *string `xml:"Name"`
-    PermitGoingOutOfSync bool `xml:"PermitGoingOutOfSync"`
-    Quiesced Quiesced `xml:"Quiesced"`
-    ReplicatedUserDefaultDataPolicy *string `xml:"ReplicatedUserDefaultDataPolicy"`
-    State TargetState `xml:"State"`
+    AccessControlReplication Ds3TargetAccessControlReplication
+    AdminAuthId *string
+    AdminSecretKey *string
+    DataPathEndPoint *string
+    DataPathHttps bool
+    DataPathPort *int
+    DataPathProxy *string
+    DataPathVerifyCertificate bool
+    DefaultReadPreference TargetReadPreferenceType
+    Id string
+    Name *string
+    PermitGoingOutOfSync bool
+    Quiesced Quiesced
+    ReplicatedUserDefaultDataPolicy *string
+    State TargetState
 }

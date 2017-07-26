@@ -14,10 +14,10 @@
 package models
 
 type DetailedTapeFailure struct {
-    Date string `xml:"Date"`
-    ErrorMessage *string `xml:"ErrorMessage"`
-    Id string `xml:"Id"`
-    TapeDriveId string `xml:"TapeDriveId"`
-    TapeId string `xml:"TapeId"`
-    Type TapeFailureType `xml:"Type"`
+    Date string
+    ErrorMessage *string
+    Id string
+    TapeDriveId string
+    TapeId string
+    Type TapeFailureType
 }

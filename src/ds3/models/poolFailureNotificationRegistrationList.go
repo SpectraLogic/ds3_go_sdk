@@ -14,5 +14,5 @@
 package models
 
 type PoolFailureNotificationRegistrationList struct {
-    PoolFailureNotificationRegistrations []PoolFailureNotificationRegistration `xml:"PoolFailureNotificationRegistration"`
+    PoolFailureNotificationRegistrations []PoolFailureNotificationRegistration
 }

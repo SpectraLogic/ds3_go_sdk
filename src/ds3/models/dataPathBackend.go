@@ -14,17 +14,17 @@
 package models
 
 type DataPathBackend struct {
-    Activated bool `xml:"Activated"`
-    AutoActivateTimeoutInMins *int `xml:"AutoActivateTimeoutInMins"`
-    AutoInspect AutoInspectMode `xml:"AutoInspect"`
-    DefaultImportConflictResolutionMode ImportConflictResolutionMode `xml:"DefaultImportConflictResolutionMode"`
-    DefaultVerifyDataAfterImport *Priority `xml:"DefaultVerifyDataAfterImport"`
-    DefaultVerifyDataPriorToImport bool `xml:"DefaultVerifyDataPriorToImport"`
-    Id string `xml:"Id"`
-    InstanceId string `xml:"InstanceId"`
-    LastHeartbeat string `xml:"LastHeartbeat"`
-    PartiallyVerifyLastPercentOfTapes *int `xml:"PartiallyVerifyLastPercentOfTapes"`
-    UnavailableMediaPolicy UnavailableMediaUsagePolicy `xml:"UnavailableMediaPolicy"`
-    UnavailablePoolMaxJobRetryInMins int `xml:"UnavailablePoolMaxJobRetryInMins"`
-    UnavailableTapePartitionMaxJobRetryInMins int `xml:"UnavailableTapePartitionMaxJobRetryInMins"`
+    Activated bool
+    AutoActivateTimeoutInMins *int
+    AutoInspect AutoInspectMode
+    DefaultImportConflictResolutionMode ImportConflictResolutionMode
+    DefaultVerifyDataAfterImport *Priority
+    DefaultVerifyDataPriorToImport bool
+    Id string
+    InstanceId string
+    LastHeartbeat string
+    PartiallyVerifyLastPercentOfTapes *int
+    UnavailableMediaPolicy UnavailableMediaUsagePolicy
+    UnavailablePoolMaxJobRetryInMins int
+    UnavailableTapePartitionMaxJobRetryInMins int
 }

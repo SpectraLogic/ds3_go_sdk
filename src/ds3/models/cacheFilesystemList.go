@@ -14,5 +14,5 @@
 package models
 
 type CacheFilesystemList struct {
-    CacheFilesystems []CacheFilesystem `xml:"CacheFilesystem"`
+    CacheFilesystems []CacheFilesystem
 }

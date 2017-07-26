@@ -14,5 +14,5 @@
 package models
 
 type TapePartitionFailureList struct {
-    TapePartitionFailures []TapePartitionFailure `xml:"TapePartitionFailure"`
+    TapePartitionFailures []TapePartitionFailure
 }

@@ -14,8 +14,8 @@
 package models
 
 type CompleteMultipartUploadResult struct {
-    Bucket *string `xml:"Bucket"`
-    ETag *string `xml:"ETag"`
-    Key *string `xml:"Key"`
-    Location *string `xml:"Location"`
+    Bucket *string
+    ETag *string
+    Key *string
+    Location *string
 }

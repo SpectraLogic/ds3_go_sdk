@@ -14,15 +14,15 @@
 package models
 
 type ListMultiPartUploadsResult struct {
-    Bucket *string `xml:"Bucket"`
-    CommonPrefixes []string `xml:"CommonPrefixes>Prefix"`
-    Delimiter *string `xml:"Delimiter"`
-    KeyMarker *string `xml:"KeyMarker"`
-    MaxUploads int `xml:"MaxUploads"`
-    NextKeyMarker *string `xml:"NextKeyMarker"`
-    NextUploadIdMarker *string `xml:"NextUploadIdMarker"`
-    Prefix *string `xml:"Prefix"`
-    Truncated bool `xml:"IsTruncated"`
-    UploadIdMarker *string `xml:"UploadIdMarker"`
-    Uploads []MultiPartUpload `xml:"Upload"`
+    Bucket *string
+    CommonPrefixes []string
+    Delimiter *string
+    KeyMarker *string
+    MaxUploads int
+    NextKeyMarker *string
+    NextUploadIdMarker *string
+    Prefix *string
+    Truncated bool
+    UploadIdMarker *string
+    Uploads []MultiPartUpload
 }

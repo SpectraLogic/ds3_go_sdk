@@ -14,10 +14,10 @@
 package models
 
 type SystemInformation struct {
-    ApiVersion *string `xml:"ApiVersion"`
-    BackendActivated bool `xml:"BackendActivated"`
-    BuildInformation BuildInformation `xml:"BuildInformation"`
-    InstanceId string `xml:"InstanceId"`
-    Now int64 `xml:"Now"`
-    SerialNumber *string `xml:"SerialNumber"`
+    ApiVersion *string
+    BackendActivated bool
+    BuildInformation BuildInformation
+    InstanceId string
+    Now int64
+    SerialNumber *string
 }

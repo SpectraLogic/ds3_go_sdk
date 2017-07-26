@@ -14,11 +14,11 @@
 package models
 
 type DegradedBlob struct {
-    AzureReplicationRuleId *string `xml:"AzureReplicationRuleId"`
-    BlobId string `xml:"BlobId"`
-    BucketId string `xml:"BucketId"`
-    Ds3ReplicationRuleId *string `xml:"Ds3ReplicationRuleId"`
-    Id string `xml:"Id"`
-    PersistenceRuleId *string `xml:"PersistenceRuleId"`
-    S3ReplicationRuleId *string `xml:"S3ReplicationRuleId"`
+    AzureReplicationRuleId *string
+    BlobId string
+    BucketId string
+    Ds3ReplicationRuleId *string
+    Id string
+    PersistenceRuleId *string
+    S3ReplicationRuleId *string
 }

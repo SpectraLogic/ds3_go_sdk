@@ -14,5 +14,5 @@
 package models
 
 type S3TargetFailureNotificationRegistrationList struct {
-    S3TargetFailureNotificationRegistrations []S3TargetFailureNotificationRegistration `xml:"S3TargetFailureNotificationRegistration"`
+    S3TargetFailureNotificationRegistrations []S3TargetFailureNotificationRegistration
 }

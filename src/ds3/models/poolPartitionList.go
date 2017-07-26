@@ -14,5 +14,5 @@
 package models
 
 type PoolPartitionList struct {
-    PoolPartitions []PoolPartition `xml:"PoolPartition"`
+    PoolPartitions []PoolPartition
 }
