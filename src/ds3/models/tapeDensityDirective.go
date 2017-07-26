@@ -14,8 +14,8 @@
 package models
 
 type TapeDensityDirective struct {
-    Density TapeDriveType `xml:"Density"`
-    Id string `xml:"Id"`
-    PartitionId string `xml:"PartitionId"`
-    TapeType TapeType `xml:"TapeType"`
+    Density TapeDriveType
+    Id string
+    PartitionId string
+    TapeType TapeType
 }

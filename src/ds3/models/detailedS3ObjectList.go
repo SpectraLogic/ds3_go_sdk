@@ -14,5 +14,5 @@
 package models
 
 type DetailedS3ObjectList struct {
-    DetailedS3Objects []DetailedS3Object `xml:"Object"`
+    DetailedS3Objects []DetailedS3Object
 }

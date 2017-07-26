@@ -14,6 +14,6 @@
 package models
 
 type BucketDetails struct {
-    CreationDate *string `xml:"CreationDate"`
-    Name *string `xml:"Name"`
+    CreationDate *string
+    Name *string
 }

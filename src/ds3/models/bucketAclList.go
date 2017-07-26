@@ -14,5 +14,5 @@
 package models
 
 type BucketAclList struct {
-    BucketAcls []BucketAcl `xml:"BucketAcl"`
+    BucketAcls []BucketAcl
 }

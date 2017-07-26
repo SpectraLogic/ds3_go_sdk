@@ -14,19 +14,19 @@
 package models
 
 type DetailedS3Object struct {
-    Blobs *BulkObjectList `xml:"Blobs"`
-    BlobsBeingPersisted *int `xml:"BlobsBeingPersisted"`
-    BlobsDegraded *int `xml:"BlobsDegraded"`
-    BlobsInCache *int `xml:"BlobsInCache"`
-    BlobsTotal *int `xml:"BlobsTotal"`
-    BucketId string `xml:"BucketId"`
-    CreationDate *string `xml:"CreationDate"`
-    ETag *string `xml:"ETag"`
-    Id string `xml:"Id"`
-    Latest bool `xml:"Latest"`
-    Name *string `xml:"Name"`
-    Owner *string `xml:"Owner"`
-    Size int64 `xml:"Size"`
-    Type S3ObjectType `xml:"Type"`
-    Version int64 `xml:"Version"`
+    Blobs *BulkObjectList
+    BlobsBeingPersisted *int
+    BlobsDegraded *int
+    BlobsInCache *int
+    BlobsTotal *int
+    BucketId string
+    CreationDate *string
+    ETag *string
+    Id string
+    Latest bool
+    Name *string
+    Owner *string
+    Size int64
+    Type S3ObjectType
+    Version int64
 }

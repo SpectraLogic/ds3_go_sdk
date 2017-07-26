@@ -14,5 +14,5 @@
 package models
 
 type CacheInformation struct {
-    Filesystems []CacheFilesystemInformation `xml:"Filesystems"`
+    Filesystems []CacheFilesystemInformation
 }

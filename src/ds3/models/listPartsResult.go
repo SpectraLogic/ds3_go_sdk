@@ -14,13 +14,13 @@
 package models
 
 type ListPartsResult struct {
-    Bucket *string `xml:"Bucket"`
-    Key *string `xml:"Key"`
-    MaxParts int `xml:"MaxParts"`
-    NextPartNumberMarker int `xml:"NextPartNumberMarker"`
-    Owner User `xml:"Owner"`
-    PartNumberMarker *int `xml:"PartNumberMarker"`
-    Parts []MultiPartUploadPart `xml:"Part"`
-    Truncated bool `xml:"IsTruncated"`
-    UploadId string `xml:"UploadId"`
+    Bucket *string
+    Key *string
+    MaxParts int
+    NextPartNumberMarker int
+    Owner User
+    PartNumberMarker *int
+    Parts []MultiPartUploadPart
+    Truncated bool
+    UploadId string
 }

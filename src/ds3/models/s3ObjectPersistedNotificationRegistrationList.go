@@ -14,5 +14,5 @@
 package models
 
 type S3ObjectPersistedNotificationRegistrationList struct {
-    S3ObjectPersistedNotificationRegistrations []S3ObjectPersistedNotificationRegistration `xml:"S3ObjectPersistedNotificationRegistration"`
+    S3ObjectPersistedNotificationRegistrations []S3ObjectPersistedNotificationRegistration
 }

@@ -14,10 +14,10 @@
 package models
 
 type SuspectBlobPool struct {
-    BlobId string `xml:"BlobId"`
-    BucketId string `xml:"BucketId"`
-    DateWritten string `xml:"DateWritten"`
-    Id string `xml:"Id"`
-    LastAccessed string `xml:"LastAccessed"`
-    PoolId string `xml:"PoolId"`
+    BlobId string
+    BucketId string
+    DateWritten string
+    Id string
+    LastAccessed string
+    PoolId string
 }

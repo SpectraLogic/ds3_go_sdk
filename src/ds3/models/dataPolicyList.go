@@ -14,5 +14,5 @@
 package models
 
 type DataPolicyList struct {
-    DataPolicies []DataPolicy `xml:"DataPolicy"`
+    DataPolicies []DataPolicy
 }

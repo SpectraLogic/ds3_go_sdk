@@ -14,5 +14,5 @@
 package models
 
 type AzureTargetList struct {
-    AzureTargets []AzureTarget `xml:"AzureTarget"`
+    AzureTargets []AzureTarget
 }

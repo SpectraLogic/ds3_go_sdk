@@ -14,13 +14,13 @@
 package models
 
 type BulkObject struct {
-    Bucket *string `xml:"Bucket,attr"`
-    Id *string `xml:"Id,attr"`
-    InCache *bool `xml:"InCache,attr"`
-    Latest bool `xml:"Latest,attr"`
-    Length int64 `xml:"Length,attr"`
-    Name *string `xml:"Name,attr"`
-    Offset int64 `xml:"Offset,attr"`
-    PhysicalPlacement *PhysicalPlacement `xml:"PhysicalPlacement"`
-    Version int64 `xml:"Version,attr"`
+    Bucket *string
+    Id *string
+    InCache *bool
+    Latest bool
+    Length int64
+    Name *string
+    Offset int64
+    PhysicalPlacement *PhysicalPlacement
+    Version int64
 }

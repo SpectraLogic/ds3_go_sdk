@@ -14,10 +14,10 @@
 package models
 
 type Contents struct {
-    ETag *string `xml:"ETag"`
-    Key *string `xml:"Key"`
-    LastModified *string `xml:"LastModified"`
-    Owner User `xml:"Owner"`
-    Size int64 `xml:"Size"`
-    StorageClass *string `xml:"StorageClass"`
+    ETag *string
+    Key *string
+    LastModified *string
+    Owner User
+    Size int64
+    StorageClass *string
 }

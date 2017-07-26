@@ -14,5 +14,5 @@
 package models
 
 type JobCreatedNotificationRegistrationList struct {
-    JobCreatedNotificationRegistrations []JobCreatedNotificationRegistration `xml:"JobCreatedNotificationRegistration"`
+    JobCreatedNotificationRegistrations []JobCreatedNotificationRegistration
 }

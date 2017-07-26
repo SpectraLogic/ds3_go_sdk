@@ -14,5 +14,5 @@
 package models
 
 type S3ObjectCachedNotificationRegistrationList struct {
-    S3ObjectCachedNotificationRegistrations []S3ObjectCachedNotificationRegistration `xml:"S3ObjectCachedNotificationRegistration"`
+    S3ObjectCachedNotificationRegistrations []S3ObjectCachedNotificationRegistration
 }

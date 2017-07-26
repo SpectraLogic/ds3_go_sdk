@@ -14,5 +14,5 @@
 package models
 
 type StorageDomainFailureNotificationRegistrationList struct {
-    StorageDomainFailureNotificationRegistrations []StorageDomainFailureNotificationRegistration `xml:"StorageDomainFailureNotificationRegistration"`
+    StorageDomainFailureNotificationRegistrations []StorageDomainFailureNotificationRegistration
 }

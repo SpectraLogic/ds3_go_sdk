@@ -14,16 +14,16 @@
 package models
 
 type DetailedTapePartition struct {
-    DriveType *TapeDriveType `xml:"DriveType"`
-    DriveTypes []TapeDriveType `xml:"DriveTypes"`
-    ErrorMessage *string `xml:"ErrorMessage"`
-    Id string `xml:"Id"`
-    ImportExportConfiguration ImportExportConfiguration `xml:"ImportExportConfiguration"`
-    LibraryId string `xml:"LibraryId"`
-    Name *string `xml:"Name"`
-    Quiesced Quiesced `xml:"Quiesced"`
-    SerialId *string `xml:"SerialId"`
-    SerialNumber *string `xml:"SerialNumber"`
-    State TapePartitionState `xml:"State"`
-    TapeTypes []TapeType `xml:"TapeTypes"`
+    DriveType *TapeDriveType
+    DriveTypes []TapeDriveType
+    ErrorMessage *string
+    Id string
+    ImportExportConfiguration ImportExportConfiguration
+    LibraryId string
+    Name *string
+    Quiesced Quiesced
+    SerialId *string
+    SerialNumber *string
+    State TapePartitionState
+    TapeTypes []TapeType
 }

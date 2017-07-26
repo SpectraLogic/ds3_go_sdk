@@ -14,21 +14,21 @@
 package models
 
 type DataPolicy struct {
-    AlwaysForcePutJobCreation bool `xml:"AlwaysForcePutJobCreation"`
-    AlwaysMinimizeSpanningAcrossMedia bool `xml:"AlwaysMinimizeSpanningAcrossMedia"`
-    AlwaysReplicateDeletes bool `xml:"AlwaysReplicateDeletes"`
-    BlobbingEnabled bool `xml:"BlobbingEnabled"`
-    ChecksumType ChecksumType `xml:"ChecksumType"`
-    CreationDate string `xml:"CreationDate"`
-    DefaultBlobSize *int64 `xml:"DefaultBlobSize"`
-    DefaultGetJobPriority Priority `xml:"DefaultGetJobPriority"`
-    DefaultPutJobPriority Priority `xml:"DefaultPutJobPriority"`
-    DefaultVerifyAfterWrite bool `xml:"DefaultVerifyAfterWrite"`
-    DefaultVerifyJobPriority Priority `xml:"DefaultVerifyJobPriority"`
-    EndToEndCrcRequired bool `xml:"EndToEndCrcRequired"`
-    Id string `xml:"Id"`
-    LtfsObjectNamingAllowed bool `xml:"LtfsObjectNamingAllowed"`
-    Name *string `xml:"Name"`
-    RebuildPriority Priority `xml:"RebuildPriority"`
-    Versioning VersioningLevel `xml:"Versioning"`
+    AlwaysForcePutJobCreation bool
+    AlwaysMinimizeSpanningAcrossMedia bool
+    AlwaysReplicateDeletes bool
+    BlobbingEnabled bool
+    ChecksumType ChecksumType
+    CreationDate string
+    DefaultBlobSize *int64
+    DefaultGetJobPriority Priority
+    DefaultPutJobPriority Priority
+    DefaultVerifyAfterWrite bool
+    DefaultVerifyJobPriority Priority
+    EndToEndCrcRequired bool
+    Id string
+    LtfsObjectNamingAllowed bool
+    Name *string
+    RebuildPriority Priority
+    Versioning VersioningLevel
 }

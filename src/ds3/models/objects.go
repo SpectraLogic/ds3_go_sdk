@@ -14,8 +14,8 @@
 package models
 
 type Objects struct {
-    ChunkId string `xml:"ChunkId,attr"`
-    ChunkNumber int `xml:"ChunkNumber,attr"`
-    NodeId *string `xml:"NodeId,attr"`
-    Objects []BulkObject `xml:"Object"`
+    ChunkId string
+    ChunkNumber int
+    NodeId *string
+    Objects []BulkObject
 }

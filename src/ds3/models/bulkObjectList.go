@@ -14,5 +14,5 @@
 package models
 
 type BulkObjectList struct {
-    Objects []BulkObject `xml:"Object"`
+    Objects []BulkObject
 }

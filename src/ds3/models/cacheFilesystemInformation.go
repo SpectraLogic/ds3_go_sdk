@@ -14,11 +14,11 @@
 package models
 
 type CacheFilesystemInformation struct {
-    AvailableCapacityInBytes int64 `xml:"AvailableCapacityInBytes"`
-    CacheFilesystem CacheFilesystem `xml:"CacheFilesystem"`
-    Entries []CacheEntryInformation `xml:"Entries"`
-    Summary *string `xml:"Summary"`
-    TotalCapacityInBytes int64 `xml:"TotalCapacityInBytes"`
-    UnavailableCapacityInBytes int64 `xml:"UnavailableCapacityInBytes"`
-    UsedCapacityInBytes int64 `xml:"UsedCapacityInBytes"`
+    AvailableCapacityInBytes int64
+    CacheFilesystem CacheFilesystem
+    Entries []CacheEntryInformation
+    Summary *string
+    TotalCapacityInBytes int64
+    UnavailableCapacityInBytes int64
+    UsedCapacityInBytes int64
 }

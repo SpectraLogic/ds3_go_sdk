@@ -14,6 +14,6 @@
 package models
 
 type HealthVerificationResult struct {
-    DatabaseFilesystemFreeSpace DatabasePhysicalSpaceState `xml:"DatabaseFilesystemFreeSpace"`
-    MsRequiredToVerifyDataPlannerHealth int64 `xml:"MsRequiredToVerifyDataPlannerHealth"`
+    DatabaseFilesystemFreeSpace DatabasePhysicalSpaceState
+    MsRequiredToVerifyDataPlannerHealth int64
 }

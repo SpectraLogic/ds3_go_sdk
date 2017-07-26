@@ -14,8 +14,8 @@
 package models
 
 type S3TargetReadPreference struct {
-    BucketId string `xml:"BucketId"`
-    Id string `xml:"Id"`
-    ReadPreference TargetReadPreferenceType `xml:"ReadPreference"`
-    TargetId string `xml:"TargetId"`
+    BucketId string
+    Id string
+    ReadPreference TargetReadPreferenceType
+    TargetId string
 }

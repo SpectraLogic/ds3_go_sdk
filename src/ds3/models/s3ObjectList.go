@@ -14,5 +14,5 @@
 package models
 
 type S3ObjectList struct {
-    S3Objects []S3Object `xml:"S3Object"`
+    S3Objects []S3Object
 }

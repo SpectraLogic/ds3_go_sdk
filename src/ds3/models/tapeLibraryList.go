@@ -14,5 +14,5 @@
 package models
 
 type TapeLibraryList struct {
-    TapeLibraries []TapeLibrary `xml:"TapeLibrary"`
+    TapeLibraries []TapeLibrary
 }

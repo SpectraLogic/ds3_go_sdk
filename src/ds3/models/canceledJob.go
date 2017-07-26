@@ -14,21 +14,21 @@
 package models
 
 type CanceledJob struct {
-    BucketId string `xml:"BucketId"`
-    CachedSizeInBytes int64 `xml:"CachedSizeInBytes"`
-    CanceledDueToTimeout bool `xml:"CanceledDueToTimeout"`
-    ChunkClientProcessingOrderGuarantee JobChunkClientProcessingOrderGuarantee `xml:"ChunkClientProcessingOrderGuarantee"`
-    CompletedSizeInBytes int64 `xml:"CompletedSizeInBytes"`
-    CreatedAt string `xml:"CreatedAt"`
-    DateCanceled string `xml:"DateCanceled"`
-    ErrorMessage *string `xml:"ErrorMessage"`
-    Id string `xml:"Id"`
-    Naked bool `xml:"Naked"`
-    Name *string `xml:"Name"`
-    OriginalSizeInBytes int64 `xml:"OriginalSizeInBytes"`
-    Priority Priority `xml:"Priority"`
-    Rechunked *string `xml:"Rechunked"`
-    RequestType JobRequestType `xml:"RequestType"`
-    Truncated bool `xml:"Truncated"`
-    UserId string `xml:"UserId"`
+    BucketId string
+    CachedSizeInBytes int64
+    CanceledDueToTimeout bool
+    ChunkClientProcessingOrderGuarantee JobChunkClientProcessingOrderGuarantee
+    CompletedSizeInBytes int64
+    CreatedAt string
+    DateCanceled string
+    ErrorMessage *string
+    Id string
+    Naked bool
+    Name *string
+    OriginalSizeInBytes int64
+    Priority Priority
+    Rechunked *string
+    RequestType JobRequestType
+    Truncated bool
+    UserId string
 }

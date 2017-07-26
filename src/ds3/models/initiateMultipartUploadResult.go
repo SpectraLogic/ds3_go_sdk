@@ -14,7 +14,7 @@
 package models
 
 type InitiateMultipartUploadResult struct {
-    Bucket *string `xml:"Bucket"`
-    Key *string `xml:"Key"`
-    UploadId *string `xml:"UploadId"`
+    Bucket *string
+    Key *string
+    UploadId *string
 }

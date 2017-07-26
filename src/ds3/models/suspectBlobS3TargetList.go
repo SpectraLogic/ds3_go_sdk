@@ -14,5 +14,5 @@
 package models
 
 type SuspectBlobS3TargetList struct {
-    SuspectBlobS3Targets []SuspectBlobS3Target `xml:"SuspectBlobS3Target"`
+    SuspectBlobS3Targets []SuspectBlobS3Target
 }

@@ -14,18 +14,18 @@
 package models
 
 type StorageDomain struct {
-    AutoEjectMediaFullThreshold *int64 `xml:"AutoEjectMediaFullThreshold"`
-    AutoEjectUponCron *string `xml:"AutoEjectUponCron"`
-    AutoEjectUponJobCancellation bool `xml:"AutoEjectUponJobCancellation"`
-    AutoEjectUponJobCompletion bool `xml:"AutoEjectUponJobCompletion"`
-    AutoEjectUponMediaFull bool `xml:"AutoEjectUponMediaFull"`
-    Id string `xml:"Id"`
-    LtfsFileNaming LtfsFileNamingMode `xml:"LtfsFileNaming"`
-    MaxTapeFragmentationPercent int `xml:"MaxTapeFragmentationPercent"`
-    MaximumAutoVerificationFrequencyInDays *int `xml:"MaximumAutoVerificationFrequencyInDays"`
-    MediaEjectionAllowed bool `xml:"MediaEjectionAllowed"`
-    Name *string `xml:"Name"`
-    SecureMediaAllocation bool `xml:"SecureMediaAllocation"`
-    VerifyPriorToAutoEject *Priority `xml:"VerifyPriorToAutoEject"`
-    WriteOptimization WriteOptimization `xml:"WriteOptimization"`
+    AutoEjectMediaFullThreshold *int64
+    AutoEjectUponCron *string
+    AutoEjectUponJobCancellation bool
+    AutoEjectUponJobCompletion bool
+    AutoEjectUponMediaFull bool
+    Id string
+    LtfsFileNaming LtfsFileNamingMode
+    MaxTapeFragmentationPercent int
+    MaximumAutoVerificationFrequencyInDays *int
+    MediaEjectionAllowed bool
+    Name *string
+    SecureMediaAllocation bool
+    VerifyPriorToAutoEject *Priority
+    WriteOptimization WriteOptimization
 }

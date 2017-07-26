@@ -14,5 +14,5 @@
 package models
 
 type DataPersistenceRuleList struct {
-    DataPersistenceRules []DataPersistenceRule `xml:"DataPersistenceRule"`
+    DataPersistenceRules []DataPersistenceRule
 }

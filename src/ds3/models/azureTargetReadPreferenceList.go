@@ -14,5 +14,5 @@
 package models
 
 type AzureTargetReadPreferenceList struct {
-    AzureTargetReadPreferences []AzureTargetReadPreference `xml:"AzureTargetReadPreference"`
+    AzureTargetReadPreferences []AzureTargetReadPreference
 }

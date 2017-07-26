@@ -14,8 +14,8 @@
 package models
 
 type MultiPartUpload struct {
-    Initiated string `xml:"Initiated"`
-    Key *string `xml:"Key"`
-    Owner User `xml:"Owner"`
-    UploadId string `xml:"UploadId"`
+    Initiated string
+    Key *string
+    Owner User
+    UploadId string
 }

@@ -14,7 +14,7 @@
 package models
 
 type Group struct {
-    BuiltIn bool `xml:"BuiltIn"`
-    Id string `xml:"Id"`
-    Name *string `xml:"Name"`
+    BuiltIn bool
+    Id string
+    Name *string
 }

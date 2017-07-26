@@ -14,5 +14,5 @@
 package models
 
 type StorageDomainFailureList struct {
-    StorageDomainFailures []StorageDomainFailure `xml:"StorageDomainFailure"`
+    StorageDomainFailures []StorageDomainFailure
 }

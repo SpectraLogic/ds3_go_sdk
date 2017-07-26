@@ -14,6 +14,6 @@
 package models
 
 type TapeFailure struct {
-    Cause *string `xml:"Cause"`
-    Tape Tape `xml:"Tape"`
+    Cause *string
+    Tape Tape
 }

@@ -14,21 +14,21 @@
 package models
 
 type Job struct {
-    Aggregating bool `xml:"Aggregating,attr"`
-    BucketName *string `xml:"BucketName,attr"`
-    CachedSizeInBytes int64 `xml:"CachedSizeInBytes,attr"`
-    ChunkClientProcessingOrderGuarantee JobChunkClientProcessingOrderGuarantee `xml:"ChunkClientProcessingOrderGuarantee,attr"`
-    CompletedSizeInBytes int64 `xml:"CompletedSizeInBytes,attr"`
-    EntirelyInCache *bool `xml:"EntirelyInCache,attr"`
-    JobId string `xml:"JobId,attr"`
-    Naked bool `xml:"Naked,attr"`
-    Name *string `xml:"Name,attr"`
-    Nodes []JobNode `xml:"Nodes>Node"`
-    OriginalSizeInBytes int64 `xml:"OriginalSizeInBytes,attr"`
-    Priority Priority `xml:"Priority,attr"`
-    RequestType JobRequestType `xml:"RequestType,attr"`
-    StartDate string `xml:"StartDate,attr"`
-    Status JobStatus `xml:"Status,attr"`
-    UserId string `xml:"UserId,attr"`
-    UserName *string `xml:"UserName,attr"`
+    Aggregating bool
+    BucketName *string
+    CachedSizeInBytes int64
+    ChunkClientProcessingOrderGuarantee JobChunkClientProcessingOrderGuarantee
+    CompletedSizeInBytes int64
+    EntirelyInCache *bool
+    JobId string
+    Naked bool
+    Name *string
+    Nodes []JobNode
+    OriginalSizeInBytes int64
+    Priority Priority
+    RequestType JobRequestType
+    StartDate string
+    Status JobStatus
+    UserId string
+    UserName *string
 }

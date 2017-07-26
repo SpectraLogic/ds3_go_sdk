@@ -14,7 +14,7 @@
 package models
 
 type MultiPartUploadPart struct {
-    ETag *string `xml:"ETag"`
-    LastModified string `xml:"LastModified"`
-    PartNumber int `xml:"PartNumber"`
+    ETag *string
+    LastModified string
+    PartNumber int
 }

@@ -14,5 +14,5 @@
 package models
 
 type CompletedJobList struct {
-    CompletedJobs []CompletedJob `xml:"CompletedJob"`
+    CompletedJobs []CompletedJob
 }

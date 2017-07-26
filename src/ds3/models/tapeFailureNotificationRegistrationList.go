@@ -14,5 +14,5 @@
 package models
 
 type TapeFailureNotificationRegistrationList struct {
-    TapeFailureNotificationRegistrations []TapeFailureNotificationRegistration `xml:"TapeFailureNotificationRegistration"`
+    TapeFailureNotificationRegistrations []TapeFailureNotificationRegistration
 }

@@ -14,5 +14,5 @@
 package models
 
 type DegradedBlobList struct {
-    DegradedBlobs []DegradedBlob `xml:"DegradedBlob"`
+    DegradedBlobs []DegradedBlob
 }

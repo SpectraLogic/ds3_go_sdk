@@ -14,5 +14,5 @@
 package models
 
 type AzureTargetBucketNameList struct {
-    AzureTargetBucketNames []AzureTargetBucketName `xml:"AzureTargetBucketName"`
+    AzureTargetBucketNames []AzureTargetBucketName
 }

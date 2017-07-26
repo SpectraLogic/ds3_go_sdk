@@ -14,6 +14,6 @@
 package models
 
 type DeleteResult struct {
-    DeletedObjects []S3ObjectToDelete `xml:"Deleted"`
-    Errors []DeleteObjectError `xml:"Error"`
+    DeletedObjects []S3ObjectToDelete
+    Errors []DeleteObjectError
 }

@@ -14,12 +14,12 @@
 package models
 
 type Bucket struct {
-    CreationDate string `xml:"CreationDate"`
-    DataPolicyId string `xml:"DataPolicyId"`
-    Empty *bool `xml:"Empty"`
-    Id string `xml:"Id"`
-    LastPreferredChunkSizeInBytes *int64 `xml:"LastPreferredChunkSizeInBytes"`
-    LogicalUsedCapacity *int64 `xml:"LogicalUsedCapacity"`
-    Name *string `xml:"Name"`
-    UserId string `xml:"UserId"`
+    CreationDate string
+    DataPolicyId string
+    Empty *bool
+    Id string
+    LastPreferredChunkSizeInBytes *int64
+    LogicalUsedCapacity *int64
+    Name *string
+    UserId string
 }

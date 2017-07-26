@@ -14,5 +14,5 @@
 package models
 
 type TapePartitionFailureNotificationRegistrationList struct {
-    TapePartitionFailureNotificationRegistrations []TapePartitionFailureNotificationRegistration `xml:"TapePartitionFailureNotificationRegistration"`
+    TapePartitionFailureNotificationRegistrations []TapePartitionFailureNotificationRegistration
 }

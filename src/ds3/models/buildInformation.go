@@ -14,7 +14,7 @@
 package models
 
 type BuildInformation struct {
-    Branch *string `xml:"Branch"`
-    Revision *string `xml:"Revision"`
-    Version *string `xml:"Version"`
+    Branch *string
+    Revision *string
+    Version *string
 }

@@ -14,11 +14,11 @@
 package models
 
 type S3Object struct {
-    BucketId string `xml:"BucketId"`
-    CreationDate *string `xml:"CreationDate"`
-    Id string `xml:"Id"`
-    Latest bool `xml:"Latest"`
-    Name *string `xml:"Name"`
-    Type S3ObjectType `xml:"Type"`
-    Version int64 `xml:"Version"`
+    BucketId string
+    CreationDate *string
+    Id string
+    Latest bool
+    Name *string
+    Type S3ObjectType
+    Version int64
 }

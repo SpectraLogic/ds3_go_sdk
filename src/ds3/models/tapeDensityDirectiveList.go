@@ -14,5 +14,5 @@
 package models
 
 type TapeDensityDirectiveList struct {
-    TapeDensityDirectives []TapeDensityDirective `xml:"TapeDensityDirective"`
+    TapeDensityDirectives []TapeDensityDirective
 }

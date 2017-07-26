@@ -14,9 +14,9 @@
 package models
 
 type StorageDomainFailure struct {
-    Date string `xml:"Date"`
-    ErrorMessage *string `xml:"ErrorMessage"`
-    Id string `xml:"Id"`
-    StorageDomainId string `xml:"StorageDomainId"`
-    Type StorageDomainFailureType `xml:"Type"`
+    Date string
+    ErrorMessage *string
+    Id string
+    StorageDomainId string
+    Type StorageDomainFailureType
 }

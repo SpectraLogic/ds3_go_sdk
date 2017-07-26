@@ -14,7 +14,7 @@
 package models
 
 type PoolPartition struct {
-    Id string `xml:"Id"`
-    Name *string `xml:"Name"`
-    Type PoolType `xml:"Type"`
+    Id string
+    Name *string
+    Type PoolType
 }

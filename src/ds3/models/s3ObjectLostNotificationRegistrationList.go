@@ -14,5 +14,5 @@
 package models
 
 type S3ObjectLostNotificationRegistrationList struct {
-    S3ObjectLostNotificationRegistrations []S3ObjectLostNotificationRegistration `xml:"S3ObjectLostNotificationRegistration"`
+    S3ObjectLostNotificationRegistrations []S3ObjectLostNotificationRegistration
 }

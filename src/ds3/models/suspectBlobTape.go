@@ -14,8 +14,8 @@
 package models
 
 type SuspectBlobTape struct {
-    BlobId string `xml:"BlobId"`
-    Id string `xml:"Id"`
-    OrderIndex int `xml:"OrderIndex"`
-    TapeId string `xml:"TapeId"`
+    BlobId string
+    Id string
+    OrderIndex int
+    TapeId string
 }

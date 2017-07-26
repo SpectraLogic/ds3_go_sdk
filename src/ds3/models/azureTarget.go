@@ -14,17 +14,17 @@
 package models
 
 type AzureTarget struct {
-    AccountKey *string `xml:"AccountKey"`
-    AccountName *string `xml:"AccountName"`
-    AutoVerifyFrequencyInDays *int `xml:"AutoVerifyFrequencyInDays"`
-    CloudBucketPrefix *string `xml:"CloudBucketPrefix"`
-    CloudBucketSuffix *string `xml:"CloudBucketSuffix"`
-    DefaultReadPreference TargetReadPreferenceType `xml:"DefaultReadPreference"`
-    Https bool `xml:"Https"`
-    Id string `xml:"Id"`
-    LastFullyVerified *string `xml:"LastFullyVerified"`
-    Name *string `xml:"Name"`
-    PermitGoingOutOfSync bool `xml:"PermitGoingOutOfSync"`
-    Quiesced Quiesced `xml:"Quiesced"`
-    State TargetState `xml:"State"`
+    AccountKey *string
+    AccountName *string
+    AutoVerifyFrequencyInDays *int
+    CloudBucketPrefix *string
+    CloudBucketSuffix *string
+    DefaultReadPreference TargetReadPreferenceType
+    Https bool
+    Id string
+    LastFullyVerified *string
+    Name *string
+    PermitGoingOutOfSync bool
+    Quiesced Quiesced
+    State TargetState
 }

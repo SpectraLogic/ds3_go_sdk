@@ -14,9 +14,9 @@
 package models
 
 type TapePartitionFailure struct {
-    Date string `xml:"Date"`
-    ErrorMessage *string `xml:"ErrorMessage"`
-    Id string `xml:"Id"`
-    PartitionId string `xml:"PartitionId"`
-    Type TapePartitionFailureType `xml:"Type"`
+    Date string
+    ErrorMessage *string
+    Id string
+    PartitionId string
+    Type TapePartitionFailureType
 }

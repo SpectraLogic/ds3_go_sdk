@@ -14,12 +14,12 @@
 package models
 
 type S3DataReplicationRule struct {
-    DataPolicyId string `xml:"DataPolicyId"`
-    Id string `xml:"Id"`
-    InitialDataPlacement S3InitialDataPlacementPolicy `xml:"InitialDataPlacement"`
-    MaxBlobPartSizeInBytes int64 `xml:"MaxBlobPartSizeInBytes"`
-    ReplicateDeletes bool `xml:"ReplicateDeletes"`
-    State DataPlacementRuleState `xml:"State"`
-    TargetId string `xml:"TargetId"`
-    Type DataReplicationRuleType `xml:"Type"`
+    DataPolicyId string
+    Id string
+    InitialDataPlacement S3InitialDataPlacementPolicy
+    MaxBlobPartSizeInBytes int64
+    ReplicateDeletes bool
+    State DataPlacementRuleState
+    TargetId string
+    Type DataReplicationRuleType
 }

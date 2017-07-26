@@ -14,9 +14,9 @@
 package models
 
 type Error struct {
-    Code *string `xml:"Code"`
-    HttpErrorCode int `xml:"HttpErrorCode"`
-    Message *string `xml:"Message"`
-    Resource *string `xml:"Resource"`
-    ResourceId int64 `xml:"ResourceId"`
+    Code *string
+    HttpErrorCode int
+    Message *string
+    Resource *string
+    ResourceId int64
 }

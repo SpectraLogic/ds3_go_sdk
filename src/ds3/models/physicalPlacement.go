@@ -14,9 +14,9 @@
 package models
 
 type PhysicalPlacement struct {
-    AzureTargets []AzureTarget `xml:"AzureTargets>AzureTarget"`
-    Ds3Targets []Ds3Target `xml:"Ds3Targets>Ds3Target"`
-    Pools []Pool `xml:"Pools>Pool"`
-    S3Targets []S3Target `xml:"S3Targets>S3Target"`
-    Tapes []Tape `xml:"Tapes>Tape"`
+    AzureTargets []AzureTarget
+    Ds3Targets []Ds3Target
+    Pools []Pool
+    S3Targets []S3Target
+    Tapes []Tape
 }

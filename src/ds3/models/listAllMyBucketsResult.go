@@ -14,6 +14,6 @@
 package models
 
 type ListAllMyBucketsResult struct {
-    Buckets []BucketDetails `xml:"Buckets>Bucket"`
-    Owner User `xml:"Owner"`
+    Buckets []BucketDetails
+    Owner User
 }
