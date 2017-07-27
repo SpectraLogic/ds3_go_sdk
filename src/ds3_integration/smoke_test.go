@@ -15,7 +15,6 @@ import (
     "testing"
     "log"
     "os"
-    "ds3/buildclient"
     "ds3"
     "ds3/models"
     "ds3_integration/utils"
@@ -25,43 +24,19 @@ import (
 )
 
 var client *ds3.Client
-var testBucket = "GoSmokeTestBucket"
-
-func setup() (*ds3.Client, error) {
-    // Build the client from environment variables
-    client, clientErr := buildclient.FromEnv()
-    if clientErr != nil {
-        return nil, clientErr
-    }
-
-    // Create the test bucket
-    putBucketErr := testutils.PutBucket(client, testBucket)
-    if putBucketErr != nil {
-        return nil, putBucketErr
-    }
-
-    return client, nil
-}
-
-func teardown() {
-    //Delete the test bucket
-    err := testutils.DeleteBucket(client, testBucket)
-    if err != nil {
-        log.Print(err)
-    }
-}
+var testBucket = "GoIntegrationTestBucket"
 
 func TestMain(m *testing.M) {
     var err error
     var exitVal int
-    client, err = setup()
+    client, err = testutils.SetupTestEnv(testBucket)
     if err != nil {
         log.Printf("Unable to setup test environment '%s'.", err.Error())
         exitVal = 1
     } else {
         exitVal = m.Run()
     }
-    teardown()
+    testutils.TeardownTestEnv(client, testBucket)
     os.Exit(exitVal)
 }
 
@@ -107,4 +82,86 @@ func TestObject(t *testing.T) {
             t.Error("Retrieved book does not match uploaded book.")
         }
     }
+}
+
+func TestBadBucket(t *testing.T) {
+    // Attempt to create a malformed bucket
+    badBucketName := ""
+    err := testutils.PutBucket(client, badBucketName)
+    ds3Testing.AssertBadStatusCodeError(t, 400, err)
+}
+
+func TestBucketAlreadyExists(t *testing.T) {
+    // Attempt to create a bucket that already exists
+    err := testutils.PutBucket(client, testBucket)
+    ds3Testing.AssertBadStatusCodeError(t, 409, err)
+}
+
+func TestDeleteEmptyBucket(t *testing.T) {
+    bucketName := "GoDeleteEmptyBucket"
+    putErr := testutils.PutBucketLogError(t, client, bucketName)
+    ds3Testing.AssertNilError(t, putErr)
+
+    //Delete bucket
+    deleteErr := testutils.DeleteBucketLogError(t, client, bucketName)
+    ds3Testing.AssertNilError(t, deleteErr)
+
+    //Verify bucket does not exist
+    _, getDeletedErr := testutils.GetBucket(client, bucketName)
+    ds3Testing.AssertBadStatusCodeError(t, 404, getDeletedErr)
+}
+
+func TestDeleteBucketMalformedName(t *testing.T) {
+    err := testutils.DeleteBucket(client, "")
+    ds3Testing.AssertBadStatusCodeError(t, 400, err)
+}
+
+func TestDeleteBucketNonexistent(t *testing.T) {
+    err := testutils.DeleteBucket(client, "not-here")
+    ds3Testing.AssertBadStatusCodeError(t, 404, err)
+}
+
+func TestDeleteBucketNonEmpty(t *testing.T) {
+    beowulf := "beowulf.txt"
+    bucketName := "GoTestDeleteBucketNonEmpty"
+
+    //Create test bucket
+    err := testutils.PutBucket(client, bucketName)
+    ds3Testing.AssertNilError(t, err)
+    defer testutils.DeleteBucketLogError(t, client, bucketName)
+
+    //Put object to test bucket
+    book, bookErr := testutils.LoadBookLogError(t, beowulf)
+    ds3Testing.AssertNilError(t, bookErr)
+    defer testutils.DeleteObjectLogError(t, client, bucketName, beowulf)
+
+    putObjErr := testutils.PutObjectLogError(t, client, bucketName, beowulf, book)
+    ds3Testing.AssertNilError(t, putObjErr)
+
+    //Attempt to delete non-empty bucket
+    deleteErr := testutils.DeleteBucket(client, bucketName)
+    ds3Testing.AssertBadStatusCodeError(t, 409, deleteErr)
+}
+
+func TestGetBucket(t *testing.T) {
+    response, err := testutils.GetBucket(client, testBucket)
+    ds3Testing.AssertNilError(t, err)
+    ds3Testing.AssertNonNilStringPtr(t, "Name", testBucket, response.ListBucketResult.Name)
+}
+
+func TestGetBucketNonexistent(t *testing.T) {
+    badBucketName := "not-there"
+    _, err := testutils.GetBucket(client, badBucketName)
+    ds3Testing.AssertBadStatusCodeError(t, 404, err)
+}
+
+func TestHeadBucket(t *testing.T) {
+    _, err := client.HeadBucket(models.NewHeadBucketRequest(testBucket))
+    ds3Testing.AssertNilError(t, err)
+}
+
+func TestHeadBucketNonExistent(t *testing.T) {
+    bucketName := "not-here"
+    _, err := client.HeadBucket(models.NewHeadBucketRequest(bucketName))
+    ds3Testing.AssertBadStatusCodeError(t, 404, err)
 }
