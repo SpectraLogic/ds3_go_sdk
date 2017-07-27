@@ -7,6 +7,8 @@ import (
     "io/ioutil"
     "ds3/networking"
     "errors"
+    "ds3/buildclient"
+    "log"
 )
 
 var bookPath = "./resources/books/"
@@ -158,4 +160,32 @@ func GetBucket(client *ds3.Client, bucketName string) (*models.GetBucketResponse
         return nil, nilResponse
     }
     return response, nil
+}
+
+// Sets up the test environment by creating a client from environment
+// variables and creating a test bucket
+func SetupTestEnv(test_bucket string) (*ds3.Client, error) {
+    // Build the client from environment variables
+    client, clientErr := buildclient.FromEnv()
+    if clientErr != nil {
+        return nil, clientErr
+    }
+
+    // Create the test bucket
+    putBucketErr := PutBucket(client, test_bucket)
+    if putBucketErr != nil {
+        return nil, putBucketErr
+    }
+
+    return client, nil
+}
+
+// Tears down the test environment by deleting all contents in the
+// test bucket
+func TeardownTestEnv(client *ds3.Client, test_bucket string) {
+    //Delete the test bucket
+    err := DeleteBucket(client, test_bucket)
+    if err != nil {
+        log.Print(err)
+    }
 }

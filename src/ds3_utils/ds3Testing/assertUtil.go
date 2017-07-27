@@ -11,7 +11,11 @@
 
 package ds3Testing
 
-import "testing"
+import (
+    "testing"
+    "ds3/models"
+    "reflect"
+)
 
 // Asserts if a specified bool pointer has the expected value. If not, Fatal.
 func AssertNonNilBoolPtr(t *testing.T, label string, expected bool, actual *bool) {
@@ -106,4 +110,18 @@ func AssertNilError(t *testing.T, err error) {
     if err != nil {
         t.Fatalf("Unexpected error '%s'.", err.Error())
     }
+}
+
+func AssertBadStatusCodeError(t *testing.T, expectedCode int, err error) {
+    if err == nil {
+        t.Fatal("Expected a bad status code error, but the error is nil.")
+        return
+    }
+    if statusCodeErr, ok := err.(*models.BadStatusCodeError); ok {
+        if statusCodeErr.ActualStatusCode != expectedCode {
+            t.Fatalf("Expected a BadStatusCode of '%d' but got '%d'.", expectedCode, statusCodeErr.ActualStatusCode)
+        }
+        return
+    }
+    t.Fatalf("Expected '*models.BadStatusCodeError' but instead got '%v'.", reflect.TypeOf(err))
 }
