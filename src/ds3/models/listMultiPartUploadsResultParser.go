@@ -21,7 +21,9 @@ func (listMultiPartUploadsResult *ListMultiPartUploadsResult) parse(xmlNode *Xml
         case "Bucket":
             listMultiPartUploadsResult.Bucket = parseNullableString(child.Content)
         case "CommonPrefixes":
-            listMultiPartUploadsResult.CommonPrefixes = parseStringSlice("Prefix", child.Children, aggErr)
+            var prefixes []string
+            prefixes = parseStringSlice("Prefix", child.Children, aggErr)
+            listMultiPartUploadsResult.CommonPrefixes = append(listMultiPartUploadsResult.CommonPrefixes, prefixes...)
         case "Delimiter":
             listMultiPartUploadsResult.Delimiter = parseNullableString(child.Content)
         case "KeyMarker":
