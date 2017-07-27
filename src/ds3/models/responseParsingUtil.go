@@ -256,7 +256,7 @@ func parseStringSlice(tagName string, xmlNodes []XmlNode, aggErr *AggregateError
             var curResult string = string(curXmlNode.Content)
             result = append(result, curResult)
         } else {
-            log.Printf("WARNING: Discovered unexpected xml tag '%s' when expected tag '%s' when parsing Job struct.\n", curXmlNode.XMLName.Local, tagName)
+            log.Printf("WARNING: Discovered unexpected xml tag '%s' when expected tag '%s' when parsing string slice.\n", curXmlNode.XMLName.Local, tagName)
         }
     }
     return result

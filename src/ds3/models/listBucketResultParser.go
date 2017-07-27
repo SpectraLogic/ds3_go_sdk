@@ -19,7 +19,9 @@ func (listBucketResult *ListBucketResult) parse(xmlNode *XmlNode, aggErr *Aggreg
     for _, child := range xmlNode.Children {
         switch child.XMLName.Local {
         case "CommonPrefixes":
-            listBucketResult.CommonPrefixes = parseStringSlice("Prefix", child.Children, aggErr)
+            var prefixes []string
+            prefixes = parseStringSlice("Prefix", child.Children, aggErr)
+            listBucketResult.CommonPrefixes = append(listBucketResult.CommonPrefixes, prefixes...)
         case "CreationDate":
             listBucketResult.CreationDate = parseNullableString(child.Content)
         case "Delimiter":

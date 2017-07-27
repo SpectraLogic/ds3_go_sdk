@@ -149,6 +149,67 @@ func TestGetBucket(t *testing.T) {
     }
 }
 
+func TestGetBucketWithCommonPrefixes(t *testing.T) {
+    stringResponse := "<ListBucketResult><CommonPrefixes><Prefix>movies/</Prefix></CommonPrefixes><CommonPrefixes><Prefix>scores/</Prefix></CommonPrefixes><Contents><ETag/><Key>music.mp3</Key><LastModified/><Owner><DisplayName>jason</DisplayName><ID>a0b789ef-dcbd-4004-82af-6679a26329bf</ID></Owner><Size>0</Size><StorageClass/></Contents><Contents><ETag/><Key>song.mp3</Key><LastModified/><Owner><DisplayName>jason</DisplayName><ID>a0b789ef-dcbd-4004-82af-6679a26329bf</ID></Owner><Size>0</Size><StorageClass/></Contents><CreationDate>2017-03-23T23:26:34.000Z</CreationDate><Delimiter>/</Delimiter><IsTruncated>false</IsTruncated><Marker/><MaxKeys>1000</MaxKeys><Name>bucket1</Name><NextMarker/><Prefix/></ListBucketResult>"
+    keys := []string {
+        "music.mp3",
+        "song.mp3",
+    }
+
+    ids := []string {
+        "a0b789ef-dcbd-4004-82af-6679a26329bf",
+        "a0b789ef-dcbd-4004-82af-6679a26329bf",
+    }
+    expectedPrefixes := []string {
+        "movies/",
+        "scores/",
+    }
+
+    displayName := "jason"
+
+    // Create and run the mocked client.
+    bucketName := "bucket1"
+    delimiter := "/"
+    queryParams := &url.Values{"delimiter": []string{delimiter}}
+    response, err := mockedClient(t).
+        Expecting(networking.GET, "/" + bucketName, queryParams, &http.Header{}, nil).
+        Returning(200, stringResponse, nil).
+        GetBucket(models.NewGetBucketRequest(bucketName).WithDelimiter(&delimiter))
+
+    // Check the error result.
+    ds3Testing.AssertNilError(t, err)
+
+    // Check the response value.
+    if response == nil {
+        t.Fatal("Response was unexpectedly nil.")
+    }
+
+    if len(response.ListBucketResult.CommonPrefixes) != len(expectedPrefixes) {
+        t.Fatalf("Expected %d common prefixes but got %d.", len(expectedPrefixes), len(response.ListBucketResult.CommonPrefixes))
+    }
+    for i, prefix := range response.ListBucketResult.CommonPrefixes {
+        ds3Testing.AssertString(t, "CommonPrefix", expectedPrefixes[i], prefix)
+    }
+
+    if len(response.ListBucketResult.Objects) != len(keys) {
+        t.Fatalf("Expected %d objects but got %d.", len(keys), len(response.ListBucketResult.Objects))
+    }
+    ds3Testing.AssertNonNilStringPtr(t, "Name", bucketName, response.ListBucketResult.Name)
+    ds3Testing.AssertStringPtrIsNil(t, "Prefix", response.ListBucketResult.Prefix)
+    ds3Testing.AssertStringPtrIsNil(t, "Marker", response.ListBucketResult.Marker)
+    ds3Testing.AssertInt(t, "MaxKeys", 1000, response.ListBucketResult.MaxKeys)
+    ds3Testing.AssertBool(t, "Truncated", false, response.ListBucketResult.Truncated)
+    for i, object := range response.ListBucketResult.Objects {
+        ds3Testing.AssertNonNilStringPtr(t, "Key", keys[i], object.Key)
+        ds3Testing.AssertStringPtrIsNil(t, "LastModified", object.LastModified)
+        ds3Testing.AssertStringPtrIsNil(t, "ETag", object.ETag)
+        ds3Testing.AssertInt64(t, "Size", 0, object.Size)
+        ds3Testing.AssertStringPtrIsNil(t, "StorageClass", object.StorageClass)
+        ds3Testing.AssertString(t, "Id", ids[i], object.Owner.Id)
+        ds3Testing.AssertNonNilStringPtr(t, "DisplayName", displayName, object.Owner.DisplayName)
+    }
+}
+
 func TestPutBucket(t *testing.T) {
     // Create and run the mocked client.
     response, err := mockedClient(t).
