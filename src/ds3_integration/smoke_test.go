@@ -63,7 +63,7 @@ func TestBucket(t *testing.T) {
 }
 
 func TestObject(t *testing.T) {
-    testutils.DeleteBucketContents(client, testBucket)
+    defer testutils.DeleteBucketContents(client, testBucket)
     beowulf := "beowulf.txt"
 
     //Put object to BP
