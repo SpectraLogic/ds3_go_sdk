@@ -21,6 +21,7 @@ import (
     "io/ioutil"
     "bytes"
     "ds3_utils/ds3Testing"
+    "strconv"
 )
 
 var client *ds3.Client
@@ -62,6 +63,7 @@ func TestBucket(t *testing.T) {
 }
 
 func TestObject(t *testing.T) {
+    defer testutils.DeleteBucketContents(client, testBucket)
     beowulf := "beowulf.txt"
 
     //Put object to BP
@@ -164,4 +166,115 @@ func TestHeadBucketNonExistent(t *testing.T) {
     bucketName := "not-here"
     _, err := client.HeadBucket(models.NewHeadBucketRequest(bucketName))
     ds3Testing.AssertBadStatusCodeError(t, 404, err)
+}
+
+func TestGetBucketPagination(t *testing.T) {
+    defer testutils.DeleteBucketContents(client, testBucket)
+
+    var ds3Objects []models.Ds3Object
+    for i := 0; i < 15; i++ {
+        name := "file" + strconv.Itoa(i + 10) // Start at 10 to avoid alphabetical reordering 0, 1, 10, 11, etc
+        curObj := models.Ds3Object{Name:name, Size:0}
+        ds3Objects = append(ds3Objects, curObj)
+    }
+
+    _, putBulkErr := client.PutBulkJobSpectraS3(models.NewPutBulkJobSpectraS3Request(testBucket, ds3Objects))
+    ds3Testing.AssertNilError(t, putBulkErr)
+
+    //Test files indexed 0-4
+    result1, err := client.GetBucket(models.NewGetBucketRequest(testBucket).WithMaxKeys(5))
+    ds3Testing.AssertNilError(t, err)
+    ds3Testing.AssertInt(t, "Number of Objects", 5, len(result1.ListBucketResult.Objects))
+    if result1.ListBucketResult.NextMarker == nil {
+        t.Fatal("Expected NextMarker to be non-nil value.")
+    }
+    for i, obj := range result1.ListBucketResult.Objects {
+        ds3Testing.AssertNonNilStringPtr(t, "ObjectName", ds3Objects[i].Name, obj.Key)
+    }
+
+    // Test files indexed 5-9
+    result2, err := client.GetBucket(models.NewGetBucketRequest(testBucket).WithMaxKeys(5).WithMarker(result1.ListBucketResult.NextMarker))
+    ds3Testing.AssertNilError(t, err)
+    ds3Testing.AssertInt(t, "Number of Objects", 5, len(result2.ListBucketResult.Objects))
+    if result2.ListBucketResult.NextMarker == nil {
+        t.Fatal("Expected NextMarker to be non-nil value.")
+    }
+    for i, obj := range result2.ListBucketResult.Objects {
+        ds3Testing.AssertNonNilStringPtr(t, "ObjectName", ds3Objects[i + 5].Name, obj.Key)
+    }
+
+    // Test files indexed 10-14
+    result3, err := client.GetBucket(models.NewGetBucketRequest(testBucket).WithMaxKeys(5).WithMarker(result2.ListBucketResult.NextMarker))
+    ds3Testing.AssertNilError(t, err)
+    ds3Testing.AssertInt(t, "Number of Objects", 5, len(result3.ListBucketResult.Objects))
+    if result2.ListBucketResult.NextMarker == nil {
+        t.Fatal("Expected NextMarker to be non-nil value.")
+    }
+    for i, obj := range result3.ListBucketResult.Objects {
+        ds3Testing.AssertNonNilStringPtr(t, "ObjectName", ds3Objects[i + 10].Name, obj.Key)
+    }
+}
+
+func TestGetBucketDelimiter(t *testing.T) {
+    defer testutils.DeleteBucketContents(client, testBucket)
+
+    var ds3Objects []models.Ds3Object
+    for i := 0; i < 10; i++ {
+        name := "file" + strconv.Itoa(i)
+        curObj := models.Ds3Object{Name:name, Size:0}
+        ds3Objects = append(ds3Objects, curObj)
+    }
+    for i := 0; i < 10; i++ {
+        name := "dir/file" + strconv.Itoa(i)
+        curObj := models.Ds3Object{Name:name, Size:0}
+        ds3Objects = append(ds3Objects, curObj)
+    }
+
+    _, putBulkErr := client.PutBulkJobSpectraS3(models.NewPutBulkJobSpectraS3Request(testBucket, ds3Objects))
+    ds3Testing.AssertNilError(t, putBulkErr)
+
+    //Test files indexed 0-4
+    delimiter := "/"
+    result, err := client.GetBucket(models.NewGetBucketRequest(testBucket).WithDelimiter(&delimiter))
+    ds3Testing.AssertNilError(t, err)
+    ds3Testing.AssertInt(t, "Number of Objects", 10, len(result.ListBucketResult.Objects))
+    ds3Testing.AssertInt(t, "Number of Common Prefixes", 1, len(result.ListBucketResult.CommonPrefixes))
+    ds3Testing.AssertString(t, "CommonPrefix", "dir/", result.ListBucketResult.CommonPrefixes[0])
+}
+
+func TestBulkPut(t *testing.T) {
+    defer testutils.DeleteBucketContents(client, testBucket)
+
+    books, bookErr := testutils.GetResourceBooks()
+    ds3Testing.AssertNilError(t, bookErr)
+
+    ds3Objects, objErr := testutils.ConvertBooksToDs3Objects(books)
+    ds3Testing.AssertNilError(t, objErr)
+
+    // Create bulk put job
+    bulkPut, bulkPutErr := client.PutBulkJobSpectraS3(models.NewPutBulkJobSpectraS3Request(testBucket, ds3Objects))
+    ds3Testing.AssertNilError(t, bulkPutErr)
+
+    for _, chunk := range bulkPut.MasterObjectList.Objects {
+        allocateChunk, allocateErr := client.AllocateJobChunkSpectraS3(models.NewAllocateJobChunkSpectraS3Request(chunk.ChunkId))
+        ds3Testing.AssertNilError(t, allocateErr)
+        for _, obj := range allocateChunk.Objects.Objects {
+            content := books[*obj.Name]
+            _, putObjErr := client.PutObject(models.NewPutObjectRequest(testBucket, *obj.Name, content).
+                WithOffset(obj.Offset).
+                WithJob(bulkPut.MasterObjectList.JobId))
+
+            ds3Testing.AssertNilError(t, putObjErr)
+        }
+    }
+
+    // Verify books are in the bucket
+    getBucket, getBucketErr := client.GetBucket(models.NewGetBucketRequest(testBucket))
+    ds3Testing.AssertNilError(t, getBucketErr)
+    if len(getBucket.ListBucketResult.Objects) != len(books) {
+        t.Fatalf("Expected '%d' objects in bucket '%s', but found '%d'.", len(books), testBucket, len(getBucket.ListBucketResult.Objects))
+    }
+    for i, obj := range getBucket.ListBucketResult.Objects {
+        ds3Testing.AssertNonNilStringPtr(t, "BookName", testutils.BookTitles[i], obj.Key)
+    }
 }
