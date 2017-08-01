@@ -20,18 +20,17 @@ import (
 )
 
 type GetBlobsOnTapeSpectraS3Request struct {
-    content networking.ReaderWithSizeDecorator
     tapeId string
     queryParams *url.Values
 }
 
-func NewGetBlobsOnTapeSpectraS3Request(objects []Ds3Object, tapeId string) *GetBlobsOnTapeSpectraS3Request {
+//TODO stop special casing in autogen
+func NewGetBlobsOnTapeSpectraS3Request(tapeId string) *GetBlobsOnTapeSpectraS3Request {
     queryParams := &url.Values{}
     queryParams.Set("operation", "get_physical_placement")
 
     return &GetBlobsOnTapeSpectraS3Request{
         tapeId: tapeId,
-        content: buildDs3ObjectListStream(objects),
         queryParams: queryParams,
     }
 }
@@ -59,5 +58,5 @@ func (GetBlobsOnTapeSpectraS3Request) Header() *http.Header {
 }
 
 func (getBlobsOnTapeSpectraS3Request *GetBlobsOnTapeSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return getBlobsOnTapeSpectraS3Request.content
+    return nil
 }

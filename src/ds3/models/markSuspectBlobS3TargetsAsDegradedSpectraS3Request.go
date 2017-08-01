@@ -20,13 +20,16 @@ import (
 )
 
 type MarkSuspectBlobS3TargetsAsDegradedSpectraS3Request struct {
+    content networking.ReaderWithSizeDecorator
     queryParams *url.Values
 }
 
-func NewMarkSuspectBlobS3TargetsAsDegradedSpectraS3Request() *MarkSuspectBlobS3TargetsAsDegradedSpectraS3Request {
+//TODO special case request payload and add unit test
+func NewMarkSuspectBlobS3TargetsAsDegradedSpectraS3Request(ids []string) *MarkSuspectBlobS3TargetsAsDegradedSpectraS3Request {
     queryParams := &url.Values{}
 
     return &MarkSuspectBlobS3TargetsAsDegradedSpectraS3Request{
+        content: buildIdListPayload(ids),
         queryParams: queryParams,
     }
 }
@@ -57,6 +60,6 @@ func (MarkSuspectBlobS3TargetsAsDegradedSpectraS3Request) Header() *http.Header 
     return &http.Header{}
 }
 
-func (MarkSuspectBlobS3TargetsAsDegradedSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
+func (markSuspectBlobS3TargetsAsDegradedSpectraS3Request *MarkSuspectBlobS3TargetsAsDegradedSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
+    return markSuspectBlobS3TargetsAsDegradedSpectraS3Request.content
 }

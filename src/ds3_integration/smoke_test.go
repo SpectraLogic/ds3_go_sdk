@@ -171,14 +171,14 @@ func TestHeadBucketNonExistent(t *testing.T) {
 func TestGetBucketPagination(t *testing.T) {
     defer testutils.DeleteBucketContents(client, testBucket)
 
-    var ds3Objects []models.Ds3Object
+    var ds3PutObjects []models.Ds3PutObject
     for i := 0; i < 15; i++ {
         name := "file" + strconv.Itoa(i + 10) // Start at 10 to avoid alphabetical reordering 0, 1, 10, 11, etc
-        curObj := models.Ds3Object{Name:name, Size:0}
-        ds3Objects = append(ds3Objects, curObj)
+        curObj := models.Ds3PutObject{Name:name, Size:0}
+        ds3PutObjects = append(ds3PutObjects, curObj)
     }
 
-    _, putBulkErr := client.PutBulkJobSpectraS3(models.NewPutBulkJobSpectraS3Request(testBucket, ds3Objects))
+    _, putBulkErr := client.PutBulkJobSpectraS3(models.NewPutBulkJobSpectraS3Request(testBucket, ds3PutObjects))
     ds3Testing.AssertNilError(t, putBulkErr)
 
     //Test files indexed 0-4
@@ -189,7 +189,7 @@ func TestGetBucketPagination(t *testing.T) {
         t.Fatal("Expected NextMarker to be non-nil value.")
     }
     for i, obj := range result1.ListBucketResult.Objects {
-        ds3Testing.AssertNonNilStringPtr(t, "ObjectName", ds3Objects[i].Name, obj.Key)
+        ds3Testing.AssertNonNilStringPtr(t, "ObjectName", ds3PutObjects[i].Name, obj.Key)
     }
 
     // Test files indexed 5-9
@@ -200,7 +200,7 @@ func TestGetBucketPagination(t *testing.T) {
         t.Fatal("Expected NextMarker to be non-nil value.")
     }
     for i, obj := range result2.ListBucketResult.Objects {
-        ds3Testing.AssertNonNilStringPtr(t, "ObjectName", ds3Objects[i + 5].Name, obj.Key)
+        ds3Testing.AssertNonNilStringPtr(t, "ObjectName", ds3PutObjects[i + 5].Name, obj.Key)
     }
 
     // Test files indexed 10-14
@@ -211,26 +211,26 @@ func TestGetBucketPagination(t *testing.T) {
         t.Fatal("Expected NextMarker to be non-nil value.")
     }
     for i, obj := range result3.ListBucketResult.Objects {
-        ds3Testing.AssertNonNilStringPtr(t, "ObjectName", ds3Objects[i + 10].Name, obj.Key)
+        ds3Testing.AssertNonNilStringPtr(t, "ObjectName", ds3PutObjects[i + 10].Name, obj.Key)
     }
 }
 
 func TestGetBucketDelimiter(t *testing.T) {
     defer testutils.DeleteBucketContents(client, testBucket)
 
-    var ds3Objects []models.Ds3Object
+    var ds3PutObjects []models.Ds3PutObject
     for i := 0; i < 10; i++ {
         name := "file" + strconv.Itoa(i)
-        curObj := models.Ds3Object{Name:name, Size:0}
-        ds3Objects = append(ds3Objects, curObj)
+        curObj := models.Ds3PutObject{Name:name, Size:0}
+        ds3PutObjects = append(ds3PutObjects, curObj)
     }
     for i := 0; i < 10; i++ {
         name := "dir/file" + strconv.Itoa(i)
-        curObj := models.Ds3Object{Name:name, Size:0}
-        ds3Objects = append(ds3Objects, curObj)
+        curObj := models.Ds3PutObject{Name:name, Size:0}
+        ds3PutObjects = append(ds3PutObjects, curObj)
     }
 
-    _, putBulkErr := client.PutBulkJobSpectraS3(models.NewPutBulkJobSpectraS3Request(testBucket, ds3Objects))
+    _, putBulkErr := client.PutBulkJobSpectraS3(models.NewPutBulkJobSpectraS3Request(testBucket, ds3PutObjects))
     ds3Testing.AssertNilError(t, putBulkErr)
 
     //Test files indexed 0-4
@@ -276,5 +276,33 @@ func TestBulkPut(t *testing.T) {
     }
     for i, obj := range getBucket.ListBucketResult.Objects {
         ds3Testing.AssertNonNilStringPtr(t, "BookName", testutils.BookTitles[i], obj.Key)
+    }
+}
+
+func TestBulkGet(t *testing.T) {
+    defer testutils.DeleteBucketContents(client, testBucket)
+
+    bookErr := testutils.PutTestBooks(client, testBucket)
+    ds3Testing.AssertNilError(t, bookErr)
+
+    // Create bulk get job
+    bucketContents, bucketErr := client.GetBucket(models.NewGetBucketRequest(testBucket))
+    ds3Testing.AssertNilError(t, bucketErr)
+    ds3Testing.AssertInt(t, "Number of Objects on BP", 4, len(bucketContents.ListBucketResult.Objects))
+
+    objectNames := testutils.ConvertObjectsIntoObjectNameList(bucketContents.ListBucketResult.Objects)
+    bulkGet, bulkGetErr := client.GetBulkJobSpectraS3(models.NewGetBulkJobSpectraS3Request(testBucket, objectNames))
+    ds3Testing.AssertNilError(t, bulkGetErr)
+
+    availableChunks, chunksErr := client.GetJobChunkSpectraS3(models.NewGetJobChunkSpectraS3Request(bulkGet.MasterObjectList.JobId))
+    ds3Testing.AssertNilError(t, chunksErr)
+
+    // Get all objects and verify content
+    for _, obj := range availableChunks.Objects.Objects {
+        getObj, objErr := client.GetObject(models.NewGetObjectRequest(testBucket, *obj.Name))
+        ds3Testing.AssertNilError(t, objErr)
+
+        defer getObj.Content.Close()
+        testutils.VerifyBookContent(t, *obj.Name, getObj.Content)
     }
 }

@@ -21,8 +21,13 @@ func bulkGet(client *ds3.Client, args *Arguments) error {
         return err
     }
 
+    var ds3GetObjects []models.Ds3GetObject
+    for _, obj := range objects {
+        ds3GetObjects = append(ds3GetObjects, models.NewDs3GetObject(obj.Name))
+    }
+
     // Run request.
-    response, err := client.GetBulkJobSpectraS3(models.NewGetBulkJobSpectraS3Request(args.Bucket, objects))
+    response, err := client.GetBulkJobSpectraS3(models.NewGetBulkJobSpectraS3RequestWithPartialObjects(args.Bucket, ds3GetObjects))
     if err != nil {
         return err
     }

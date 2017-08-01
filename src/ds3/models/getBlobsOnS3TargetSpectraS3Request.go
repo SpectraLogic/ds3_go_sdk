@@ -20,18 +20,17 @@ import (
 )
 
 type GetBlobsOnS3TargetSpectraS3Request struct {
-    content networking.ReaderWithSizeDecorator
     s3Target string
     queryParams *url.Values
 }
 
-func NewGetBlobsOnS3TargetSpectraS3Request(objects []Ds3Object, s3Target string) *GetBlobsOnS3TargetSpectraS3Request {
+//TODO stop special casing in autogen
+func NewGetBlobsOnS3TargetSpectraS3Request(s3Target string) *GetBlobsOnS3TargetSpectraS3Request {
     queryParams := &url.Values{}
     queryParams.Set("operation", "get_physical_placement")
 
     return &GetBlobsOnS3TargetSpectraS3Request{
         s3Target: s3Target,
-        content: buildDs3ObjectListStream(objects),
         queryParams: queryParams,
     }
 }
@@ -58,6 +57,6 @@ func (GetBlobsOnS3TargetSpectraS3Request) Header() *http.Header {
     return &http.Header{}
 }
 
-func (getBlobsOnS3TargetSpectraS3Request *GetBlobsOnS3TargetSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return getBlobsOnS3TargetSpectraS3Request.content
+func (GetBlobsOnS3TargetSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
+    return nil
 }

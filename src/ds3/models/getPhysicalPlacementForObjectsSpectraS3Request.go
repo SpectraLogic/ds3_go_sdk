@@ -26,13 +26,14 @@ type GetPhysicalPlacementForObjectsSpectraS3Request struct {
     queryParams *url.Values
 }
 
-func NewGetPhysicalPlacementForObjectsSpectraS3Request(bucketName string, objects []Ds3Object) *GetPhysicalPlacementForObjectsSpectraS3Request {
+//TODO update special casing in autogen
+func NewGetPhysicalPlacementForObjectsSpectraS3Request(bucketName string, objectNames []string) *GetPhysicalPlacementForObjectsSpectraS3Request {
     queryParams := &url.Values{}
     queryParams.Set("operation", "get_physical_placement")
 
     return &GetPhysicalPlacementForObjectsSpectraS3Request{
         bucketName: bucketName,
-        content: buildDs3ObjectListStream(objects),
+        content: buildDs3ObjectStreamFromNames(objectNames),
         queryParams: queryParams,
     }
 }

@@ -33,13 +33,14 @@ type PutBulkJobSpectraS3Request struct {
     queryParams *url.Values
 }
 
-func NewPutBulkJobSpectraS3Request(bucketName string, objects []Ds3Object) *PutBulkJobSpectraS3Request {
+//TODO update autogen special casing
+func NewPutBulkJobSpectraS3Request(bucketName string, objects []Ds3PutObject) *PutBulkJobSpectraS3Request {
     queryParams := &url.Values{}
     queryParams.Set("operation", "start_bulk_put")
 
     return &PutBulkJobSpectraS3Request{
         bucketName: bucketName,
-        content: buildDs3ObjectListStream(objects),
+        content: buildDs3PutObjectListStream(objects),
         queryParams: queryParams,
     }
 }
