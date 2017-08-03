@@ -29,13 +29,12 @@ func VerifyBookContent(t *testing.T, bookName string, content io.ReadCloser) {
     }
 }
 
-func ConvertObjectsIntoDs3Objects(objects []models.Contents) []models.Ds3Object {
-    var ds3Objects []models.Ds3Object
+func ConvertObjectsIntoObjectNameList(objects []models.Contents) []string {
+    var objectNames []string
     for _, obj := range objects{
-        curDs3Object := models.Ds3Object{ Name:*obj.Key, Size:obj.Size, }
-        ds3Objects = append(ds3Objects, curDs3Object)
+        objectNames = append(objectNames, *obj.Key)
     }
-    return ds3Objects
+    return objectNames
 }
 
 //Puts the test books onto the BP
@@ -102,14 +101,14 @@ func GetResourceBooks() (map[string]networking.ReaderWithSizeDecorator, error) {
     return result, nil
 }
 
-func ConvertBooksToDs3Objects(books map[string]networking.ReaderWithSizeDecorator) ([]models.Ds3Object, error) {
-    var ds3Objects []models.Ds3Object
+func ConvertBooksToDs3Objects(books map[string]networking.ReaderWithSizeDecorator) ([]models.Ds3PutObject, error) {
+    var ds3Objects []models.Ds3PutObject
     for title, stream := range books {
         size, err := stream.Size()
         if err != nil {
             return nil, err
         }
-        var curObj models.Ds3Object = models.Ds3Object{
+        var curObj models.Ds3PutObject = models.Ds3PutObject{
             Name:title,
             Size:size,
         }

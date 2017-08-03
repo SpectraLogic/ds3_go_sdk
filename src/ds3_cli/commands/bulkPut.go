@@ -23,9 +23,9 @@ func bulkPut(client *ds3.Client, args *Arguments) error {
     }
 
     // Create object entities that we can query with for each file.
-    objects := make([]models.Ds3Object, len(files))
+    objects := make([]models.Ds3PutObject, len(files))
     for i, file := range files {
-        objects[i] = models.Ds3Object{Name: file.path, Size: file.size}
+        objects[i] = models.Ds3PutObject{Name: file.path, Size: file.size}
     }
 
     // Run request.

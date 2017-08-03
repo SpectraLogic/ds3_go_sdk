@@ -26,13 +26,14 @@ type VerifyPhysicalPlacementForObjectsSpectraS3Request struct {
     queryParams *url.Values
 }
 
-func NewVerifyPhysicalPlacementForObjectsSpectraS3Request(bucketName string, objects []Ds3Object) *VerifyPhysicalPlacementForObjectsSpectraS3Request {
+//TODO update request payload type to []string and conversion to stream
+func NewVerifyPhysicalPlacementForObjectsSpectraS3Request(bucketName string, objectNames []string) *VerifyPhysicalPlacementForObjectsSpectraS3Request {
     queryParams := &url.Values{}
     queryParams.Set("operation", "verify_physical_placement")
 
     return &VerifyPhysicalPlacementForObjectsSpectraS3Request{
         bucketName: bucketName,
-        content: buildDs3ObjectListStream(objects),
+        content: buildDs3ObjectStreamFromNames(objectNames),
         queryParams: queryParams,
     }
 }

@@ -481,10 +481,10 @@ func TestPutObjectWithMetaData(t *testing.T) {
 }
 
 func TestBulkPut(t *testing.T) {
-    runBulkTest(
+    runBulkPutTest(
         t,
         "start_bulk_put",
-        func(client *Client, objects []models.Ds3Object) ([]models.Objects, error) {
+        func(client *Client, objects []models.Ds3PutObject) ([]models.Objects, error) {
             request, err := client.PutBulkJobSpectraS3(models.NewPutBulkJobSpectraS3Request("bucketName", objects))
             return request.MasterObjectList.Objects, err
         },
@@ -492,26 +492,27 @@ func TestBulkPut(t *testing.T) {
 }
 
 func TestBulkGet(t *testing.T) {
-    runBulkTest(
+    runBulkGetTest(
         t,
         "start_bulk_get",
-        func(client *Client, objects []models.Ds3Object) ([]models.Objects, error) {
-            request, err := client.GetBulkJobSpectraS3(models.NewGetBulkJobSpectraS3Request("bucketName", objects))
+        func(client *Client, objects []models.Ds3GetObject) ([]models.Objects, error) {
+            request, err := client.GetBulkJobSpectraS3(models.NewGetBulkJobSpectraS3RequestWithPartialObjects("bucketName", objects))
             return request.MasterObjectList.Objects, err
         },
     )
 }
 
-type bulkTest func(*Client, []models.Ds3Object) ([]models.Objects, error)
+type bulkPutTest func(*Client, []models.Ds3PutObject) ([]models.Objects, error)
+type bulkGetTest func(*Client, []models.Ds3GetObject) ([]models.Objects, error)
 
-func runBulkTest(t *testing.T, operation string, callToTest bulkTest) {
+func runBulkPutTest(t *testing.T, operation string, callToTest bulkPutTest) {
     keys := []string { "file2", "file1", "file3" }
     sizes := []int64 { 1202, 256, 2523 }
 
     stringRequest := "<objects><object name=\"file1\" size=\"256\"></object><object name=\"file2\" size=\"1202\"></object><object name=\"file3\" size=\"2523\"></object></objects>"
     stringResponse := "<MasterObjectList><Objects><Object Name='file2' Length='1202'/><Object Name='file1' Length='256'/><Object Name='file3' Length='2523'/></Objects></MasterObjectList>"
 
-    inputObjects := []models.Ds3Object {
+    inputObjects := []models.Ds3PutObject {
         {Name: "file1", Size: 256 },
         {Name: "file2", Size: 1202 },
         {Name: "file3", Size: 2523 },
@@ -526,6 +527,51 @@ func runBulkTest(t *testing.T, operation string, callToTest bulkTest) {
             &http.Header{},
             &stringRequest,
         ).
+        Returning(200, stringResponse, nil)
+    response, err := callToTest(client, inputObjects)
+
+    // Check the error result.
+    ds3Testing.AssertNilError(t, err)
+
+    // Check the response value.
+    if response == nil {
+        t.Fatalf("Response was unexpectedly nil.")
+    }
+    if len(response) != 1 {
+        t.Fatalf("Expected 1 object list but got %d.", len(response))
+    }
+    if len(response[0].Objects) != len(keys) {
+        t.Fatalf("Expected %d objects but got %d.", len(keys), len(response[0].Objects))
+    }
+    for i, obj := range response[0].Objects {
+        ds3Testing.AssertNonNilStringPtr(t, "Name", keys[i], obj.Name)
+        ds3Testing.AssertInt64(t, "Length", sizes[i], obj.Length)
+    }
+}
+
+//todo
+func runBulkGetTest(t *testing.T, operation string, callToTest bulkGetTest) {
+    keys := []string { "file2", "file1", "file3" }
+    sizes := []int64 { 1202, 256, 2523 }
+
+    stringRequest := "<objects><object name=\"file1\"></object><object name=\"file2\"></object><object name=\"file3\"></object></objects>"
+    stringResponse := "<MasterObjectList><Objects><Object Name='file2' Length='1202'/><Object Name='file1' Length='256'/><Object Name='file3' Length='2523'/></Objects></MasterObjectList>"
+
+    inputObjects := []models.Ds3GetObject {
+        models.NewDs3GetObject("file1"),
+        models.NewDs3GetObject("file2"),
+        models.NewDs3GetObject("file3"),
+    }
+
+    // Create and run the mocked client.
+    client := mockedClient(t).
+        Expecting(
+        networking.PUT,
+        "/_rest_/bucket/bucketName",
+        &url.Values{"operation": []string{operation}},
+        &http.Header{},
+        &stringRequest,
+    ).
         Returning(200, stringResponse, nil)
     response, err := callToTest(client, inputObjects)
 

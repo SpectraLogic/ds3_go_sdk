@@ -20,13 +20,16 @@ import (
 )
 
 type ClearSuspectBlobTapesSpectraS3Request struct {
+    content networking.ReaderWithSizeDecorator
     queryParams *url.Values
 }
 
-func NewClearSuspectBlobTapesSpectraS3Request() *ClearSuspectBlobTapesSpectraS3Request {
+//TODO special case in autogen and add unit test
+func NewClearSuspectBlobTapesSpectraS3Request(ids []string) *ClearSuspectBlobTapesSpectraS3Request {
     queryParams := &url.Values{}
 
     return &ClearSuspectBlobTapesSpectraS3Request{
+        content: buildIdListPayload(ids),
         queryParams: queryParams,
     }
 }

@@ -31,13 +31,25 @@ type GetBulkJobSpectraS3Request struct {
     queryParams *url.Values
 }
 
-func NewGetBulkJobSpectraS3Request(bucketName string, objects []Ds3Object) *GetBulkJobSpectraS3Request {
+//TODO update autogen to add second constructor
+func NewGetBulkJobSpectraS3Request(bucketName string, objectNames []string) *GetBulkJobSpectraS3Request {
     queryParams := &url.Values{}
     queryParams.Set("operation", "start_bulk_get")
 
     return &GetBulkJobSpectraS3Request{
         bucketName: bucketName,
-        content: buildDs3ObjectListStream(objects),
+        content: buildDs3ObjectStreamFromNames(objectNames),
+        queryParams: queryParams,
+    }
+}
+
+func NewGetBulkJobSpectraS3RequestWithPartialObjects(bucketName string, objects []Ds3GetObject) *GetBulkJobSpectraS3Request {
+    queryParams := &url.Values{}
+    queryParams.Set("operation", "start_bulk_get")
+
+    return &GetBulkJobSpectraS3Request{
+        bucketName: bucketName,
+        content: buildDs3GetObjectListStream(objects),
         queryParams: queryParams,
     }
 }

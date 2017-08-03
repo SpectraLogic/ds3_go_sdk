@@ -20,13 +20,16 @@ import (
 )
 
 type ClearSuspectBlobS3TargetsSpectraS3Request struct {
+    content networking.ReaderWithSizeDecorator
     queryParams *url.Values
 }
 
-func NewClearSuspectBlobS3TargetsSpectraS3Request() *ClearSuspectBlobS3TargetsSpectraS3Request {
+//TODO special case in autogen and add unit test
+func NewClearSuspectBlobS3TargetsSpectraS3Request(ids []string) *ClearSuspectBlobS3TargetsSpectraS3Request {
     queryParams := &url.Values{}
 
     return &ClearSuspectBlobS3TargetsSpectraS3Request{
+        content: buildIdListPayload(ids),
         queryParams: queryParams,
     }
 }
@@ -57,6 +60,6 @@ func (ClearSuspectBlobS3TargetsSpectraS3Request) Header() *http.Header {
     return &http.Header{}
 }
 
-func (ClearSuspectBlobS3TargetsSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
+func (clearSuspectBlobS3TargetsSpectraS3Request *ClearSuspectBlobS3TargetsSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
     return nil
 }
