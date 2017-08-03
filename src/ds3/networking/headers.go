@@ -73,7 +73,7 @@ type signatureFields struct {
     Path                    string
 }
 
-func buildAuthHeaderValue(creds Credentials, fields signatureFields) (string) {
+func buildAuthHeaderValue(creds *Credentials, fields *signatureFields) (string) {
     // Build the string that we need to compute the MAC on.
     stringToSign := fmt.Sprintf(
         "%s\n%s\n%s\n%s\n%s%s",

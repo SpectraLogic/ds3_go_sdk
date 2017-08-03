@@ -12,8 +12,8 @@ type Network interface {
 }
 
 type ConnectionInfo struct {
-    Endpoint url.URL
-    Creds Credentials
+    Endpoint *url.URL
+    Creds *Credentials
     Proxy *url.URL
 }
 
@@ -94,7 +94,7 @@ func buildHttpRequest(conn *ConnectionInfo, ds3Request Ds3Request, stream Reader
     // Build the authentication
     now := getCurrentTime()
 
-    authHeaderVal := buildAuthHeaderValue(conn.Creds, signatureFields{
+    authHeaderVal := buildAuthHeaderValue(conn.Creds, &signatureFields{
         Verb: verb,
         ContentHash: ds3Request.GetChecksum().ContentHash,
         ContentType: ds3Request.Header().Get(ContentTypeKey),
@@ -129,7 +129,7 @@ func buildUrl(conn *ConnectionInfo, ds3Request Ds3Request) *url.URL {
     httpUrl := conn.Endpoint
     httpUrl.Path = ds3Request.Path()
     httpUrl.RawQuery = encodeQueryParams(ds3Request.QueryParams())
-    return &httpUrl
+    return httpUrl
 }
 
 // Percent encodes query parameters and constructs encoded string.

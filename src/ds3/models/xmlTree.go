@@ -19,7 +19,7 @@ import (
 
 type XmlNode struct {
     XMLName  xml.Name
-    Attrs    []xml.Attr `xml:"-"`
+    Attrs    []xml.Attr `xml:"-"` // Does not parse attributes in sax parser
     Content  []byte     `xml:",chardata"`
     Children []XmlNode     `xml:",any"`
 }

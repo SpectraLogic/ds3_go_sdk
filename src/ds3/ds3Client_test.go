@@ -509,7 +509,7 @@ func runBulkPutTest(t *testing.T, operation string, callToTest bulkPutTest) {
     keys := []string { "file2", "file1", "file3" }
     sizes := []int64 { 1202, 256, 2523 }
 
-    stringRequest := "<objects><object name=\"file1\" size=\"256\"></object><object name=\"file2\" size=\"1202\"></object><object name=\"file3\" size=\"2523\"></object></objects>"
+    stringRequest := "<Objects><Object Name=\"file1\" Size=\"256\"></Object><Object Name=\"file2\" Size=\"1202\"></Object><Object Name=\"file3\" Size=\"2523\"></Object></Objects>"
     stringResponse := "<MasterObjectList><Objects><Object Name='file2' Length='1202'/><Object Name='file1' Length='256'/><Object Name='file3' Length='2523'/></Objects></MasterObjectList>"
 
     inputObjects := []models.Ds3PutObject {
@@ -549,12 +549,11 @@ func runBulkPutTest(t *testing.T, operation string, callToTest bulkPutTest) {
     }
 }
 
-//todo
 func runBulkGetTest(t *testing.T, operation string, callToTest bulkGetTest) {
     keys := []string { "file2", "file1", "file3" }
     sizes := []int64 { 1202, 256, 2523 }
 
-    stringRequest := "<objects><object name=\"file1\"></object><object name=\"file2\"></object><object name=\"file3\"></object></objects>"
+    stringRequest := "<Objects><Object Name=\"file1\"></Object><Object Name=\"file2\"></Object><Object Name=\"file3\"></Object></Objects>"
     stringResponse := "<MasterObjectList><Objects><Object Name='file2' Length='1202'/><Object Name='file1' Length='256'/><Object Name='file3' Length='2523'/></Objects></MasterObjectList>"
 
     inputObjects := []models.Ds3GetObject {
