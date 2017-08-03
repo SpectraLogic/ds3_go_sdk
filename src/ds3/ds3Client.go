@@ -23,10 +23,10 @@ type ClientPolicy struct {
 const DEFAULT_MAX_RETRIES = 5
 const DEFAULT_MAX_REDIRECTS = 5
 
-func NewClientBuilder(endpoint *url.URL, creds networking.Credentials) *ClientBuilder {
+func NewClientBuilder(endpoint *url.URL, creds *networking.Credentials) *ClientBuilder {
     return &ClientBuilder{
         &networking.ConnectionInfo{
-            Endpoint: *endpoint,
+            Endpoint: endpoint,
             Creds: creds,
             Proxy: nil},
         &ClientPolicy{
