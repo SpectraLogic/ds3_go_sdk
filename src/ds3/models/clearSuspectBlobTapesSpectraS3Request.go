@@ -60,6 +60,6 @@ func (ClearSuspectBlobTapesSpectraS3Request) Header() *http.Header {
     return &http.Header{}
 }
 
-func (ClearSuspectBlobTapesSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
+func (clearSuspectBlobTapesSpectraS3Request *ClearSuspectBlobTapesSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
+    return clearSuspectBlobTapesSpectraS3Request.content
 }

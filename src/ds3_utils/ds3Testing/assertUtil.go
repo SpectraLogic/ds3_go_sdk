@@ -26,7 +26,7 @@ func AssertNonNilBoolPtr(t *testing.T, label string, expected bool, actual *bool
 }
 
 // Asserts if a specified bool pointer is nil. If not, Fatal.
-func AssertBoolPtrIsNil(t *testing.T, label bool, actual *bool) {
+func AssertBoolPtrIsNil(t *testing.T, label string, actual *bool) {
     if actual != nil {
         t.Fatalf("Expected %s to be 'nil' but was '%t'.", label, *actual)
     }

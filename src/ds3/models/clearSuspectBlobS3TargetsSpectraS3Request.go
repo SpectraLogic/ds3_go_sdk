@@ -61,5 +61,5 @@ func (ClearSuspectBlobS3TargetsSpectraS3Request) Header() *http.Header {
 }
 
 func (clearSuspectBlobS3TargetsSpectraS3Request *ClearSuspectBlobS3TargetsSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
+    return clearSuspectBlobS3TargetsSpectraS3Request.content
 }
