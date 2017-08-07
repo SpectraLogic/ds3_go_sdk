@@ -491,19 +491,7 @@ func TestBulkPut(t *testing.T) {
     )
 }
 
-func TestBulkGet(t *testing.T) {
-    runBulkGetTest(
-        t,
-        "start_bulk_get",
-        func(client *Client, objects []models.Ds3GetObject) ([]models.Objects, error) {
-            request, err := client.GetBulkJobSpectraS3(models.NewGetBulkJobSpectraS3RequestWithPartialObjects("bucketName", objects))
-            return request.MasterObjectList.Objects, err
-        },
-    )
-}
-
 type bulkPutTest func(*Client, []models.Ds3PutObject) ([]models.Objects, error)
-type bulkGetTest func(*Client, []models.Ds3GetObject) ([]models.Objects, error)
 
 func runBulkPutTest(t *testing.T, operation string, callToTest bulkPutTest) {
     keys := []string { "file2", "file1", "file3" }
@@ -549,18 +537,69 @@ func runBulkPutTest(t *testing.T, operation string, callToTest bulkPutTest) {
     }
 }
 
-func runBulkGetTest(t *testing.T, operation string, callToTest bulkGetTest) {
-    keys := []string { "file2", "file1", "file3" }
-    sizes := []int64 { 1202, 256, 2523 }
-
-    stringRequest := "<Objects><Object Name=\"file1\"></Object><Object Name=\"file2\"></Object><Object Name=\"file3\"></Object></Objects>"
-    stringResponse := "<MasterObjectList><Objects><Object Name='file2' Length='1202'/><Object Name='file1' Length='256'/><Object Name='file3' Length='2523'/></Objects></MasterObjectList>"
-
-    inputObjects := []models.Ds3GetObject {
+func TestBulkGetWithSimpleDs3GetObjets(t *testing.T) {
+    objects := []models.Ds3GetObject {
         models.NewDs3GetObject("file1"),
         models.NewDs3GetObject("file2"),
         models.NewDs3GetObject("file3"),
     }
+
+    stringRequest := "<Objects><Object Name=\"file1\"></Object><Object Name=\"file2\"></Object><Object Name=\"file3\"></Object></Objects>"
+
+    runBulkGetTest(
+        t,
+        "start_bulk_get",
+        &stringRequest,
+        func(client *Client) ([]models.Objects, error) {
+            request, err := client.GetBulkJobSpectraS3(models.NewGetBulkJobSpectraS3RequestWithPartialObjects("bucketName", objects))
+            return request.MasterObjectList.Objects, err
+        },
+    )
+}
+
+func TestBulkGetWithPartialDs3GetObjets(t *testing.T) {
+    objects := []models.Ds3GetObject {
+        models.NewPartialDs3GetObject("file1", 10, 100),
+        models.NewPartialDs3GetObject("file2", 20, 200),
+        models.NewPartialDs3GetObject("file3", 30, 300),
+    }
+
+    stringRequest := "<Objects><Object Name=\"file1\" Length=\"10\" Offset=\"100\"></Object><Object Name=\"file2\" Length=\"20\" Offset=\"200\"></Object><Object Name=\"file3\" Length=\"30\" Offset=\"300\"></Object></Objects>"
+
+    runBulkGetTest(
+        t,
+        "start_bulk_get",
+        &stringRequest,
+        func(client *Client) ([]models.Objects, error) {
+            request, err := client.GetBulkJobSpectraS3(models.NewGetBulkJobSpectraS3RequestWithPartialObjects("bucketName", objects))
+            return request.MasterObjectList.Objects, err
+        },
+    )
+}
+
+func TestBulkGetWithObjectNames(t *testing.T) {
+    objects := []string {"file1", "file2", "file3"}
+
+    stringRequest := "<Objects><Object Name=\"file1\"></Object><Object Name=\"file2\"></Object><Object Name=\"file3\"></Object></Objects>"
+
+    runBulkGetTest(
+        t,
+        "start_bulk_get",
+        &stringRequest,
+        func(client *Client) ([]models.Objects, error) {
+            request, err := client.GetBulkJobSpectraS3(models.NewGetBulkJobSpectraS3Request("bucketName", objects))
+            return request.MasterObjectList.Objects, err
+        },
+    )
+}
+
+type bulkGetTest func(*Client) ([]models.Objects, error)
+
+func runBulkGetTest(t *testing.T, operation string, stringRequest *string, callToTest bulkGetTest) {
+    keys := []string { "file2", "file1", "file3" }
+    sizes := []int64 { 1202, 256, 2523 }
+
+    stringResponse := "<MasterObjectList><Objects><Object Name='file2' Length='1202'/><Object Name='file1' Length='256'/><Object Name='file3' Length='2523'/></Objects></MasterObjectList>"
 
     // Create and run the mocked client.
     client := mockedClient(t).
@@ -569,10 +608,10 @@ func runBulkGetTest(t *testing.T, operation string, callToTest bulkGetTest) {
         "/_rest_/bucket/bucketName",
         &url.Values{"operation": []string{operation}},
         &http.Header{},
-        &stringRequest,
+        stringRequest,
     ).
         Returning(200, stringResponse, nil)
-    response, err := callToTest(client, inputObjects)
+    response, err := callToTest(client)
 
     // Check the error result.
     ds3Testing.AssertNilError(t, err)
@@ -1363,3 +1402,395 @@ func TestGetTapeSpectraS3(t *testing.T) {
     ds3Testing.AssertString(t, "Type", models.TAPE_TYPE_LTO6.String(), tape.Type.String())
     ds3Testing.AssertBool(t, "WriteProtected", false, tape.WriteProtected)
 }
+
+func TestClearSuspectBlobAzureTargetsSpectraS3(t *testing.T) {
+    expectedRequest := "<Ids><Id>id1</Id><Id>id2</Id><Id>id3</Id></Ids>"
+
+    // Create and run the mocked client.
+    ids := []string {"id1", "id2", "id3"}
+
+    response, err := mockedClient(t).
+        Expecting(networking.DELETE, "/_rest_/suspect_blob_azure_target", &url.Values{}, &http.Header{}, &expectedRequest).
+        Returning(204, "", nil).
+        ClearSuspectBlobAzureTargetsSpectraS3(models.NewClearSuspectBlobAzureTargetsSpectraS3Request(ids))
+
+    // Check the error result.
+    ds3Testing.AssertNilError(t, err)
+
+    // Check the response value.
+    if response == nil {
+        t.Fatalf("Response was unexpectedly nil.")
+    }
+}
+
+func TestClearSuspectBlobPoolsSpectraS3(t *testing.T) {
+    expectedRequest := "<Ids><Id>id1</Id><Id>id2</Id><Id>id3</Id></Ids>"
+
+    // Create and run the mocked client.
+    ids := []string {"id1", "id2", "id3"}
+
+    response, err := mockedClient(t).
+        Expecting(networking.DELETE, "/_rest_/suspect_blob_pool", &url.Values{}, &http.Header{}, &expectedRequest).
+        Returning(204, "", nil).
+        ClearSuspectBlobPoolsSpectraS3(models.NewClearSuspectBlobPoolsSpectraS3Request(ids))
+
+    // Check the error result.
+    ds3Testing.AssertNilError(t, err)
+
+    // Check the response value.
+    if response == nil {
+        t.Fatalf("Response was unexpectedly nil.")
+    }
+}
+
+func TestClearSuspectBlobS3TargetsSpectraS3(t *testing.T) {
+    expectedRequest := "<Ids><Id>id1</Id><Id>id2</Id><Id>id3</Id></Ids>"
+
+    // Create and run the mocked client.
+    ids := []string {"id1", "id2", "id3"}
+
+    response, err := mockedClient(t).
+        Expecting(networking.DELETE, "/_rest_/suspect_blob_s3_target", &url.Values{}, &http.Header{}, &expectedRequest).
+        Returning(204, "", nil).
+        ClearSuspectBlobS3TargetsSpectraS3(models.NewClearSuspectBlobS3TargetsSpectraS3Request(ids))
+
+    // Check the error result.
+    ds3Testing.AssertNilError(t, err)
+
+    // Check the response value.
+    if response == nil {
+        t.Fatalf("Response was unexpectedly nil.")
+    }
+}
+
+func TestClearSuspectBlobTapesSpectraS3(t *testing.T) {
+    expectedRequest := "<Ids><Id>id1</Id><Id>id2</Id><Id>id3</Id></Ids>"
+
+    // Create and run the mocked client.
+    ids := []string {"id1", "id2", "id3"}
+
+    response, err := mockedClient(t).
+        Expecting(networking.DELETE, "/_rest_/suspect_blob_tape", &url.Values{}, &http.Header{}, &expectedRequest).
+        Returning(204, "", nil).
+        ClearSuspectBlobTapesSpectraS3(models.NewClearSuspectBlobTapesSpectraS3Request(ids))
+
+    // Check the error result.
+    ds3Testing.AssertNilError(t, err)
+
+    // Check the response value.
+    if response == nil {
+        t.Fatalf("Response was unexpectedly nil.")
+    }
+}
+
+func TestEjectStorageDomainBlobsSpectraS3(t *testing.T) {
+    expectedRequest := "<Objects><Object Name=\"obj1\"></Object><Object Name=\"obj2\"></Object><Object Name=\"obj3\"></Object></Objects>"
+
+    // Create and run the mocked client.
+    bucketId := "BucketId"
+    storageDomainId := "StorageDomainId"
+    objectNames := []string {"obj1", "obj2", "obj3"}
+
+    qp := &url.Values{
+        "operation": []string{"eject"},
+        "blobs": []string{""},
+        "bucket_id": []string{bucketId},
+        "storage_domain_id": []string{storageDomainId},
+    }
+
+    response, err := mockedClient(t).
+        Expecting(networking.PUT, "/_rest_/tape", qp, &http.Header{}, &expectedRequest).
+        Returning(204, "", nil).
+        EjectStorageDomainBlobsSpectraS3(models.NewEjectStorageDomainBlobsSpectraS3Request(bucketId, objectNames, storageDomainId))
+
+    // Check the error result.
+    ds3Testing.AssertNilError(t, err)
+
+    // Check the response value.
+    if response == nil {
+        t.Fatalf("Response was unexpectedly nil.")
+    }
+}
+
+func TestGetBlobsOnAzureTargetSpectraS3(t *testing.T) {
+    target := "AzureTarget"
+    runGetBlobsTest(
+        t,
+        "/_rest_/azure_target/" + target,
+        func(client *Client) (models.BulkObjectList, error) {
+            request, err := client.GetBlobsOnAzureTargetSpectraS3(models.NewGetBlobsOnAzureTargetSpectraS3Request(target))
+            return request.BulkObjectList, err
+        },
+    )
+}
+
+func TestGetBlobsOnDs3TargetSpectraS3(t *testing.T) {
+    target := "Ds3Target"
+    runGetBlobsTest(
+        t,
+        "/_rest_/ds3_target/" + target,
+        func(client *Client) (models.BulkObjectList, error) {
+            request, err := client.GetBlobsOnDs3TargetSpectraS3(models.NewGetBlobsOnDs3TargetSpectraS3Request(target))
+            return request.BulkObjectList, err
+        },
+    )
+}
+
+func TestGetBlobsOnPoolSpectraS3(t *testing.T) {
+    target := "Pool"
+    runGetBlobsTest(
+        t,
+        "/_rest_/pool/" + target,
+        func(client *Client) (models.BulkObjectList, error) {
+            request, err := client.GetBlobsOnPoolSpectraS3(models.NewGetBlobsOnPoolSpectraS3Request(target))
+            return request.BulkObjectList, err
+        },
+    )
+}
+
+func TestGetBlobsOnS3TargetSpectraS3(t *testing.T) {
+    target := "S3Target"
+    runGetBlobsTest(
+        t,
+        "/_rest_/s3_target/" + target,
+        func(client *Client) (models.BulkObjectList, error) {
+            request, err := client.GetBlobsOnS3TargetSpectraS3(models.NewGetBlobsOnS3TargetSpectraS3Request(target))
+            return request.BulkObjectList, err
+        },
+    )
+}
+
+func TestGetBlobsOnTapeSpectraS3(t *testing.T) {
+    target := "Tape"
+    runGetBlobsTest(
+        t,
+        "/_rest_/tape/" + target,
+        func(client *Client) (models.BulkObjectList, error) {
+            request, err := client.GetBlobsOnTapeSpectraS3(models.NewGetBlobsOnTapeSpectraS3Request(target))
+            return request.BulkObjectList, err
+        },
+    )
+}
+
+type getBlobsTest func(*Client) (models.BulkObjectList, error)
+
+func runGetBlobsTest(t *testing.T, path string, callToTest getBlobsTest) {
+    expectedResponse := "<Data><Object Bucket=\"default_bucket_name\" Id=\"1bd77dbf-500a-45a1-86ac-d065f026882c\" Latest=\"true\" Length=\"10\" Name=\"obj1\" Offset=\"0\" Version=\"1\"/><Object Bucket=\"default_bucket_name\" Id=\"9afa66e7-3f5a-4913-bae2-ba7c86e4c4f7\" Latest=\"true\" Length=\"10\" Name=\"obj2\" Offset=\"0\" Version=\"1\"/></Data>"
+
+    // Create and run the mocked client.
+    qp := &url.Values{ "operation": []string{"get_physical_placement"} }
+
+    client := mockedClient(t).
+        Expecting(networking.GET, path, qp, &http.Header{}, nil).
+        Returning(200, expectedResponse, nil)
+
+    bulkObject, err := callToTest(client)
+
+    // Check the error result.
+    ds3Testing.AssertNilError(t, err)
+
+    obj1 := bulkObject.Objects[0]
+    ds3Testing.AssertNonNilStringPtr(t, "Bucket", "default_bucket_name", obj1.Bucket)
+    ds3Testing.AssertNonNilStringPtr(t, "Id", "1bd77dbf-500a-45a1-86ac-d065f026882c", obj1.Id)
+    ds3Testing.AssertBoolPtrIsNil(t, "InCache", obj1.InCache)
+    ds3Testing.AssertBool(t, "Latest", true, obj1.Latest)
+    ds3Testing.AssertInt64(t, "Length", 10, obj1.Length)
+    ds3Testing.AssertNonNilStringPtr(t, "Name", "obj1", obj1.Name)
+    ds3Testing.AssertInt64(t, "Offset", 0, obj1.Offset)
+    ds3Testing.AssertInt64(t, "Version", 1, obj1.Version)
+    if obj1.PhysicalPlacement != nil {
+        t.Fatalf("Expected nil Physical Placement, but was '%v'.", obj1.PhysicalPlacement)
+    }
+
+    obj2 := bulkObject.Objects[1]
+    ds3Testing.AssertNonNilStringPtr(t, "Bucket", "default_bucket_name", obj2.Bucket)
+    ds3Testing.AssertNonNilStringPtr(t, "Id", "9afa66e7-3f5a-4913-bae2-ba7c86e4c4f7", obj2.Id)
+    ds3Testing.AssertBoolPtrIsNil(t, "InCache", obj2.InCache)
+    ds3Testing.AssertBool(t, "Latest", true, obj2.Latest)
+    ds3Testing.AssertInt64(t, "Length", 10, obj2.Length)
+    ds3Testing.AssertNonNilStringPtr(t, "Name", "obj2", obj2.Name)
+    ds3Testing.AssertInt64(t, "Offset", 0, obj2.Offset)
+    ds3Testing.AssertInt64(t, "Version", 1, obj2.Version)
+    if obj2.PhysicalPlacement != nil {
+        t.Fatalf("Expected nil Physical Placement, but was '%v'.", obj2.PhysicalPlacement)
+    }
+}
+
+func TestGetPhysicalPlacementForObjectsSpectraS3(t *testing.T) {
+    expectedRequest := "<Objects><Object Name=\"obj1\"></Object><Object Name=\"obj2\"></Object><Object Name=\"obj3\"></Object></Objects>"
+    responsePayload := "<Data><AzureTargets/><Ds3Targets/><Pools/><S3Targets/><Tapes/></Data>"
+
+    // Create and run the mocked client.
+    bucketName := "BucketName"
+    objectNames := []string {"obj1", "obj2", "obj3"}
+
+    qp := &url.Values{ "operation": []string{"get_physical_placement"} }
+
+    response, err := mockedClient(t).
+        Expecting(networking.PUT, "/_rest_/bucket/" + bucketName, qp, &http.Header{}, &expectedRequest).
+        Returning(200, responsePayload, nil).
+        GetPhysicalPlacementForObjectsSpectraS3(models.NewGetPhysicalPlacementForObjectsSpectraS3Request(bucketName, objectNames))
+
+    // Check the error result.
+    ds3Testing.AssertNilError(t, err)
+
+    // Check the response value.
+    if response == nil {
+        t.Fatalf("Response was unexpectedly nil.")
+    }
+}
+
+func TestGetPhysicalPlacementForObjectsWithFullDetailsSpectraS3(t *testing.T) {
+    expectedRequest := "<Objects><Object Name=\"obj1\"></Object><Object Name=\"obj2\"></Object><Object Name=\"obj3\"></Object></Objects>"
+    responsePayload := "<Data><AzureTargets/><Ds3Targets/><Pools/><S3Targets/><Tapes/></Data>"
+
+    // Create and run the mocked client.
+    bucketName := "BucketName"
+    objectNames := []string {"obj1", "obj2", "obj3"}
+
+    qp := &url.Values{
+        "operation": []string{"get_physical_placement"},
+        "full_details": []string{""},
+    }
+
+    response, err := mockedClient(t).
+        Expecting(networking.PUT, "/_rest_/bucket/" + bucketName, qp, &http.Header{}, &expectedRequest).
+        Returning(200, responsePayload, nil).
+        GetPhysicalPlacementForObjectsWithFullDetailsSpectraS3(models.NewGetPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request(bucketName, objectNames))
+
+    // Check the error result.
+    ds3Testing.AssertNilError(t, err)
+
+    // Check the response value.
+    if response == nil {
+        t.Fatalf("Response was unexpectedly nil.")
+    }
+}
+
+func TestMarkSuspectBlobAzureTargetsAsDegradedSpectraS3(t *testing.T) {
+    runMarkSuspectBlobTest(
+        t,
+        "/_rest_/suspect_blob_azure_target",
+        func(client *Client, ids []string) error {
+            _, err := client.MarkSuspectBlobAzureTargetsAsDegradedSpectraS3(models.NewMarkSuspectBlobAzureTargetsAsDegradedSpectraS3Request(ids))
+            return err
+        },
+    )
+}
+
+func TestMarkSuspectBlobDs3TargetsAsDegradedSpectraS3(t *testing.T) {
+    runMarkSuspectBlobTest(
+        t,
+        "/_rest_/suspect_blob_ds3_target",
+        func(client *Client, ids []string) error {
+            _, err := client.MarkSuspectBlobDs3TargetsAsDegradedSpectraS3(models.NewMarkSuspectBlobDs3TargetsAsDegradedSpectraS3Request(ids))
+            return err
+        },
+    )
+}
+
+func TestMarkSuspectBlobPoolsAsDegradedSpectraS3(t *testing.T) {
+    runMarkSuspectBlobTest(
+        t,
+        "/_rest_/suspect_blob_pool",
+        func(client *Client, ids []string) error {
+            _, err := client.MarkSuspectBlobPoolsAsDegradedSpectraS3(models.NewMarkSuspectBlobPoolsAsDegradedSpectraS3Request(ids))
+            return err
+        },
+    )
+}
+
+func TestMarkSuspectBlobS3TargetsAsDegradedSpectraS3(t *testing.T) {
+    runMarkSuspectBlobTest(
+        t,
+        "/_rest_/suspect_blob_s3_target",
+        func(client *Client, ids []string) error {
+            _, err := client.MarkSuspectBlobS3TargetsAsDegradedSpectraS3(models.NewMarkSuspectBlobS3TargetsAsDegradedSpectraS3Request(ids))
+            return err
+        },
+    )
+}
+
+func TestMarkSuspectBlobTapesAsDegradedSpectraS3(t *testing.T) {
+    runMarkSuspectBlobTest(
+        t,
+        "/_rest_/suspect_blob_tape",
+        func(client *Client, ids []string) error {
+            _, err := client.MarkSuspectBlobTapesAsDegradedSpectraS3(models.NewMarkSuspectBlobTapesAsDegradedSpectraS3Request(ids))
+            return err
+        },
+    )
+}
+
+type markSuspectBlobTest func(*Client, []string) error
+
+func runMarkSuspectBlobTest(t *testing.T, path string, callToTest markSuspectBlobTest) {
+    expectedRequest := "<Ids><Id>id1</Id><Id>id2</Id><Id>id3</Id></Ids>"
+
+    // Create and run the mocked client.
+    ids := []string {"id1", "id2", "id3"}
+
+    client := mockedClient(t).
+        Expecting(networking.PUT, path, &url.Values{}, &http.Header{}, &expectedRequest).
+        Returning(204, "", nil)
+
+    err := callToTest(client, ids)
+
+    // Check the error result.
+    ds3Testing.AssertNilError(t, err)
+}
+
+func TestVerifyPhysicalPlacementForObjectsSpectraS3(t *testing.T) {
+    expectedRequest := "<Objects><Object Name=\"o1\"></Object></Objects>"
+    responsePayload := "<Data><AzureTargets/><Ds3Targets/><Pools/><S3Targets/><Tapes><Tape><AssignedToStorageDomain>false</AssignedToStorageDomain><AvailableRawCapacity>10000</AvailableRawCapacity><BarCode>t1</BarCode><BucketId/><DescriptionForIdentification/><EjectDate/><EjectLabel/><EjectLocation/><EjectPending/><FullOfData>false</FullOfData><Id>48d30ecb-84f1-4721-9832-7aa165a1dd77</Id><LastAccessed/><LastCheckpoint/><LastModified/><LastVerified/><PartiallyVerifiedEndOfTape/><PartitionId>76343269-c32a-4cb0-aec4-57a9dccce6ea</PartitionId><PreviousState/><SerialNumber/><State>PENDING_INSPECTION</State><StorageDomainId/><TakeOwnershipPending>false</TakeOwnershipPending><TotalRawCapacity>20000</TotalRawCapacity><Type>LTO5</Type><VerifyPending/><WriteProtected>false</WriteProtected></Tape></Tapes></Data>"
+
+    // Create and run the mocked client.
+    bucketName := "b1"
+    objectNames := []string {"o1"}
+
+    qp := &url.Values{ "operation": []string{"verify_physical_placement"} }
+
+    response, err := mockedClient(t).
+        Expecting(networking.GET, "/_rest_/bucket/" + bucketName, qp, &http.Header{}, &expectedRequest).
+        Returning(200, responsePayload, nil).
+        VerifyPhysicalPlacementForObjectsSpectraS3(models.NewVerifyPhysicalPlacementForObjectsSpectraS3Request(bucketName, objectNames))
+
+    // Check the error result.
+    ds3Testing.AssertNilError(t, err)
+
+    // Check the response value.
+    if response == nil {
+        t.Fatalf("Response was unexpectedly nil.")
+    }
+    ds3Testing.AssertInt(t, "Number of Tapes", 1, len(response.PhysicalPlacement.Tapes))
+}
+
+/* TODO uncomment once SA-202 is fixed
+func TestVerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3(t *testing.T) {
+    expectedRequest := "<Objects><Object Name=\"o1\"></Object></Objects>"
+    responsePayload := "<Data><Object Bucket=\"b1\" Id=\"ad5bfa96-8356-42e5-97c7-091780f9d2a7\" InCache=\"false\" Latest=\"true\" Length=\"10\" Name=\"o1\" Offset=\"0\" Version=\"1\"><PhysicalPlacement><AzureTargets/><Ds3Targets/><Pools/><S3Targets/><Tapes><Tape><AssignedToStorageDomain>false</AssignedToStorageDomain><AvailableRawCapacity>10000</AvailableRawCapacity><BarCode>t1</BarCode><BucketId/><DescriptionForIdentification/><EjectDate/><EjectLabel/><EjectLocation/><EjectPending/><FullOfData>false</FullOfData><Id>3514700d-4d4f-4e64-8ccd-20750b5514fd</Id><LastAccessed/><LastCheckpoint/><LastModified/><LastVerified/><PartiallyVerifiedEndOfTape/><PartitionId>dc681797-927a-4eb0-9652-d19d06534e50</PartitionId><PreviousState/><SerialNumber/><State>PENDING_INSPECTION</State><StorageDomainId/><TakeOwnershipPending>false</TakeOwnershipPending><TotalRawCapacity>20000</TotalRawCapacity><Type>LTO5</Type><VerifyPending/><WriteProtected>false</WriteProtected></Tape></Tapes></PhysicalPlacement></Object></Data>"
+
+    // Create and run the mocked client.
+    bucketName := "b1"
+    objectNames := []string {"o1"}
+
+    qp := &url.Values{
+        "operation": []string{"verify_physical_placement"},
+        "full_details": []string{""},
+    }
+
+    response, err := mockedClient(t).
+        Expecting(networking.GET, "/_rest_/bucket/" + bucketName, qp, &http.Header{}, &expectedRequest).
+        Returning(200, responsePayload, nil).
+        VerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3(models.NewVerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request(bucketName, objectNames))
+
+    // Check the error result.
+    ds3Testing.AssertNilError(t, err)
+
+    // Check the response value.
+    if response == nil {
+        t.Fatalf("Response was unexpectedly nil.")
+    }
+    ds3Testing.AssertInt(t, "Number of BulkObjects", 1, len(response.BulkObjectList.Objects))
+}
+*/
