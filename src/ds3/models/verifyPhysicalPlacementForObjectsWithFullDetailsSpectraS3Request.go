@@ -26,7 +26,6 @@ type VerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request struct {
     queryParams *url.Values
 }
 
-//TODO update request payload type to []string and conversion to stream
 func NewVerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request(bucketName string, objectNames []string) *VerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request {
     queryParams := &url.Values{}
     queryParams.Set("operation", "verify_physical_placement")

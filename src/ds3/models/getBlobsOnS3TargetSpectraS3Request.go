@@ -24,7 +24,6 @@ type GetBlobsOnS3TargetSpectraS3Request struct {
     queryParams *url.Values
 }
 
-//TODO stop special casing in autogen
 func NewGetBlobsOnS3TargetSpectraS3Request(s3Target string) *GetBlobsOnS3TargetSpectraS3Request {
     queryParams := &url.Values{}
     queryParams.Set("operation", "get_physical_placement")

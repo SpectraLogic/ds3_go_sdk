@@ -24,7 +24,6 @@ type MarkSuspectBlobTapesAsDegradedSpectraS3Request struct {
     queryParams *url.Values
 }
 
-//TODO special case request payload and add unit test
 func NewMarkSuspectBlobTapesAsDegradedSpectraS3Request(ids []string) *MarkSuspectBlobTapesAsDegradedSpectraS3Request {
     queryParams := &url.Values{}
 

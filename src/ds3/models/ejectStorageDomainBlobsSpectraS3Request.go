@@ -28,8 +28,7 @@ type EjectStorageDomainBlobsSpectraS3Request struct {
     queryParams *url.Values
 }
 
-//TODO update autogen and add unit test
-func NewEjectStorageDomainBlobsSpectraS3Request(bucketId string, objects []string, storageDomainId string) *EjectStorageDomainBlobsSpectraS3Request {
+func NewEjectStorageDomainBlobsSpectraS3Request(bucketId string, objectNames []string, storageDomainId string) *EjectStorageDomainBlobsSpectraS3Request {
     queryParams := &url.Values{}
     queryParams.Set("operation", "eject")
     queryParams.Set("blobs", "")
@@ -39,7 +38,7 @@ func NewEjectStorageDomainBlobsSpectraS3Request(bucketId string, objects []strin
     return &EjectStorageDomainBlobsSpectraS3Request{
         bucketId: bucketId,
         storageDomainId: storageDomainId,
-        content: buildDs3ObjectStreamFromNames(objects),
+        content: buildDs3ObjectStreamFromNames(objectNames),
         queryParams: queryParams,
     }
 }

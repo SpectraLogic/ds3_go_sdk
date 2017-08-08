@@ -33,7 +33,6 @@ type PutBulkJobSpectraS3Request struct {
     queryParams *url.Values
 }
 
-//TODO update autogen special casing
 func NewPutBulkJobSpectraS3Request(bucketName string, objects []Ds3PutObject) *PutBulkJobSpectraS3Request {
     queryParams := &url.Values{}
     queryParams.Set("operation", "start_bulk_put")

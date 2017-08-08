@@ -24,7 +24,6 @@ type ClearSuspectBlobTapesSpectraS3Request struct {
     queryParams *url.Values
 }
 
-//TODO special case in autogen and add unit test
 func NewClearSuspectBlobTapesSpectraS3Request(ids []string) *ClearSuspectBlobTapesSpectraS3Request {
     queryParams := &url.Values{}
 
