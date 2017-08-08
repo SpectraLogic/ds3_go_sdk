@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (bucket *Bucket) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -34,6 +36,8 @@ func (bucket *Bucket) parse(xmlNode *XmlNode, aggErr *AggregateError) {
             bucket.Name = parseNullableString(child.Content)
         case "UserId":
             bucket.UserId = parseString(child.Content)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing Bucket.", child.XMLName.Local)
         }
     }
 }

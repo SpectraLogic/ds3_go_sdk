@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (cacheFilesystemList *CacheFilesystemList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -22,6 +24,8 @@ func (cacheFilesystemList *CacheFilesystemList) parse(xmlNode *XmlNode, aggErr *
             var model CacheFilesystem
             model.parse(&child, aggErr)
             cacheFilesystemList.CacheFilesystems = append(cacheFilesystemList.CacheFilesystems, model)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing CacheFilesystemList.", child.XMLName.Local)
         }
     }
 }

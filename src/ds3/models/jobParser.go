@@ -51,6 +51,8 @@ func (job *Job) parse(xmlNode *XmlNode, aggErr *AggregateError) {
             job.UserId = attr.Value
         case "UserName":
             job.UserName = parseNullableStringFromString(attr.Value)
+        default:
+            log.Printf("WARNING: unable to parse unknown attribute '%s' while parsing Job.", attr.Name.Local)
         }
     }
 
@@ -59,6 +61,8 @@ func (job *Job) parse(xmlNode *XmlNode, aggErr *AggregateError) {
         switch child.XMLName.Local {
         case "Nodes":
             job.Nodes = parseJobNodeSlice("Node", child.Children, aggErr)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing Job.", child.XMLName.Local)
         }
     }
 }

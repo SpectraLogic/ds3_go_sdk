@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (azureTargetFailureList *AzureTargetFailureList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -22,6 +24,8 @@ func (azureTargetFailureList *AzureTargetFailureList) parse(xmlNode *XmlNode, ag
             var model AzureTargetFailure
             model.parse(&child, aggErr)
             azureTargetFailureList.AzureTargetFailures = append(azureTargetFailureList.AzureTargetFailures, model)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing AzureTargetFailureList.", child.XMLName.Local)
         }
     }
 }

@@ -50,6 +50,8 @@ func (ds3Target *Ds3Target) parse(xmlNode *XmlNode, aggErr *AggregateError) {
             ds3Target.ReplicatedUserDefaultDataPolicy = parseNullableString(child.Content)
         case "State":
             parseEnum(child.Content, &ds3Target.State, aggErr)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing Ds3Target.", child.XMLName.Local)
         }
     }
 }

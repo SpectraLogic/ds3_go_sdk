@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (spectraUserList *SpectraUserList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -22,6 +24,8 @@ func (spectraUserList *SpectraUserList) parse(xmlNode *XmlNode, aggErr *Aggregat
             var model SpectraUser
             model.parse(&child, aggErr)
             spectraUserList.SpectraUsers = append(spectraUserList.SpectraUsers, model)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing SpectraUserList.", child.XMLName.Local)
         }
     }
 }

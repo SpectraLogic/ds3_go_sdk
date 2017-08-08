@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (azureTargetList *AzureTargetList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -22,6 +24,8 @@ func (azureTargetList *AzureTargetList) parse(xmlNode *XmlNode, aggErr *Aggregat
             var model AzureTarget
             model.parse(&child, aggErr)
             azureTargetList.AzureTargets = append(azureTargetList.AzureTargets, model)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing AzureTargetList.", child.XMLName.Local)
         }
     }
 }

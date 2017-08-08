@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (azureTargetBucketNameList *AzureTargetBucketNameList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -22,6 +24,8 @@ func (azureTargetBucketNameList *AzureTargetBucketNameList) parse(xmlNode *XmlNo
             var model AzureTargetBucketName
             model.parse(&child, aggErr)
             azureTargetBucketNameList.AzureTargetBucketNames = append(azureTargetBucketNameList.AzureTargetBucketNames, model)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing AzureTargetBucketNameList.", child.XMLName.Local)
         }
     }
 }

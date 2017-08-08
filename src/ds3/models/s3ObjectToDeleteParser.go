@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (s3ObjectToDelete *S3ObjectToDelete) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -20,6 +22,8 @@ func (s3ObjectToDelete *S3ObjectToDelete) parse(xmlNode *XmlNode, aggErr *Aggreg
         switch child.XMLName.Local {
         case "Key":
             s3ObjectToDelete.Key = parseNullableString(child.Content)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing S3ObjectToDelete.", child.XMLName.Local)
         }
     }
 }

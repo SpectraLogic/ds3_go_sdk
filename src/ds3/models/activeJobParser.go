@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (activeJob *ActiveJob) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -62,6 +64,8 @@ func (activeJob *ActiveJob) parse(xmlNode *XmlNode, aggErr *AggregateError) {
             activeJob.UserId = parseString(child.Content)
         case "VerifyAfterWrite":
             activeJob.VerifyAfterWrite = parseBool(child.Content, aggErr)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing ActiveJob.", child.XMLName.Local)
         }
     }
 }

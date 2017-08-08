@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (listMultiPartUploadsResult *ListMultiPartUploadsResult) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -44,6 +46,8 @@ func (listMultiPartUploadsResult *ListMultiPartUploadsResult) parse(xmlNode *Xml
             var model MultiPartUpload
             model.parse(&child, aggErr)
             listMultiPartUploadsResult.Uploads = append(listMultiPartUploadsResult.Uploads, model)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing ListMultiPartUploadsResult.", child.XMLName.Local)
         }
     }
 }

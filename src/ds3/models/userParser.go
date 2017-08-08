@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (user *User) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -22,6 +24,8 @@ func (user *User) parse(xmlNode *XmlNode, aggErr *AggregateError) {
             user.DisplayName = parseNullableString(child.Content)
         case "ID":
             user.Id = parseString(child.Content)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing User.", child.XMLName.Local)
         }
     }
 }

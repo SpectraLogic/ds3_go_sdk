@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (ds3TargetReadPreferenceList *Ds3TargetReadPreferenceList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -22,6 +24,8 @@ func (ds3TargetReadPreferenceList *Ds3TargetReadPreferenceList) parse(xmlNode *X
             var model Ds3TargetReadPreference
             model.parse(&child, aggErr)
             ds3TargetReadPreferenceList.Ds3TargetReadPreferences = append(ds3TargetReadPreferenceList.Ds3TargetReadPreferences, model)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing Ds3TargetReadPreferenceList.", child.XMLName.Local)
         }
     }
 }

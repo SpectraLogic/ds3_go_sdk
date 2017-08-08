@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (dataPathBackend *DataPathBackend) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -44,6 +46,8 @@ func (dataPathBackend *DataPathBackend) parse(xmlNode *XmlNode, aggErr *Aggregat
             dataPathBackend.UnavailablePoolMaxJobRetryInMins = parseInt(child.Content, aggErr)
         case "UnavailableTapePartitionMaxJobRetryInMins":
             dataPathBackend.UnavailableTapePartitionMaxJobRetryInMins = parseInt(child.Content, aggErr)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing DataPathBackend.", child.XMLName.Local)
         }
     }
 }

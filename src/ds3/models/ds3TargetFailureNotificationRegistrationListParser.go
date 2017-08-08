@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (ds3TargetFailureNotificationRegistrationList *Ds3TargetFailureNotificationRegistrationList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -22,6 +24,8 @@ func (ds3TargetFailureNotificationRegistrationList *Ds3TargetFailureNotification
             var model Ds3TargetFailureNotificationRegistration
             model.parse(&child, aggErr)
             ds3TargetFailureNotificationRegistrationList.Ds3TargetFailureNotificationRegistrations = append(ds3TargetFailureNotificationRegistrationList.Ds3TargetFailureNotificationRegistrations, model)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing Ds3TargetFailureNotificationRegistrationList.", child.XMLName.Local)
         }
     }
 }

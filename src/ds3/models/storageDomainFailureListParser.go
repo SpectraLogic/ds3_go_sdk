@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (storageDomainFailureList *StorageDomainFailureList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -22,6 +24,8 @@ func (storageDomainFailureList *StorageDomainFailureList) parse(xmlNode *XmlNode
             var model StorageDomainFailure
             model.parse(&child, aggErr)
             storageDomainFailureList.StorageDomainFailures = append(storageDomainFailureList.StorageDomainFailures, model)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing StorageDomainFailureList.", child.XMLName.Local)
         }
     }
 }

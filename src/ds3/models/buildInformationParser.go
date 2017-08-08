@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (buildInformation *BuildInformation) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -24,6 +26,8 @@ func (buildInformation *BuildInformation) parse(xmlNode *XmlNode, aggErr *Aggreg
             buildInformation.Revision = parseNullableString(child.Content)
         case "Version":
             buildInformation.Version = parseNullableString(child.Content)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing BuildInformation.", child.XMLName.Local)
         }
     }
 }

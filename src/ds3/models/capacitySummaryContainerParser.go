@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (capacitySummaryContainer *CapacitySummaryContainer) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -22,6 +24,8 @@ func (capacitySummaryContainer *CapacitySummaryContainer) parse(xmlNode *XmlNode
             capacitySummaryContainer.Pool.parse(&child, aggErr)
         case "Tape":
             capacitySummaryContainer.Tape.parse(&child, aggErr)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing CapacitySummaryContainer.", child.XMLName.Local)
         }
     }
 }

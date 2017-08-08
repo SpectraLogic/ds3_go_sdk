@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (objects *Objects) parse(xmlNode *XmlNode, aggErr *AggregateError) {
     // Parse Attributes
     for _, attr := range xmlNode.Attrs {
@@ -23,6 +25,8 @@ func (objects *Objects) parse(xmlNode *XmlNode, aggErr *AggregateError) {
             objects.ChunkNumber = parseIntFromString(attr.Value, aggErr)
         case "NodeId":
             objects.NodeId = parseNullableStringFromString(attr.Value)
+        default:
+            log.Printf("WARNING: unable to parse unknown attribute '%s' while parsing Objects.", attr.Name.Local)
         }
     }
 
@@ -33,6 +37,8 @@ func (objects *Objects) parse(xmlNode *XmlNode, aggErr *AggregateError) {
             var model BulkObject
             model.parse(&child, aggErr)
             objects.Objects = append(objects.Objects, model)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing Objects.", child.XMLName.Local)
         }
     }
 }

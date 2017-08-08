@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (bucketAcl *BucketAcl) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -28,6 +30,8 @@ func (bucketAcl *BucketAcl) parse(xmlNode *XmlNode, aggErr *AggregateError) {
             parseEnum(child.Content, &bucketAcl.Permission, aggErr)
         case "UserId":
             bucketAcl.UserId = parseNullableString(child.Content)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing BucketAcl.", child.XMLName.Local)
         }
     }
 }

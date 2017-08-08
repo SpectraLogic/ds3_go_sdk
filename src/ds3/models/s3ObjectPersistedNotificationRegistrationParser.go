@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (s3ObjectPersistedNotificationRegistration *S3ObjectPersistedNotificationRegistration) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -42,6 +44,8 @@ func (s3ObjectPersistedNotificationRegistration *S3ObjectPersistedNotificationRe
             s3ObjectPersistedNotificationRegistration.NumberOfFailuresSinceLastSuccess = parseInt(child.Content, aggErr)
         case "UserId":
             s3ObjectPersistedNotificationRegistration.UserId = parseNullableString(child.Content)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing S3ObjectPersistedNotificationRegistration.", child.XMLName.Local)
         }
     }
 }

@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (bucketList *BucketList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -22,6 +24,8 @@ func (bucketList *BucketList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
             var model Bucket
             model.parse(&child, aggErr)
             bucketList.Buckets = append(bucketList.Buckets, model)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing BucketList.", child.XMLName.Local)
         }
     }
 }

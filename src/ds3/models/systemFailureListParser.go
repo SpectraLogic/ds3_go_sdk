@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (systemFailureList *SystemFailureList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -22,6 +24,8 @@ func (systemFailureList *SystemFailureList) parse(xmlNode *XmlNode, aggErr *Aggr
             var model SystemFailure
             model.parse(&child, aggErr)
             systemFailureList.SystemFailures = append(systemFailureList.SystemFailures, model)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing SystemFailureList.", child.XMLName.Local)
         }
     }
 }

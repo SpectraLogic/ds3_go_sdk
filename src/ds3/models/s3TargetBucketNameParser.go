@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (s3TargetBucketName *S3TargetBucketName) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -26,6 +28,8 @@ func (s3TargetBucketName *S3TargetBucketName) parse(xmlNode *XmlNode, aggErr *Ag
             s3TargetBucketName.Name = parseNullableString(child.Content)
         case "TargetId":
             s3TargetBucketName.TargetId = parseString(child.Content)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing S3TargetBucketName.", child.XMLName.Local)
         }
     }
 }

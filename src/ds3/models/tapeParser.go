@@ -72,6 +72,8 @@ func (tape *Tape) parse(xmlNode *XmlNode, aggErr *AggregateError) {
             parseNullableEnum(child.Content, tape.VerifyPending, aggErr)
         case "WriteProtected":
             tape.WriteProtected = parseBool(child.Content, aggErr)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing Tape.", child.XMLName.Local)
         }
     }
 }

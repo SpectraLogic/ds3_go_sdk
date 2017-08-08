@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (healthVerificationResult *HealthVerificationResult) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -22,6 +24,8 @@ func (healthVerificationResult *HealthVerificationResult) parse(xmlNode *XmlNode
             parseEnum(child.Content, &healthVerificationResult.DatabaseFilesystemFreeSpace, aggErr)
         case "MsRequiredToVerifyDataPlannerHealth":
             healthVerificationResult.MsRequiredToVerifyDataPlannerHealth = parseInt64(child.Content, aggErr)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing HealthVerificationResult.", child.XMLName.Local)
         }
     }
 }

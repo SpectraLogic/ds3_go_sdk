@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (azureTargetReadPreference *AzureTargetReadPreference) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -26,6 +28,8 @@ func (azureTargetReadPreference *AzureTargetReadPreference) parse(xmlNode *XmlNo
             parseEnum(child.Content, &azureTargetReadPreference.ReadPreference, aggErr)
         case "TargetId":
             azureTargetReadPreference.TargetId = parseString(child.Content)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing AzureTargetReadPreference.", child.XMLName.Local)
         }
     }
 }

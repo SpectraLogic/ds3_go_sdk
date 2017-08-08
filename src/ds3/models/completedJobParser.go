@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (completedJob *CompletedJob) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -50,6 +52,8 @@ func (completedJob *CompletedJob) parse(xmlNode *XmlNode, aggErr *AggregateError
             completedJob.Truncated = parseBool(child.Content, aggErr)
         case "UserId":
             completedJob.UserId = parseString(child.Content)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing CompletedJob.", child.XMLName.Local)
         }
     }
 }

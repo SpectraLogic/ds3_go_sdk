@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (detailedTapePartition *DetailedTapePartition) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -46,6 +48,8 @@ func (detailedTapePartition *DetailedTapePartition) parse(xmlNode *XmlNode, aggE
             var model TapeType
             parseEnum(child.Content, &model, aggErr)
             detailedTapePartition.TapeTypes = append(detailedTapePartition.TapeTypes, model)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing DetailedTapePartition.", child.XMLName.Local)
         }
     }
 }

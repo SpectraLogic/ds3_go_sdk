@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (tapeFailureNotificationRegistration *TapeFailureNotificationRegistration) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -40,6 +42,8 @@ func (tapeFailureNotificationRegistration *TapeFailureNotificationRegistration) 
             tapeFailureNotificationRegistration.NumberOfFailuresSinceLastSuccess = parseInt(child.Content, aggErr)
         case "UserId":
             tapeFailureNotificationRegistration.UserId = parseNullableString(child.Content)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing TapeFailureNotificationRegistration.", child.XMLName.Local)
         }
     }
 }

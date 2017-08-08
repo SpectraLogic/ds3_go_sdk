@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (tapeDrive *TapeDrive) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -42,6 +44,8 @@ func (tapeDrive *TapeDrive) parse(xmlNode *XmlNode, aggErr *AggregateError) {
             tapeDrive.TapeId = parseNullableString(child.Content)
         case "Type":
             parseEnum(child.Content, &tapeDrive.Type, aggErr)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing TapeDrive.", child.XMLName.Local)
         }
     }
 }

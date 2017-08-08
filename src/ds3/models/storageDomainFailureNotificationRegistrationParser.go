@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (storageDomainFailureNotificationRegistration *StorageDomainFailureNotificationRegistration) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -40,6 +42,8 @@ func (storageDomainFailureNotificationRegistration *StorageDomainFailureNotifica
             storageDomainFailureNotificationRegistration.NumberOfFailuresSinceLastSuccess = parseInt(child.Content, aggErr)
         case "UserId":
             storageDomainFailureNotificationRegistration.UserId = parseNullableString(child.Content)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing StorageDomainFailureNotificationRegistration.", child.XMLName.Local)
         }
     }
 }

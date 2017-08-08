@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (contents *Contents) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -30,6 +32,8 @@ func (contents *Contents) parse(xmlNode *XmlNode, aggErr *AggregateError) {
             contents.Size = parseInt64(child.Content, aggErr)
         case "StorageClass":
             contents.StorageClass = parseNullableString(child.Content)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing Contents.", child.XMLName.Local)
         }
     }
 }

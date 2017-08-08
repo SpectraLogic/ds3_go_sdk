@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (jobCreatedNotificationRegistrationList *JobCreatedNotificationRegistrationList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -22,6 +24,8 @@ func (jobCreatedNotificationRegistrationList *JobCreatedNotificationRegistration
             var model JobCreatedNotificationRegistration
             model.parse(&child, aggErr)
             jobCreatedNotificationRegistrationList.JobCreatedNotificationRegistrations = append(jobCreatedNotificationRegistrationList.JobCreatedNotificationRegistrations, model)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing JobCreatedNotificationRegistrationList.", child.XMLName.Local)
         }
     }
 }

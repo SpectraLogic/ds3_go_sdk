@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (tapeDensityDirective *TapeDensityDirective) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -26,6 +28,8 @@ func (tapeDensityDirective *TapeDensityDirective) parse(xmlNode *XmlNode, aggErr
             tapeDensityDirective.PartitionId = parseString(child.Content)
         case "TapeType":
             parseEnum(child.Content, &tapeDensityDirective.TapeType, aggErr)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing TapeDensityDirective.", child.XMLName.Local)
         }
     }
 }

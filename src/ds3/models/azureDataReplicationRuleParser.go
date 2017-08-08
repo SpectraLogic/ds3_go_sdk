@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (azureDataReplicationRule *AzureDataReplicationRule) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -32,6 +34,8 @@ func (azureDataReplicationRule *AzureDataReplicationRule) parse(xmlNode *XmlNode
             azureDataReplicationRule.TargetId = parseString(child.Content)
         case "Type":
             parseEnum(child.Content, &azureDataReplicationRule.Type, aggErr)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing AzureDataReplicationRule.", child.XMLName.Local)
         }
     }
 }

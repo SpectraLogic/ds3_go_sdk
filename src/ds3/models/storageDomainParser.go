@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (storageDomain *StorageDomain) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -46,6 +48,8 @@ func (storageDomain *StorageDomain) parse(xmlNode *XmlNode, aggErr *AggregateErr
             parseNullableEnum(child.Content, storageDomain.VerifyPriorToAutoEject, aggErr)
         case "WriteOptimization":
             parseEnum(child.Content, &storageDomain.WriteOptimization, aggErr)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing StorageDomain.", child.XMLName.Local)
         }
     }
 }

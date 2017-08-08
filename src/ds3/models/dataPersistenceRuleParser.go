@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (dataPersistenceRule *DataPersistenceRule) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -32,6 +34,8 @@ func (dataPersistenceRule *DataPersistenceRule) parse(xmlNode *XmlNode, aggErr *
             dataPersistenceRule.StorageDomainId = parseString(child.Content)
         case "Type":
             parseEnum(child.Content, &dataPersistenceRule.Type, aggErr)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing DataPersistenceRule.", child.XMLName.Local)
         }
     }
 }

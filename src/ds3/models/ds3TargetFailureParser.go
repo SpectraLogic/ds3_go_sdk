@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (ds3TargetFailure *Ds3TargetFailure) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -28,6 +30,8 @@ func (ds3TargetFailure *Ds3TargetFailure) parse(xmlNode *XmlNode, aggErr *Aggreg
             ds3TargetFailure.TargetId = parseString(child.Content)
         case "Type":
             parseEnum(child.Content, &ds3TargetFailure.Type, aggErr)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing Ds3TargetFailure.", child.XMLName.Local)
         }
     }
 }

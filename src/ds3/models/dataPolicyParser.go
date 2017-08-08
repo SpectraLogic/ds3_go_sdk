@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (dataPolicy *DataPolicy) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -52,6 +54,8 @@ func (dataPolicy *DataPolicy) parse(xmlNode *XmlNode, aggErr *AggregateError) {
             parseEnum(child.Content, &dataPolicy.RebuildPriority, aggErr)
         case "Versioning":
             parseEnum(child.Content, &dataPolicy.Versioning, aggErr)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing DataPolicy.", child.XMLName.Local)
         }
     }
 }

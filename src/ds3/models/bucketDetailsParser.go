@@ -24,6 +24,8 @@ func (bucketDetails *BucketDetails) parse(xmlNode *XmlNode, aggErr *AggregateErr
             bucketDetails.CreationDate = parseNullableString(child.Content)
         case "Name":
             bucketDetails.Name = parseNullableString(child.Content)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing BucketDetails.", child.XMLName.Local)
         }
     }
 }

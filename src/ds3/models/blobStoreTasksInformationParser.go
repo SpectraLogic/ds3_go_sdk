@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (blobStoreTasksInformation *BlobStoreTasksInformation) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -22,6 +24,8 @@ func (blobStoreTasksInformation *BlobStoreTasksInformation) parse(xmlNode *XmlNo
             var model BlobStoreTaskInformation
             model.parse(&child, aggErr)
             blobStoreTasksInformation.Tasks = append(blobStoreTasksInformation.Tasks, model)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing BlobStoreTasksInformation.", child.XMLName.Local)
         }
     }
 }

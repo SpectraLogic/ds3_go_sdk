@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (tapeFailureNotificationRegistrationList *TapeFailureNotificationRegistrationList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -22,6 +24,8 @@ func (tapeFailureNotificationRegistrationList *TapeFailureNotificationRegistrati
             var model TapeFailureNotificationRegistration
             model.parse(&child, aggErr)
             tapeFailureNotificationRegistrationList.TapeFailureNotificationRegistrations = append(tapeFailureNotificationRegistrationList.TapeFailureNotificationRegistrations, model)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing TapeFailureNotificationRegistrationList.", child.XMLName.Local)
         }
     }
 }

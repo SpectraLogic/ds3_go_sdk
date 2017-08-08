@@ -60,6 +60,8 @@ func (pool *Pool) parse(xmlNode *XmlNode, aggErr *AggregateError) {
             parseEnum(child.Content, &pool.Type, aggErr)
         case "UsedCapacity":
             pool.UsedCapacity = parseInt64(child.Content, aggErr)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing Pool.", child.XMLName.Local)
         }
     }
 }

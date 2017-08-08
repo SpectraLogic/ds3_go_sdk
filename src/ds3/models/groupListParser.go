@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (groupList *GroupList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -22,6 +24,8 @@ func (groupList *GroupList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
             var model Group
             model.parse(&child, aggErr)
             groupList.Groups = append(groupList.Groups, model)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing GroupList.", child.XMLName.Local)
         }
     }
 }

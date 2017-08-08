@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (suspectBlobTape *SuspectBlobTape) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -26,6 +28,8 @@ func (suspectBlobTape *SuspectBlobTape) parse(xmlNode *XmlNode, aggErr *Aggregat
             suspectBlobTape.OrderIndex = parseInt(child.Content, aggErr)
         case "TapeId":
             suspectBlobTape.TapeId = parseString(child.Content)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing SuspectBlobTape.", child.XMLName.Local)
         }
     }
 }

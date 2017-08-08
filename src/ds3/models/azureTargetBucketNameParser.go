@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (azureTargetBucketName *AzureTargetBucketName) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -26,6 +28,8 @@ func (azureTargetBucketName *AzureTargetBucketName) parse(xmlNode *XmlNode, aggE
             azureTargetBucketName.Name = parseNullableString(child.Content)
         case "TargetId":
             azureTargetBucketName.TargetId = parseString(child.Content)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing AzureTargetBucketName.", child.XMLName.Local)
         }
     }
 }
