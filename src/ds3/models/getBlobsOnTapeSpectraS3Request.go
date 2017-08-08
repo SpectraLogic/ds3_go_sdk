@@ -24,7 +24,6 @@ type GetBlobsOnTapeSpectraS3Request struct {
     queryParams *url.Values
 }
 
-//TODO stop special casing in autogen
 func NewGetBlobsOnTapeSpectraS3Request(tapeId string) *GetBlobsOnTapeSpectraS3Request {
     queryParams := &url.Values{}
     queryParams.Set("operation", "get_physical_placement")
@@ -57,6 +56,6 @@ func (GetBlobsOnTapeSpectraS3Request) Header() *http.Header {
     return &http.Header{}
 }
 
-func (getBlobsOnTapeSpectraS3Request *GetBlobsOnTapeSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
+func (GetBlobsOnTapeSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
     return nil
 }

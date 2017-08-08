@@ -26,7 +26,6 @@ type GetPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request struct {
     queryParams *url.Values
 }
 
-//TODO update special casing in autogen
 func NewGetPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request(bucketName string, objectNames []string) *GetPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request {
     queryParams := &url.Values{}
     queryParams.Set("operation", "get_physical_placement")
