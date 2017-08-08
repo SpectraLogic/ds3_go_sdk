@@ -21,7 +21,9 @@ func (detailedS3Object *DetailedS3Object) parse(xmlNode *XmlNode, aggErr *Aggreg
     for _, child := range xmlNode.Children {
         switch child.XMLName.Local {
         case "Blobs":
-            detailedS3Object.Blobs.parse(&child, aggErr)
+            var model BulkObjectList
+            model.parse(&child, aggErr)
+            detailedS3Object.Blobs = &model
         case "BlobsBeingPersisted":
             detailedS3Object.BlobsBeingPersisted = parseNullableInt(child.Content, aggErr)
         case "BlobsDegraded":
