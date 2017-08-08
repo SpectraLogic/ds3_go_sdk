@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (tapePartition *TapePartition) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -38,6 +40,8 @@ func (tapePartition *TapePartition) parse(xmlNode *XmlNode, aggErr *AggregateErr
             tapePartition.SerialNumber = parseNullableString(child.Content)
         case "State":
             parseEnum(child.Content, &tapePartition.State, aggErr)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing TapePartition.", child.XMLName.Local)
         }
     }
 }

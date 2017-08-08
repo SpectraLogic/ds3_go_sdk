@@ -64,6 +64,8 @@ func (s3Target *S3Target) parse(xmlNode *XmlNode, aggErr *AggregateError) {
             s3Target.StagedDataExpirationInDays = parseInt(child.Content, aggErr)
         case "State":
             parseEnum(child.Content, &s3Target.State, aggErr)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing S3Target.", child.XMLName.Local)
         }
     }
 }

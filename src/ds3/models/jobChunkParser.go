@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (jobChunk *JobChunk) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -42,6 +44,8 @@ func (jobChunk *JobChunk) parse(xmlNode *XmlNode, aggErr *AggregateError) {
             jobChunk.ReadFromS3TargetId = parseNullableString(child.Content)
         case "ReadFromTapeId":
             jobChunk.ReadFromTapeId = parseNullableString(child.Content)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing JobChunk.", child.XMLName.Local)
         }
     }
 }

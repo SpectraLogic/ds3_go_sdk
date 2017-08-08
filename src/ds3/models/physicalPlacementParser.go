@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (physicalPlacement *PhysicalPlacement) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -28,6 +30,8 @@ func (physicalPlacement *PhysicalPlacement) parse(xmlNode *XmlNode, aggErr *Aggr
             physicalPlacement.S3Targets = parseS3TargetSlice("S3Target", child.Children, aggErr)
         case "Tapes":
             physicalPlacement.Tapes = parseTapeSlice("Tape", child.Children, aggErr)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing PhysicalPlacement.", child.XMLName.Local)
         }
     }
 }

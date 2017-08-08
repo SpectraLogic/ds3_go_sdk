@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (degradedBlob *DegradedBlob) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -32,6 +34,8 @@ func (degradedBlob *DegradedBlob) parse(xmlNode *XmlNode, aggErr *AggregateError
             degradedBlob.PersistenceRuleId = parseNullableString(child.Content)
         case "S3ReplicationRuleId":
             degradedBlob.S3ReplicationRuleId = parseNullableString(child.Content)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing DegradedBlob.", child.XMLName.Local)
         }
     }
 }

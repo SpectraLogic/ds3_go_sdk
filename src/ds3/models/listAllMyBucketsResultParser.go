@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (listAllMyBucketsResult *ListAllMyBucketsResult) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -22,6 +24,8 @@ func (listAllMyBucketsResult *ListAllMyBucketsResult) parse(xmlNode *XmlNode, ag
             listAllMyBucketsResult.Buckets = parseBucketDetailsSlice("Bucket", child.Children, aggErr)
         case "Owner":
             listAllMyBucketsResult.Owner.parse(&child, aggErr)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing ListAllMyBucketsResult.", child.XMLName.Local)
         }
     }
 }

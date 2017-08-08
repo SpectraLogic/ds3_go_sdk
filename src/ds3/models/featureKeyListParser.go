@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (featureKeyList *FeatureKeyList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -22,6 +24,8 @@ func (featureKeyList *FeatureKeyList) parse(xmlNode *XmlNode, aggErr *AggregateE
             var model FeatureKey
             model.parse(&child, aggErr)
             featureKeyList.FeatureKeys = append(featureKeyList.FeatureKeys, model)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing FeatureKeyList.", child.XMLName.Local)
         }
     }
 }

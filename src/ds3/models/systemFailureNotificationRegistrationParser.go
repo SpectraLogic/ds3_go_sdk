@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (systemFailureNotificationRegistration *SystemFailureNotificationRegistration) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -40,6 +42,8 @@ func (systemFailureNotificationRegistration *SystemFailureNotificationRegistrati
             systemFailureNotificationRegistration.NumberOfFailuresSinceLastSuccess = parseInt(child.Content, aggErr)
         case "UserId":
             systemFailureNotificationRegistration.UserId = parseNullableString(child.Content)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing SystemFailureNotificationRegistration.", child.XMLName.Local)
         }
     }
 }

@@ -27,6 +27,8 @@ func (jobNode *JobNode) parse(xmlNode *XmlNode, aggErr *AggregateError) {
             jobNode.HttpsPort = parseNullableIntFromString(attr.Value, aggErr)
         case "Id":
             jobNode.Id = attr.Value
+        default:
+            log.Printf("WARNING: unable to parse unknown attribute '%s' while parsing JobNode.", attr.Name.Local)
         }
     }
 

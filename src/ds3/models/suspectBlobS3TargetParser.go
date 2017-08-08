@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (suspectBlobS3Target *SuspectBlobS3Target) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -24,6 +26,8 @@ func (suspectBlobS3Target *SuspectBlobS3Target) parse(xmlNode *XmlNode, aggErr *
             suspectBlobS3Target.Id = parseString(child.Content)
         case "TargetId":
             suspectBlobS3Target.TargetId = parseString(child.Content)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing SuspectBlobS3Target.", child.XMLName.Local)
         }
     }
 }

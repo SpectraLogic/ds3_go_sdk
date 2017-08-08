@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (s3Object *S3Object) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -32,6 +34,8 @@ func (s3Object *S3Object) parse(xmlNode *XmlNode, aggErr *AggregateError) {
             parseEnum(child.Content, &s3Object.Type, aggErr)
         case "Version":
             s3Object.Version = parseInt64(child.Content, aggErr)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing S3Object.", child.XMLName.Local)
         }
     }
 }

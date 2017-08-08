@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (blobStoreTaskInformation *BlobStoreTaskInformation) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -42,6 +44,8 @@ func (blobStoreTaskInformation *BlobStoreTaskInformation) parse(xmlNode *XmlNode
             blobStoreTaskInformation.TargetId = parseNullableString(child.Content)
         case "TargetType":
             blobStoreTaskInformation.TargetType = parseNullableString(child.Content)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing BlobStoreTaskInformation.", child.XMLName.Local)
         }
     }
 }

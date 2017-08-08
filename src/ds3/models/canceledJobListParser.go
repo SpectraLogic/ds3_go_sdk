@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (canceledJobList *CanceledJobList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -22,6 +24,8 @@ func (canceledJobList *CanceledJobList) parse(xmlNode *XmlNode, aggErr *Aggregat
             var model CanceledJob
             model.parse(&child, aggErr)
             canceledJobList.CanceledJobs = append(canceledJobList.CanceledJobs, model)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing CanceledJobList.", child.XMLName.Local)
         }
     }
 }

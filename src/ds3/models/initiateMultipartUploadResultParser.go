@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (initiateMultipartUploadResult *InitiateMultipartUploadResult) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -24,6 +26,8 @@ func (initiateMultipartUploadResult *InitiateMultipartUploadResult) parse(xmlNod
             initiateMultipartUploadResult.Key = parseNullableString(child.Content)
         case "UploadId":
             initiateMultipartUploadResult.UploadId = parseNullableString(child.Content)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing InitiateMultipartUploadResult.", child.XMLName.Local)
         }
     }
 }

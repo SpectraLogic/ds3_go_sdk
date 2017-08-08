@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (cacheFilesystemInformation *CacheFilesystemInformation) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -34,6 +36,8 @@ func (cacheFilesystemInformation *CacheFilesystemInformation) parse(xmlNode *Xml
             cacheFilesystemInformation.UnavailableCapacityInBytes = parseInt64(child.Content, aggErr)
         case "UsedCapacityInBytes":
             cacheFilesystemInformation.UsedCapacityInBytes = parseInt64(child.Content, aggErr)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing CacheFilesystemInformation.", child.XMLName.Local)
         }
     }
 }

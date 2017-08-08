@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (error *Error) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -28,6 +30,8 @@ func (error *Error) parse(xmlNode *XmlNode, aggErr *AggregateError) {
             error.Resource = parseNullableString(child.Content)
         case "ResourceId":
             error.ResourceId = parseInt64(child.Content, aggErr)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing Error.", child.XMLName.Local)
         }
     }
 }

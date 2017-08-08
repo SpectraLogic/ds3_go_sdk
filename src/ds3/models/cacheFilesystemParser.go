@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (cacheFilesystem *CacheFilesystem) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -34,6 +36,8 @@ func (cacheFilesystem *CacheFilesystem) parse(xmlNode *XmlNode, aggErr *Aggregat
             cacheFilesystem.NodeId = parseString(child.Content)
         case "Path":
             cacheFilesystem.Path = parseNullableString(child.Content)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing CacheFilesystem.", child.XMLName.Local)
         }
     }
 }

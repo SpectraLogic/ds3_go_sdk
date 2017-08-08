@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (poolFailure *PoolFailure) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -28,6 +30,8 @@ func (poolFailure *PoolFailure) parse(xmlNode *XmlNode, aggErr *AggregateError) 
             poolFailure.PoolId = parseString(child.Content)
         case "Type":
             parseEnum(child.Content, &poolFailure.Type, aggErr)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing PoolFailure.", child.XMLName.Local)
         }
     }
 }

@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (tapeLibrary *TapeLibrary) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -26,6 +28,8 @@ func (tapeLibrary *TapeLibrary) parse(xmlNode *XmlNode, aggErr *AggregateError) 
             tapeLibrary.Name = parseNullableString(child.Content)
         case "SerialNumber":
             tapeLibrary.SerialNumber = parseNullableString(child.Content)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing TapeLibrary.", child.XMLName.Local)
         }
     }
 }

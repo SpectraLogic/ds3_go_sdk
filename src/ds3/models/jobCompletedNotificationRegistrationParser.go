@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (jobCompletedNotificationRegistration *JobCompletedNotificationRegistration) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -42,6 +44,8 @@ func (jobCompletedNotificationRegistration *JobCompletedNotificationRegistration
             jobCompletedNotificationRegistration.NumberOfFailuresSinceLastSuccess = parseInt(child.Content, aggErr)
         case "UserId":
             jobCompletedNotificationRegistration.UserId = parseNullableString(child.Content)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing JobCompletedNotificationRegistration.", child.XMLName.Local)
         }
     }
 }

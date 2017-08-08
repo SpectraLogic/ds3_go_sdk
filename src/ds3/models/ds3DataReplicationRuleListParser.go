@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (ds3DataReplicationRuleList *Ds3DataReplicationRuleList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -22,6 +24,8 @@ func (ds3DataReplicationRuleList *Ds3DataReplicationRuleList) parse(xmlNode *Xml
             var model Ds3DataReplicationRule
             model.parse(&child, aggErr)
             ds3DataReplicationRuleList.Ds3DataReplicationRules = append(ds3DataReplicationRuleList.Ds3DataReplicationRules, model)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing Ds3DataReplicationRuleList.", child.XMLName.Local)
         }
     }
 }

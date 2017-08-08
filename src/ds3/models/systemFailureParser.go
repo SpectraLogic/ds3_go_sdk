@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (systemFailure *SystemFailure) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -26,6 +28,8 @@ func (systemFailure *SystemFailure) parse(xmlNode *XmlNode, aggErr *AggregateErr
             systemFailure.Id = parseString(child.Content)
         case "Type":
             parseEnum(child.Content, &systemFailure.Type, aggErr)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing SystemFailure.", child.XMLName.Local)
         }
     }
 }

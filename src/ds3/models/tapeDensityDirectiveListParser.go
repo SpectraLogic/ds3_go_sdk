@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (tapeDensityDirectiveList *TapeDensityDirectiveList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -22,6 +24,8 @@ func (tapeDensityDirectiveList *TapeDensityDirectiveList) parse(xmlNode *XmlNode
             var model TapeDensityDirective
             model.parse(&child, aggErr)
             tapeDensityDirectiveList.TapeDensityDirectives = append(tapeDensityDirectiveList.TapeDensityDirectives, model)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing TapeDensityDirectiveList.", child.XMLName.Local)
         }
     }
 }

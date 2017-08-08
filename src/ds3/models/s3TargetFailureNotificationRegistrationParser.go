@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (s3TargetFailureNotificationRegistration *S3TargetFailureNotificationRegistration) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -40,6 +42,8 @@ func (s3TargetFailureNotificationRegistration *S3TargetFailureNotificationRegist
             s3TargetFailureNotificationRegistration.NumberOfFailuresSinceLastSuccess = parseInt(child.Content, aggErr)
         case "UserId":
             s3TargetFailureNotificationRegistration.UserId = parseNullableString(child.Content)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing S3TargetFailureNotificationRegistration.", child.XMLName.Local)
         }
     }
 }

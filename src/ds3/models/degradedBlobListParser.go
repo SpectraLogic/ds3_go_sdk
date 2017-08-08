@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (degradedBlobList *DegradedBlobList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -22,6 +24,8 @@ func (degradedBlobList *DegradedBlobList) parse(xmlNode *XmlNode, aggErr *Aggreg
             var model DegradedBlob
             model.parse(&child, aggErr)
             degradedBlobList.DegradedBlobs = append(degradedBlobList.DegradedBlobs, model)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing DegradedBlobList.", child.XMLName.Local)
         }
     }
 }

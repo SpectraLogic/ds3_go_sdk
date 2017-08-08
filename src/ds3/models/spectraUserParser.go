@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (spectraUser *SpectraUser) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -28,6 +30,8 @@ func (spectraUser *SpectraUser) parse(xmlNode *XmlNode, aggErr *AggregateError) 
             spectraUser.Name = parseNullableString(child.Content)
         case "SecretKey":
             spectraUser.SecretKey = parseNullableString(child.Content)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing SpectraUser.", child.XMLName.Local)
         }
     }
 }

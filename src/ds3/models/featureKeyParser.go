@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (featureKey *FeatureKey) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -30,6 +32,8 @@ func (featureKey *FeatureKey) parse(xmlNode *XmlNode, aggErr *AggregateError) {
             parseEnum(child.Content, &featureKey.Key, aggErr)
         case "LimitValue":
             featureKey.LimitValue = parseNullableInt64(child.Content, aggErr)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing FeatureKey.", child.XMLName.Local)
         }
     }
 }

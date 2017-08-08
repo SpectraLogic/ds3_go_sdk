@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (blob *Blob) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -30,6 +32,8 @@ func (blob *Blob) parse(xmlNode *XmlNode, aggErr *AggregateError) {
             blob.Length = parseInt64(child.Content, aggErr)
         case "ObjectId":
             blob.ObjectId = parseString(child.Content)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing Blob.", child.XMLName.Local)
         }
     }
 }

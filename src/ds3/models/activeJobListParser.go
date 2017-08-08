@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (activeJobList *ActiveJobList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -22,6 +24,8 @@ func (activeJobList *ActiveJobList) parse(xmlNode *XmlNode, aggErr *AggregateErr
             var model ActiveJob
             model.parse(&child, aggErr)
             activeJobList.ActiveJobs = append(activeJobList.ActiveJobs, model)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing ActiveJobList.", child.XMLName.Local)
         }
     }
 }

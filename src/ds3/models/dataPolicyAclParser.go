@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (dataPolicyAcl *DataPolicyAcl) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -26,6 +28,8 @@ func (dataPolicyAcl *DataPolicyAcl) parse(xmlNode *XmlNode, aggErr *AggregateErr
             dataPolicyAcl.Id = parseString(child.Content)
         case "UserId":
             dataPolicyAcl.UserId = parseNullableString(child.Content)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing DataPolicyAcl.", child.XMLName.Local)
         }
     }
 }

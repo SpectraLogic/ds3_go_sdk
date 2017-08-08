@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (cacheEntryInformation *CacheEntryInformation) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -22,6 +24,8 @@ func (cacheEntryInformation *CacheEntryInformation) parse(xmlNode *XmlNode, aggE
             cacheEntryInformation.Blob.parse(&child, aggErr)
         case "State":
             parseEnum(child.Content, &cacheEntryInformation.State, aggErr)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing CacheEntryInformation.", child.XMLName.Local)
         }
     }
 }

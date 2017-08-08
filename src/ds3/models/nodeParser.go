@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (node *Node) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -34,6 +36,8 @@ func (node *Node) parse(xmlNode *XmlNode, aggErr *AggregateError) {
             node.Name = parseNullableString(child.Content)
         case "SerialNumber":
             node.SerialNumber = parseNullableString(child.Content)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing Node.", child.XMLName.Local)
         }
     }
 }

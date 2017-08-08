@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (storageDomainCapacitySummary *StorageDomainCapacitySummary) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -24,6 +26,8 @@ func (storageDomainCapacitySummary *StorageDomainCapacitySummary) parse(xmlNode 
             storageDomainCapacitySummary.PhysicalFree = parseInt64(child.Content, aggErr)
         case "PhysicalUsed":
             storageDomainCapacitySummary.PhysicalUsed = parseInt64(child.Content, aggErr)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing StorageDomainCapacitySummary.", child.XMLName.Local)
         }
     }
 }

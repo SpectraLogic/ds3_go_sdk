@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (tapeDriveList *TapeDriveList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -22,6 +24,8 @@ func (tapeDriveList *TapeDriveList) parse(xmlNode *XmlNode, aggErr *AggregateErr
             var model TapeDrive
             model.parse(&child, aggErr)
             tapeDriveList.TapeDrives = append(tapeDriveList.TapeDrives, model)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing TapeDriveList.", child.XMLName.Local)
         }
     }
 }

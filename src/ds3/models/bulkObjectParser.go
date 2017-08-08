@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (bulkObject *BulkObject) parse(xmlNode *XmlNode, aggErr *AggregateError) {
     // Parse Attributes
     for _, attr := range xmlNode.Attrs {
@@ -33,6 +35,8 @@ func (bulkObject *BulkObject) parse(xmlNode *XmlNode, aggErr *AggregateError) {
             bulkObject.Offset = parseInt64FromString(attr.Value, aggErr)
         case "Version":
             bulkObject.Version = parseInt64FromString(attr.Value, aggErr)
+        default:
+            log.Printf("WARNING: unable to parse unknown attribute '%s' while parsing BulkObject.", attr.Name.Local)
         }
     }
 
@@ -41,6 +45,8 @@ func (bulkObject *BulkObject) parse(xmlNode *XmlNode, aggErr *AggregateError) {
         switch child.XMLName.Local {
         case "PhysicalPlacement":
             bulkObject.PhysicalPlacement.parse(&child, aggErr)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing BulkObject.", child.XMLName.Local)
         }
     }
 }

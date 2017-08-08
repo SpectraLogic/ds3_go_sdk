@@ -46,6 +46,8 @@ func (azureTarget *AzureTarget) parse(xmlNode *XmlNode, aggErr *AggregateError) 
             parseEnum(child.Content, &azureTarget.Quiesced, aggErr)
         case "State":
             parseEnum(child.Content, &azureTarget.State, aggErr)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing AzureTarget.", child.XMLName.Local)
         }
     }
 }

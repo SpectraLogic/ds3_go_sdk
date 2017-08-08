@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (azureTargetReadPreferenceList *AzureTargetReadPreferenceList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -22,6 +24,8 @@ func (azureTargetReadPreferenceList *AzureTargetReadPreferenceList) parse(xmlNod
             var model AzureTargetReadPreference
             model.parse(&child, aggErr)
             azureTargetReadPreferenceList.AzureTargetReadPreferences = append(azureTargetReadPreferenceList.AzureTargetReadPreferences, model)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing AzureTargetReadPreferenceList.", child.XMLName.Local)
         }
     }
 }

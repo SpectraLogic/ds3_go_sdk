@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (tapeFailure *TapeFailure) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -22,6 +24,8 @@ func (tapeFailure *TapeFailure) parse(xmlNode *XmlNode, aggErr *AggregateError) 
             tapeFailure.Cause = parseNullableString(child.Content)
         case "Tape":
             tapeFailure.Tape.parse(&child, aggErr)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing TapeFailure.", child.XMLName.Local)
         }
     }
 }

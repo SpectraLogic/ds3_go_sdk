@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (azureTargetFailureNotificationRegistration *AzureTargetFailureNotificationRegistration) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -40,6 +42,8 @@ func (azureTargetFailureNotificationRegistration *AzureTargetFailureNotification
             azureTargetFailureNotificationRegistration.NumberOfFailuresSinceLastSuccess = parseInt(child.Content, aggErr)
         case "UserId":
             azureTargetFailureNotificationRegistration.UserId = parseNullableString(child.Content)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing AzureTargetFailureNotificationRegistration.", child.XMLName.Local)
         }
     }
 }

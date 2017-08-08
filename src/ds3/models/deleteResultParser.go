@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (deleteResult *DeleteResult) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -26,6 +28,8 @@ func (deleteResult *DeleteResult) parse(xmlNode *XmlNode, aggErr *AggregateError
             var model DeleteObjectError
             model.parse(&child, aggErr)
             deleteResult.Errors = append(deleteResult.Errors, model)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing DeleteResult.", child.XMLName.Local)
         }
     }
 }

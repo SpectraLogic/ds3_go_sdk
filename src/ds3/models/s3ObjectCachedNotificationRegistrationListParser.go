@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (s3ObjectCachedNotificationRegistrationList *S3ObjectCachedNotificationRegistrationList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -22,6 +24,8 @@ func (s3ObjectCachedNotificationRegistrationList *S3ObjectCachedNotificationRegi
             var model S3ObjectCachedNotificationRegistration
             model.parse(&child, aggErr)
             s3ObjectCachedNotificationRegistrationList.S3ObjectCachedNotificationRegistrations = append(s3ObjectCachedNotificationRegistrationList.S3ObjectCachedNotificationRegistrations, model)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing S3ObjectCachedNotificationRegistrationList.", child.XMLName.Local)
         }
     }
 }

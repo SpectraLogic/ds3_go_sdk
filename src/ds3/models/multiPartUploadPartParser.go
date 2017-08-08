@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (multiPartUploadPart *MultiPartUploadPart) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -24,6 +26,8 @@ func (multiPartUploadPart *MultiPartUploadPart) parse(xmlNode *XmlNode, aggErr *
             multiPartUploadPart.LastModified = parseString(child.Content)
         case "PartNumber":
             multiPartUploadPart.PartNumber = parseInt(child.Content, aggErr)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing MultiPartUploadPart.", child.XMLName.Local)
         }
     }
 }

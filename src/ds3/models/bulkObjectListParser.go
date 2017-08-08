@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (bulkObjectList *BulkObjectList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -22,6 +24,8 @@ func (bulkObjectList *BulkObjectList) parse(xmlNode *XmlNode, aggErr *AggregateE
             var model BulkObject
             model.parse(&child, aggErr)
             bulkObjectList.Objects = append(bulkObjectList.Objects, model)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing BulkObjectList.", child.XMLName.Local)
         }
     }
 }

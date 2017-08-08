@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (masterObjectList *MasterObjectList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
     // Parse Attributes
     for _, attr := range xmlNode.Attrs {
@@ -49,6 +51,8 @@ func (masterObjectList *MasterObjectList) parse(xmlNode *XmlNode, aggErr *Aggreg
             masterObjectList.UserId = attr.Value
         case "UserName":
             masterObjectList.UserName = parseNullableStringFromString(attr.Value)
+        default:
+            log.Printf("WARNING: unable to parse unknown attribute '%s' while parsing MasterObjectList.", attr.Name.Local)
         }
     }
 
@@ -61,6 +65,8 @@ func (masterObjectList *MasterObjectList) parse(xmlNode *XmlNode, aggErr *Aggreg
             var model Objects
             model.parse(&child, aggErr)
             masterObjectList.Objects = append(masterObjectList.Objects, model)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing MasterObjectList.", child.XMLName.Local)
         }
     }
 }

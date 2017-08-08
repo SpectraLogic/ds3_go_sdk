@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (storageDomainMember *StorageDomainMember) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -32,6 +34,8 @@ func (storageDomainMember *StorageDomainMember) parse(xmlNode *XmlNode, aggErr *
             parseNullableEnum(child.Content, storageDomainMember.TapeType, aggErr)
         case "WritePreference":
             parseEnum(child.Content, &storageDomainMember.WritePreference, aggErr)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing StorageDomainMember.", child.XMLName.Local)
         }
     }
 }

@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (poolPartitionList *PoolPartitionList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -22,6 +24,8 @@ func (poolPartitionList *PoolPartitionList) parse(xmlNode *XmlNode, aggErr *Aggr
             var model PoolPartition
             model.parse(&child, aggErr)
             poolPartitionList.PoolPartitions = append(poolPartitionList.PoolPartitions, model)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing PoolPartitionList.", child.XMLName.Local)
         }
     }
 }

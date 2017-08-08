@@ -13,6 +13,8 @@
 
 package models
 
+import "log"
+
 func (listPartsResult *ListPartsResult) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
     // Parse Child Nodes
@@ -38,6 +40,8 @@ func (listPartsResult *ListPartsResult) parse(xmlNode *XmlNode, aggErr *Aggregat
             listPartsResult.Truncated = parseBool(child.Content, aggErr)
         case "UploadId":
             listPartsResult.UploadId = parseString(child.Content)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing ListPartsResult.", child.XMLName.Local)
         }
     }
 }
