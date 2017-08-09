@@ -1765,7 +1765,6 @@ func TestVerifyPhysicalPlacementForObjectsSpectraS3(t *testing.T) {
     ds3Testing.AssertInt(t, "Number of Tapes", 1, len(response.PhysicalPlacement.Tapes))
 }
 
-/* TODO uncomment once SA-202 is fixed
 func TestVerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3(t *testing.T) {
     expectedRequest := "<Objects><Object Name=\"o1\"></Object></Objects>"
     responsePayload := "<Data><Object Bucket=\"b1\" Id=\"ad5bfa96-8356-42e5-97c7-091780f9d2a7\" InCache=\"false\" Latest=\"true\" Length=\"10\" Name=\"o1\" Offset=\"0\" Version=\"1\"><PhysicalPlacement><AzureTargets/><Ds3Targets/><Pools/><S3Targets/><Tapes><Tape><AssignedToStorageDomain>false</AssignedToStorageDomain><AvailableRawCapacity>10000</AvailableRawCapacity><BarCode>t1</BarCode><BucketId/><DescriptionForIdentification/><EjectDate/><EjectLabel/><EjectLocation/><EjectPending/><FullOfData>false</FullOfData><Id>3514700d-4d4f-4e64-8ccd-20750b5514fd</Id><LastAccessed/><LastCheckpoint/><LastModified/><LastVerified/><PartiallyVerifiedEndOfTape/><PartitionId>dc681797-927a-4eb0-9652-d19d06534e50</PartitionId><PreviousState/><SerialNumber/><State>PENDING_INSPECTION</State><StorageDomainId/><TakeOwnershipPending>false</TakeOwnershipPending><TotalRawCapacity>20000</TotalRawCapacity><Type>LTO5</Type><VerifyPending/><WriteProtected>false</WriteProtected></Tape></Tapes></PhysicalPlacement></Object></Data>"
@@ -1792,5 +1791,60 @@ func TestVerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3(t *testing.T)
         t.Fatalf("Response was unexpectedly nil.")
     }
     ds3Testing.AssertInt(t, "Number of BulkObjects", 1, len(response.BulkObjectList.Objects))
+
+    object := response.BulkObjectList.Objects[0]
+    ds3Testing.AssertNonNilStringPtr(t, "Bucket", "b1", object.Bucket)
+    ds3Testing.AssertNonNilStringPtr(t, "Id", "ad5bfa96-8356-42e5-97c7-091780f9d2a7", object.Id)
+    ds3Testing.AssertNonNilBoolPtr(t, "InCache", false, object.InCache)
+    ds3Testing.AssertBool(t, "Latest", true, object.Latest)
+    ds3Testing.AssertInt64(t, "Length", 10, object.Length)
+    ds3Testing.AssertNonNilStringPtr(t, "Name", "o1", object.Name)
+    ds3Testing.AssertInt64(t, "Offset", 0, object.Offset)
+    ds3Testing.AssertInt64(t, "Version", 1, object.Version)
+    if object.PhysicalPlacement == nil {
+        t.Fatal("Expected PhysicalPlacement to not be nil")
+    }
+
+    pp := object.PhysicalPlacement
+    ds3Testing.AssertInt(t, "Number of Azure Targets", 0, len(pp.AzureTargets))
+    ds3Testing.AssertInt(t, "Number of Ds3 Targets", 0, len(pp.Ds3Targets))
+    ds3Testing.AssertInt(t, "Number of Pools", 0, len(pp.Pools))
+    ds3Testing.AssertInt(t, "Number of S3 Targets", 0, len(pp.S3Targets))
+    ds3Testing.AssertInt(t, "Number of Tapes", 1, len(pp.Tapes))
+
+    tape := pp.Tapes[0]
+    ds3Testing.AssertBool(t, "AssignedToStorageDomain", false, tape.AssignedToStorageDomain)
+    ds3Testing.AssertNonNilInt64Ptr(t, "AvailableRawCapacity", 10000, tape.AvailableRawCapacity)
+    ds3Testing.AssertNonNilStringPtr(t, "BarCode", "t1", tape.BarCode)
+    ds3Testing.AssertStringPtrIsNil(t, "BucketId", tape.BucketId)
+    ds3Testing.AssertStringPtrIsNil(t, "DescriptionForIdentification", tape.DescriptionForIdentification)
+    ds3Testing.AssertStringPtrIsNil(t, "EjectDate", tape.EjectDate)
+    ds3Testing.AssertStringPtrIsNil(t, "EjectLabel", tape.EjectLabel)
+    ds3Testing.AssertStringPtrIsNil(t, "EjectLocation", tape.EjectLocation)
+    ds3Testing.AssertStringPtrIsNil(t, "EjectPending", tape.EjectPending)
+    ds3Testing.AssertBool(t, "FullOfData", false, tape.FullOfData)
+    ds3Testing.AssertString(t, "Id", "3514700d-4d4f-4e64-8ccd-20750b5514fd", tape.Id)
+    ds3Testing.AssertStringPtrIsNil(t, "LastAccessed", tape.LastAccessed)
+    ds3Testing.AssertStringPtrIsNil(t, "LastCheckpoint", tape.LastCheckpoint)
+    ds3Testing.AssertStringPtrIsNil(t, "LastModified", tape.LastModified)
+    ds3Testing.AssertStringPtrIsNil(t, "LastVerified", tape.LastVerified)
+    ds3Testing.AssertStringPtrIsNil(t, "PartiallyVerifiedEndOfTape", tape.PartiallyVerifiedEndOfTape)
+    ds3Testing.AssertNonNilStringPtr(t, "PartitionId", "dc681797-927a-4eb0-9652-d19d06534e50", tape.PartitionId)
+    if tape.PreviousState != nil {
+        t.Fatalf("Expeted previous state to be 'nil' but was '%s'.", tape.PreviousState.String())
+    }
+    ds3Testing.AssertStringPtrIsNil(t, "SerialNumber", tape.SerialNumber)
+    if tape.State != models.TAPE_STATE_PENDING_INSPECTION {
+        t.Fatalf("Expected tape state 'TAPE_STATE_PENDING_INSPECTION' but got '%s'.", tape.State.String())
+    }
+    ds3Testing.AssertStringPtrIsNil(t, "StorageDomainId", tape.StorageDomainId)
+    ds3Testing.AssertBool(t, "TakeOwnershipPending", false, tape.TakeOwnershipPending)
+    ds3Testing.AssertNonNilInt64Ptr(t, "TotalRawCapacity", 20000, tape.TotalRawCapacity)
+    if tape.Type != models.TAPE_TYPE_LTO5 {
+        t.Fatalf("Expected type 'TAPE_TYPE_LTO5' but got '%s'.", tape.Type.String())
+    }
+    if tape.VerifyPending != nil {
+        t.Fatalf("Expected Verify Pending to be 'nil' but was '%s'.", tape.VerifyPending.String())
+    }
+    ds3Testing.AssertBool(t, "WriteProtected", false, tape.WriteProtected)
 }
-*/

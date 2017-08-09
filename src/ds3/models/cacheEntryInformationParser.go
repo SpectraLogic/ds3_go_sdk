@@ -21,7 +21,9 @@ func (cacheEntryInformation *CacheEntryInformation) parse(xmlNode *XmlNode, aggE
     for _, child := range xmlNode.Children {
         switch child.XMLName.Local {
         case "Blob":
-            cacheEntryInformation.Blob.parse(&child, aggErr)
+            var model Blob
+            model.parse(&child, aggErr)
+            cacheEntryInformation.Blob = &model
         case "State":
             parseEnum(child.Content, &cacheEntryInformation.State, aggErr)
         default:

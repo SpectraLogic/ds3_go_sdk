@@ -44,7 +44,9 @@ func (bulkObject *BulkObject) parse(xmlNode *XmlNode, aggErr *AggregateError) {
     for _, child := range xmlNode.Children {
         switch child.XMLName.Local {
         case "PhysicalPlacement":
-            bulkObject.PhysicalPlacement.parse(&child, aggErr)
+            var model PhysicalPlacement
+            model.parse(&child, aggErr)
+            bulkObject.PhysicalPlacement = &model
         default:
             log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing BulkObject.", child.XMLName.Local)
         }
