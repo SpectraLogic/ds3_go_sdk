@@ -26,19 +26,21 @@ import (
 
 var client *ds3.Client
 var testBucket = "GoIntegrationTestBucket"
+var envTestNameSpace = "GoIntegrationSmokeTest"
 var defaultUser = "Administrator"
 
 func TestMain(m *testing.M) {
     var err error
     var exitVal int
-    client, err = testutils.SetupTestEnv(testBucket)
+    var ids *testutils.TestIds
+    client, ids, err = testutils.SetupTestEnv(testBucket, defaultUser, envTestNameSpace)
     if err != nil {
         log.Printf("Unable to setup test environment '%s'.", err.Error())
         exitVal = 1
     } else {
         exitVal = m.Run()
     }
-    testutils.TeardownTestEnv(client, testBucket)
+    testutils.TeardownTestEnv(client, ids, testBucket)
     os.Exit(exitVal)
 }
 
