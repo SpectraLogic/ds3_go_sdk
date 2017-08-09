@@ -12,6 +12,7 @@ import (
     "io"
     "ds3_utils/ds3Testing"
     "bytes"
+    "fmt"
 )
 
 var bookPath = "./resources/books/"
@@ -272,6 +273,53 @@ func GetBucket(client *ds3.Client, bucketName string) (*models.GetBucketResponse
         return nil, nilResponse
     }
     return response, nil
+}
+
+// Deletes the specified data policy. If an error occurs, it is logged, and the calling
+// test is marked as failed, but continues running.
+func DeleteDataPolicyLogError(t *testing.T, client *ds3.Client, dataPolicyId string) (error) {
+    _, deleteErr := client.DeleteDataPolicySpectraS3(models.NewDeleteDataPolicySpectraS3Request(dataPolicyId))
+    if deleteErr != nil {
+        t.Errorf("Unable to delete Data Policy '%s': '%s'.", dataPolicyId, deleteErr.Error())
+    }
+    return deleteErr
+}
+
+// Creates the specified data policy. If an error occurs, it is logged, and the calling
+// test is marked as failed, but continues running.
+func PutDataPolicyLogError(t *testing.T, client *ds3.Client, dataPolicyName string) (*models.PutDataPolicySpectraS3Response, error) {
+    response, err := client.PutDataPolicySpectraS3(models.NewPutDataPolicySpectraS3Request(&dataPolicyName))
+    if err != nil {
+        t.Errorf("Unable to create Data Policy '%s': '%s'.", dataPolicyName, err.Error())
+    }
+    return response, err
+}
+
+// Retrieves the specified data policy. If an error occurs, it is logged, and the calling
+// test is marked as failed, but continues running
+func GetDataPolicyLogError(t *testing.T, client *ds3.Client, dataPolicyId string) (*models.GetDataPolicySpectraS3Response, error) {
+    response, err := client.GetDataPolicySpectraS3(models.NewGetDataPolicySpectraS3Request(dataPolicyId))
+    if err != nil {
+        t.Errorf("Unable to get Data Policy '%s': '%s'.", dataPolicyId, err.Error())
+    }
+    return response, err
+}
+
+// Retrieves the specified user by name. Expects there to be one user with the specified name.
+// If there is not exactly 1 user with the specified name, it is treated as an error. If an
+// error occurs, it is logged, and the calling  test is marked as failed, but continues running.
+func GetUserByNameLogError(t *testing.T, client *ds3.Client, userName string) (*models.SpectraUser, error) {
+    response, err := client.GetUsersSpectraS3(models.NewGetUsersSpectraS3Request().WithName(&userName))
+    if err != nil {
+        t.Errorf("Unable to get user '%s': '%s'.", userName, err.Error())
+        return nil, err
+    }
+    if len(response.SpectraUserList.SpectraUsers) != 1 {
+        lenErr := fmt.Errorf("Expected number of users with name '%s' to be 1, but got '%d'.", userName, len(response.SpectraUserList.SpectraUsers))
+        t.Errorf(lenErr.Error())
+        return nil, lenErr
+    }
+    return &response.SpectraUserList.SpectraUsers[0], nil
 }
 
 // Sets up the test environment by creating a client from environment
