@@ -26,6 +26,7 @@ import (
 
 var client *ds3.Client
 var testBucket = "GoIntegrationTestBucket"
+var defaultUser = "Administrator"
 
 func TestMain(m *testing.M) {
     var err error
@@ -304,5 +305,159 @@ func TestBulkGet(t *testing.T) {
 
         defer getObj.Content.Close()
         testutils.VerifyBookContent(t, *obj.Name, getObj.Content)
+    }
+}
+
+func TestGetUsersSpectraS3WithName(t *testing.T) {
+    user, err := testutils.GetUserByNameLogError(t, client, defaultUser)
+    ds3Testing.AssertNilError(t, err)
+    ds3Testing.AssertNonNilStringPtr(t, "Name", defaultUser, user.Name)
+}
+
+func TestDataPolicySpectraS3(t *testing.T) {
+    dataPolicyName := "GoTestDataPolicy"
+
+    // Create data policy and verify creation
+    putResponse, putErr := testutils.PutDataPolicyLogError(t, client, dataPolicyName)
+    ds3Testing.AssertNilError(t, putErr)
+
+    defer testutils.DeleteDataPolicyLogError(t, client, dataPolicyName)
+
+    getResponse, getErr := testutils.GetDataPolicyLogError(t, client, putResponse.DataPolicy.Id)
+    ds3Testing.AssertNilError(t, getErr)
+    ds3Testing.AssertNonNilStringPtr(t, "Data Policy Name", dataPolicyName, getResponse.DataPolicy.Name)
+}
+
+func TestSettingDefaultDataPolicy(t *testing.T) {
+    dataPolicyName := "GoTestSettingDefaultDataPolicy"
+
+    // Create data policy
+    putDataPolicyResponse, putErr := testutils.PutDataPolicyLogError(t, client, dataPolicyName)
+    ds3Testing.AssertNilError(t, putErr)
+
+    defer testutils.DeleteDataPolicyLogError(t, client, dataPolicyName)
+
+    // Get default user and make note of default data policy if one is set
+    user, userErr := testutils.GetUserByNameLogError(t, client, defaultUser)
+    ds3Testing.AssertNilError(t, userErr)
+    curDataPolicy := user.DefaultDataPolicyId
+
+    // Modify user's default data policy and verify
+    getDataPolicyResponse, getErr := testutils.GetDataPolicyLogError(t, client, dataPolicyName)
+    ds3Testing.AssertNilError(t, getErr)
+
+    modifyResponse, modifyErr := client.ModifyUserSpectraS3(models.NewModifyUserSpectraS3Request(user.Id).
+        WithDefaultDataPolicyId(getDataPolicyResponse.DataPolicy.Id))
+    ds3Testing.AssertNilError(t, modifyErr)
+
+    defer client.ModifyUserSpectraS3(models.NewModifyUserSpectraS3Request(user.Id).
+        WithDefaultDataPolicyId(*curDataPolicy))
+
+    ds3Testing.AssertNonNilStringPtr(t, "Name", defaultUser, modifyResponse.SpectraUser.Name)
+    ds3Testing.AssertNonNilStringPtr(t, "DataPolicyId", putDataPolicyResponse.DataPolicy.Id, modifyResponse.SpectraUser.DefaultDataPolicyId)
+}
+
+func TestStorageDomain(t *testing.T) {
+    storageDomainName := "GoTestStorageDomain"
+
+    // Create storage domain
+    putResponse, putErr := client.PutStorageDomainSpectraS3(models.NewPutStorageDomainSpectraS3Request(&storageDomainName))
+    ds3Testing.AssertNilError(t, putErr)
+
+    defer client.DeleteStorageDomainSpectraS3(models.NewDeleteStorageDomainSpectraS3Request(storageDomainName))
+
+    ds3Testing.AssertNonNilStringPtr(t, "Name", storageDomainName, putResponse.StorageDomain.Name)
+}
+
+func TestPoolPartition(t *testing.T) {
+    poolPartitionName := "GoTestPoolPartition"
+
+    // Create pool partition
+    putResponse, putErr := client.PutPoolPartitionSpectraS3(models.NewPutPoolPartitionSpectraS3Request(&poolPartitionName, models.POOL_TYPE_ONLINE))
+    ds3Testing.AssertNilError(t, putErr)
+
+    defer client.DeletePoolPartitionSpectraS3(models.NewDeletePoolPartitionSpectraS3Request(poolPartitionName))
+
+    ds3Testing.AssertNonNilStringPtr(t, "Name", poolPartitionName, putResponse.PoolPartition.Name)
+    if putResponse.PoolPartition.Type != models.POOL_TYPE_ONLINE {
+        t.Fatalf("Expected pool partition type of ONLINE but was '%s'.", putResponse.PoolPartition.Type.String())
+    }
+}
+
+func TestStorageDomainMember(t *testing.T) {
+    varTestName := "GoTestStorageDomainMember"
+
+    // Create storage domain
+    storageDomainResponse, storageDomainErr := client.PutStorageDomainSpectraS3(models.NewPutStorageDomainSpectraS3Request(&varTestName))
+    ds3Testing.AssertNilError(t, storageDomainErr)
+
+    defer client.DeleteStorageDomainSpectraS3(models.NewDeleteStorageDomainSpectraS3Request(varTestName))
+
+    // Create pool partition
+    poolPartitionResponse, poolPartitionErr := client.PutPoolPartitionSpectraS3(models.NewPutPoolPartitionSpectraS3Request(&varTestName, models.POOL_TYPE_ONLINE))
+    ds3Testing.AssertNilError(t, poolPartitionErr)
+
+    defer client.DeletePoolPartitionSpectraS3(models.NewDeletePoolPartitionSpectraS3Request(varTestName))
+
+    // Create storage domain member linking pool partition to storage domain
+    response, err := client.PutPoolStorageDomainMemberSpectraS3(models.NewPutPoolStorageDomainMemberSpectraS3Request(
+        poolPartitionResponse.PoolPartition.Id,
+        storageDomainResponse.StorageDomain.Id))
+    ds3Testing.AssertNilError(t, err)
+
+    defer client.DeleteStorageDomainMemberSpectraS3(models.NewDeleteStorageDomainMemberSpectraS3Request(response.StorageDomainMember.Id))
+
+    ds3Testing.AssertNonNilStringPtr(t, "PoolPartitionId", poolPartitionResponse.PoolPartition.Id, response.StorageDomainMember.PoolPartitionId)
+    ds3Testing.AssertString(t, "StorageDomainId", storageDomainResponse.StorageDomain.Id, response.StorageDomainMember.StorageDomainId)
+}
+
+func TestDataPersistenceRule(t *testing.T) {
+    varTestName := "GoTestDataPersistenceRule"
+    dataPersistenceRuleType := models.DATA_PERSISTENCE_RULE_TYPE_PERMANENT
+    dataIsolationLevel := models.DATA_ISOLATION_LEVEL_STANDARD
+
+    // Create data policy
+    putDataPolicyResponse, putErr := testutils.PutDataPolicyLogError(t, client, varTestName)
+    ds3Testing.AssertNilError(t, putErr)
+
+    defer testutils.DeleteDataPolicyLogError(t, client, varTestName)
+
+    // Create storage domain
+    storageDomainResponse, storageDomainErr := client.PutStorageDomainSpectraS3(models.NewPutStorageDomainSpectraS3Request(&varTestName))
+    ds3Testing.AssertNilError(t, storageDomainErr)
+
+    defer client.DeleteStorageDomainSpectraS3(models.NewDeleteStorageDomainSpectraS3Request(varTestName))
+
+    // Create pool partition
+    poolPartitionResponse, poolPartitionErr := client.PutPoolPartitionSpectraS3(models.NewPutPoolPartitionSpectraS3Request(&varTestName, models.POOL_TYPE_ONLINE))
+    ds3Testing.AssertNilError(t, poolPartitionErr)
+
+    defer client.DeletePoolPartitionSpectraS3(models.NewDeletePoolPartitionSpectraS3Request(varTestName))
+
+    // Create storage domain member linking pool partition to storage domain
+    memberResponse, memberErr := client.PutPoolStorageDomainMemberSpectraS3(models.NewPutPoolStorageDomainMemberSpectraS3Request(
+        poolPartitionResponse.PoolPartition.Id,
+        storageDomainResponse.StorageDomain.Id))
+    ds3Testing.AssertNilError(t, memberErr)
+
+    defer client.DeleteStorageDomainMemberSpectraS3(models.NewDeleteStorageDomainMemberSpectraS3Request(memberResponse.StorageDomainMember.Id))
+
+    // Create data persistence rule linking data policy and storage domain
+    response, err := client.PutDataPersistenceRuleSpectraS3(models.NewPutDataPersistenceRuleSpectraS3Request(
+        dataPersistenceRuleType,
+        putDataPolicyResponse.DataPolicy.Id,
+        dataIsolationLevel,
+        storageDomainResponse.StorageDomain.Id))
+    ds3Testing.AssertNilError(t, err)
+
+    defer client.DeleteDataPersistenceRuleSpectraS3(models.NewDeleteDataPersistenceRuleSpectraS3Request(response.DataPersistenceRule.Id))
+
+    ds3Testing.AssertString(t, "DataPolicyId", putDataPolicyResponse.DataPolicy.Id, response.DataPersistenceRule.DataPolicyId)
+    ds3Testing.AssertString(t, "StorageDomainId", storageDomainResponse.StorageDomain.Id, response.DataPersistenceRule.StorageDomainId)
+    if response.DataPersistenceRule.Type != dataPersistenceRuleType {
+        t.Fatalf("Expected DataPersistenceRuleType to be '%s' but was '%s'.", dataPersistenceRuleType.String(), response.DataPersistenceRule.Type.String())
+    }
+    if response.DataPersistenceRule.IsolationLevel != dataIsolationLevel {
+        t.Fatalf("Expected DataIsolationLevel to be '%s' but was '%s'.", dataIsolationLevel.String(), response.DataPersistenceRule.IsolationLevel.String())
     }
 }
