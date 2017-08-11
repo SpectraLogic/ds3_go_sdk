@@ -111,31 +111,6 @@ func buildDs3GetObjectListStream(ds3GetObjects []Ds3GetObject) networking.Reader
     return marshalRequestPayload(objects)
 }
 
-type Ds3VerifyObject struct {
-    Name string `xml:"Name,attr"`
-    Length int64 `xml:"Length,attr"`
-}
-
-type ds3VerifyObjectList struct {
-    XMLName xml.Name
-    Ds3VerifyObjects []Ds3VerifyObject `xml:"Object"`
-}
-
-func newDs3VerifyObjectList(ds3VerifyObjects []Ds3VerifyObject) *ds3VerifyObjectList {
-    return &ds3VerifyObjectList{
-        XMLName: xml.Name{Local:"Objects"},
-        Ds3VerifyObjects: ds3VerifyObjects,
-    }
-}
-
-// Converts the ds3 put object list into a request payload stream of format:
-// <Objects><Object Name="o1" Length="2048"></Object><Object Name="o2" Length="2048"></Object>...</Objects>
-func buildDs3VerifyObjectListStream(ds3VerifyObjects []Ds3VerifyObject) networking.ReaderWithSizeDecorator {
-    // Build the ds3 put object list entity.
-    objects := newDs3VerifyObjectList(ds3VerifyObjects)
-    return marshalRequestPayload(objects)
-}
-
 type deleteObjectList struct {
     XMLName xml.Name
     Objects []deleteObject `xml:"Object"`

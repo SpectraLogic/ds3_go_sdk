@@ -84,21 +84,6 @@ func TestBuildDs3GetObjectListStream(t *testing.T) {
     verifyStreamContent(t, contentStream, expected)
 }
 
-func TestBuildDs3VerifyObjectListStream(t *testing.T) {
-    expected := "<Objects><Object Name=\"o1\" Length=\"1\"></Object><Object Name=\"o2\" Length=\"2\"></Object><Object Name=\"o3\" Length=\"3\"></Object></Objects>"
-
-    ds3VerifyObjects := []Ds3VerifyObject {
-        {Name:"o1", Length:1},
-        {Name:"o2", Length:2},
-        {Name:"o3", Length:3},
-    }
-
-    contentStream := buildDs3VerifyObjectListStream(ds3VerifyObjects)
-
-    defer contentStream.Close()
-    verifyStreamContent(t, contentStream, expected)
-}
-
 func TestBuildDeleteObjectsPayload(t *testing.T) {
     expected := "<Delete><Object><Key>o1</Key></Object><Object><Key>o2</Key></Object><Object><Key>o3</Key></Object></Delete>"
 
