@@ -322,33 +322,149 @@ func GetUserByNameLogError(t *testing.T, client *ds3.Client, userName string) (*
     return &response.SpectraUserList.SpectraUsers[0], nil
 }
 
-// Sets up the test environment by creating a client from environment
-// variables and creating a test bucket
-func SetupTestEnv(test_bucket string) (*ds3.Client, error) {
+// Used to keep track of all IDs for items created in SetupTestEnv, and used
+// in TeardownTestEnv. Items that have not been initialized are represented
+// with nil, denoting no teardown is required for that element.
+type TestIds struct {
+    DataPersistenceRuleId *string
+    DataPolicyId *string
+    OriginalDataPolicyId *string
+    PoolPartitionId *string
+    StorageDomainId *string
+    StorageDomainMemberId *string
+    UserId *string
+}
+
+// Sets up the test environment by
+// 1) creating a client from environment variables and
+// 2) creating a test bucket
+// 3) creating new data policy
+// 4) setting default user to use new data policy
+// 5) crating a pool partition
+// 6) creating a storage domain
+// 7) creating a storage domain member
+// 8) creating a data persistence rule
+func SetupTestEnv(testBucket string, userName string, envTestNameSpace string) (*ds3.Client, *TestIds, error) {
+    var ids TestIds
+
     // Build the client from environment variables
     client, clientErr := buildclient.FromEnv()
     if clientErr != nil {
-        return nil, clientErr
+        return nil, &ids, clientErr
     }
+
+    // Create data policy
+    dataPolicyResponse, dataPolicyErr := client.PutDataPolicySpectraS3(models.NewPutDataPolicySpectraS3Request(&envTestNameSpace))
+    if dataPolicyErr != nil {
+        return nil, &ids, dataPolicyErr
+    }
+    ids.DataPolicyId = &dataPolicyResponse.DataPolicy.Id
+
+    // Modify default user to use new data policy
+    modifyResponse, modifyErr := client.ModifyUserSpectraS3(models.NewModifyUserSpectraS3Request(userName).
+        WithDefaultDataPolicyId(dataPolicyResponse.DataPolicy.Id))
+    if modifyErr != nil {
+        return nil, &ids, modifyErr
+    }
+    ids.OriginalDataPolicyId = modifyResponse.SpectraUser.DefaultDataPolicyId
+    ids.UserId = &modifyResponse.SpectraUser.Id
+
+    // Create pool partition
+    poolPartitionResponse, poolPartitionErr := client.PutPoolPartitionSpectraS3(models.NewPutPoolPartitionSpectraS3Request(
+        &envTestNameSpace,
+        models.POOL_TYPE_ONLINE))
+    if poolPartitionErr != nil {
+        return nil, &ids, poolPartitionErr
+    }
+    ids.PoolPartitionId = &poolPartitionResponse.PoolPartition.Id
+
+    // Create storage domain
+    storageDomainResponse, storageDomainErr := client.PutStorageDomainSpectraS3(models.NewPutStorageDomainSpectraS3Request(&envTestNameSpace))
+    if storageDomainErr != nil {
+        return nil, &ids, storageDomainErr
+    }
+    ids.StorageDomainId = &storageDomainResponse.StorageDomain.Id
+
+    // Create storage domain member linking pool partition to storage domain
+    memberResponse, memberErr := client.PutPoolStorageDomainMemberSpectraS3(models.NewPutPoolStorageDomainMemberSpectraS3Request(
+        poolPartitionResponse.PoolPartition.Id,
+        storageDomainResponse.StorageDomain.Id))
+    if memberErr != nil {
+        return nil, &ids, memberErr
+    }
+    ids.StorageDomainMemberId = &memberResponse.StorageDomainMember.Id
+
+    // Create data persistence rule
+    ruleResponse, ruleErr := client.PutDataPersistenceRuleSpectraS3(models.NewPutDataPersistenceRuleSpectraS3Request(
+        models.DATA_PERSISTENCE_RULE_TYPE_PERMANENT,
+        dataPolicyResponse.DataPolicy.Id,
+        models.DATA_ISOLATION_LEVEL_STANDARD,
+        storageDomainResponse.StorageDomain.Id))
+    if ruleErr != nil {
+        return nil, &ids, ruleErr
+    }
+    ids.DataPersistenceRuleId = &ruleResponse.DataPersistenceRule.Id
 
     // Create the test bucket
-    putBucketErr := PutBucket(client, test_bucket)
+    putBucketErr := PutBucket(client, testBucket)
     if putBucketErr != nil {
-        return nil, putBucketErr
+        return nil, &ids, putBucketErr
     }
 
-    return client, nil
+    return client, &ids, nil
+}
+
+// Logs an error via printing. Used in TeardownTestEnv for best-effort teardown.
+func logErrViaPrint(err error) {
+    if err != nil {
+        log.Print(err)
+    }
 }
 
 // Tears down the test environment by deleting all contents in the
-// test bucket
-func TeardownTestEnv(client *ds3.Client, testBucket string) {
+// test bucket and deleting all items created in SetupTestEnv
+func TeardownTestEnv(client *ds3.Client, ids *TestIds, testBucket string) {
     //Delete contents in test bucket
     DeleteBucketContents(client, testBucket)
 
     //Delete the test bucket
     err := DeleteBucket(client, testBucket)
-    if err != nil {
-        log.Print(err)
+    logErrViaPrint(err)
+
+    // Delete data persistence rule
+    if ids.DataPersistenceRuleId != nil {
+        _, err := client.DeleteDataPersistenceRuleSpectraS3(models.NewDeleteDataPersistenceRuleSpectraS3Request(*ids.DataPersistenceRuleId))
+        logErrViaPrint(err)
+    }
+
+    // Delete storage domain member
+    if ids.StorageDomainMemberId != nil {
+        _, err := client.DeleteStorageDomainMemberSpectraS3(models.NewDeleteStorageDomainMemberSpectraS3Request(*ids.StorageDomainMemberId))
+        logErrViaPrint(err)
+    }
+
+    // Delete storage domain
+    if ids.StorageDomainId != nil {
+        _, err := client.DeleteStorageDomainSpectraS3(models.NewDeleteStorageDomainSpectraS3Request(*ids.StorageDomainId))
+        logErrViaPrint(err)
+    }
+
+    // Delete pool partition
+    if ids.PoolPartitionId != nil {
+        _, err := client.DeletePoolPartitionSpectraS3(models.NewDeletePoolPartitionSpectraS3Request(*ids.PoolPartitionId))
+        logErrViaPrint(err)
+    }
+
+    // Modify user to use its original data policy
+    if ids.OriginalDataPolicyId != nil {
+        _, err := client.ModifyUserSpectraS3(models.NewModifyUserSpectraS3Request(*ids.UserId).
+            WithDefaultDataPolicyId(*ids.OriginalDataPolicyId))
+        logErrViaPrint(err)
+    }
+
+    // Delete data policy
+    if ids.DataPolicyId != nil {
+        _, err := client.DeleteDataPolicySpectraS3(models.NewDeleteDataPolicySpectraS3Request(*ids.DataPolicyId))
+        logErrViaPrint(err)
     }
 }
