@@ -557,7 +557,7 @@ func TestBulkGetWithSimpleDs3GetObjets(t *testing.T) {
     )
 }
 
-func TestBulkGetWithPartialDs3GetObjets(t *testing.T) {
+func TestBulkGetWithPartialDs3GetObjects(t *testing.T) {
     objects := []models.Ds3GetObject {
         models.NewPartialDs3GetObject("file1", 10, 100),
         models.NewPartialDs3GetObject("file2", 20, 200),
@@ -588,6 +588,42 @@ func TestBulkGetWithObjectNames(t *testing.T) {
         &stringRequest,
         func(client *Client) ([]models.Objects, error) {
             request, err := client.GetBulkJobSpectraS3(models.NewGetBulkJobSpectraS3Request("bucketName", objects))
+            return request.MasterObjectList.Objects, err
+        },
+    )
+}
+
+func TestBulkVerifyWithPartialDs3GetObjects(t *testing.T) {
+    objects := []models.Ds3GetObject {
+        models.NewPartialDs3GetObject("file1", 10, 100),
+        models.NewPartialDs3GetObject("file2", 20, 200),
+        models.NewPartialDs3GetObject("file3", 30, 300),
+    }
+
+    stringRequest := "<Objects><Object Name=\"file1\" Length=\"10\" Offset=\"100\"></Object><Object Name=\"file2\" Length=\"20\" Offset=\"200\"></Object><Object Name=\"file3\" Length=\"30\" Offset=\"300\"></Object></Objects>"
+
+    runBulkGetTest(
+        t,
+        "start_bulk_verify",
+        &stringRequest,
+        func(client *Client) ([]models.Objects, error) {
+            request, err := client.VerifyBulkJobSpectraS3(models.NewVerifyBulkJobSpectraS3RequestWithPartialObjects("bucketName", objects))
+            return request.MasterObjectList.Objects, err
+        },
+    )
+}
+
+func TestBulkVerifyWithObjectNames(t *testing.T) {
+    objects := []string {"file1", "file2", "file3"}
+
+    stringRequest := "<Objects><Object Name=\"file1\"></Object><Object Name=\"file2\"></Object><Object Name=\"file3\"></Object></Objects>"
+
+    runBulkGetTest(
+        t,
+        "start_bulk_verify",
+        &stringRequest,
+        func(client *Client) ([]models.Objects, error) {
+            request, err := client.VerifyBulkJobSpectraS3(models.NewVerifyBulkJobSpectraS3Request("bucketName", objects))
             return request.MasterObjectList.Objects, err
         },
     )
@@ -1642,7 +1678,7 @@ func TestGetPhysicalPlacementForObjectsSpectraS3(t *testing.T) {
 
 func TestGetPhysicalPlacementForObjectsWithFullDetailsSpectraS3(t *testing.T) {
     expectedRequest := "<Objects><Object Name=\"obj1\"></Object><Object Name=\"obj2\"></Object><Object Name=\"obj3\"></Object></Objects>"
-    responsePayload := "<Data><AzureTargets/><Ds3Targets/><Pools/><S3Targets/><Tapes/></Data>"
+    responsePayload := "<Data><Object Bucket=\"b1\" Id=\"a2897bbd-3e0b-4c0f-83d7-29e1e7669bdd\" InCache=\"false\" Latest=\"true\" Length=\"10\" Name=\"o4\" Offset=\"0\" Version=\"1\"><PhysicalPlacement><AzureTargets/><Ds3Targets/><Pools/><S3Targets/><Tapes/></PhysicalPlacement></Object></Data>"
 
     // Create and run the mocked client.
     bucketName := "BucketName"
