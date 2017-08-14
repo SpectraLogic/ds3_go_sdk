@@ -672,7 +672,7 @@ func TestPutPart(t *testing.T) {
     responseHeaders.Add("ETag", eTag)
 
     response, err := mockedClient(t).
-        Expecting(networking.PUT, "/bucketName/object", qs, &http.Header{}, nil).
+        Expecting(networking.PUT, "/bucketName/object", qs, &http.Header{}, &content).
         Returning(200, "", responseHeaders).
         PutMultiPartUploadPart(models.NewPutMultiPartUploadPartRequest(
             "bucketName",
