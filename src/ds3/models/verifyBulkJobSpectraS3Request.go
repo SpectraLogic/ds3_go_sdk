@@ -29,13 +29,24 @@ type VerifyBulkJobSpectraS3Request struct {
     queryParams *url.Values
 }
 
-func NewVerifyBulkJobSpectraS3Request(bucketName string, objects []Ds3VerifyObject) *VerifyBulkJobSpectraS3Request {
+func NewVerifyBulkJobSpectraS3Request(bucketName string, objectNames []string) *VerifyBulkJobSpectraS3Request {
     queryParams := &url.Values{}
     queryParams.Set("operation", "start_bulk_verify")
 
     return &VerifyBulkJobSpectraS3Request{
         bucketName: bucketName,
-        content: buildDs3VerifyObjectListStream(objects),
+        content: buildDs3ObjectStreamFromNames(objectNames),
+        queryParams: queryParams,
+    }
+}
+
+func NewVerifyBulkJobSpectraS3RequestWithPartialObjects(bucketName string, objects []Ds3GetObject) *VerifyBulkJobSpectraS3Request {
+    queryParams := &url.Values{}
+    queryParams.Set("operation", "start_bulk_verify")
+
+    return &VerifyBulkJobSpectraS3Request{
+        bucketName: bucketName,
+        content: buildDs3GetObjectListStream(objects),
         queryParams: queryParams,
     }
 }
