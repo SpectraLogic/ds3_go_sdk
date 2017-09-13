@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#375EAB">
+
+  <title>networking - The Go Programming Language</title>
+
+<link type="text/css" rel="stylesheet" href="../../godoc/style.css">
+
+<link rel="stylesheet" href="../../godoc/jquery.treeview.css">
+<script type="text/javascript">window.initFuncs = [];</script>
+</head>
+<body>
+
+<div id='lowframe' style="position: fixed; bottom: 0; left: 0; height: 0; width: 100%; border-top: thin solid grey; background-color: white; overflow: auto;">
+...
+</div><!-- #lowframe -->
+
+<div id="topbar" class="wide"><div class="container">
+<div class="top-heading" id="heading-wide"><a href="http://localhost:8080/">The Go Programming Language</a></div>
+<div class="top-heading" id="heading-narrow"><a href="http://localhost:8080/">Go</a></div>
+<a href="index.html#" id="menu-button"><span id="menu-button-arrow">&#9661;</span></a>
+<form method="GET" action="http://localhost:8080/search">
+<div id="menu">
+<a href="http://localhost:8080/doc/">Documents</a>
+<a href="../../index.html">Packages</a>
+<a href="http://localhost:8080/project/">The Project</a>
+<a href="http://localhost:8080/help/">Help</a>
+<a href="http://localhost:8080/blog/">Blog</a>
+
+<input type="text" id="search" name="q" class="inactive" value="Search" placeholder="Search">
+</div>
+</form>
+
+</div></div>
+
+
+
+<div id="page" class="wide">
+<div class="container">
+
+
+  <h1>Package networking</h1>
+
+
+
+
+<div id="nav"></div>
+
+
+<!--
+	Copyright 2009 The Go Authors. All rights reserved.
+	Use of this source code is governed by a BSD-style
+	license that can be found in the LICENSE file.
+-->
+<!--
+	Note: Static (i.e., not template-generated) href and id
+	attributes start with "pkg-" to make it impossible for
+	them to conflict with generated attributes (some of which
+	correspond to Go identifiers).
+-->
+
+	<script type='text/javascript'>
+	document.ANALYSIS_DATA = null;
+	document.CALLGRAPH = null;
+	</script>
+
+	
+		
+		<div id="short-nav">
+			<dl>
+			<dd><code>import "ds3/networking"</code></dd>
+			</dl>
+			<dl>
+			<dd><a href="index.html#pkg-overview" class="overviewLink">Overview</a></dd>
+			<dd><a href="index.html#pkg-index" class="indexLink">Index</a></dd>
+			
+			
+			</dl>
+		</div>
+		<!-- The package's Name is printed as title by the top-level template -->
+		<div id="pkg-overview" class="toggleVisible">
+			<div class="collapsed">
+				<h2 class="toggleButton" title="Click to show Overview section">Overview ▹</h2>
+			</div>
+			<div class="expanded">
+				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
+				
+			</div>
+		</div>
+		
+
+		<div id="pkg-index" class="toggleVisible">
+		<div class="collapsed">
+			<h2 class="toggleButton" title="Click to show Index section">Index ▹</h2>
+		</div>
+		<div class="expanded">
+			<h2 class="toggleButton" title="Click to hide Index section">Index ▾</h2>
+
+		<!-- Table of contents for API; must be named manual-nav to turn off auto nav. -->
+			<div id="manual-nav">
+			<dl>
+			
+				<dd><a href="index.html#pkg-constants">Constants</a></dd>
+			
+			
+			
+			
+				
+				<dd><a href="index.html#Checksum">type Checksum</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#NewNoneChecksum">func NewNoneChecksum() Checksum</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#ChecksumType">type ChecksumType</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#ConnectionInfo">type ConnectionInfo</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#Credentials">type Credentials</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#Ds3Request">type Ds3Request</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#HttpTempRedirectDecorator">type HttpTempRedirectDecorator</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#HttpTempRedirectDecorator.Invoke">func (tempRedirectDecorator *HttpTempRedirectDecorator) Invoke(request Ds3Request) (WebResponse, error)</a></dd>
+				
+			
+				
+				<dd><a href="index.html#HttpVerb">type HttpVerb</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#HttpVerb.String">func (verb HttpVerb) String() (string, error)</a></dd>
+				
+			
+				
+				<dd><a href="index.html#Network">type Network</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#NewHttpNetwork">func NewHttpNetwork(connectionInfo *ConnectionInfo) Network</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#NewHttpTempRedirectDecorator">func NewHttpTempRedirectDecorator(network *Network, maxRedirect int) Network</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#NewNetworkRetryDecorator">func NewNetworkRetryDecorator(network *Network, maxRetires int) Network</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#NetworkRetryDecorator">type NetworkRetryDecorator</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#NetworkRetryDecorator.Invoke">func (networkRetryDecorator *NetworkRetryDecorator) Invoke(request Ds3Request) (WebResponse, error)</a></dd>
+				
+			
+				
+				<dd><a href="index.html#ReaderWithSizeDecorator">type ReaderWithSizeDecorator</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#BuildByteReaderWithSizeDecorator">func BuildByteReaderWithSizeDecorator(contentBytes []byte) ReaderWithSizeDecorator</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#RoundTripError">type RoundTripError</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#RoundTripError.Error">func (roundTripError RoundTripError) Error() string</a></dd>
+				
+			
+				
+				<dd><a href="index.html#TemporaryRedirectError">type TemporaryRedirectError</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#TemporaryRedirectError.Error">func (temporaryRedirectError TemporaryRedirectError) Error() string</a></dd>
+				
+			
+				
+				<dd><a href="index.html#WebResponse">type WebResponse</a></dd>
+				
+				
+			
+			
+			</dl>
+			</div><!-- #manual-nav -->
+
+		
+
+		
+			<h4>Package files</h4>
+			<p>
+			<span style="font-size:90%">
+			
+				<a href="http://localhost:8080/src/ds3/networking/ds3Request.go">ds3Request.go</a>
+			
+				<a href="http://localhost:8080/src/ds3/networking/ds3Response.go">ds3Response.go</a>
+			
+				<a href="http://localhost:8080/src/ds3/networking/headers.go">headers.go</a>
+			
+				<a href="http://localhost:8080/src/ds3/networking/httpRedirect.go">httpRedirect.go</a>
+			
+				<a href="http://localhost:8080/src/ds3/networking/net.go">net.go</a>
+			
+				<a href="http://localhost:8080/src/ds3/networking/networkErrors.go">networkErrors.go</a>
+			
+				<a href="http://localhost:8080/src/ds3/networking/networkRetry.go">networkRetry.go</a>
+			
+			</span>
+			</p>
+		
+		</div><!-- .expanded -->
+		</div><!-- #pkg-index -->
+
+		<div id="pkg-callgraph" class="toggle" style="display: none">
+		<div class="collapsed">
+			<h2 class="toggleButton" title="Click to show Internal Call Graph section">Internal call graph ▹</h2>
+		</div> <!-- .expanded -->
+		<div class="expanded">
+			<h2 class="toggleButton" title="Click to hide Internal Call Graph section">Internal call graph ▾</h2>
+			<p>
+			  In the call graph viewer below, each node
+			  is a function belonging to this package
+			  and its children are the functions it
+			  calls&mdash;perhaps dynamically.
+			</p>
+			<p>
+			  The root nodes are the entry points of the
+			  package: functions that may be called from
+			  outside the package.
+			  There may be non-exported or anonymous
+			  functions among them if they are called
+			  dynamically from another package.
+			</p>
+			<p>
+			  Click a node to visit that function's source code.
+			  From there you can visit its callers by
+			  clicking its declaring <code>func</code>
+			  token.
+			</p>
+			<p>
+			  Functions may be omitted if they were
+			  determined to be unreachable in the
+			  particular programs or tests that were
+			  analyzed.
+			</p>
+			<!-- Zero means show all package entry points. -->
+			<ul style="margin-left: 0.5in" id="callgraph-0" class="treeview"></ul>
+		</div>
+		</div> <!-- #pkg-callgraph -->
+
+		
+			<h2 id="pkg-constants">Constants</h2>
+			
+				<pre>const <span id="ContentCRC32">ContentCRC32</span> <a href="http://localhost:8080/pkg/builtin/#string">string</a> = &#34;Content-CRC32&#34;</pre>
+				<p>
+Http Headers
+</p>
+
+			
+				<pre>const <span id="ContentCRC32C">ContentCRC32C</span> <a href="http://localhost:8080/pkg/builtin/#string">string</a> = &#34;Content-CRC32C&#34;</pre>
+				
+			
+				<pre>const <span id="ContentMd5">ContentMd5</span> <a href="http://localhost:8080/pkg/builtin/#string">string</a> = &#34;Content-MD5&#34;</pre>
+				
+			
+				<pre>const <span id="ContentSha256">ContentSha256</span> <a href="http://localhost:8080/pkg/builtin/#string">string</a> = &#34;Content-SHA256&#34;</pre>
+				
+			
+				<pre>const <span id="ContentSha512">ContentSha512</span> <a href="http://localhost:8080/pkg/builtin/#string">string</a> = &#34;Content-SHA512&#34;</pre>
+				
+			
+				<pre>const <span id="ContentTypeKey">ContentTypeKey</span> <a href="http://localhost:8080/pkg/builtin/#string">string</a> = &#34;Content-Type&#34; <span class="comment">// This header describes the format of the contents</span>
+</pre>
+				
+			
+		
+		
+		
+		
+			
+			
+			<h2 id="Checksum">type <a href="http://localhost:8080/src/ds3/networking/ds3Request.go?s=304:380#L11">Checksum</a></h2>
+			<pre>type Checksum struct {
+    ContentHash <a href="http://localhost:8080/pkg/builtin/#string">string</a>
+    Type        <a href="index.html#ChecksumType">ChecksumType</a>
+}</pre>
+			
+
+			
+
+			
+
+			
+			
+			
+
+			
+				
+				<h3 id="NewNoneChecksum">func <a href="http://localhost:8080/src/ds3/networking/ds3Request.go?s=382:413#L16">NewNoneChecksum</a></h3>
+				<pre>func NewNoneChecksum() <a href="index.html#Checksum">Checksum</a></pre>
+				
+				
+				
+			
+
+			
+		
+			
+			
+			<h2 id="ChecksumType">type <a href="http://localhost:8080/src/ds3/networking/ds3Request.go?s=763:784#L31">ChecksumType</a></h2>
+			<pre>type ChecksumType <a href="http://localhost:8080/pkg/builtin/#int">int</a></pre>
+			
+
+			
+				<pre>const (
+    <span id="CRC_32">CRC_32</span> <a href="index.html#ChecksumType">ChecksumType</a> = <a href="http://localhost:8080/pkg/builtin/#iota">iota</a>
+    <span id="CRC_32C">CRC_32C</span>
+    <span id="MD5">MD5</span>
+    <span id="SHA_256">SHA_256</span>
+    <span id="SHA_512">SHA_512</span>
+    <span id="NONE">NONE</span>
+)</pre>
+				
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="ConnectionInfo">type <a href="http://localhost:8080/src/ds3/networking/net.go?s=167:261#L4">ConnectionInfo</a></h2>
+			<pre>type ConnectionInfo struct {
+    Endpoint *<a href="http://localhost:8080/pkg/net/url/">url</a>.<a href="http://localhost:8080/pkg/net/url/#URL">URL</a>
+    Creds    *<a href="index.html#Credentials">Credentials</a>
+    Proxy    *<a href="http://localhost:8080/pkg/net/url/">url</a>.<a href="http://localhost:8080/pkg/net/url/#URL">URL</a>
+}</pre>
+			
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="Credentials">type <a href="http://localhost:8080/src/ds3/networking/net.go?s=263:325#L10">Credentials</a></h2>
+			<pre>type Credentials struct {
+    AccessId <a href="http://localhost:8080/pkg/builtin/#string">string</a>
+    Key      <a href="http://localhost:8080/pkg/builtin/#string">string</a>
+}</pre>
+			
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="Ds3Request">type <a href="http://localhost:8080/src/ds3/networking/ds3Request.go?s=105:302#L2">Ds3Request</a></h2>
+			<pre>type Ds3Request interface {
+    Verb() <a href="index.html#HttpVerb">HttpVerb</a>
+    Path() <a href="http://localhost:8080/pkg/builtin/#string">string</a>
+    QueryParams() *<a href="http://localhost:8080/pkg/net/url/">url</a>.<a href="http://localhost:8080/pkg/net/url/#Values">Values</a>
+    Header() *<a href="http://localhost:8080/pkg/net/http/">http</a>.<a href="http://localhost:8080/pkg/net/http/#Header">Header</a>
+    GetContentStream() <a href="index.html#ReaderWithSizeDecorator">ReaderWithSizeDecorator</a>
+    GetChecksum() <a href="index.html#Checksum">Checksum</a>
+}</pre>
+			
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="HttpTempRedirectDecorator">type <a href="http://localhost:8080/src/ds3/networking/httpRedirect.go?s=111:204#L2">HttpTempRedirectDecorator</a></h2>
+			<pre>type HttpTempRedirectDecorator struct {
+    <span class="comment">// contains filtered or unexported fields</span>
+}</pre>
+			
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="HttpTempRedirectDecorator.Invoke">func (*HttpTempRedirectDecorator) <a href="http://localhost:8080/src/ds3/networking/httpRedirect.go?s=485:588#L16">Invoke</a></h3>
+				<pre>func (tempRedirectDecorator *<a href="index.html#HttpTempRedirectDecorator">HttpTempRedirectDecorator</a>) Invoke(request <a href="index.html#Ds3Request">Ds3Request</a>) (<a href="index.html#WebResponse">WebResponse</a>, <a href="http://localhost:8080/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="HttpVerb">type <a href="http://localhost:8080/src/ds3/networking/ds3Request.go?s=880:897#L42">HttpVerb</a></h2>
+			<pre>type HttpVerb <a href="http://localhost:8080/pkg/builtin/#int">int</a></pre>
+			
+
+			
+				<pre>const (
+    <span id="GET">GET</span> <a href="index.html#HttpVerb">HttpVerb</a> = <a href="http://localhost:8080/pkg/builtin/#iota">iota</a>
+    <span id="PUT">PUT</span>
+    <span id="POST">POST</span>
+    <span id="DELETE">DELETE</span>
+    <span id="HEAD">HEAD</span>
+    <span id="PATCH">PATCH</span>
+)</pre>
+				
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="HttpVerb.String">func (HttpVerb) <a href="http://localhost:8080/src/ds3/networking/ds3Request.go?s=980:1025#L53">String</a></h3>
+				<pre>func (verb <a href="index.html#HttpVerb">HttpVerb</a>) String() (<a href="http://localhost:8080/pkg/builtin/#string">string</a>, <a href="http://localhost:8080/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="Network">type <a href="http://localhost:8080/src/ds3/networking/net.go?s=84:165#L1">Network</a></h2>
+			<pre>type Network interface {
+    Invoke(ds3Request <a href="index.html#Ds3Request">Ds3Request</a>) (<a href="index.html#WebResponse">WebResponse</a>, <a href="http://localhost:8080/pkg/builtin/#error">error</a>)
+}</pre>
+			
+
+			
+
+			
+
+			
+			
+			
+
+			
+				
+				<h3 id="NewHttpNetwork">func <a href="http://localhost:8080/src/ds3/networking/net.go?s=421:480#L20">NewHttpNetwork</a></h3>
+				<pre>func NewHttpNetwork(connectionInfo *<a href="index.html#ConnectionInfo">ConnectionInfo</a>) <a href="index.html#Network">Network</a></pre>
+				
+				
+				
+			
+				
+				<h3 id="NewHttpTempRedirectDecorator">func <a href="http://localhost:8080/src/ds3/networking/httpRedirect.go?s=267:345#L9">NewHttpTempRedirectDecorator</a></h3>
+				<pre>func NewHttpTempRedirectDecorator(network *<a href="index.html#Network">Network</a>, maxRedirect <a href="http://localhost:8080/pkg/builtin/#int">int</a>) <a href="index.html#Network">Network</a></pre>
+				<p>
+Decorator for Network which handles 307 redirect retries
+</p>
+
+				
+				
+			
+				
+				<h3 id="NewNetworkRetryDecorator">func <a href="http://localhost:8080/src/ds3/networking/networkRetry.go?s=274:347#L9">NewNetworkRetryDecorator</a></h3>
+				<pre>func NewNetworkRetryDecorator(network *<a href="index.html#Network">Network</a>, maxRetires <a href="http://localhost:8080/pkg/builtin/#int">int</a>) <a href="index.html#Network">Network</a></pre>
+				
+				
+				
+			
+
+			
+		
+			
+			
+			<h2 id="NetworkRetryDecorator">type <a href="http://localhost:8080/src/ds3/networking/networkRetry.go?s=183:272#L4">NetworkRetryDecorator</a></h2>
+			<pre>type NetworkRetryDecorator struct {
+    <span class="comment">// contains filtered or unexported fields</span>
+}</pre>
+			<p>
+Decorator for Network which handles network related retries
+</p>
+
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="NetworkRetryDecorator.Invoke">func (*NetworkRetryDecorator) <a href="http://localhost:8080/src/ds3/networking/networkRetry.go?s=482:581#L16">Invoke</a></h3>
+				<pre>func (networkRetryDecorator *<a href="index.html#NetworkRetryDecorator">NetworkRetryDecorator</a>) Invoke(request <a href="index.html#Ds3Request">Ds3Request</a>) (<a href="index.html#WebResponse">WebResponse</a>, <a href="http://localhost:8080/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="ReaderWithSizeDecorator">type <a href="http://localhost:8080/src/ds3/networking/ds3Request.go?s=665:761#L25">ReaderWithSizeDecorator</a></h2>
+			<pre>type ReaderWithSizeDecorator interface {
+    <a href="http://localhost:8080/pkg/io/">io</a>.<a href="http://localhost:8080/pkg/io/#Reader">Reader</a>
+    <a href="http://localhost:8080/pkg/io/">io</a>.<a href="http://localhost:8080/pkg/io/#Closer">Closer</a>
+    Size() (<a href="http://localhost:8080/pkg/builtin/#int64">int64</a>, <a href="http://localhost:8080/pkg/builtin/#error">error</a>)
+}</pre>
+			<p>
+We need a Size method so we can pass the appropriate Content-Length header.
+Size isn&#39;t readily available in Go standard interfaces, so we created a new
+interface for it.
+</p>
+
+
+			
+
+			
+
+			
+			
+			
+
+			
+				
+				<h3 id="BuildByteReaderWithSizeDecorator">func <a href="http://localhost:8080/src/ds3/networking/ds3Request.go?s=1532:1614#L71">BuildByteReaderWithSizeDecorator</a></h3>
+				<pre>func BuildByteReaderWithSizeDecorator(contentBytes []<a href="http://localhost:8080/pkg/builtin/#byte">byte</a>) <a href="index.html#ReaderWithSizeDecorator">ReaderWithSizeDecorator</a></pre>
+				
+				
+				
+			
+
+			
+		
+			
+			
+			<h2 id="RoundTripError">type <a href="http://localhost:8080/src/ds3/networking/networkErrors.go?s=371:397#L3">RoundTripError</a></h2>
+			<pre>type RoundTripError <a href="http://localhost:8080/pkg/builtin/#string">string</a></pre>
+			<p>
+Denotes an error occurred during attempt to perform request
+</p>
+
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="RoundTripError.Error">func (RoundTripError) <a href="http://localhost:8080/src/ds3/networking/networkErrors.go?s=399:450#L5">Error</a></h3>
+				<pre>func (roundTripError <a href="index.html#RoundTripError">RoundTripError</a>) Error() <a href="http://localhost:8080/pkg/builtin/#string">string</a></pre>
+				
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="TemporaryRedirectError">type <a href="http://localhost:8080/src/ds3/networking/networkErrors.go?s=108:139#L1">TemporaryRedirectError</a></h2>
+			<pre>type TemporaryRedirectError <a href="http://localhost:8080/pkg/builtin/#int">int</a></pre>
+			<p>
+Error denoting a request has returned a temporary redirect status code
+</p>
+
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="TemporaryRedirectError.Error">func (TemporaryRedirectError) <a href="http://localhost:8080/src/ds3/networking/networkErrors.go?s=141:208#L1">Error</a></h3>
+				<pre>func (temporaryRedirectError <a href="index.html#TemporaryRedirectError">TemporaryRedirectError</a>) Error() <a href="http://localhost:8080/pkg/builtin/#string">string</a></pre>
+				
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="WebResponse">type <a href="http://localhost:8080/src/ds3/networking/ds3Response.go?s=70:172#L1">WebResponse</a></h2>
+			<pre>type WebResponse interface {
+    StatusCode() <a href="http://localhost:8080/pkg/builtin/#int">int</a>
+    Body() <a href="http://localhost:8080/pkg/io/">io</a>.<a href="http://localhost:8080/pkg/io/#ReadCloser">ReadCloser</a>
+    Header() *<a href="http://localhost:8080/pkg/net/http/">http</a>.<a href="http://localhost:8080/pkg/net/http/#Header">Header</a>
+}</pre>
+			
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+	
+
+	
+
+
+
+
+
+
+
+<div id="footer">
+Build version go1.6.<br>
+Except as <a href="https://developers.google.com/site-policies#restrictions">noted</a>,
+the content of this page is licensed under the
+Creative Commons Attribution 3.0 License,
+and code is licensed under a <a href="http://localhost:8080/LICENSE">BSD license</a>.<br>
+<a href="http://localhost:8080/doc/tos.html">Terms of Service</a> | 
+<a href="http://www.google.com/intl/en/policies/privacy/">Privacy Policy</a>
+</div>
+
+</div><!-- .container -->
+</div><!-- #page -->
+
+<!-- TODO(adonovan): load these from <head> using "defer" attribute? -->
+<script type="text/javascript" src="../../godoc/jquery.js"></script>
+<script type="text/javascript" src="../../godoc/jquery.treeview.js"></script>
+<script type="text/javascript" src="../../godoc/jquery.treeview.edit.js"></script>
+
+
+<script type="text/javascript" src="../../godoc/godocs.js"></script>
+
+</body>
+</html>
+

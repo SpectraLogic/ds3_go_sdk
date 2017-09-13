@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#375EAB">
+
+  <title>testutils - The Go Programming Language</title>
+
+<link type="text/css" rel="stylesheet" href="../../godoc/style.css">
+
+<link rel="stylesheet" href="../../godoc/jquery.treeview.css">
+<script type="text/javascript">window.initFuncs = [];</script>
+</head>
+<body>
+
+<div id='lowframe' style="position: fixed; bottom: 0; left: 0; height: 0; width: 100%; border-top: thin solid grey; background-color: white; overflow: auto;">
+...
+</div><!-- #lowframe -->
+
+<div id="topbar" class="wide"><div class="container">
+<div class="top-heading" id="heading-wide"><a href="http://localhost:8080/">The Go Programming Language</a></div>
+<div class="top-heading" id="heading-narrow"><a href="http://localhost:8080/">Go</a></div>
+<a href="index.html#" id="menu-button"><span id="menu-button-arrow">&#9661;</span></a>
+<form method="GET" action="http://localhost:8080/search">
+<div id="menu">
+<a href="http://localhost:8080/doc/">Documents</a>
+<a href="../../index.html">Packages</a>
+<a href="http://localhost:8080/project/">The Project</a>
+<a href="http://localhost:8080/help/">Help</a>
+<a href="http://localhost:8080/blog/">Blog</a>
+
+<input type="text" id="search" name="q" class="inactive" value="Search" placeholder="Search">
+</div>
+</form>
+
+</div></div>
+
+
+
+<div id="page" class="wide">
+<div class="container">
+
+
+  <h1>Package testutils</h1>
+
+
+
+
+<div id="nav"></div>
+
+
+<!--
+	Copyright 2009 The Go Authors. All rights reserved.
+	Use of this source code is governed by a BSD-style
+	license that can be found in the LICENSE file.
+-->
+<!--
+	Note: Static (i.e., not template-generated) href and id
+	attributes start with "pkg-" to make it impossible for
+	them to conflict with generated attributes (some of which
+	correspond to Go identifiers).
+-->
+
+	<script type='text/javascript'>
+	document.ANALYSIS_DATA = null;
+	document.CALLGRAPH = null;
+	</script>
+
+	
+		
+		<div id="short-nav">
+			<dl>
+			<dd><code>import "ds3_integration/utils"</code></dd>
+			</dl>
+			<dl>
+			<dd><a href="index.html#pkg-overview" class="overviewLink">Overview</a></dd>
+			<dd><a href="index.html#pkg-index" class="indexLink">Index</a></dd>
+			
+			
+			</dl>
+		</div>
+		<!-- The package's Name is printed as title by the top-level template -->
+		<div id="pkg-overview" class="toggleVisible">
+			<div class="collapsed">
+				<h2 class="toggleButton" title="Click to show Overview section">Overview ▹</h2>
+			</div>
+			<div class="expanded">
+				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
+				
+			</div>
+		</div>
+		
+
+		<div id="pkg-index" class="toggleVisible">
+		<div class="collapsed">
+			<h2 class="toggleButton" title="Click to show Index section">Index ▹</h2>
+		</div>
+		<div class="expanded">
+			<h2 class="toggleButton" title="Click to hide Index section">Index ▾</h2>
+
+		<!-- Table of contents for API; must be named manual-nav to turn off auto nav. -->
+			<div id="manual-nav">
+			<dl>
+			
+			
+				<dd><a href="index.html#pkg-variables">Variables</a></dd>
+			
+			
+				
+				<dd><a href="index.html#ConvertBooksToDs3Objects">func ConvertBooksToDs3Objects(books map[string]networking.ReaderWithSizeDecorator) ([]models.Ds3PutObject, error)</a></dd>
+			
+				
+				<dd><a href="index.html#ConvertObjectsIntoObjectNameList">func ConvertObjectsIntoObjectNameList(objects []models.Contents) []string</a></dd>
+			
+				
+				<dd><a href="index.html#DeleteBucket">func DeleteBucket(client *ds3.Client, bucketName string) error</a></dd>
+			
+				
+				<dd><a href="index.html#DeleteBucketContents">func DeleteBucketContents(client *ds3.Client, bucketName string)</a></dd>
+			
+				
+				<dd><a href="index.html#DeleteBucketLogError">func DeleteBucketLogError(t *testing.T, client *ds3.Client, bucketName string) error</a></dd>
+			
+				
+				<dd><a href="index.html#DeleteDataPolicyLogError">func DeleteDataPolicyLogError(t *testing.T, client *ds3.Client, dataPolicyId string) error</a></dd>
+			
+				
+				<dd><a href="index.html#DeleteObject">func DeleteObject(client *ds3.Client, bucketName string, objectName string) error</a></dd>
+			
+				
+				<dd><a href="index.html#DeleteObjectLogError">func DeleteObjectLogError(t *testing.T, client *ds3.Client, bucketName string, objectName string) error</a></dd>
+			
+				
+				<dd><a href="index.html#GetBucket">func GetBucket(client *ds3.Client, bucketName string) (*models.GetBucketResponse, error)</a></dd>
+			
+				
+				<dd><a href="index.html#GetBucketLogError">func GetBucketLogError(t *testing.T, client *ds3.Client, bucketName string) (*models.GetBucketResponse, error)</a></dd>
+			
+				
+				<dd><a href="index.html#GetDataPolicyLogError">func GetDataPolicyLogError(t *testing.T, client *ds3.Client, dataPolicyId string) (*models.GetDataPolicySpectraS3Response, error)</a></dd>
+			
+				
+				<dd><a href="index.html#GetObject">func GetObject(client *ds3.Client, bucketName string, objectName string) (*models.GetObjectResponse, error)</a></dd>
+			
+				
+				<dd><a href="index.html#GetObjectLogError">func GetObjectLogError(t *testing.T, client *ds3.Client, bucketName string, objectName string) (*models.GetObjectResponse, error)</a></dd>
+			
+				
+				<dd><a href="index.html#GetResourceBookAsStream">func GetResourceBookAsStream(book string) (*networking.ReaderWithSizeDecorator, error)</a></dd>
+			
+				
+				<dd><a href="index.html#GetResourceBooks">func GetResourceBooks() (map[string]networking.ReaderWithSizeDecorator, error)</a></dd>
+			
+				
+				<dd><a href="index.html#GetUserByNameLogError">func GetUserByNameLogError(t *testing.T, client *ds3.Client, userName string) (*models.SpectraUser, error)</a></dd>
+			
+				
+				<dd><a href="index.html#LoadBook">func LoadBook(book string) ([]byte, error)</a></dd>
+			
+				
+				<dd><a href="index.html#LoadBookLogError">func LoadBookLogError(t *testing.T, book string) ([]byte, error)</a></dd>
+			
+				
+				<dd><a href="index.html#PutBucket">func PutBucket(client *ds3.Client, bucketName string) error</a></dd>
+			
+				
+				<dd><a href="index.html#PutBucketLogError">func PutBucketLogError(t *testing.T, client *ds3.Client, bucketName string) error</a></dd>
+			
+				
+				<dd><a href="index.html#PutDataPolicyLogError">func PutDataPolicyLogError(t *testing.T, client *ds3.Client, dataPolicyName string) (*models.PutDataPolicySpectraS3Response, error)</a></dd>
+			
+				
+				<dd><a href="index.html#PutObject">func PutObject(client *ds3.Client, bucketName string, objectName string, data []byte) error</a></dd>
+			
+				
+				<dd><a href="index.html#PutObjectLogError">func PutObjectLogError(t *testing.T, client *ds3.Client, bucketName string, objectName string, data []byte) error</a></dd>
+			
+				
+				<dd><a href="index.html#PutTestBooks">func PutTestBooks(client *ds3.Client, bucketName string) error</a></dd>
+			
+				
+				<dd><a href="index.html#SetupTestEnv">func SetupTestEnv(testBucket string, userName string, envTestNameSpace string) (*ds3.Client, *TestIds, error)</a></dd>
+			
+				
+				<dd><a href="index.html#TeardownTestEnv">func TeardownTestEnv(client *ds3.Client, ids *TestIds, testBucket string)</a></dd>
+			
+				
+				<dd><a href="index.html#VerifyBookContent">func VerifyBookContent(t *testing.T, bookName string, content io.ReadCloser)</a></dd>
+			
+			
+				
+				<dd><a href="index.html#TestIds">type TestIds</a></dd>
+				
+				
+			
+			
+			</dl>
+			</div><!-- #manual-nav -->
+
+		
+
+		
+			<h4>Package files</h4>
+			<p>
+			<span style="font-size:90%">
+			
+				<a href="http://localhost:8080/src/ds3_integration/utils/testUtils.go">testUtils.go</a>
+			
+			</span>
+			</p>
+		
+		</div><!-- .expanded -->
+		</div><!-- #pkg-index -->
+
+		<div id="pkg-callgraph" class="toggle" style="display: none">
+		<div class="collapsed">
+			<h2 class="toggleButton" title="Click to show Internal Call Graph section">Internal call graph ▹</h2>
+		</div> <!-- .expanded -->
+		<div class="expanded">
+			<h2 class="toggleButton" title="Click to hide Internal Call Graph section">Internal call graph ▾</h2>
+			<p>
+			  In the call graph viewer below, each node
+			  is a function belonging to this package
+			  and its children are the functions it
+			  calls&mdash;perhaps dynamically.
+			</p>
+			<p>
+			  The root nodes are the entry points of the
+			  package: functions that may be called from
+			  outside the package.
+			  There may be non-exported or anonymous
+			  functions among them if they are called
+			  dynamically from another package.
+			</p>
+			<p>
+			  Click a node to visit that function's source code.
+			  From there you can visit its callers by
+			  clicking its declaring <code>func</code>
+			  token.
+			</p>
+			<p>
+			  Functions may be omitted if they were
+			  determined to be unreachable in the
+			  particular programs or tests that were
+			  analyzed.
+			</p>
+			<!-- Zero means show all package entry points. -->
+			<ul style="margin-left: 0.5in" id="callgraph-0" class="treeview"></ul>
+		</div>
+		</div> <!-- #pkg-callgraph -->
+
+		
+		
+			<h2 id="pkg-variables">Variables</h2>
+			
+				<pre>var <span id="BookTitles">BookTitles</span> = []<a href="http://localhost:8080/pkg/builtin/#string">string</a>{&#34;beowulf.txt&#34;, &#34;sherlock_holmes.txt&#34;, &#34;tale_of_two_cities.txt&#34;, &#34;ulysses.txt&#34;}</pre>
+				
+			
+		
+		
+			
+			
+			<h2 id="ConvertBooksToDs3Objects">func <a href="http://localhost:8080/src/ds3_integration/utils/testUtils.go?s=3272:3385#L95">ConvertBooksToDs3Objects</a></h2>
+			<pre>func ConvertBooksToDs3Objects(books map[<a href="http://localhost:8080/pkg/builtin/#string">string</a>]<a href="../../ds3/networking/index.html">networking</a>.<a href="../../ds3/networking/index.html#ReaderWithSizeDecorator">ReaderWithSizeDecorator</a>) ([]<a href="../../ds3/models/index.html">models</a>.<a href="../../ds3/models/index.html#Ds3PutObject">Ds3PutObject</a>, <a href="http://localhost:8080/pkg/builtin/#error">error</a>)</pre>
+			
+			
+			
+
+		
+			
+			
+			<h2 id="ConvertObjectsIntoObjectNameList">func <a href="http://localhost:8080/src/ds3_integration/utils/testUtils.go?s=792:865#L23">ConvertObjectsIntoObjectNameList</a></h2>
+			<pre>func ConvertObjectsIntoObjectNameList(objects []<a href="../../ds3/models/index.html">models</a>.<a href="../../ds3/models/index.html#Contents">Contents</a>) []<a href="http://localhost:8080/pkg/builtin/#string">string</a></pre>
+			
+			
+			
+
+		
+			
+			
+			<h2 id="DeleteBucket">func <a href="http://localhost:8080/src/ds3_integration/utils/testUtils.go?s=8001:8065#L235">DeleteBucket</a></h2>
+			<pre>func DeleteBucket(client *<a href="../../ds3/index.html">ds3</a>.<a href="../../ds3/index.html#Client">Client</a>, bucketName <a href="http://localhost:8080/pkg/builtin/#string">string</a>) <a href="http://localhost:8080/pkg/builtin/#error">error</a></pre>
+			<p>
+Deletes the specified bucket and returns an error if one occurs
+</p>
+
+			
+			
+
+		
+			
+			
+			<h2 id="DeleteBucketContents">func <a href="http://localhost:8080/src/ds3_integration/utils/testUtils.go?s=2203:2267#L68">DeleteBucketContents</a></h2>
+			<pre>func DeleteBucketContents(client *<a href="../../ds3/index.html">ds3</a>.<a href="../../ds3/index.html#Client">Client</a>, bucketName <a href="http://localhost:8080/pkg/builtin/#string">string</a>)</pre>
+			
+			
+			
+
+		
+			
+			
+			<h2 id="DeleteBucketLogError">func <a href="http://localhost:8080/src/ds3_integration/utils/testUtils.go?s=7736:7822#L226">DeleteBucketLogError</a></h2>
+			<pre>func DeleteBucketLogError(t *<a href="http://localhost:8080/pkg/testing/">testing</a>.<a href="http://localhost:8080/pkg/testing/#T">T</a>, client *<a href="../../ds3/index.html">ds3</a>.<a href="../../ds3/index.html#Client">Client</a>, bucketName <a href="http://localhost:8080/pkg/builtin/#string">string</a>) <a href="http://localhost:8080/pkg/builtin/#error">error</a></pre>
+			<p>
+Deletes the specified bucket. If an error occurs, it is logged, and the calling
+test is marked as failed.
+</p>
+
+			
+			
+
+		
+			
+			
+			<h2 id="DeleteDataPolicyLogError">func <a href="http://localhost:8080/src/ds3_integration/utils/testUtils.go?s=9204:9296#L270">DeleteDataPolicyLogError</a></h2>
+			<pre>func DeleteDataPolicyLogError(t *<a href="http://localhost:8080/pkg/testing/">testing</a>.<a href="http://localhost:8080/pkg/testing/#T">T</a>, client *<a href="../../ds3/index.html">ds3</a>.<a href="../../ds3/index.html#Client">Client</a>, dataPolicyId <a href="http://localhost:8080/pkg/builtin/#string">string</a>) <a href="http://localhost:8080/pkg/builtin/#error">error</a></pre>
+			<p>
+Deletes the specified data policy. If an error occurs, it is logged, and the calling
+test is marked as failed, but continues running.
+</p>
+
+			
+			
+
+		
+			
+			
+			<h2 id="DeleteObject">func <a href="http://localhost:8080/src/ds3_integration/utils/testUtils.go?s=5793:5876#L169">DeleteObject</a></h2>
+			<pre>func DeleteObject(client *<a href="../../ds3/index.html">ds3</a>.<a href="../../ds3/index.html#Client">Client</a>, bucketName <a href="http://localhost:8080/pkg/builtin/#string">string</a>, objectName <a href="http://localhost:8080/pkg/builtin/#string">string</a>) <a href="http://localhost:8080/pkg/builtin/#error">error</a></pre>
+			<p>
+Deletes the specified object. Returns an error if not successful.
+</p>
+
+			
+			
+
+		
+			
+			
+			<h2 id="DeleteObjectLogError">func <a href="http://localhost:8080/src/ds3_integration/utils/testUtils.go?s=5495:5600#L160">DeleteObjectLogError</a></h2>
+			<pre>func DeleteObjectLogError(t *<a href="http://localhost:8080/pkg/testing/">testing</a>.<a href="http://localhost:8080/pkg/testing/#T">T</a>, client *<a href="../../ds3/index.html">ds3</a>.<a href="../../ds3/index.html#Client">Client</a>, bucketName <a href="http://localhost:8080/pkg/builtin/#string">string</a>, objectName <a href="http://localhost:8080/pkg/builtin/#string">string</a>) <a href="http://localhost:8080/pkg/builtin/#error">error</a></pre>
+			<p>
+Deletes the specified object. If an error occurs, it is logged, and the calling
+test is marked as failed.
+</p>
+
+			
+			
+
+		
+			
+			
+			<h2 id="GetBucket">func <a href="http://localhost:8080/src/ds3_integration/utils/testUtils.go?s=8753:8841#L258">GetBucket</a></h2>
+			<pre>func GetBucket(client *<a href="../../ds3/index.html">ds3</a>.<a href="../../ds3/index.html#Client">Client</a>, bucketName <a href="http://localhost:8080/pkg/builtin/#string">string</a>) (*<a href="../../ds3/models/index.html">models</a>.<a href="../../ds3/models/index.html#GetBucketResponse">GetBucketResponse</a>, <a href="http://localhost:8080/pkg/builtin/#error">error</a>)</pre>
+			<p>
+Retrieves the specified bucket. Returns an error if unsuccessful.
+</p>
+
+			
+			
+
+		
+			
+			
+			<h2 id="GetBucketLogError">func <a href="http://localhost:8080/src/ds3_integration/utils/testUtils.go?s=8413:8523#L248">GetBucketLogError</a></h2>
+			<pre>func GetBucketLogError(t *<a href="http://localhost:8080/pkg/testing/">testing</a>.<a href="http://localhost:8080/pkg/testing/#T">T</a>, client *<a href="../../ds3/index.html">ds3</a>.<a href="../../ds3/index.html#Client">Client</a>, bucketName <a href="http://localhost:8080/pkg/builtin/#string">string</a>) (*<a href="../../ds3/models/index.html">models</a>.<a href="../../ds3/models/index.html#GetBucketResponse">GetBucketResponse</a>, <a href="http://localhost:8080/pkg/builtin/#error">error</a>)</pre>
+			<p>
+Retrieves the specified bucket. If an error occurs, it is logged, and the calling
+test is marked as failed.
+</p>
+
+			
+			
+
+		
+			
+			
+			<h2 id="GetDataPolicyLogError">func <a href="http://localhost:8080/src/ds3_integration/utils/testUtils.go?s=10228:10357#L290">GetDataPolicyLogError</a></h2>
+			<pre>func GetDataPolicyLogError(t *<a href="http://localhost:8080/pkg/testing/">testing</a>.<a href="http://localhost:8080/pkg/testing/#T">T</a>, client *<a href="../../ds3/index.html">ds3</a>.<a href="../../ds3/index.html#Client">Client</a>, dataPolicyId <a href="http://localhost:8080/pkg/builtin/#string">string</a>) (*<a href="../../ds3/models/index.html">models</a>.<a href="../../ds3/models/index.html#GetDataPolicySpectraS3Response">GetDataPolicySpectraS3Response</a>, <a href="http://localhost:8080/pkg/builtin/#error">error</a>)</pre>
+			<p>
+Retrieves the specified data policy. If an error occurs, it is logged, and the calling
+test is marked as failed, but continues running
+</p>
+
+			
+			
+
+		
+			
+			
+			<h2 id="GetObject">func <a href="http://localhost:8080/src/ds3_integration/utils/testUtils.go?s=6625:6732#L192">GetObject</a></h2>
+			<pre>func GetObject(client *<a href="../../ds3/index.html">ds3</a>.<a href="../../ds3/index.html#Client">Client</a>, bucketName <a href="http://localhost:8080/pkg/builtin/#string">string</a>, objectName <a href="http://localhost:8080/pkg/builtin/#string">string</a>) (*<a href="../../ds3/models/index.html">models</a>.<a href="../../ds3/models/index.html#GetObjectResponse">GetObjectResponse</a>, <a href="http://localhost:8080/pkg/builtin/#error">error</a>)</pre>
+			<p>
+Retrieves the specified object. Returns an error if not successful.
+</p>
+
+			
+			
+
+		
+			
+			
+			<h2 id="GetObjectLogError">func <a href="http://localhost:8080/src/ds3_integration/utils/testUtils.go?s=6252:6381#L182">GetObjectLogError</a></h2>
+			<pre>func GetObjectLogError(t *<a href="http://localhost:8080/pkg/testing/">testing</a>.<a href="http://localhost:8080/pkg/testing/#T">T</a>, client *<a href="../../ds3/index.html">ds3</a>.<a href="../../ds3/index.html#Client">Client</a>, bucketName <a href="http://localhost:8080/pkg/builtin/#string">string</a>, objectName <a href="http://localhost:8080/pkg/builtin/#string">string</a>) (*<a href="../../ds3/models/index.html">models</a>.<a href="../../ds3/models/index.html#GetObjectResponse">GetObjectResponse</a>, <a href="http://localhost:8080/pkg/builtin/#error">error</a>)</pre>
+			<p>
+Retrieves the specified object. If an error occurs, it is logged, and the calling
+test is marked as failed.
+</p>
+
+			
+			
+
+		
+			
+			
+			<h2 id="GetResourceBookAsStream">func <a href="http://localhost:8080/src/ds3_integration/utils/testUtils.go?s=3768:3854#L111">GetResourceBookAsStream</a></h2>
+			<pre>func GetResourceBookAsStream(book <a href="http://localhost:8080/pkg/builtin/#string">string</a>) (*<a href="../../ds3/networking/index.html">networking</a>.<a href="../../ds3/networking/index.html#ReaderWithSizeDecorator">ReaderWithSizeDecorator</a>, <a href="http://localhost:8080/pkg/builtin/#error">error</a>)</pre>
+			
+			
+			
+
+		
+			
+			
+			<h2 id="GetResourceBooks">func <a href="http://localhost:8080/src/ds3_integration/utils/testUtils.go?s=2900:2978#L83">GetResourceBooks</a></h2>
+			<pre>func GetResourceBooks() (map[<a href="http://localhost:8080/pkg/builtin/#string">string</a>]<a href="../../ds3/networking/index.html">networking</a>.<a href="../../ds3/networking/index.html#ReaderWithSizeDecorator">ReaderWithSizeDecorator</a>, <a href="http://localhost:8080/pkg/builtin/#error">error</a>)</pre>
+			
+			
+			
+
+		
+			
+			
+			<h2 id="GetUserByNameLogError">func <a href="http://localhost:8080/src/ds3_integration/utils/testUtils.go?s=10889:10995#L301">GetUserByNameLogError</a></h2>
+			<pre>func GetUserByNameLogError(t *<a href="http://localhost:8080/pkg/testing/">testing</a>.<a href="http://localhost:8080/pkg/testing/#T">T</a>, client *<a href="../../ds3/index.html">ds3</a>.<a href="../../ds3/index.html#Client">Client</a>, userName <a href="http://localhost:8080/pkg/builtin/#string">string</a>) (*<a href="../../ds3/models/index.html">models</a>.<a href="../../ds3/models/index.html#SpectraUser">SpectraUser</a>, <a href="http://localhost:8080/pkg/builtin/#error">error</a>)</pre>
+			<p>
+Retrieves the specified user by name. Expects there to be one user with the specified name.
+If there is not exactly 1 user with the specified name, it is treated as an error. If an
+error occurs, it is logged, and the calling  test is marked as failed, but continues running.
+</p>
+
+			
+			
+
+		
+			
+			
+			<h2 id="LoadBook">func <a href="http://localhost:8080/src/ds3_integration/utils/testUtils.go?s=4489:4531#L132">LoadBook</a></h2>
+			<pre>func LoadBook(book <a href="http://localhost:8080/pkg/builtin/#string">string</a>) ([]<a href="http://localhost:8080/pkg/builtin/#byte">byte</a>, <a href="http://localhost:8080/pkg/builtin/#error">error</a>)</pre>
+			<p>
+Loads the specified book. Assumes that the book is located in the /resources/books/ folder.
+</p>
+
+			
+			
+
+		
+			
+			
+			<h2 id="LoadBookLogError">func <a href="http://localhost:8080/src/ds3_integration/utils/testUtils.go?s=4144:4208#L122">LoadBookLogError</a></h2>
+			<pre>func LoadBookLogError(t *<a href="http://localhost:8080/pkg/testing/">testing</a>.<a href="http://localhost:8080/pkg/testing/#T">T</a>, book <a href="http://localhost:8080/pkg/builtin/#string">string</a>) ([]<a href="http://localhost:8080/pkg/builtin/#byte">byte</a>, <a href="http://localhost:8080/pkg/builtin/#error">error</a>)</pre>
+			<p>
+Loads the specified book. If an error occurs, it is logged, and the calling
+test is marked as failed.
+</p>
+
+			
+			
+
+		
+			
+			
+			<h2 id="PutBucket">func <a href="http://localhost:8080/src/ds3_integration/utils/testUtils.go?s=7334:7395#L213">PutBucket</a></h2>
+			<pre>func PutBucket(client *<a href="../../ds3/index.html">ds3</a>.<a href="../../ds3/index.html#Client">Client</a>, bucketName <a href="http://localhost:8080/pkg/builtin/#string">string</a>) <a href="http://localhost:8080/pkg/builtin/#error">error</a></pre>
+			<p>
+Puts the specified bucket. Returns an error if not successful.
+</p>
+
+			
+			
+
+		
+			
+			
+			<h2 id="PutBucketLogError">func <a href="http://localhost:8080/src/ds3_integration/utils/testUtils.go?s=7076:7159#L204">PutBucketLogError</a></h2>
+			<pre>func PutBucketLogError(t *<a href="http://localhost:8080/pkg/testing/">testing</a>.<a href="http://localhost:8080/pkg/testing/#T">T</a>, client *<a href="../../ds3/index.html">ds3</a>.<a href="../../ds3/index.html#Client">Client</a>, bucketName <a href="http://localhost:8080/pkg/builtin/#string">string</a>) <a href="http://localhost:8080/pkg/builtin/#error">error</a></pre>
+			<p>
+Puts the specified bucket. If an error occurs, it is logged, and the calling
+test is marked as failed.
+</p>
+
+			
+			
+
+		
+			
+			
+			<h2 id="PutDataPolicyLogError">func <a href="http://localhost:8080/src/ds3_integration/utils/testUtils.go?s=9700:9831#L280">PutDataPolicyLogError</a></h2>
+			<pre>func PutDataPolicyLogError(t *<a href="http://localhost:8080/pkg/testing/">testing</a>.<a href="http://localhost:8080/pkg/testing/#T">T</a>, client *<a href="../../ds3/index.html">ds3</a>.<a href="../../ds3/index.html#Client">Client</a>, dataPolicyName <a href="http://localhost:8080/pkg/builtin/#string">string</a>) (*<a href="../../ds3/models/index.html">models</a>.<a href="../../ds3/models/index.html#PutDataPolicySpectraS3Response">PutDataPolicySpectraS3Response</a>, <a href="http://localhost:8080/pkg/builtin/#error">error</a>)</pre>
+			<p>
+Creates the specified data policy. If an error occurs, it is logged, and the calling
+test is marked as failed, but continues running.
+</p>
+
+			
+			
+
+		
+			
+			
+			<h2 id="PutObject">func <a href="http://localhost:8080/src/ds3_integration/utils/testUtils.go?s=4998:5091#L147">PutObject</a></h2>
+			<pre>func PutObject(client *<a href="../../ds3/index.html">ds3</a>.<a href="../../ds3/index.html#Client">Client</a>, bucketName <a href="http://localhost:8080/pkg/builtin/#string">string</a>, objectName <a href="http://localhost:8080/pkg/builtin/#string">string</a>, data []<a href="http://localhost:8080/pkg/builtin/#byte">byte</a>) <a href="http://localhost:8080/pkg/builtin/#error">error</a></pre>
+			<p>
+Puts the specified object. Returns an error if not successful.
+</p>
+
+			
+			
+
+		
+			
+			
+			<h2 id="PutObjectLogError">func <a href="http://localhost:8080/src/ds3_integration/utils/testUtils.go?s=4690:4805#L138">PutObjectLogError</a></h2>
+			<pre>func PutObjectLogError(t *<a href="http://localhost:8080/pkg/testing/">testing</a>.<a href="http://localhost:8080/pkg/testing/#T">T</a>, client *<a href="../../ds3/index.html">ds3</a>.<a href="../../ds3/index.html#Client">Client</a>, bucketName <a href="http://localhost:8080/pkg/builtin/#string">string</a>, objectName <a href="http://localhost:8080/pkg/builtin/#string">string</a>, data []<a href="http://localhost:8080/pkg/builtin/#byte">byte</a>) <a href="http://localhost:8080/pkg/builtin/#error">error</a></pre>
+			<p>
+Puts the specified object. If an error occurs, it is logged, and the calling
+test is marked as failed.
+</p>
+
+			
+			
+
+		
+			
+			
+			<h2 id="PutTestBooks">func <a href="http://localhost:8080/src/ds3_integration/utils/testUtils.go?s=1048:1110#L32">PutTestBooks</a></h2>
+			<pre>func PutTestBooks(client *<a href="../../ds3/index.html">ds3</a>.<a href="../../ds3/index.html#Client">Client</a>, bucketName <a href="http://localhost:8080/pkg/builtin/#string">string</a>) <a href="http://localhost:8080/pkg/builtin/#error">error</a></pre>
+			<p>
+Puts the test books onto the BP
+</p>
+
+			
+			
+
+		
+			
+			
+			<h2 id="SetupTestEnv">func <a href="http://localhost:8080/src/ds3_integration/utils/testUtils.go?s=12343:12452#L337">SetupTestEnv</a></h2>
+			<pre>func SetupTestEnv(testBucket <a href="http://localhost:8080/pkg/builtin/#string">string</a>, userName <a href="http://localhost:8080/pkg/builtin/#string">string</a>, envTestNameSpace <a href="http://localhost:8080/pkg/builtin/#string">string</a>) (*<a href="../../ds3/index.html">ds3</a>.<a href="../../ds3/index.html#Client">Client</a>, *<a href="index.html#TestIds">TestIds</a>, <a href="http://localhost:8080/pkg/builtin/#error">error</a>)</pre>
+			<p>
+Sets up the test environment by
+1) creating a client from environment variables and
+2) creating a test bucket
+3) creating new data policy
+4) setting default user to use new data policy
+5) crating a pool partition
+6) creating a storage domain
+7) creating a storage domain member
+8) creating a data persistence rule
+</p>
+
+			
+			
+
+		
+			
+			
+			<h2 id="TeardownTestEnv">func <a href="http://localhost:8080/src/ds3_integration/utils/testUtils.go?s=15442:15515#L416">TeardownTestEnv</a></h2>
+			<pre>func TeardownTestEnv(client *<a href="../../ds3/index.html">ds3</a>.<a href="../../ds3/index.html#Client">Client</a>, ids *<a href="index.html#TestIds">TestIds</a>, testBucket <a href="http://localhost:8080/pkg/builtin/#string">string</a>)</pre>
+			<p>
+Tears down the test environment by deleting all contents in the
+test bucket and deleting all items created in SetupTestEnv
+</p>
+
+			
+			
+
+		
+			
+			
+			<h2 id="VerifyBookContent">func <a href="http://localhost:8080/src/ds3_integration/utils/testUtils.go?s=430:506#L12">VerifyBookContent</a></h2>
+			<pre>func VerifyBookContent(t *<a href="http://localhost:8080/pkg/testing/">testing</a>.<a href="http://localhost:8080/pkg/testing/#T">T</a>, bookName <a href="http://localhost:8080/pkg/builtin/#string">string</a>, content <a href="http://localhost:8080/pkg/io/">io</a>.<a href="http://localhost:8080/pkg/io/#ReadCloser">ReadCloser</a>)</pre>
+			
+			
+			
+
+		
+		
+			
+			
+			<h2 id="TestIds">type <a href="http://localhost:8080/src/ds3_integration/utils/testUtils.go?s=11776:12000#L318">TestIds</a></h2>
+			<pre>type TestIds struct {
+    DataPersistenceRuleId *<a href="http://localhost:8080/pkg/builtin/#string">string</a>
+    DataPolicyId          *<a href="http://localhost:8080/pkg/builtin/#string">string</a>
+    OriginalDataPolicyId  *<a href="http://localhost:8080/pkg/builtin/#string">string</a>
+    PoolPartitionId       *<a href="http://localhost:8080/pkg/builtin/#string">string</a>
+    StorageDomainId       *<a href="http://localhost:8080/pkg/builtin/#string">string</a>
+    StorageDomainMemberId *<a href="http://localhost:8080/pkg/builtin/#string">string</a>
+    UserId                *<a href="http://localhost:8080/pkg/builtin/#string">string</a>
+}</pre>
+			<p>
+Used to keep track of all IDs for items created in SetupTestEnv, and used
+in TeardownTestEnv. Items that have not been initialized are represented
+with nil, denoting no teardown is required for that element.
+</p>
+
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+	
+
+	
+
+
+
+
+
+
+
+<div id="footer">
+Build version go1.6.<br>
+Except as <a href="https://developers.google.com/site-policies#restrictions">noted</a>,
+the content of this page is licensed under the
+Creative Commons Attribution 3.0 License,
+and code is licensed under a <a href="http://localhost:8080/LICENSE">BSD license</a>.<br>
+<a href="http://localhost:8080/doc/tos.html">Terms of Service</a> | 
+<a href="http://www.google.com/intl/en/policies/privacy/">Privacy Policy</a>
+</div>
+
+</div><!-- .container -->
+</div><!-- #page -->
+
+<!-- TODO(adonovan): load these from <head> using "defer" attribute? -->
+<script type="text/javascript" src="../../godoc/jquery.js"></script>
+<script type="text/javascript" src="../../godoc/jquery.treeview.js"></script>
+<script type="text/javascript" src="../../godoc/jquery.treeview.edit.js"></script>
+
+
+<script type="text/javascript" src="../../godoc/godocs.js"></script>
+
+</body>
+</html>
+
