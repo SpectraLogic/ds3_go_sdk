@@ -17,6 +17,10 @@ If you would like to contribute to the source code, sign the
 [Contributors Agreement](https://developer.spectralogic.com/contributors-agreement/).  For an overview of how we use 
 Github, please review our [Github Workflow](https://github.com/SpectraLogic/spectralogic.github.com/wiki/Github-Workflow).
 
+Documentation
+-------------
+The latest documentation is located at [Go SDK Documentation](https://spectralogic.github.io/ds3_go_sdk/index.html).
+
 Installing with GB
 ------------------
 
