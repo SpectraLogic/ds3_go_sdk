@@ -13,48 +13,12 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type GetBlobPersistenceSpectraS3Request struct {
-    content networking.ReaderWithSizeDecorator
-    queryParams *url.Values
+    Content string
 }
 
 func NewGetBlobPersistenceSpectraS3Request(requestPayload string) *GetBlobPersistenceSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetBlobPersistenceSpectraS3Request{
-        content: buildStreamFromString(requestPayload),
-        queryParams: queryParams,
+        Content: requestPayload,
     }
-}
-
-
-
-
-func (GetBlobPersistenceSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
-}
-
-func (getBlobPersistenceSpectraS3Request *GetBlobPersistenceSpectraS3Request) Path() string {
-    return "/_rest_/blob_persistence"
-}
-
-func (getBlobPersistenceSpectraS3Request *GetBlobPersistenceSpectraS3Request) QueryParams() *url.Values {
-    return getBlobPersistenceSpectraS3Request.queryParams
-}
-
-func (GetBlobPersistenceSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetBlobPersistenceSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (getBlobPersistenceSpectraS3Request *GetBlobPersistenceSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return getBlobPersistenceSpectraS3Request.content
 }

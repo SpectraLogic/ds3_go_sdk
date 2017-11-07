@@ -20,50 +20,19 @@ import (
 )
 
 type VerifyPhysicalPlacementForObjectsSpectraS3Request struct {
-    bucketName string
-    content networking.ReaderWithSizeDecorator
-    storageDomainId string
-    queryParams *url.Values
+    BucketName string
+    ObjectNames []string
+    StorageDomainId *string
 }
 
 func NewVerifyPhysicalPlacementForObjectsSpectraS3Request(bucketName string, objectNames []string) *VerifyPhysicalPlacementForObjectsSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("operation", "verify_physical_placement")
-
     return &VerifyPhysicalPlacementForObjectsSpectraS3Request{
-        bucketName: bucketName,
-        content: buildDs3ObjectStreamFromNames(objectNames),
-        queryParams: queryParams,
+        BucketName: bucketName,
+        ObjectNames: objectNames,
     }
 }
 
 func (verifyPhysicalPlacementForObjectsSpectraS3Request *VerifyPhysicalPlacementForObjectsSpectraS3Request) WithStorageDomainId(storageDomainId string) *VerifyPhysicalPlacementForObjectsSpectraS3Request {
-    verifyPhysicalPlacementForObjectsSpectraS3Request.storageDomainId = storageDomainId
-    verifyPhysicalPlacementForObjectsSpectraS3Request.queryParams.Set("storage_domain_id", storageDomainId)
+    verifyPhysicalPlacementForObjectsSpectraS3Request.StorageDomainId = &storageDomainId
     return verifyPhysicalPlacementForObjectsSpectraS3Request
-}
-
-
-
-func (VerifyPhysicalPlacementForObjectsSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
-}
-
-func (verifyPhysicalPlacementForObjectsSpectraS3Request *VerifyPhysicalPlacementForObjectsSpectraS3Request) Path() string {
-    return "/_rest_/bucket/" + verifyPhysicalPlacementForObjectsSpectraS3Request.bucketName
-}
-
-func (verifyPhysicalPlacementForObjectsSpectraS3Request *VerifyPhysicalPlacementForObjectsSpectraS3Request) QueryParams() *url.Values {
-    return verifyPhysicalPlacementForObjectsSpectraS3Request.queryParams
-}
-
-func (VerifyPhysicalPlacementForObjectsSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (VerifyPhysicalPlacementForObjectsSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (verifyPhysicalPlacementForObjectsSpectraS3Request *VerifyPhysicalPlacementForObjectsSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return verifyPhysicalPlacementForObjectsSpectraS3Request.content
 }

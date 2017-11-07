@@ -3,7 +3,6 @@ package networking
 import (
     "fmt"
     "time"
-    "net/http"
     "crypto/hmac"
     "crypto/sha1"
     "encoding/base64"
@@ -23,26 +22,6 @@ type headerFields struct {
     DateHeaderVal string
     ChecksumType  ChecksumType
     ContentHash   string
-}
-
-// Set the Http Request headers
-func setHttpRequestHeaders(httpRequest *http.Request, ds3Request Ds3Request, fields headerFields) (error) {
-    httpRequest.Header.Add("Date", fields.DateHeaderVal)
-    httpRequest.Header.Add("Authorization", fields.AuthHeaderVal)
-
-    if fields.ChecksumType != NONE {
-        checksumKey, err := getChecksumHeaderKey(fields.ChecksumType)
-        if err != nil {
-            return err
-        }
-        httpRequest.Header.Add(checksumKey, fields.ContentHash)
-    }
-
-    // Copy the headers from the Ds3Request object.
-    for key, val := range *ds3Request.Header() {
-        httpRequest.Header.Add(key, val[0])
-    }
-    return nil
 }
 
 // Gets the correct header key for the specified checksum type

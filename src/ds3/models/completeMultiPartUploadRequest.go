@@ -13,55 +13,18 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type CompleteMultiPartUploadRequest struct {
-    bucketName string
-    objectName string
-    content networking.ReaderWithSizeDecorator
-    uploadId string
-    queryParams *url.Values
+    BucketName string
+    ObjectName string
+    Parts []Part
+    UploadId string
 }
 
 func NewCompleteMultiPartUploadRequest(bucketName string, objectName string, parts []Part, uploadId string) *CompleteMultiPartUploadRequest {
-    queryParams := &url.Values{}
-    queryParams.Set("upload_id", uploadId)
-
     return &CompleteMultiPartUploadRequest{
-        bucketName: bucketName,
-        objectName: objectName,
-        uploadId: uploadId,
-        content: buildPartsListStream(parts),
-        queryParams: queryParams,
+        BucketName: bucketName,
+        ObjectName: objectName,
+        UploadId: uploadId,
+        Parts: parts,
     }
-}
-
-
-
-
-func (CompleteMultiPartUploadRequest) Verb() networking.HttpVerb {
-    return networking.POST
-}
-
-func (completeMultiPartUploadRequest *CompleteMultiPartUploadRequest) Path() string {
-    return "/" + completeMultiPartUploadRequest.bucketName + "/" + completeMultiPartUploadRequest.objectName
-}
-
-func (completeMultiPartUploadRequest *CompleteMultiPartUploadRequest) QueryParams() *url.Values {
-    return completeMultiPartUploadRequest.queryParams
-}
-
-func (CompleteMultiPartUploadRequest) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (CompleteMultiPartUploadRequest) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (completeMultiPartUploadRequest *CompleteMultiPartUploadRequest) GetContentStream() networking.ReaderWithSizeDecorator {
-    return completeMultiPartUploadRequest.content
 }

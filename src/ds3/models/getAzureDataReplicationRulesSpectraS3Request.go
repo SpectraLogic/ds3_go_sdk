@@ -13,99 +13,58 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-    "strconv"
-)
-
 type GetAzureDataReplicationRulesSpectraS3Request struct {
-    dataPolicyId string
-    dataReplicationRuleType DataReplicationRuleType
-    pageLength int
-    pageOffset int
-    pageStartMarker string
-    replicateDeletes bool
-    state DataPlacementRuleState
-    targetId string
-    queryParams *url.Values
+    DataPolicyId *string
+    DataReplicationRuleType DataReplicationRuleType
+    PageLength *int
+    PageOffset *int
+    PageStartMarker *string
+    ReplicateDeletes *bool
+    State DataPlacementRuleState
+    TargetId *string
+    LastPage bool
 }
 
 func NewGetAzureDataReplicationRulesSpectraS3Request() *GetAzureDataReplicationRulesSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetAzureDataReplicationRulesSpectraS3Request{
-        queryParams: queryParams,
     }
 }
 
 func (getAzureDataReplicationRulesSpectraS3Request *GetAzureDataReplicationRulesSpectraS3Request) WithDataPolicyId(dataPolicyId string) *GetAzureDataReplicationRulesSpectraS3Request {
-    getAzureDataReplicationRulesSpectraS3Request.dataPolicyId = dataPolicyId
-    getAzureDataReplicationRulesSpectraS3Request.queryParams.Set("data_policy_id", dataPolicyId)
+    getAzureDataReplicationRulesSpectraS3Request.DataPolicyId = &dataPolicyId
     return getAzureDataReplicationRulesSpectraS3Request
 }
 func (getAzureDataReplicationRulesSpectraS3Request *GetAzureDataReplicationRulesSpectraS3Request) WithPageLength(pageLength int) *GetAzureDataReplicationRulesSpectraS3Request {
-    getAzureDataReplicationRulesSpectraS3Request.pageLength = pageLength
-    getAzureDataReplicationRulesSpectraS3Request.queryParams.Set("page_length", strconv.Itoa(pageLength))
+    getAzureDataReplicationRulesSpectraS3Request.PageLength = &pageLength
     return getAzureDataReplicationRulesSpectraS3Request
 }
 func (getAzureDataReplicationRulesSpectraS3Request *GetAzureDataReplicationRulesSpectraS3Request) WithPageOffset(pageOffset int) *GetAzureDataReplicationRulesSpectraS3Request {
-    getAzureDataReplicationRulesSpectraS3Request.pageOffset = pageOffset
-    getAzureDataReplicationRulesSpectraS3Request.queryParams.Set("page_offset", strconv.Itoa(pageOffset))
+    getAzureDataReplicationRulesSpectraS3Request.PageOffset = &pageOffset
     return getAzureDataReplicationRulesSpectraS3Request
 }
 func (getAzureDataReplicationRulesSpectraS3Request *GetAzureDataReplicationRulesSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetAzureDataReplicationRulesSpectraS3Request {
-    getAzureDataReplicationRulesSpectraS3Request.pageStartMarker = pageStartMarker
-    getAzureDataReplicationRulesSpectraS3Request.queryParams.Set("page_start_marker", pageStartMarker)
+    getAzureDataReplicationRulesSpectraS3Request.PageStartMarker = &pageStartMarker
     return getAzureDataReplicationRulesSpectraS3Request
 }
 func (getAzureDataReplicationRulesSpectraS3Request *GetAzureDataReplicationRulesSpectraS3Request) WithReplicateDeletes(replicateDeletes bool) *GetAzureDataReplicationRulesSpectraS3Request {
-    getAzureDataReplicationRulesSpectraS3Request.replicateDeletes = replicateDeletes
-    getAzureDataReplicationRulesSpectraS3Request.queryParams.Set("replicate_deletes", strconv.FormatBool(replicateDeletes))
+    getAzureDataReplicationRulesSpectraS3Request.ReplicateDeletes = &replicateDeletes
     return getAzureDataReplicationRulesSpectraS3Request
 }
 func (getAzureDataReplicationRulesSpectraS3Request *GetAzureDataReplicationRulesSpectraS3Request) WithState(state DataPlacementRuleState) *GetAzureDataReplicationRulesSpectraS3Request {
-    getAzureDataReplicationRulesSpectraS3Request.state = state
-    getAzureDataReplicationRulesSpectraS3Request.queryParams.Set("state", state.String())
+    getAzureDataReplicationRulesSpectraS3Request.State = state
     return getAzureDataReplicationRulesSpectraS3Request
 }
 func (getAzureDataReplicationRulesSpectraS3Request *GetAzureDataReplicationRulesSpectraS3Request) WithTargetId(targetId string) *GetAzureDataReplicationRulesSpectraS3Request {
-    getAzureDataReplicationRulesSpectraS3Request.targetId = targetId
-    getAzureDataReplicationRulesSpectraS3Request.queryParams.Set("target_id", targetId)
+    getAzureDataReplicationRulesSpectraS3Request.TargetId = &targetId
     return getAzureDataReplicationRulesSpectraS3Request
 }
 func (getAzureDataReplicationRulesSpectraS3Request *GetAzureDataReplicationRulesSpectraS3Request) WithDataReplicationRuleType(dataReplicationRuleType DataReplicationRuleType) *GetAzureDataReplicationRulesSpectraS3Request {
-    getAzureDataReplicationRulesSpectraS3Request.dataReplicationRuleType = dataReplicationRuleType
-    getAzureDataReplicationRulesSpectraS3Request.queryParams.Set("type", dataReplicationRuleType.String())
+    getAzureDataReplicationRulesSpectraS3Request.DataReplicationRuleType = dataReplicationRuleType
     return getAzureDataReplicationRulesSpectraS3Request
 }
 
 
 func (getAzureDataReplicationRulesSpectraS3Request *GetAzureDataReplicationRulesSpectraS3Request) WithLastPage() *GetAzureDataReplicationRulesSpectraS3Request {
-    getAzureDataReplicationRulesSpectraS3Request.queryParams.Set("last_page", "")
+    getAzureDataReplicationRulesSpectraS3Request.LastPage = true
     return getAzureDataReplicationRulesSpectraS3Request
-}
-
-func (GetAzureDataReplicationRulesSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
-}
-
-func (getAzureDataReplicationRulesSpectraS3Request *GetAzureDataReplicationRulesSpectraS3Request) Path() string {
-    return "/_rest_/azure_data_replication_rule"
-}
-
-func (getAzureDataReplicationRulesSpectraS3Request *GetAzureDataReplicationRulesSpectraS3Request) QueryParams() *url.Values {
-    return getAzureDataReplicationRulesSpectraS3Request.queryParams
-}
-
-func (GetAzureDataReplicationRulesSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetAzureDataReplicationRulesSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (GetAzureDataReplicationRulesSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
 }

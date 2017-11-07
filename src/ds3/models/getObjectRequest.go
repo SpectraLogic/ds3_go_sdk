@@ -14,11 +14,8 @@
 package models
 
 import (
-    "net/url"
-    "net/http"
     "ds3/networking"
     "fmt"
-    "strconv"
 )
 
 type rangeHeader struct {
@@ -26,75 +23,38 @@ type rangeHeader struct {
 }
 
 type GetObjectRequest struct {
-    bucketName string
-    objectName string
-    checksum networking.Checksum
-    job string
-    offset int64
-    rangeHeader *rangeHeader
-    queryParams *url.Values
+    BucketName string
+    ObjectName string
+    Checksum networking.Checksum
+    Job *string
+    Offset *int64
+    Metadata map[string]string
 }
 
 func NewGetObjectRequest(bucketName string, objectName string) *GetObjectRequest {
-    queryParams := &url.Values{}
-
     return &GetObjectRequest{
-        bucketName: bucketName,
-        objectName: objectName,
-        checksum: networking.NewNoneChecksum(),
-        queryParams: queryParams,
+        BucketName: bucketName,
+        ObjectName: objectName,
+        Checksum: networking.NewNoneChecksum(),
     }
 }
 
 func (getObjectRequest *GetObjectRequest) WithJob(job string) *GetObjectRequest {
-    getObjectRequest.job = job
-    getObjectRequest.queryParams.Set("job", job)
+    getObjectRequest.Job = &job
     return getObjectRequest
 }
 func (getObjectRequest *GetObjectRequest) WithOffset(offset int64) *GetObjectRequest {
-    getObjectRequest.offset = offset
-    getObjectRequest.queryParams.Set("offset", strconv.FormatInt(offset, 10))
+    getObjectRequest.Offset = &offset
     return getObjectRequest
-}
-
-
-
-func (GetObjectRequest) Verb() networking.HttpVerb {
-    return networking.GET
-}
-
-func (getObjectRequest *GetObjectRequest) Path() string {
-    return "/" + getObjectRequest.bucketName + "/" + getObjectRequest.objectName
-}
-
-func (getObjectRequest *GetObjectRequest) QueryParams() *url.Values {
-    return getObjectRequest.queryParams
 }
 
 func (getObjectRequest *GetObjectRequest) WithChecksum(contentHash string, checksumType networking.ChecksumType) *GetObjectRequest {
-    getObjectRequest.checksum.ContentHash = contentHash
-    getObjectRequest.checksum.Type = checksumType
+    getObjectRequest.Checksum.ContentHash = contentHash
+    getObjectRequest.Checksum.Type = checksumType
     return getObjectRequest
 }
 
-func (getObjectRequest *GetObjectRequest) GetChecksum() networking.Checksum {
-    return getObjectRequest.checksum
-}
-
-func (GetObjectRequest) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}
-
-func (getObjectRequest *GetObjectRequest) WithRange(start, end int) *GetObjectRequest {
-    getObjectRequest.rangeHeader = &rangeHeader{start, end}
+func (getObjectRequest *GetObjectRequest) WithRange(start int, end int) *GetObjectRequest {
+    getObjectRequest.Metadata["Range"] = fmt.Sprintf("bytes=%d-%d", start, end)
     return getObjectRequest
-}
-
-func (getObjectRequest *GetObjectRequest) Header() *http.Header {
-    if getObjectRequest.rangeHeader == nil {
-        return &http.Header{}
-    } else {
-        rng := fmt.Sprintf("bytes=%d-%d", getObjectRequest.rangeHeader.start, getObjectRequest.rangeHeader.end)
-        return &http.Header{ "Range": []string{ rng } }
-    }
 }

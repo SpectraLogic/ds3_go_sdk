@@ -19,7 +19,7 @@ import (
 )
 
 func (client *Client) HeadBucket(request *models.HeadBucketRequest) (*models.HeadBucketResponse, error) {
-    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.netLayer), client.clientPolicy.maxRetries)
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.sendNetwork), client.clientPolicy.maxRetries)
 
     // Invoke the HTTP request.
     response, requestErr := networkRetryDecorator.Invoke(request)
@@ -31,7 +31,7 @@ func (client *Client) HeadBucket(request *models.HeadBucketRequest) (*models.Hea
     return models.NewHeadBucketResponse(response)
 }
 func (client *Client) HeadObject(request *models.HeadObjectRequest) (*models.HeadObjectResponse, error) {
-    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.netLayer), client.clientPolicy.maxRetries)
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.sendNetwork), client.clientPolicy.maxRetries)
 
     // Invoke the HTTP request.
     response, requestErr := networkRetryDecorator.Invoke(request)

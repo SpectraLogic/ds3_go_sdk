@@ -20,10 +20,9 @@ import (
 )
 
 type ReplicatePutJobSpectraS3Request struct {
-    bucketName string
-    content networking.ReaderWithSizeDecorator
-    priority Priority
-    queryParams *url.Values
+    BucketName string
+    RequestPayload string
+    Priority Priority
 }
 
 func NewReplicatePutJobSpectraS3Request(bucketName string, requestPayload string) *ReplicatePutJobSpectraS3Request {
@@ -32,39 +31,12 @@ func NewReplicatePutJobSpectraS3Request(bucketName string, requestPayload string
     queryParams.Set("replicate", "")
 
     return &ReplicatePutJobSpectraS3Request{
-        bucketName: bucketName,
-        content: buildStreamFromString(requestPayload),
-        queryParams: queryParams,
+        BucketName: bucketName,
+        RequestPayload: requestPayload,
     }
 }
 
 func (replicatePutJobSpectraS3Request *ReplicatePutJobSpectraS3Request) WithPriority(priority Priority) *ReplicatePutJobSpectraS3Request {
-    replicatePutJobSpectraS3Request.priority = priority
-    replicatePutJobSpectraS3Request.queryParams.Set("priority", priority.String())
+    replicatePutJobSpectraS3Request.Priority = priority
     return replicatePutJobSpectraS3Request
-}
-
-
-
-func (ReplicatePutJobSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.PUT
-}
-
-func (replicatePutJobSpectraS3Request *ReplicatePutJobSpectraS3Request) Path() string {
-    return "/_rest_/bucket/" + replicatePutJobSpectraS3Request.bucketName
-}
-
-func (replicatePutJobSpectraS3Request *ReplicatePutJobSpectraS3Request) QueryParams() *url.Values {
-    return replicatePutJobSpectraS3Request.queryParams
-}
-
-func (ReplicatePutJobSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (ReplicatePutJobSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (replicatePutJobSpectraS3Request *ReplicatePutJobSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return replicatePutJobSpectraS3Request.content
 }
