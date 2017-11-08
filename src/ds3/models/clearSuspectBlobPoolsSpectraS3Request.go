@@ -14,12 +14,11 @@
 package models
 
 type ClearSuspectBlobPoolsSpectraS3Request struct {
-    Ids []string
     Force bool
+    Ids []string
 }
 
 func NewClearSuspectBlobPoolsSpectraS3Request(ids []string) *ClearSuspectBlobPoolsSpectraS3Request {
-
     return &ClearSuspectBlobPoolsSpectraS3Request{
         Ids: ids,
     }
@@ -29,3 +28,4 @@ func (clearSuspectBlobPoolsSpectraS3Request *ClearSuspectBlobPoolsSpectraS3Reque
     clearSuspectBlobPoolsSpectraS3Request.Force = true
     return clearSuspectBlobPoolsSpectraS3Request
 }
+

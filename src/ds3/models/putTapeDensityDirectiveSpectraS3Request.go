@@ -13,55 +13,17 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type PutTapeDensityDirectiveSpectraS3Request struct {
-    density TapeDriveType
-    partitionId string
-    tapeType TapeType
-    queryParams *url.Values
+    Density TapeDriveType
+    PartitionId string
+    TapeType TapeType
 }
 
 func NewPutTapeDensityDirectiveSpectraS3Request(density TapeDriveType, partitionId string, tapeType TapeType) *PutTapeDensityDirectiveSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("density", density.String())
-    queryParams.Set("partition_id", partitionId)
-    queryParams.Set("tape_type", tapeType.String())
-
     return &PutTapeDensityDirectiveSpectraS3Request{
-        density: density,
-        partitionId: partitionId,
-        tapeType: tapeType,
-        queryParams: queryParams,
+        Density: density,
+        PartitionId: partitionId,
+        TapeType: tapeType,
     }
 }
 
-
-
-
-func (PutTapeDensityDirectiveSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.POST
-}
-
-func (putTapeDensityDirectiveSpectraS3Request *PutTapeDensityDirectiveSpectraS3Request) Path() string {
-    return "/_rest_/tape_density_directive"
-}
-
-func (putTapeDensityDirectiveSpectraS3Request *PutTapeDensityDirectiveSpectraS3Request) QueryParams() *url.Values {
-    return putTapeDensityDirectiveSpectraS3Request.queryParams
-}
-
-func (PutTapeDensityDirectiveSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (PutTapeDensityDirectiveSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (PutTapeDensityDirectiveSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

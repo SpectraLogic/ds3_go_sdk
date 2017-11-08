@@ -13,48 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type GetPoolSpectraS3Request struct {
-    pool string
-    queryParams *url.Values
+    Pool string
 }
 
 func NewGetPoolSpectraS3Request(pool string) *GetPoolSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetPoolSpectraS3Request{
-        pool: pool,
-        queryParams: queryParams,
+        Pool: pool,
     }
 }
 
-
-
-
-func (GetPoolSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
-}
-
-func (getPoolSpectraS3Request *GetPoolSpectraS3Request) Path() string {
-    return "/_rest_/pool/" + getPoolSpectraS3Request.pool
-}
-
-func (getPoolSpectraS3Request *GetPoolSpectraS3Request) QueryParams() *url.Values {
-    return getPoolSpectraS3Request.queryParams
-}
-
-func (GetPoolSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetPoolSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (GetPoolSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

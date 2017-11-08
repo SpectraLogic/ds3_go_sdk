@@ -13,55 +13,17 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type PutS3TargetReadPreferenceSpectraS3Request struct {
-    bucketId string
-    readPreference TargetReadPreferenceType
-    targetId string
-    queryParams *url.Values
+    BucketId string
+    ReadPreference TargetReadPreferenceType
+    TargetId string
 }
 
 func NewPutS3TargetReadPreferenceSpectraS3Request(bucketId string, readPreference TargetReadPreferenceType, targetId string) *PutS3TargetReadPreferenceSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("bucket_id", bucketId)
-    queryParams.Set("read_preference", readPreference.String())
-    queryParams.Set("target_id", targetId)
-
     return &PutS3TargetReadPreferenceSpectraS3Request{
-        bucketId: bucketId,
-        readPreference: readPreference,
-        targetId: targetId,
-        queryParams: queryParams,
+        BucketId: bucketId,
+        ReadPreference: readPreference,
+        TargetId: targetId,
     }
 }
 
-
-
-
-func (PutS3TargetReadPreferenceSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.POST
-}
-
-func (putS3TargetReadPreferenceSpectraS3Request *PutS3TargetReadPreferenceSpectraS3Request) Path() string {
-    return "/_rest_/s3_target_read_preference"
-}
-
-func (putS3TargetReadPreferenceSpectraS3Request *PutS3TargetReadPreferenceSpectraS3Request) QueryParams() *url.Values {
-    return putS3TargetReadPreferenceSpectraS3Request.queryParams
-}
-
-func (PutS3TargetReadPreferenceSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (PutS3TargetReadPreferenceSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (PutS3TargetReadPreferenceSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

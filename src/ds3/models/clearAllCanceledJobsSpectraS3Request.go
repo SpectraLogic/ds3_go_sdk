@@ -13,46 +13,11 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type ClearAllCanceledJobsSpectraS3Request struct {
-    queryParams *url.Values
 }
 
 func NewClearAllCanceledJobsSpectraS3Request() *ClearAllCanceledJobsSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &ClearAllCanceledJobsSpectraS3Request{
-        queryParams: queryParams,
     }
 }
 
-
-
-
-func (ClearAllCanceledJobsSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.DELETE
-}
-
-func (clearAllCanceledJobsSpectraS3Request *ClearAllCanceledJobsSpectraS3Request) Path() string {
-    return "/_rest_/canceled_job"
-}
-
-func (clearAllCanceledJobsSpectraS3Request *ClearAllCanceledJobsSpectraS3Request) QueryParams() *url.Values {
-    return clearAllCanceledJobsSpectraS3Request.queryParams
-}
-
-func (ClearAllCanceledJobsSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (ClearAllCanceledJobsSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (ClearAllCanceledJobsSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

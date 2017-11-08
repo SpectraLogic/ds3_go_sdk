@@ -13,93 +13,59 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-    "strconv"
-)
-
 type GetDegradedDs3DataReplicationRulesSpectraS3Request struct {
-    dataPolicyId string
-    dataReplicationRuleType DataReplicationRuleType
-    pageLength int
-    pageOffset int
-    pageStartMarker string
-    state DataPlacementRuleState
-    targetId string
-    queryParams *url.Values
+    DataPolicyId *string
+    DataReplicationRuleType DataReplicationRuleType
+    LastPage bool
+    PageLength *int
+    PageOffset *int
+    PageStartMarker *string
+    State DataPlacementRuleState
+    TargetId *string
 }
 
 func NewGetDegradedDs3DataReplicationRulesSpectraS3Request() *GetDegradedDs3DataReplicationRulesSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetDegradedDs3DataReplicationRulesSpectraS3Request{
-        queryParams: queryParams,
     }
 }
 
 func (getDegradedDs3DataReplicationRulesSpectraS3Request *GetDegradedDs3DataReplicationRulesSpectraS3Request) WithDataPolicyId(dataPolicyId string) *GetDegradedDs3DataReplicationRulesSpectraS3Request {
-    getDegradedDs3DataReplicationRulesSpectraS3Request.dataPolicyId = dataPolicyId
-    getDegradedDs3DataReplicationRulesSpectraS3Request.queryParams.Set("data_policy_id", dataPolicyId)
+    getDegradedDs3DataReplicationRulesSpectraS3Request.DataPolicyId = &dataPolicyId
     return getDegradedDs3DataReplicationRulesSpectraS3Request
 }
-func (getDegradedDs3DataReplicationRulesSpectraS3Request *GetDegradedDs3DataReplicationRulesSpectraS3Request) WithPageLength(pageLength int) *GetDegradedDs3DataReplicationRulesSpectraS3Request {
-    getDegradedDs3DataReplicationRulesSpectraS3Request.pageLength = pageLength
-    getDegradedDs3DataReplicationRulesSpectraS3Request.queryParams.Set("page_length", strconv.Itoa(pageLength))
-    return getDegradedDs3DataReplicationRulesSpectraS3Request
-}
-func (getDegradedDs3DataReplicationRulesSpectraS3Request *GetDegradedDs3DataReplicationRulesSpectraS3Request) WithPageOffset(pageOffset int) *GetDegradedDs3DataReplicationRulesSpectraS3Request {
-    getDegradedDs3DataReplicationRulesSpectraS3Request.pageOffset = pageOffset
-    getDegradedDs3DataReplicationRulesSpectraS3Request.queryParams.Set("page_offset", strconv.Itoa(pageOffset))
-    return getDegradedDs3DataReplicationRulesSpectraS3Request
-}
-func (getDegradedDs3DataReplicationRulesSpectraS3Request *GetDegradedDs3DataReplicationRulesSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetDegradedDs3DataReplicationRulesSpectraS3Request {
-    getDegradedDs3DataReplicationRulesSpectraS3Request.pageStartMarker = pageStartMarker
-    getDegradedDs3DataReplicationRulesSpectraS3Request.queryParams.Set("page_start_marker", pageStartMarker)
-    return getDegradedDs3DataReplicationRulesSpectraS3Request
-}
-func (getDegradedDs3DataReplicationRulesSpectraS3Request *GetDegradedDs3DataReplicationRulesSpectraS3Request) WithState(state DataPlacementRuleState) *GetDegradedDs3DataReplicationRulesSpectraS3Request {
-    getDegradedDs3DataReplicationRulesSpectraS3Request.state = state
-    getDegradedDs3DataReplicationRulesSpectraS3Request.queryParams.Set("state", state.String())
-    return getDegradedDs3DataReplicationRulesSpectraS3Request
-}
-func (getDegradedDs3DataReplicationRulesSpectraS3Request *GetDegradedDs3DataReplicationRulesSpectraS3Request) WithTargetId(targetId string) *GetDegradedDs3DataReplicationRulesSpectraS3Request {
-    getDegradedDs3DataReplicationRulesSpectraS3Request.targetId = targetId
-    getDegradedDs3DataReplicationRulesSpectraS3Request.queryParams.Set("target_id", targetId)
-    return getDegradedDs3DataReplicationRulesSpectraS3Request
-}
-func (getDegradedDs3DataReplicationRulesSpectraS3Request *GetDegradedDs3DataReplicationRulesSpectraS3Request) WithDataReplicationRuleType(dataReplicationRuleType DataReplicationRuleType) *GetDegradedDs3DataReplicationRulesSpectraS3Request {
-    getDegradedDs3DataReplicationRulesSpectraS3Request.dataReplicationRuleType = dataReplicationRuleType
-    getDegradedDs3DataReplicationRulesSpectraS3Request.queryParams.Set("type", dataReplicationRuleType.String())
-    return getDegradedDs3DataReplicationRulesSpectraS3Request
-}
-
 
 func (getDegradedDs3DataReplicationRulesSpectraS3Request *GetDegradedDs3DataReplicationRulesSpectraS3Request) WithLastPage() *GetDegradedDs3DataReplicationRulesSpectraS3Request {
-    getDegradedDs3DataReplicationRulesSpectraS3Request.queryParams.Set("last_page", "")
+    getDegradedDs3DataReplicationRulesSpectraS3Request.LastPage = true
     return getDegradedDs3DataReplicationRulesSpectraS3Request
 }
 
-func (GetDegradedDs3DataReplicationRulesSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
+func (getDegradedDs3DataReplicationRulesSpectraS3Request *GetDegradedDs3DataReplicationRulesSpectraS3Request) WithPageLength(pageLength int) *GetDegradedDs3DataReplicationRulesSpectraS3Request {
+    getDegradedDs3DataReplicationRulesSpectraS3Request.PageLength = &pageLength
+    return getDegradedDs3DataReplicationRulesSpectraS3Request
 }
 
-func (getDegradedDs3DataReplicationRulesSpectraS3Request *GetDegradedDs3DataReplicationRulesSpectraS3Request) Path() string {
-    return "/_rest_/degraded_ds3_data_replication_rule"
+func (getDegradedDs3DataReplicationRulesSpectraS3Request *GetDegradedDs3DataReplicationRulesSpectraS3Request) WithPageOffset(pageOffset int) *GetDegradedDs3DataReplicationRulesSpectraS3Request {
+    getDegradedDs3DataReplicationRulesSpectraS3Request.PageOffset = &pageOffset
+    return getDegradedDs3DataReplicationRulesSpectraS3Request
 }
 
-func (getDegradedDs3DataReplicationRulesSpectraS3Request *GetDegradedDs3DataReplicationRulesSpectraS3Request) QueryParams() *url.Values {
-    return getDegradedDs3DataReplicationRulesSpectraS3Request.queryParams
+func (getDegradedDs3DataReplicationRulesSpectraS3Request *GetDegradedDs3DataReplicationRulesSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetDegradedDs3DataReplicationRulesSpectraS3Request {
+    getDegradedDs3DataReplicationRulesSpectraS3Request.PageStartMarker = &pageStartMarker
+    return getDegradedDs3DataReplicationRulesSpectraS3Request
 }
 
-func (GetDegradedDs3DataReplicationRulesSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetDegradedDs3DataReplicationRulesSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
+func (getDegradedDs3DataReplicationRulesSpectraS3Request *GetDegradedDs3DataReplicationRulesSpectraS3Request) WithState(state DataPlacementRuleState) *GetDegradedDs3DataReplicationRulesSpectraS3Request {
+    getDegradedDs3DataReplicationRulesSpectraS3Request.State = state
+    return getDegradedDs3DataReplicationRulesSpectraS3Request
 }
 
-func (GetDegradedDs3DataReplicationRulesSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
+func (getDegradedDs3DataReplicationRulesSpectraS3Request *GetDegradedDs3DataReplicationRulesSpectraS3Request) WithTargetId(targetId string) *GetDegradedDs3DataReplicationRulesSpectraS3Request {
+    getDegradedDs3DataReplicationRulesSpectraS3Request.TargetId = &targetId
+    return getDegradedDs3DataReplicationRulesSpectraS3Request
 }
+
+func (getDegradedDs3DataReplicationRulesSpectraS3Request *GetDegradedDs3DataReplicationRulesSpectraS3Request) WithDataReplicationRuleType(dataReplicationRuleType DataReplicationRuleType) *GetDegradedDs3DataReplicationRulesSpectraS3Request {
+    getDegradedDs3DataReplicationRulesSpectraS3Request.DataReplicationRuleType = dataReplicationRuleType
+    return getDegradedDs3DataReplicationRulesSpectraS3Request
+}
+

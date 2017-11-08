@@ -13,48 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type DeleteS3TargetFailureSpectraS3Request struct {
-    s3TargetFailure string
-    queryParams *url.Values
+    S3TargetFailure string
 }
 
 func NewDeleteS3TargetFailureSpectraS3Request(s3TargetFailure string) *DeleteS3TargetFailureSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &DeleteS3TargetFailureSpectraS3Request{
-        s3TargetFailure: s3TargetFailure,
-        queryParams: queryParams,
+        S3TargetFailure: s3TargetFailure,
     }
 }
 
-
-
-
-func (DeleteS3TargetFailureSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.DELETE
-}
-
-func (deleteS3TargetFailureSpectraS3Request *DeleteS3TargetFailureSpectraS3Request) Path() string {
-    return "/_rest_/s3_target_failure/" + deleteS3TargetFailureSpectraS3Request.s3TargetFailure
-}
-
-func (deleteS3TargetFailureSpectraS3Request *DeleteS3TargetFailureSpectraS3Request) QueryParams() *url.Values {
-    return deleteS3TargetFailureSpectraS3Request.queryParams
-}
-
-func (DeleteS3TargetFailureSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (DeleteS3TargetFailureSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (DeleteS3TargetFailureSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

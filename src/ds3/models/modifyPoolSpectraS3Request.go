@@ -13,60 +13,25 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type ModifyPoolSpectraS3Request struct {
-    partitionId string
-    pool string
-    quiesced Quiesced
-    queryParams *url.Values
+    PartitionId *string
+    Pool string
+    Quiesced Quiesced
 }
 
 func NewModifyPoolSpectraS3Request(pool string) *ModifyPoolSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &ModifyPoolSpectraS3Request{
-        pool: pool,
-        queryParams: queryParams,
+        Pool: pool,
     }
 }
 
 func (modifyPoolSpectraS3Request *ModifyPoolSpectraS3Request) WithPartitionId(partitionId string) *ModifyPoolSpectraS3Request {
-    modifyPoolSpectraS3Request.partitionId = partitionId
-    modifyPoolSpectraS3Request.queryParams.Set("partition_id", partitionId)
+    modifyPoolSpectraS3Request.PartitionId = &partitionId
     return modifyPoolSpectraS3Request
 }
+
 func (modifyPoolSpectraS3Request *ModifyPoolSpectraS3Request) WithQuiesced(quiesced Quiesced) *ModifyPoolSpectraS3Request {
-    modifyPoolSpectraS3Request.quiesced = quiesced
-    modifyPoolSpectraS3Request.queryParams.Set("quiesced", quiesced.String())
+    modifyPoolSpectraS3Request.Quiesced = quiesced
     return modifyPoolSpectraS3Request
 }
 
-
-
-func (ModifyPoolSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.PUT
-}
-
-func (modifyPoolSpectraS3Request *ModifyPoolSpectraS3Request) Path() string {
-    return "/_rest_/pool/" + modifyPoolSpectraS3Request.pool
-}
-
-func (modifyPoolSpectraS3Request *ModifyPoolSpectraS3Request) QueryParams() *url.Values {
-    return modifyPoolSpectraS3Request.queryParams
-}
-
-func (ModifyPoolSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (ModifyPoolSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (ModifyPoolSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

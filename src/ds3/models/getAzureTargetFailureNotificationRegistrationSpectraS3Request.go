@@ -13,48 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type GetAzureTargetFailureNotificationRegistrationSpectraS3Request struct {
-    azureTargetFailureNotificationRegistration string
-    queryParams *url.Values
+    AzureTargetFailureNotificationRegistration string
 }
 
 func NewGetAzureTargetFailureNotificationRegistrationSpectraS3Request(azureTargetFailureNotificationRegistration string) *GetAzureTargetFailureNotificationRegistrationSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetAzureTargetFailureNotificationRegistrationSpectraS3Request{
-        azureTargetFailureNotificationRegistration: azureTargetFailureNotificationRegistration,
-        queryParams: queryParams,
+        AzureTargetFailureNotificationRegistration: azureTargetFailureNotificationRegistration,
     }
 }
 
-
-
-
-func (GetAzureTargetFailureNotificationRegistrationSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
-}
-
-func (getAzureTargetFailureNotificationRegistrationSpectraS3Request *GetAzureTargetFailureNotificationRegistrationSpectraS3Request) Path() string {
-    return "/_rest_/azure_target_failure_notification_registration/" + getAzureTargetFailureNotificationRegistrationSpectraS3Request.azureTargetFailureNotificationRegistration
-}
-
-func (getAzureTargetFailureNotificationRegistrationSpectraS3Request *GetAzureTargetFailureNotificationRegistrationSpectraS3Request) QueryParams() *url.Values {
-    return getAzureTargetFailureNotificationRegistrationSpectraS3Request.queryParams
-}
-
-func (GetAzureTargetFailureNotificationRegistrationSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetAzureTargetFailureNotificationRegistrationSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (GetAzureTargetFailureNotificationRegistrationSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

@@ -13,55 +13,19 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type CompactPoolSpectraS3Request struct {
-    pool string
-    priority Priority
-    queryParams *url.Values
+    Pool string
+    Priority Priority
 }
 
 func NewCompactPoolSpectraS3Request(pool string) *CompactPoolSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("operation", "compact")
-
     return &CompactPoolSpectraS3Request{
-        pool: pool,
-        queryParams: queryParams,
+        Pool: pool,
     }
 }
 
 func (compactPoolSpectraS3Request *CompactPoolSpectraS3Request) WithPriority(priority Priority) *CompactPoolSpectraS3Request {
-    compactPoolSpectraS3Request.priority = priority
-    compactPoolSpectraS3Request.queryParams.Set("priority", priority.String())
+    compactPoolSpectraS3Request.Priority = priority
     return compactPoolSpectraS3Request
 }
 
-
-
-func (CompactPoolSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.PUT
-}
-
-func (compactPoolSpectraS3Request *CompactPoolSpectraS3Request) Path() string {
-    return "/_rest_/pool/" + compactPoolSpectraS3Request.pool
-}
-
-func (compactPoolSpectraS3Request *CompactPoolSpectraS3Request) QueryParams() *url.Values {
-    return compactPoolSpectraS3Request.queryParams
-}
-
-func (CompactPoolSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (CompactPoolSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (CompactPoolSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

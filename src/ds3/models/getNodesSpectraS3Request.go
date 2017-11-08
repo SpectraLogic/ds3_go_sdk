@@ -13,69 +13,35 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-    "strconv"
-)
-
 type GetNodesSpectraS3Request struct {
-    pageLength int
-    pageOffset int
-    pageStartMarker string
-    queryParams *url.Values
+    LastPage bool
+    PageLength *int
+    PageOffset *int
+    PageStartMarker *string
 }
 
 func NewGetNodesSpectraS3Request() *GetNodesSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetNodesSpectraS3Request{
-        queryParams: queryParams,
     }
 }
 
-func (getNodesSpectraS3Request *GetNodesSpectraS3Request) WithPageLength(pageLength int) *GetNodesSpectraS3Request {
-    getNodesSpectraS3Request.pageLength = pageLength
-    getNodesSpectraS3Request.queryParams.Set("page_length", strconv.Itoa(pageLength))
-    return getNodesSpectraS3Request
-}
-func (getNodesSpectraS3Request *GetNodesSpectraS3Request) WithPageOffset(pageOffset int) *GetNodesSpectraS3Request {
-    getNodesSpectraS3Request.pageOffset = pageOffset
-    getNodesSpectraS3Request.queryParams.Set("page_offset", strconv.Itoa(pageOffset))
-    return getNodesSpectraS3Request
-}
-func (getNodesSpectraS3Request *GetNodesSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetNodesSpectraS3Request {
-    getNodesSpectraS3Request.pageStartMarker = pageStartMarker
-    getNodesSpectraS3Request.queryParams.Set("page_start_marker", pageStartMarker)
-    return getNodesSpectraS3Request
-}
-
-
 func (getNodesSpectraS3Request *GetNodesSpectraS3Request) WithLastPage() *GetNodesSpectraS3Request {
-    getNodesSpectraS3Request.queryParams.Set("last_page", "")
+    getNodesSpectraS3Request.LastPage = true
     return getNodesSpectraS3Request
 }
 
-func (GetNodesSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
+func (getNodesSpectraS3Request *GetNodesSpectraS3Request) WithPageLength(pageLength int) *GetNodesSpectraS3Request {
+    getNodesSpectraS3Request.PageLength = &pageLength
+    return getNodesSpectraS3Request
 }
 
-func (getNodesSpectraS3Request *GetNodesSpectraS3Request) Path() string {
-    return "/_rest_/node"
+func (getNodesSpectraS3Request *GetNodesSpectraS3Request) WithPageOffset(pageOffset int) *GetNodesSpectraS3Request {
+    getNodesSpectraS3Request.PageOffset = &pageOffset
+    return getNodesSpectraS3Request
 }
 
-func (getNodesSpectraS3Request *GetNodesSpectraS3Request) QueryParams() *url.Values {
-    return getNodesSpectraS3Request.queryParams
+func (getNodesSpectraS3Request *GetNodesSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetNodesSpectraS3Request {
+    getNodesSpectraS3Request.PageStartMarker = &pageStartMarker
+    return getNodesSpectraS3Request
 }
 
-func (GetNodesSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetNodesSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (GetNodesSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

@@ -19,10 +19,20 @@ import (
 )
 
 func (client *Client) HeadBucket(request *models.HeadBucketRequest) (*models.HeadBucketResponse, error) {
+    // Build the http request
+    httpRequest, err := networking.NewHttpRequestBuilder().
+        WithHttpVerb(HTTP_VERB_HEAD).
+        WithPath("/" + request.BucketName).
+        Build(client.connectionInfo)
+
+    if err != nil {
+        return nil, err
+    }
+
     networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.sendNetwork), client.clientPolicy.maxRetries)
 
     // Invoke the HTTP request.
-    response, requestErr := networkRetryDecorator.Invoke(request)
+    response, requestErr := networkRetryDecorator.Invoke(httpRequest)
     if requestErr != nil {
         return nil, requestErr
     }
@@ -30,11 +40,22 @@ func (client *Client) HeadBucket(request *models.HeadBucketRequest) (*models.Hea
     // Create a response object based on the result.
     return models.NewHeadBucketResponse(response)
 }
+
 func (client *Client) HeadObject(request *models.HeadObjectRequest) (*models.HeadObjectResponse, error) {
+    // Build the http request
+    httpRequest, err := networking.NewHttpRequestBuilder().
+        WithHttpVerb(HTTP_VERB_HEAD).
+        WithPath("/" + request.BucketName + "/" + request.ObjectName).
+        Build(client.connectionInfo)
+
+    if err != nil {
+        return nil, err
+    }
+
     networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.sendNetwork), client.clientPolicy.maxRetries)
 
     // Invoke the HTTP request.
-    response, requestErr := networkRetryDecorator.Invoke(request)
+    response, requestErr := networkRetryDecorator.Invoke(httpRequest)
     if requestErr != nil {
         return nil, requestErr
     }
@@ -42,4 +63,5 @@ func (client *Client) HeadObject(request *models.HeadObjectRequest) (*models.Hea
     // Create a response object based on the result.
     return models.NewHeadObjectResponse(response)
 }
+
 

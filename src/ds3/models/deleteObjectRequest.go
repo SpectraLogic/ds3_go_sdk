@@ -13,54 +13,21 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type DeleteObjectRequest struct {
-    bucketName string
-    objectName string
-    queryParams *url.Values
+    BucketName string
+    ObjectName string
+    RollBack bool
 }
 
 func NewDeleteObjectRequest(bucketName string, objectName string) *DeleteObjectRequest {
-    queryParams := &url.Values{}
-
     return &DeleteObjectRequest{
-        bucketName: bucketName,
-        objectName: objectName,
-        queryParams: queryParams,
+        BucketName: bucketName,
+        ObjectName: objectName,
     }
 }
 
-
-
 func (deleteObjectRequest *DeleteObjectRequest) WithRollBack() *DeleteObjectRequest {
-    deleteObjectRequest.queryParams.Set("roll_back", "")
+    deleteObjectRequest.RollBack = true
     return deleteObjectRequest
 }
 
-func (DeleteObjectRequest) Verb() networking.HttpVerb {
-    return networking.DELETE
-}
-
-func (deleteObjectRequest *DeleteObjectRequest) Path() string {
-    return "/" + deleteObjectRequest.bucketName + "/" + deleteObjectRequest.objectName
-}
-
-func (deleteObjectRequest *DeleteObjectRequest) QueryParams() *url.Values {
-    return deleteObjectRequest.queryParams
-}
-
-func (DeleteObjectRequest) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (DeleteObjectRequest) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (DeleteObjectRequest) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

@@ -13,54 +13,19 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type ModifyStorageDomainMemberSpectraS3Request struct {
-    storageDomainMember string
-    writePreference WritePreferenceLevel
-    queryParams *url.Values
+    StorageDomainMember string
+    WritePreference WritePreferenceLevel
 }
 
 func NewModifyStorageDomainMemberSpectraS3Request(storageDomainMember string) *ModifyStorageDomainMemberSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &ModifyStorageDomainMemberSpectraS3Request{
-        storageDomainMember: storageDomainMember,
-        queryParams: queryParams,
+        StorageDomainMember: storageDomainMember,
     }
 }
 
 func (modifyStorageDomainMemberSpectraS3Request *ModifyStorageDomainMemberSpectraS3Request) WithWritePreference(writePreference WritePreferenceLevel) *ModifyStorageDomainMemberSpectraS3Request {
-    modifyStorageDomainMemberSpectraS3Request.writePreference = writePreference
-    modifyStorageDomainMemberSpectraS3Request.queryParams.Set("write_preference", writePreference.String())
+    modifyStorageDomainMemberSpectraS3Request.WritePreference = writePreference
     return modifyStorageDomainMemberSpectraS3Request
 }
 
-
-
-func (ModifyStorageDomainMemberSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.PUT
-}
-
-func (modifyStorageDomainMemberSpectraS3Request *ModifyStorageDomainMemberSpectraS3Request) Path() string {
-    return "/_rest_/storage_domain_member/" + modifyStorageDomainMemberSpectraS3Request.storageDomainMember
-}
-
-func (modifyStorageDomainMemberSpectraS3Request *ModifyStorageDomainMemberSpectraS3Request) QueryParams() *url.Values {
-    return modifyStorageDomainMemberSpectraS3Request.queryParams
-}
-
-func (ModifyStorageDomainMemberSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (ModifyStorageDomainMemberSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (ModifyStorageDomainMemberSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

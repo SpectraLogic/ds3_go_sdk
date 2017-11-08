@@ -26,8 +26,8 @@ type PutObjectRequest struct {
     Checksum networking.Checksum
     Content networking.ReaderWithSizeDecorator
     Job *string
-    Offset *int64
     Metadata map[string]string
+    Offset *int64
 }
 
 func NewPutObjectRequest(bucketName string, objectName string, content networking.ReaderWithSizeDecorator) *PutObjectRequest {
@@ -49,6 +49,7 @@ func (putObjectRequest *PutObjectRequest) WithOffset(offset int64) *PutObjectReq
     putObjectRequest.Offset = &offset
     return putObjectRequest
 }
+
 
 func (putObjectRequest *PutObjectRequest) WithChecksum(contentHash string, checksumType networking.ChecksumType) *PutObjectRequest {
     putObjectRequest.Checksum.ContentHash = contentHash

@@ -13,48 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type GetTapePartitionSpectraS3Request struct {
-    tapePartition string
-    queryParams *url.Values
+    TapePartition string
 }
 
 func NewGetTapePartitionSpectraS3Request(tapePartition string) *GetTapePartitionSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetTapePartitionSpectraS3Request{
-        tapePartition: tapePartition,
-        queryParams: queryParams,
+        TapePartition: tapePartition,
     }
 }
 
-
-
-
-func (GetTapePartitionSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
-}
-
-func (getTapePartitionSpectraS3Request *GetTapePartitionSpectraS3Request) Path() string {
-    return "/_rest_/tape_partition/" + getTapePartitionSpectraS3Request.tapePartition
-}
-
-func (getTapePartitionSpectraS3Request *GetTapePartitionSpectraS3Request) QueryParams() *url.Values {
-    return getTapePartitionSpectraS3Request.queryParams
-}
-
-func (GetTapePartitionSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetTapePartitionSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (GetTapePartitionSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

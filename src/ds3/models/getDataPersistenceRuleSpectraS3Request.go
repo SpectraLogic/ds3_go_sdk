@@ -13,48 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type GetDataPersistenceRuleSpectraS3Request struct {
-    dataPersistenceRuleId string
-    queryParams *url.Values
+    DataPersistenceRuleId string
 }
 
 func NewGetDataPersistenceRuleSpectraS3Request(dataPersistenceRuleId string) *GetDataPersistenceRuleSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetDataPersistenceRuleSpectraS3Request{
-        dataPersistenceRuleId: dataPersistenceRuleId,
-        queryParams: queryParams,
+        DataPersistenceRuleId: dataPersistenceRuleId,
     }
 }
 
-
-
-
-func (GetDataPersistenceRuleSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
-}
-
-func (getDataPersistenceRuleSpectraS3Request *GetDataPersistenceRuleSpectraS3Request) Path() string {
-    return "/_rest_/data_persistence_rule/" + getDataPersistenceRuleSpectraS3Request.dataPersistenceRuleId
-}
-
-func (getDataPersistenceRuleSpectraS3Request *GetDataPersistenceRuleSpectraS3Request) QueryParams() *url.Values {
-    return getDataPersistenceRuleSpectraS3Request.queryParams
-}
-
-func (GetDataPersistenceRuleSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetDataPersistenceRuleSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (GetDataPersistenceRuleSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

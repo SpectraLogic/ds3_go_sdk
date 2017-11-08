@@ -13,76 +13,41 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type GetSystemCapacitySummarySpectraS3Request struct {
-    poolHealth PoolHealth
-    poolState PoolState
-    poolType PoolType
-    tapeState TapeState
-    tapeType TapeType
-    queryParams *url.Values
+    PoolHealth PoolHealth
+    PoolState PoolState
+    PoolType PoolType
+    TapeState TapeState
+    TapeType TapeType
 }
 
 func NewGetSystemCapacitySummarySpectraS3Request() *GetSystemCapacitySummarySpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetSystemCapacitySummarySpectraS3Request{
-        queryParams: queryParams,
     }
 }
 
 func (getSystemCapacitySummarySpectraS3Request *GetSystemCapacitySummarySpectraS3Request) WithPoolHealth(poolHealth PoolHealth) *GetSystemCapacitySummarySpectraS3Request {
-    getSystemCapacitySummarySpectraS3Request.poolHealth = poolHealth
-    getSystemCapacitySummarySpectraS3Request.queryParams.Set("pool_health", poolHealth.String())
+    getSystemCapacitySummarySpectraS3Request.PoolHealth = poolHealth
     return getSystemCapacitySummarySpectraS3Request
 }
+
 func (getSystemCapacitySummarySpectraS3Request *GetSystemCapacitySummarySpectraS3Request) WithPoolState(poolState PoolState) *GetSystemCapacitySummarySpectraS3Request {
-    getSystemCapacitySummarySpectraS3Request.poolState = poolState
-    getSystemCapacitySummarySpectraS3Request.queryParams.Set("pool_state", poolState.String())
+    getSystemCapacitySummarySpectraS3Request.PoolState = poolState
     return getSystemCapacitySummarySpectraS3Request
 }
+
 func (getSystemCapacitySummarySpectraS3Request *GetSystemCapacitySummarySpectraS3Request) WithPoolType(poolType PoolType) *GetSystemCapacitySummarySpectraS3Request {
-    getSystemCapacitySummarySpectraS3Request.poolType = poolType
-    getSystemCapacitySummarySpectraS3Request.queryParams.Set("pool_type", poolType.String())
+    getSystemCapacitySummarySpectraS3Request.PoolType = poolType
     return getSystemCapacitySummarySpectraS3Request
 }
+
 func (getSystemCapacitySummarySpectraS3Request *GetSystemCapacitySummarySpectraS3Request) WithTapeState(tapeState TapeState) *GetSystemCapacitySummarySpectraS3Request {
-    getSystemCapacitySummarySpectraS3Request.tapeState = tapeState
-    getSystemCapacitySummarySpectraS3Request.queryParams.Set("tape_state", tapeState.String())
+    getSystemCapacitySummarySpectraS3Request.TapeState = tapeState
     return getSystemCapacitySummarySpectraS3Request
 }
+
 func (getSystemCapacitySummarySpectraS3Request *GetSystemCapacitySummarySpectraS3Request) WithTapeType(tapeType TapeType) *GetSystemCapacitySummarySpectraS3Request {
-    getSystemCapacitySummarySpectraS3Request.tapeType = tapeType
-    getSystemCapacitySummarySpectraS3Request.queryParams.Set("tape_type", tapeType.String())
+    getSystemCapacitySummarySpectraS3Request.TapeType = tapeType
     return getSystemCapacitySummarySpectraS3Request
 }
 
-
-
-func (GetSystemCapacitySummarySpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
-}
-
-func (getSystemCapacitySummarySpectraS3Request *GetSystemCapacitySummarySpectraS3Request) Path() string {
-    return "/_rest_/capacity_summary"
-}
-
-func (getSystemCapacitySummarySpectraS3Request *GetSystemCapacitySummarySpectraS3Request) QueryParams() *url.Values {
-    return getSystemCapacitySummarySpectraS3Request.queryParams
-}
-
-func (GetSystemCapacitySummarySpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetSystemCapacitySummarySpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (GetSystemCapacitySummarySpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

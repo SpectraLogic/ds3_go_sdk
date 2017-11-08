@@ -13,48 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type GetS3DataReplicationRuleSpectraS3Request struct {
-    s3DataReplicationRule string
-    queryParams *url.Values
+    S3DataReplicationRule string
 }
 
 func NewGetS3DataReplicationRuleSpectraS3Request(s3DataReplicationRule string) *GetS3DataReplicationRuleSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetS3DataReplicationRuleSpectraS3Request{
-        s3DataReplicationRule: s3DataReplicationRule,
-        queryParams: queryParams,
+        S3DataReplicationRule: s3DataReplicationRule,
     }
 }
 
-
-
-
-func (GetS3DataReplicationRuleSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
-}
-
-func (getS3DataReplicationRuleSpectraS3Request *GetS3DataReplicationRuleSpectraS3Request) Path() string {
-    return "/_rest_/s3_data_replication_rule/" + getS3DataReplicationRuleSpectraS3Request.s3DataReplicationRule
-}
-
-func (getS3DataReplicationRuleSpectraS3Request *GetS3DataReplicationRuleSpectraS3Request) QueryParams() *url.Values {
-    return getS3DataReplicationRuleSpectraS3Request.queryParams
-}
-
-func (GetS3DataReplicationRuleSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetS3DataReplicationRuleSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (GetS3DataReplicationRuleSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

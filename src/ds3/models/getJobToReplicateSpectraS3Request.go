@@ -22,3 +22,4 @@ func NewGetJobToReplicateSpectraS3Request(jobId string) *GetJobToReplicateSpectr
         JobId: jobId,
     }
 }
+

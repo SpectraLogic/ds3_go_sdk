@@ -13,49 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type ModifyAllDs3TargetsSpectraS3Request struct {
-    quiesced Quiesced
-    queryParams *url.Values
+    Quiesced Quiesced
 }
 
 func NewModifyAllDs3TargetsSpectraS3Request(quiesced Quiesced) *ModifyAllDs3TargetsSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("quiesced", quiesced.String())
-
     return &ModifyAllDs3TargetsSpectraS3Request{
-        quiesced: quiesced,
-        queryParams: queryParams,
+        Quiesced: quiesced,
     }
 }
 
-
-
-
-func (ModifyAllDs3TargetsSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.PUT
-}
-
-func (modifyAllDs3TargetsSpectraS3Request *ModifyAllDs3TargetsSpectraS3Request) Path() string {
-    return "/_rest_/ds3_target"
-}
-
-func (modifyAllDs3TargetsSpectraS3Request *ModifyAllDs3TargetsSpectraS3Request) QueryParams() *url.Values {
-    return modifyAllDs3TargetsSpectraS3Request.queryParams
-}
-
-func (ModifyAllDs3TargetsSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (ModifyAllDs3TargetsSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (ModifyAllDs3TargetsSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

@@ -19,11 +19,12 @@ type VerifyBulkJobSpectraS3Request struct {
     BucketName string
     Aggregating *bool
     Name *string
-    Priority Priority
     Objects []Ds3GetObject
+    Priority Priority
 }
 
 func NewVerifyBulkJobSpectraS3Request(bucketName string, objectNames []string) *VerifyBulkJobSpectraS3Request {
+
     return &VerifyBulkJobSpectraS3Request{
         BucketName: bucketName,
         Objects: ds3.BuildDs3GetObjectSliceFromNames(objectNames),
@@ -31,6 +32,7 @@ func NewVerifyBulkJobSpectraS3Request(bucketName string, objectNames []string) *
 }
 
 func NewVerifyBulkJobSpectraS3RequestWithPartialObjects(bucketName string, objects []Ds3GetObject) *VerifyBulkJobSpectraS3Request {
+
     return &VerifyBulkJobSpectraS3Request{
         BucketName: bucketName,
         Objects: objects,
@@ -41,12 +43,14 @@ func (verifyBulkJobSpectraS3Request *VerifyBulkJobSpectraS3Request) WithAggregat
     verifyBulkJobSpectraS3Request.Aggregating = &aggregating
     return verifyBulkJobSpectraS3Request
 }
-func (verifyBulkJobSpectraS3Request *VerifyBulkJobSpectraS3Request) WithPriority(priority Priority) *VerifyBulkJobSpectraS3Request {
-    verifyBulkJobSpectraS3Request.Priority = priority
-    return verifyBulkJobSpectraS3Request
-}
 
 func (verifyBulkJobSpectraS3Request *VerifyBulkJobSpectraS3Request) WithName(name string) *VerifyBulkJobSpectraS3Request {
     verifyBulkJobSpectraS3Request.Name = &name
     return verifyBulkJobSpectraS3Request
 }
+
+func (verifyBulkJobSpectraS3Request *VerifyBulkJobSpectraS3Request) WithPriority(priority Priority) *VerifyBulkJobSpectraS3Request {
+    verifyBulkJobSpectraS3Request.Priority = priority
+    return verifyBulkJobSpectraS3Request
+}
+

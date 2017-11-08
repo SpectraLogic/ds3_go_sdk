@@ -21,11 +21,12 @@ type GetBulkJobSpectraS3Request struct {
     ChunkClientProcessingOrderGuarantee JobChunkClientProcessingOrderGuarantee
     ImplicitJobIdResolution *bool
     Name *string
-    Priority Priority
     Objects []Ds3GetObject
+    Priority Priority
 }
 
 func NewGetBulkJobSpectraS3Request(bucketName string, objectNames []string) *GetBulkJobSpectraS3Request {
+
     return &GetBulkJobSpectraS3Request{
         BucketName: bucketName,
         Objects: ds3.BuildDs3GetObjectSliceFromNames(objectNames),
@@ -33,6 +34,7 @@ func NewGetBulkJobSpectraS3Request(bucketName string, objectNames []string) *Get
 }
 
 func NewGetBulkJobSpectraS3RequestWithPartialObjects(bucketName string, objects []Ds3GetObject) *GetBulkJobSpectraS3Request {
+
     return &GetBulkJobSpectraS3Request{
         BucketName: bucketName,
         Objects: objects,
@@ -43,16 +45,14 @@ func (getBulkJobSpectraS3Request *GetBulkJobSpectraS3Request) WithAggregating(ag
     getBulkJobSpectraS3Request.Aggregating = &aggregating
     return getBulkJobSpectraS3Request
 }
+
 func (getBulkJobSpectraS3Request *GetBulkJobSpectraS3Request) WithChunkClientProcessingOrderGuarantee(chunkClientProcessingOrderGuarantee JobChunkClientProcessingOrderGuarantee) *GetBulkJobSpectraS3Request {
     getBulkJobSpectraS3Request.ChunkClientProcessingOrderGuarantee = chunkClientProcessingOrderGuarantee
     return getBulkJobSpectraS3Request
 }
+
 func (getBulkJobSpectraS3Request *GetBulkJobSpectraS3Request) WithImplicitJobIdResolution(implicitJobIdResolution bool) *GetBulkJobSpectraS3Request {
     getBulkJobSpectraS3Request.ImplicitJobIdResolution = &implicitJobIdResolution
-    return getBulkJobSpectraS3Request
-}
-func (getBulkJobSpectraS3Request *GetBulkJobSpectraS3Request) WithPriority(priority Priority) *GetBulkJobSpectraS3Request {
-    getBulkJobSpectraS3Request.Priority = priority
     return getBulkJobSpectraS3Request
 }
 
@@ -60,3 +60,9 @@ func (getBulkJobSpectraS3Request *GetBulkJobSpectraS3Request) WithName(name stri
     getBulkJobSpectraS3Request.Name = &name
     return getBulkJobSpectraS3Request
 }
+
+func (getBulkJobSpectraS3Request *GetBulkJobSpectraS3Request) WithPriority(priority Priority) *GetBulkJobSpectraS3Request {
+    getBulkJobSpectraS3Request.Priority = priority
+    return getBulkJobSpectraS3Request
+}
+

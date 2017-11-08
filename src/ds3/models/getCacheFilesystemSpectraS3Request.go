@@ -13,48 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type GetCacheFilesystemSpectraS3Request struct {
-    cacheFilesystem string
-    queryParams *url.Values
+    CacheFilesystem string
 }
 
 func NewGetCacheFilesystemSpectraS3Request(cacheFilesystem string) *GetCacheFilesystemSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetCacheFilesystemSpectraS3Request{
-        cacheFilesystem: cacheFilesystem,
-        queryParams: queryParams,
+        CacheFilesystem: cacheFilesystem,
     }
 }
 
-
-
-
-func (GetCacheFilesystemSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
-}
-
-func (getCacheFilesystemSpectraS3Request *GetCacheFilesystemSpectraS3Request) Path() string {
-    return "/_rest_/cache_filesystem/" + getCacheFilesystemSpectraS3Request.cacheFilesystem
-}
-
-func (getCacheFilesystemSpectraS3Request *GetCacheFilesystemSpectraS3Request) QueryParams() *url.Values {
-    return getCacheFilesystemSpectraS3Request.queryParams
-}
-
-func (GetCacheFilesystemSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetCacheFilesystemSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (GetCacheFilesystemSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

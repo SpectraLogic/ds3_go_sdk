@@ -13,75 +13,41 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-    "strconv"
-)
-
 type GetObjectPersistedNotificationRegistrationsSpectraS3Request struct {
-    pageLength int
-    pageOffset int
-    pageStartMarker string
-    userId string
-    queryParams *url.Values
+    LastPage bool
+    PageLength *int
+    PageOffset *int
+    PageStartMarker *string
+    UserId *string
 }
 
 func NewGetObjectPersistedNotificationRegistrationsSpectraS3Request() *GetObjectPersistedNotificationRegistrationsSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetObjectPersistedNotificationRegistrationsSpectraS3Request{
-        queryParams: queryParams,
     }
 }
 
-func (getObjectPersistedNotificationRegistrationsSpectraS3Request *GetObjectPersistedNotificationRegistrationsSpectraS3Request) WithPageLength(pageLength int) *GetObjectPersistedNotificationRegistrationsSpectraS3Request {
-    getObjectPersistedNotificationRegistrationsSpectraS3Request.pageLength = pageLength
-    getObjectPersistedNotificationRegistrationsSpectraS3Request.queryParams.Set("page_length", strconv.Itoa(pageLength))
-    return getObjectPersistedNotificationRegistrationsSpectraS3Request
-}
-func (getObjectPersistedNotificationRegistrationsSpectraS3Request *GetObjectPersistedNotificationRegistrationsSpectraS3Request) WithPageOffset(pageOffset int) *GetObjectPersistedNotificationRegistrationsSpectraS3Request {
-    getObjectPersistedNotificationRegistrationsSpectraS3Request.pageOffset = pageOffset
-    getObjectPersistedNotificationRegistrationsSpectraS3Request.queryParams.Set("page_offset", strconv.Itoa(pageOffset))
-    return getObjectPersistedNotificationRegistrationsSpectraS3Request
-}
-func (getObjectPersistedNotificationRegistrationsSpectraS3Request *GetObjectPersistedNotificationRegistrationsSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetObjectPersistedNotificationRegistrationsSpectraS3Request {
-    getObjectPersistedNotificationRegistrationsSpectraS3Request.pageStartMarker = pageStartMarker
-    getObjectPersistedNotificationRegistrationsSpectraS3Request.queryParams.Set("page_start_marker", pageStartMarker)
-    return getObjectPersistedNotificationRegistrationsSpectraS3Request
-}
-func (getObjectPersistedNotificationRegistrationsSpectraS3Request *GetObjectPersistedNotificationRegistrationsSpectraS3Request) WithUserId(userId string) *GetObjectPersistedNotificationRegistrationsSpectraS3Request {
-    getObjectPersistedNotificationRegistrationsSpectraS3Request.userId = userId
-    getObjectPersistedNotificationRegistrationsSpectraS3Request.queryParams.Set("user_id", userId)
-    return getObjectPersistedNotificationRegistrationsSpectraS3Request
-}
-
-
 func (getObjectPersistedNotificationRegistrationsSpectraS3Request *GetObjectPersistedNotificationRegistrationsSpectraS3Request) WithLastPage() *GetObjectPersistedNotificationRegistrationsSpectraS3Request {
-    getObjectPersistedNotificationRegistrationsSpectraS3Request.queryParams.Set("last_page", "")
+    getObjectPersistedNotificationRegistrationsSpectraS3Request.LastPage = true
     return getObjectPersistedNotificationRegistrationsSpectraS3Request
 }
 
-func (GetObjectPersistedNotificationRegistrationsSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
+func (getObjectPersistedNotificationRegistrationsSpectraS3Request *GetObjectPersistedNotificationRegistrationsSpectraS3Request) WithPageLength(pageLength int) *GetObjectPersistedNotificationRegistrationsSpectraS3Request {
+    getObjectPersistedNotificationRegistrationsSpectraS3Request.PageLength = &pageLength
+    return getObjectPersistedNotificationRegistrationsSpectraS3Request
 }
 
-func (getObjectPersistedNotificationRegistrationsSpectraS3Request *GetObjectPersistedNotificationRegistrationsSpectraS3Request) Path() string {
-    return "/_rest_/object_persisted_notification_registration"
+func (getObjectPersistedNotificationRegistrationsSpectraS3Request *GetObjectPersistedNotificationRegistrationsSpectraS3Request) WithPageOffset(pageOffset int) *GetObjectPersistedNotificationRegistrationsSpectraS3Request {
+    getObjectPersistedNotificationRegistrationsSpectraS3Request.PageOffset = &pageOffset
+    return getObjectPersistedNotificationRegistrationsSpectraS3Request
 }
 
-func (getObjectPersistedNotificationRegistrationsSpectraS3Request *GetObjectPersistedNotificationRegistrationsSpectraS3Request) QueryParams() *url.Values {
-    return getObjectPersistedNotificationRegistrationsSpectraS3Request.queryParams
+func (getObjectPersistedNotificationRegistrationsSpectraS3Request *GetObjectPersistedNotificationRegistrationsSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetObjectPersistedNotificationRegistrationsSpectraS3Request {
+    getObjectPersistedNotificationRegistrationsSpectraS3Request.PageStartMarker = &pageStartMarker
+    return getObjectPersistedNotificationRegistrationsSpectraS3Request
 }
 
-func (GetObjectPersistedNotificationRegistrationsSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetObjectPersistedNotificationRegistrationsSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
+func (getObjectPersistedNotificationRegistrationsSpectraS3Request *GetObjectPersistedNotificationRegistrationsSpectraS3Request) WithUserId(userId string) *GetObjectPersistedNotificationRegistrationsSpectraS3Request {
+    getObjectPersistedNotificationRegistrationsSpectraS3Request.UserId = &userId
+    return getObjectPersistedNotificationRegistrationsSpectraS3Request
 }
 
-func (GetObjectPersistedNotificationRegistrationsSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

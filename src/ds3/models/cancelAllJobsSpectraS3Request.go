@@ -13,59 +13,23 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type CancelAllJobsSpectraS3Request struct {
-    bucketId string
-    requestType JobRequestType
-    queryParams *url.Values
+    BucketId *string
+    RequestType JobRequestType
 }
 
 func NewCancelAllJobsSpectraS3Request() *CancelAllJobsSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("force", "")
-
     return &CancelAllJobsSpectraS3Request{
-        queryParams: queryParams,
     }
 }
 
 func (cancelAllJobsSpectraS3Request *CancelAllJobsSpectraS3Request) WithBucketId(bucketId string) *CancelAllJobsSpectraS3Request {
-    cancelAllJobsSpectraS3Request.bucketId = bucketId
-    cancelAllJobsSpectraS3Request.queryParams.Set("bucket_id", bucketId)
+    cancelAllJobsSpectraS3Request.BucketId = &bucketId
     return cancelAllJobsSpectraS3Request
 }
+
 func (cancelAllJobsSpectraS3Request *CancelAllJobsSpectraS3Request) WithRequestType(requestType JobRequestType) *CancelAllJobsSpectraS3Request {
-    cancelAllJobsSpectraS3Request.requestType = requestType
-    cancelAllJobsSpectraS3Request.queryParams.Set("request_type", requestType.String())
+    cancelAllJobsSpectraS3Request.RequestType = requestType
     return cancelAllJobsSpectraS3Request
 }
 
-
-
-func (CancelAllJobsSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.DELETE
-}
-
-func (cancelAllJobsSpectraS3Request *CancelAllJobsSpectraS3Request) Path() string {
-    return "/_rest_/job"
-}
-
-func (cancelAllJobsSpectraS3Request *CancelAllJobsSpectraS3Request) QueryParams() *url.Values {
-    return cancelAllJobsSpectraS3Request.queryParams
-}
-
-func (CancelAllJobsSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (CancelAllJobsSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (CancelAllJobsSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

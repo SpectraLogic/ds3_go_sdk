@@ -13,48 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type DeleteJobCompletedNotificationRegistrationSpectraS3Request struct {
-    notificationId string
-    queryParams *url.Values
+    NotificationId string
 }
 
 func NewDeleteJobCompletedNotificationRegistrationSpectraS3Request(notificationId string) *DeleteJobCompletedNotificationRegistrationSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &DeleteJobCompletedNotificationRegistrationSpectraS3Request{
-        notificationId: notificationId,
-        queryParams: queryParams,
+        NotificationId: notificationId,
     }
 }
 
-
-
-
-func (DeleteJobCompletedNotificationRegistrationSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.DELETE
-}
-
-func (deleteJobCompletedNotificationRegistrationSpectraS3Request *DeleteJobCompletedNotificationRegistrationSpectraS3Request) Path() string {
-    return "/_rest_/job_completed_notification_registration/" + deleteJobCompletedNotificationRegistrationSpectraS3Request.notificationId
-}
-
-func (deleteJobCompletedNotificationRegistrationSpectraS3Request *DeleteJobCompletedNotificationRegistrationSpectraS3Request) QueryParams() *url.Values {
-    return deleteJobCompletedNotificationRegistrationSpectraS3Request.queryParams
-}
-
-func (DeleteJobCompletedNotificationRegistrationSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (DeleteJobCompletedNotificationRegistrationSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (DeleteJobCompletedNotificationRegistrationSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

@@ -13,53 +13,19 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type FormatTapeSpectraS3Request struct {
-    tapeId string
-    queryParams *url.Values
+    Force bool
+    TapeId string
 }
 
 func NewFormatTapeSpectraS3Request(tapeId string) *FormatTapeSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("operation", "format")
-
     return &FormatTapeSpectraS3Request{
-        tapeId: tapeId,
-        queryParams: queryParams,
+        TapeId: tapeId,
     }
 }
 
-
-
 func (formatTapeSpectraS3Request *FormatTapeSpectraS3Request) WithForce() *FormatTapeSpectraS3Request {
-    formatTapeSpectraS3Request.queryParams.Set("force", "")
+    formatTapeSpectraS3Request.Force = true
     return formatTapeSpectraS3Request
 }
 
-func (FormatTapeSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.PUT
-}
-
-func (formatTapeSpectraS3Request *FormatTapeSpectraS3Request) Path() string {
-    return "/_rest_/tape/" + formatTapeSpectraS3Request.tapeId
-}
-
-func (formatTapeSpectraS3Request *FormatTapeSpectraS3Request) QueryParams() *url.Values {
-    return formatTapeSpectraS3Request.queryParams
-}
-
-func (FormatTapeSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (FormatTapeSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (FormatTapeSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

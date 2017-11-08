@@ -13,48 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type GetStorageDomainSpectraS3Request struct {
-    storageDomain string
-    queryParams *url.Values
+    StorageDomain string
 }
 
 func NewGetStorageDomainSpectraS3Request(storageDomain string) *GetStorageDomainSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetStorageDomainSpectraS3Request{
-        storageDomain: storageDomain,
-        queryParams: queryParams,
+        StorageDomain: storageDomain,
     }
 }
 
-
-
-
-func (GetStorageDomainSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
-}
-
-func (getStorageDomainSpectraS3Request *GetStorageDomainSpectraS3Request) Path() string {
-    return "/_rest_/storage_domain/" + getStorageDomainSpectraS3Request.storageDomain
-}
-
-func (getStorageDomainSpectraS3Request *GetStorageDomainSpectraS3Request) QueryParams() *url.Values {
-    return getStorageDomainSpectraS3Request.queryParams
-}
-
-func (GetStorageDomainSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetStorageDomainSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (GetStorageDomainSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

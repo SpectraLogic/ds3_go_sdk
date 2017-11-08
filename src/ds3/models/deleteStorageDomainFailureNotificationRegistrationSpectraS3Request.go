@@ -13,48 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type DeleteStorageDomainFailureNotificationRegistrationSpectraS3Request struct {
-    notificationId string
-    queryParams *url.Values
+    NotificationId string
 }
 
 func NewDeleteStorageDomainFailureNotificationRegistrationSpectraS3Request(notificationId string) *DeleteStorageDomainFailureNotificationRegistrationSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &DeleteStorageDomainFailureNotificationRegistrationSpectraS3Request{
-        notificationId: notificationId,
-        queryParams: queryParams,
+        NotificationId: notificationId,
     }
 }
 
-
-
-
-func (DeleteStorageDomainFailureNotificationRegistrationSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.DELETE
-}
-
-func (deleteStorageDomainFailureNotificationRegistrationSpectraS3Request *DeleteStorageDomainFailureNotificationRegistrationSpectraS3Request) Path() string {
-    return "/_rest_/storage_domain_failure_notification_registration/" + deleteStorageDomainFailureNotificationRegistrationSpectraS3Request.notificationId
-}
-
-func (deleteStorageDomainFailureNotificationRegistrationSpectraS3Request *DeleteStorageDomainFailureNotificationRegistrationSpectraS3Request) QueryParams() *url.Values {
-    return deleteStorageDomainFailureNotificationRegistrationSpectraS3Request.queryParams
-}
-
-func (DeleteStorageDomainFailureNotificationRegistrationSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (DeleteStorageDomainFailureNotificationRegistrationSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (DeleteStorageDomainFailureNotificationRegistrationSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

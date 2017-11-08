@@ -13,79 +13,43 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type GetStorageDomainCapacitySummarySpectraS3Request struct {
-    poolHealth PoolHealth
-    poolState PoolState
-    poolType PoolType
-    storageDomainId string
-    tapeState TapeState
-    tapeType TapeType
-    queryParams *url.Values
+    PoolHealth PoolHealth
+    PoolState PoolState
+    PoolType PoolType
+    StorageDomainId string
+    TapeState TapeState
+    TapeType TapeType
 }
 
 func NewGetStorageDomainCapacitySummarySpectraS3Request(storageDomainId string) *GetStorageDomainCapacitySummarySpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("storage_domain_id", storageDomainId)
-
     return &GetStorageDomainCapacitySummarySpectraS3Request{
-        storageDomainId: storageDomainId,
-        queryParams: queryParams,
+        StorageDomainId: storageDomainId,
     }
 }
 
 func (getStorageDomainCapacitySummarySpectraS3Request *GetStorageDomainCapacitySummarySpectraS3Request) WithPoolHealth(poolHealth PoolHealth) *GetStorageDomainCapacitySummarySpectraS3Request {
-    getStorageDomainCapacitySummarySpectraS3Request.poolHealth = poolHealth
-    getStorageDomainCapacitySummarySpectraS3Request.queryParams.Set("pool_health", poolHealth.String())
+    getStorageDomainCapacitySummarySpectraS3Request.PoolHealth = poolHealth
     return getStorageDomainCapacitySummarySpectraS3Request
 }
+
 func (getStorageDomainCapacitySummarySpectraS3Request *GetStorageDomainCapacitySummarySpectraS3Request) WithPoolState(poolState PoolState) *GetStorageDomainCapacitySummarySpectraS3Request {
-    getStorageDomainCapacitySummarySpectraS3Request.poolState = poolState
-    getStorageDomainCapacitySummarySpectraS3Request.queryParams.Set("pool_state", poolState.String())
+    getStorageDomainCapacitySummarySpectraS3Request.PoolState = poolState
     return getStorageDomainCapacitySummarySpectraS3Request
 }
+
 func (getStorageDomainCapacitySummarySpectraS3Request *GetStorageDomainCapacitySummarySpectraS3Request) WithPoolType(poolType PoolType) *GetStorageDomainCapacitySummarySpectraS3Request {
-    getStorageDomainCapacitySummarySpectraS3Request.poolType = poolType
-    getStorageDomainCapacitySummarySpectraS3Request.queryParams.Set("pool_type", poolType.String())
+    getStorageDomainCapacitySummarySpectraS3Request.PoolType = poolType
     return getStorageDomainCapacitySummarySpectraS3Request
 }
+
 func (getStorageDomainCapacitySummarySpectraS3Request *GetStorageDomainCapacitySummarySpectraS3Request) WithTapeState(tapeState TapeState) *GetStorageDomainCapacitySummarySpectraS3Request {
-    getStorageDomainCapacitySummarySpectraS3Request.tapeState = tapeState
-    getStorageDomainCapacitySummarySpectraS3Request.queryParams.Set("tape_state", tapeState.String())
+    getStorageDomainCapacitySummarySpectraS3Request.TapeState = tapeState
     return getStorageDomainCapacitySummarySpectraS3Request
 }
+
 func (getStorageDomainCapacitySummarySpectraS3Request *GetStorageDomainCapacitySummarySpectraS3Request) WithTapeType(tapeType TapeType) *GetStorageDomainCapacitySummarySpectraS3Request {
-    getStorageDomainCapacitySummarySpectraS3Request.tapeType = tapeType
-    getStorageDomainCapacitySummarySpectraS3Request.queryParams.Set("tape_type", tapeType.String())
+    getStorageDomainCapacitySummarySpectraS3Request.TapeType = tapeType
     return getStorageDomainCapacitySummarySpectraS3Request
 }
 
-
-
-func (GetStorageDomainCapacitySummarySpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
-}
-
-func (getStorageDomainCapacitySummarySpectraS3Request *GetStorageDomainCapacitySummarySpectraS3Request) Path() string {
-    return "/_rest_/capacity_summary"
-}
-
-func (getStorageDomainCapacitySummarySpectraS3Request *GetStorageDomainCapacitySummarySpectraS3Request) QueryParams() *url.Values {
-    return getStorageDomainCapacitySummarySpectraS3Request.queryParams
-}
-
-func (GetStorageDomainCapacitySummarySpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetStorageDomainCapacitySummarySpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (GetStorageDomainCapacitySummarySpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

@@ -13,67 +13,31 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type PutTapeFailureNotificationRegistrationSpectraS3Request struct {
-    format HttpResponseFormatType
-    namingConvention NamingConventionType
-    notificationEndPoint *string
-    notificationHttpMethod RequestType
-    queryParams *url.Values
+    Format HttpResponseFormatType
+    NamingConvention NamingConventionType
+    NotificationEndPoint string
+    NotificationHttpMethod RequestType
 }
 
-func NewPutTapeFailureNotificationRegistrationSpectraS3Request(notificationEndPoint *string) *PutTapeFailureNotificationRegistrationSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("notification_end_point", *notificationEndPoint)
-
+func NewPutTapeFailureNotificationRegistrationSpectraS3Request(notificationEndPoint string) *PutTapeFailureNotificationRegistrationSpectraS3Request {
     return &PutTapeFailureNotificationRegistrationSpectraS3Request{
-        notificationEndPoint: notificationEndPoint,
-        queryParams: queryParams,
+        NotificationEndPoint: notificationEndPoint,
     }
 }
 
 func (putTapeFailureNotificationRegistrationSpectraS3Request *PutTapeFailureNotificationRegistrationSpectraS3Request) WithFormat(format HttpResponseFormatType) *PutTapeFailureNotificationRegistrationSpectraS3Request {
-    putTapeFailureNotificationRegistrationSpectraS3Request.format = format
-    putTapeFailureNotificationRegistrationSpectraS3Request.queryParams.Set("format", format.String())
+    putTapeFailureNotificationRegistrationSpectraS3Request.Format = format
     return putTapeFailureNotificationRegistrationSpectraS3Request
 }
+
 func (putTapeFailureNotificationRegistrationSpectraS3Request *PutTapeFailureNotificationRegistrationSpectraS3Request) WithNamingConvention(namingConvention NamingConventionType) *PutTapeFailureNotificationRegistrationSpectraS3Request {
-    putTapeFailureNotificationRegistrationSpectraS3Request.namingConvention = namingConvention
-    putTapeFailureNotificationRegistrationSpectraS3Request.queryParams.Set("naming_convention", namingConvention.String())
+    putTapeFailureNotificationRegistrationSpectraS3Request.NamingConvention = namingConvention
     return putTapeFailureNotificationRegistrationSpectraS3Request
 }
+
 func (putTapeFailureNotificationRegistrationSpectraS3Request *PutTapeFailureNotificationRegistrationSpectraS3Request) WithNotificationHttpMethod(notificationHttpMethod RequestType) *PutTapeFailureNotificationRegistrationSpectraS3Request {
-    putTapeFailureNotificationRegistrationSpectraS3Request.notificationHttpMethod = notificationHttpMethod
-    putTapeFailureNotificationRegistrationSpectraS3Request.queryParams.Set("notification_http_method", notificationHttpMethod.String())
+    putTapeFailureNotificationRegistrationSpectraS3Request.NotificationHttpMethod = notificationHttpMethod
     return putTapeFailureNotificationRegistrationSpectraS3Request
 }
 
-
-
-func (PutTapeFailureNotificationRegistrationSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.POST
-}
-
-func (putTapeFailureNotificationRegistrationSpectraS3Request *PutTapeFailureNotificationRegistrationSpectraS3Request) Path() string {
-    return "/_rest_/tape_failure_notification_registration"
-}
-
-func (putTapeFailureNotificationRegistrationSpectraS3Request *PutTapeFailureNotificationRegistrationSpectraS3Request) QueryParams() *url.Values {
-    return putTapeFailureNotificationRegistrationSpectraS3Request.queryParams
-}
-
-func (PutTapeFailureNotificationRegistrationSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (PutTapeFailureNotificationRegistrationSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (PutTapeFailureNotificationRegistrationSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

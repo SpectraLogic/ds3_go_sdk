@@ -13,48 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type DeleteJobCreationFailedNotificationRegistrationSpectraS3Request struct {
-    notificationId string
-    queryParams *url.Values
+    NotificationId string
 }
 
 func NewDeleteJobCreationFailedNotificationRegistrationSpectraS3Request(notificationId string) *DeleteJobCreationFailedNotificationRegistrationSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &DeleteJobCreationFailedNotificationRegistrationSpectraS3Request{
-        notificationId: notificationId,
-        queryParams: queryParams,
+        NotificationId: notificationId,
     }
 }
 
-
-
-
-func (DeleteJobCreationFailedNotificationRegistrationSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.DELETE
-}
-
-func (deleteJobCreationFailedNotificationRegistrationSpectraS3Request *DeleteJobCreationFailedNotificationRegistrationSpectraS3Request) Path() string {
-    return "/_rest_/job_creation_failed_notification_registration/" + deleteJobCreationFailedNotificationRegistrationSpectraS3Request.notificationId
-}
-
-func (deleteJobCreationFailedNotificationRegistrationSpectraS3Request *DeleteJobCreationFailedNotificationRegistrationSpectraS3Request) QueryParams() *url.Values {
-    return deleteJobCreationFailedNotificationRegistrationSpectraS3Request.queryParams
-}
-
-func (DeleteJobCreationFailedNotificationRegistrationSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (DeleteJobCreationFailedNotificationRegistrationSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (DeleteJobCreationFailedNotificationRegistrationSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

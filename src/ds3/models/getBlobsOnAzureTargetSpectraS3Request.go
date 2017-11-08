@@ -13,49 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type GetBlobsOnAzureTargetSpectraS3Request struct {
-    azureTarget string
-    queryParams *url.Values
+    AzureTarget string
 }
 
 func NewGetBlobsOnAzureTargetSpectraS3Request(azureTarget string) *GetBlobsOnAzureTargetSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("operation", "get_physical_placement")
-
     return &GetBlobsOnAzureTargetSpectraS3Request{
-        azureTarget: azureTarget,
-        queryParams: queryParams,
+        AzureTarget: azureTarget,
     }
 }
 
-
-
-
-func (GetBlobsOnAzureTargetSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
-}
-
-func (getBlobsOnAzureTargetSpectraS3Request *GetBlobsOnAzureTargetSpectraS3Request) Path() string {
-    return "/_rest_/azure_target/" + getBlobsOnAzureTargetSpectraS3Request.azureTarget
-}
-
-func (getBlobsOnAzureTargetSpectraS3Request *GetBlobsOnAzureTargetSpectraS3Request) QueryParams() *url.Values {
-    return getBlobsOnAzureTargetSpectraS3Request.queryParams
-}
-
-func (GetBlobsOnAzureTargetSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetBlobsOnAzureTargetSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (GetBlobsOnAzureTargetSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

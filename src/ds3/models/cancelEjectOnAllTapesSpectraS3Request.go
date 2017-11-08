@@ -13,47 +13,11 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type CancelEjectOnAllTapesSpectraS3Request struct {
-    queryParams *url.Values
 }
 
 func NewCancelEjectOnAllTapesSpectraS3Request() *CancelEjectOnAllTapesSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("operation", "cancel_eject")
-
     return &CancelEjectOnAllTapesSpectraS3Request{
-        queryParams: queryParams,
     }
 }
 
-
-
-
-func (CancelEjectOnAllTapesSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.PUT
-}
-
-func (cancelEjectOnAllTapesSpectraS3Request *CancelEjectOnAllTapesSpectraS3Request) Path() string {
-    return "/_rest_/tape"
-}
-
-func (cancelEjectOnAllTapesSpectraS3Request *CancelEjectOnAllTapesSpectraS3Request) QueryParams() *url.Values {
-    return cancelEjectOnAllTapesSpectraS3Request.queryParams
-}
-
-func (CancelEjectOnAllTapesSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (CancelEjectOnAllTapesSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (CancelEjectOnAllTapesSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

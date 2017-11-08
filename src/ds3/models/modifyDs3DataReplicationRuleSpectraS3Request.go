@@ -13,71 +13,31 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-    "strconv"
-)
-
 type ModifyDs3DataReplicationRuleSpectraS3Request struct {
-    dataReplicationRuleType DataReplicationRuleType
-    ds3DataReplicationRule string
-    replicateDeletes bool
-    targetDataPolicy *string
-    queryParams *url.Values
+    DataReplicationRuleType DataReplicationRuleType
+    Ds3DataReplicationRule string
+    ReplicateDeletes *bool
+    TargetDataPolicy *string
 }
 
 func NewModifyDs3DataReplicationRuleSpectraS3Request(ds3DataReplicationRule string) *ModifyDs3DataReplicationRuleSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &ModifyDs3DataReplicationRuleSpectraS3Request{
-        ds3DataReplicationRule: ds3DataReplicationRule,
-        queryParams: queryParams,
+        Ds3DataReplicationRule: ds3DataReplicationRule,
     }
 }
 
 func (modifyDs3DataReplicationRuleSpectraS3Request *ModifyDs3DataReplicationRuleSpectraS3Request) WithReplicateDeletes(replicateDeletes bool) *ModifyDs3DataReplicationRuleSpectraS3Request {
-    modifyDs3DataReplicationRuleSpectraS3Request.replicateDeletes = replicateDeletes
-    modifyDs3DataReplicationRuleSpectraS3Request.queryParams.Set("replicate_deletes", strconv.FormatBool(replicateDeletes))
+    modifyDs3DataReplicationRuleSpectraS3Request.ReplicateDeletes = &replicateDeletes
     return modifyDs3DataReplicationRuleSpectraS3Request
 }
+
+func (modifyDs3DataReplicationRuleSpectraS3Request *ModifyDs3DataReplicationRuleSpectraS3Request) WithTargetDataPolicy(targetDataPolicy string) *ModifyDs3DataReplicationRuleSpectraS3Request {
+    modifyDs3DataReplicationRuleSpectraS3Request.TargetDataPolicy = &targetDataPolicy
+    return modifyDs3DataReplicationRuleSpectraS3Request
+}
+
 func (modifyDs3DataReplicationRuleSpectraS3Request *ModifyDs3DataReplicationRuleSpectraS3Request) WithDataReplicationRuleType(dataReplicationRuleType DataReplicationRuleType) *ModifyDs3DataReplicationRuleSpectraS3Request {
-    modifyDs3DataReplicationRuleSpectraS3Request.dataReplicationRuleType = dataReplicationRuleType
-    modifyDs3DataReplicationRuleSpectraS3Request.queryParams.Set("type", dataReplicationRuleType.String())
+    modifyDs3DataReplicationRuleSpectraS3Request.DataReplicationRuleType = dataReplicationRuleType
     return modifyDs3DataReplicationRuleSpectraS3Request
 }
 
-func (modifyDs3DataReplicationRuleSpectraS3Request *ModifyDs3DataReplicationRuleSpectraS3Request) WithTargetDataPolicy(targetDataPolicy *string) *ModifyDs3DataReplicationRuleSpectraS3Request {
-    modifyDs3DataReplicationRuleSpectraS3Request.targetDataPolicy = targetDataPolicy
-    if targetDataPolicy != nil {
-        modifyDs3DataReplicationRuleSpectraS3Request.queryParams.Set("target_data_policy", *targetDataPolicy)
-    } else {
-        modifyDs3DataReplicationRuleSpectraS3Request.queryParams.Set("target_data_policy", "")
-    }
-    return modifyDs3DataReplicationRuleSpectraS3Request
-}
-
-
-func (ModifyDs3DataReplicationRuleSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.PUT
-}
-
-func (modifyDs3DataReplicationRuleSpectraS3Request *ModifyDs3DataReplicationRuleSpectraS3Request) Path() string {
-    return "/_rest_/ds3_data_replication_rule/" + modifyDs3DataReplicationRuleSpectraS3Request.ds3DataReplicationRule
-}
-
-func (modifyDs3DataReplicationRuleSpectraS3Request *ModifyDs3DataReplicationRuleSpectraS3Request) QueryParams() *url.Values {
-    return modifyDs3DataReplicationRuleSpectraS3Request.queryParams
-}
-
-func (ModifyDs3DataReplicationRuleSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (ModifyDs3DataReplicationRuleSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (ModifyDs3DataReplicationRuleSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

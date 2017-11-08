@@ -30,3 +30,4 @@ func (getPhysicalPlacementForObjectsSpectraS3Request *GetPhysicalPlacementForObj
     getPhysicalPlacementForObjectsSpectraS3Request.StorageDomainId = &storageDomainId
     return getPhysicalPlacementForObjectsSpectraS3Request
 }
+

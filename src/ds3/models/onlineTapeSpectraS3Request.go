@@ -13,49 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type OnlineTapeSpectraS3Request struct {
-    tapeId string
-    queryParams *url.Values
+    TapeId string
 }
 
 func NewOnlineTapeSpectraS3Request(tapeId string) *OnlineTapeSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("operation", "online")
-
     return &OnlineTapeSpectraS3Request{
-        tapeId: tapeId,
-        queryParams: queryParams,
+        TapeId: tapeId,
     }
 }
 
-
-
-
-func (OnlineTapeSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.PUT
-}
-
-func (onlineTapeSpectraS3Request *OnlineTapeSpectraS3Request) Path() string {
-    return "/_rest_/tape/" + onlineTapeSpectraS3Request.tapeId
-}
-
-func (onlineTapeSpectraS3Request *OnlineTapeSpectraS3Request) QueryParams() *url.Values {
-    return onlineTapeSpectraS3Request.queryParams
-}
-
-func (OnlineTapeSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (OnlineTapeSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (OnlineTapeSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

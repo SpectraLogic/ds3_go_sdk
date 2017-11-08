@@ -14,11 +14,12 @@
 package models
 
 type GetBlobPersistenceSpectraS3Request struct {
-    Content string
+    RequestPayload string
 }
 
 func NewGetBlobPersistenceSpectraS3Request(requestPayload string) *GetBlobPersistenceSpectraS3Request {
     return &GetBlobPersistenceSpectraS3Request{
-        Content: requestPayload,
+        RequestPayload: requestPayload,
     }
 }
+

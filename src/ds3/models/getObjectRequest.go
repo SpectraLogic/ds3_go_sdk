@@ -27,8 +27,8 @@ type GetObjectRequest struct {
     ObjectName string
     Checksum networking.Checksum
     Job *string
-    Offset *int64
     Metadata map[string]string
+    Offset *int64
 }
 
 func NewGetObjectRequest(bucketName string, objectName string) *GetObjectRequest {
@@ -43,10 +43,12 @@ func (getObjectRequest *GetObjectRequest) WithJob(job string) *GetObjectRequest 
     getObjectRequest.Job = &job
     return getObjectRequest
 }
+
 func (getObjectRequest *GetObjectRequest) WithOffset(offset int64) *GetObjectRequest {
     getObjectRequest.Offset = &offset
     return getObjectRequest
 }
+
 
 func (getObjectRequest *GetObjectRequest) WithChecksum(contentHash string, checksumType networking.ChecksumType) *GetObjectRequest {
     getObjectRequest.Checksum.ContentHash = contentHash
@@ -54,7 +56,7 @@ func (getObjectRequest *GetObjectRequest) WithChecksum(contentHash string, check
     return getObjectRequest
 }
 
-func (getObjectRequest *GetObjectRequest) WithRange(start int, end int) *GetObjectRequest {
+func (getObjectRequest *GetObjectRequest) WithRange(start, end int) *GetObjectRequest {
     getObjectRequest.Metadata["Range"] = fmt.Sprintf("bytes=%d-%d", start, end)
     return getObjectRequest
 }

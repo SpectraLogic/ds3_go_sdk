@@ -13,105 +13,71 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-    "strconv"
-)
-
 type GetStorageDomainMembersSpectraS3Request struct {
-    pageLength int
-    pageOffset int
-    pageStartMarker string
-    poolPartitionId string
-    state StorageDomainMemberState
-    storageDomainId string
-    tapePartitionId string
-    tapeType TapeType
-    writePreference WritePreferenceLevel
-    queryParams *url.Values
+    LastPage bool
+    PageLength *int
+    PageOffset *int
+    PageStartMarker *string
+    PoolPartitionId *string
+    State StorageDomainMemberState
+    StorageDomainId *string
+    TapePartitionId *string
+    TapeType TapeType
+    WritePreference WritePreferenceLevel
 }
 
 func NewGetStorageDomainMembersSpectraS3Request() *GetStorageDomainMembersSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetStorageDomainMembersSpectraS3Request{
-        queryParams: queryParams,
     }
 }
 
-func (getStorageDomainMembersSpectraS3Request *GetStorageDomainMembersSpectraS3Request) WithPageLength(pageLength int) *GetStorageDomainMembersSpectraS3Request {
-    getStorageDomainMembersSpectraS3Request.pageLength = pageLength
-    getStorageDomainMembersSpectraS3Request.queryParams.Set("page_length", strconv.Itoa(pageLength))
-    return getStorageDomainMembersSpectraS3Request
-}
-func (getStorageDomainMembersSpectraS3Request *GetStorageDomainMembersSpectraS3Request) WithPageOffset(pageOffset int) *GetStorageDomainMembersSpectraS3Request {
-    getStorageDomainMembersSpectraS3Request.pageOffset = pageOffset
-    getStorageDomainMembersSpectraS3Request.queryParams.Set("page_offset", strconv.Itoa(pageOffset))
-    return getStorageDomainMembersSpectraS3Request
-}
-func (getStorageDomainMembersSpectraS3Request *GetStorageDomainMembersSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetStorageDomainMembersSpectraS3Request {
-    getStorageDomainMembersSpectraS3Request.pageStartMarker = pageStartMarker
-    getStorageDomainMembersSpectraS3Request.queryParams.Set("page_start_marker", pageStartMarker)
-    return getStorageDomainMembersSpectraS3Request
-}
-func (getStorageDomainMembersSpectraS3Request *GetStorageDomainMembersSpectraS3Request) WithPoolPartitionId(poolPartitionId string) *GetStorageDomainMembersSpectraS3Request {
-    getStorageDomainMembersSpectraS3Request.poolPartitionId = poolPartitionId
-    getStorageDomainMembersSpectraS3Request.queryParams.Set("pool_partition_id", poolPartitionId)
-    return getStorageDomainMembersSpectraS3Request
-}
-func (getStorageDomainMembersSpectraS3Request *GetStorageDomainMembersSpectraS3Request) WithState(state StorageDomainMemberState) *GetStorageDomainMembersSpectraS3Request {
-    getStorageDomainMembersSpectraS3Request.state = state
-    getStorageDomainMembersSpectraS3Request.queryParams.Set("state", state.String())
-    return getStorageDomainMembersSpectraS3Request
-}
-func (getStorageDomainMembersSpectraS3Request *GetStorageDomainMembersSpectraS3Request) WithStorageDomainId(storageDomainId string) *GetStorageDomainMembersSpectraS3Request {
-    getStorageDomainMembersSpectraS3Request.storageDomainId = storageDomainId
-    getStorageDomainMembersSpectraS3Request.queryParams.Set("storage_domain_id", storageDomainId)
-    return getStorageDomainMembersSpectraS3Request
-}
-func (getStorageDomainMembersSpectraS3Request *GetStorageDomainMembersSpectraS3Request) WithTapePartitionId(tapePartitionId string) *GetStorageDomainMembersSpectraS3Request {
-    getStorageDomainMembersSpectraS3Request.tapePartitionId = tapePartitionId
-    getStorageDomainMembersSpectraS3Request.queryParams.Set("tape_partition_id", tapePartitionId)
-    return getStorageDomainMembersSpectraS3Request
-}
-func (getStorageDomainMembersSpectraS3Request *GetStorageDomainMembersSpectraS3Request) WithTapeType(tapeType TapeType) *GetStorageDomainMembersSpectraS3Request {
-    getStorageDomainMembersSpectraS3Request.tapeType = tapeType
-    getStorageDomainMembersSpectraS3Request.queryParams.Set("tape_type", tapeType.String())
-    return getStorageDomainMembersSpectraS3Request
-}
-func (getStorageDomainMembersSpectraS3Request *GetStorageDomainMembersSpectraS3Request) WithWritePreference(writePreference WritePreferenceLevel) *GetStorageDomainMembersSpectraS3Request {
-    getStorageDomainMembersSpectraS3Request.writePreference = writePreference
-    getStorageDomainMembersSpectraS3Request.queryParams.Set("write_preference", writePreference.String())
-    return getStorageDomainMembersSpectraS3Request
-}
-
-
 func (getStorageDomainMembersSpectraS3Request *GetStorageDomainMembersSpectraS3Request) WithLastPage() *GetStorageDomainMembersSpectraS3Request {
-    getStorageDomainMembersSpectraS3Request.queryParams.Set("last_page", "")
+    getStorageDomainMembersSpectraS3Request.LastPage = true
     return getStorageDomainMembersSpectraS3Request
 }
 
-func (GetStorageDomainMembersSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
+func (getStorageDomainMembersSpectraS3Request *GetStorageDomainMembersSpectraS3Request) WithPageLength(pageLength int) *GetStorageDomainMembersSpectraS3Request {
+    getStorageDomainMembersSpectraS3Request.PageLength = &pageLength
+    return getStorageDomainMembersSpectraS3Request
 }
 
-func (getStorageDomainMembersSpectraS3Request *GetStorageDomainMembersSpectraS3Request) Path() string {
-    return "/_rest_/storage_domain_member"
+func (getStorageDomainMembersSpectraS3Request *GetStorageDomainMembersSpectraS3Request) WithPageOffset(pageOffset int) *GetStorageDomainMembersSpectraS3Request {
+    getStorageDomainMembersSpectraS3Request.PageOffset = &pageOffset
+    return getStorageDomainMembersSpectraS3Request
 }
 
-func (getStorageDomainMembersSpectraS3Request *GetStorageDomainMembersSpectraS3Request) QueryParams() *url.Values {
-    return getStorageDomainMembersSpectraS3Request.queryParams
+func (getStorageDomainMembersSpectraS3Request *GetStorageDomainMembersSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetStorageDomainMembersSpectraS3Request {
+    getStorageDomainMembersSpectraS3Request.PageStartMarker = &pageStartMarker
+    return getStorageDomainMembersSpectraS3Request
 }
 
-func (GetStorageDomainMembersSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetStorageDomainMembersSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
+func (getStorageDomainMembersSpectraS3Request *GetStorageDomainMembersSpectraS3Request) WithPoolPartitionId(poolPartitionId string) *GetStorageDomainMembersSpectraS3Request {
+    getStorageDomainMembersSpectraS3Request.PoolPartitionId = &poolPartitionId
+    return getStorageDomainMembersSpectraS3Request
 }
 
-func (GetStorageDomainMembersSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
+func (getStorageDomainMembersSpectraS3Request *GetStorageDomainMembersSpectraS3Request) WithState(state StorageDomainMemberState) *GetStorageDomainMembersSpectraS3Request {
+    getStorageDomainMembersSpectraS3Request.State = state
+    return getStorageDomainMembersSpectraS3Request
 }
+
+func (getStorageDomainMembersSpectraS3Request *GetStorageDomainMembersSpectraS3Request) WithStorageDomainId(storageDomainId string) *GetStorageDomainMembersSpectraS3Request {
+    getStorageDomainMembersSpectraS3Request.StorageDomainId = &storageDomainId
+    return getStorageDomainMembersSpectraS3Request
+}
+
+func (getStorageDomainMembersSpectraS3Request *GetStorageDomainMembersSpectraS3Request) WithTapePartitionId(tapePartitionId string) *GetStorageDomainMembersSpectraS3Request {
+    getStorageDomainMembersSpectraS3Request.TapePartitionId = &tapePartitionId
+    return getStorageDomainMembersSpectraS3Request
+}
+
+func (getStorageDomainMembersSpectraS3Request *GetStorageDomainMembersSpectraS3Request) WithTapeType(tapeType TapeType) *GetStorageDomainMembersSpectraS3Request {
+    getStorageDomainMembersSpectraS3Request.TapeType = tapeType
+    return getStorageDomainMembersSpectraS3Request
+}
+
+func (getStorageDomainMembersSpectraS3Request *GetStorageDomainMembersSpectraS3Request) WithWritePreference(writePreference WritePreferenceLevel) *GetStorageDomainMembersSpectraS3Request {
+    getStorageDomainMembersSpectraS3Request.WritePreference = writePreference
+    return getStorageDomainMembersSpectraS3Request
+}
+

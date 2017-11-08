@@ -13,52 +13,19 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type MarkSuspectBlobAzureTargetsAsDegradedSpectraS3Request struct {
-    content networking.ReaderWithSizeDecorator
-    queryParams *url.Values
+    Force bool
+    Ids []string
 }
 
 func NewMarkSuspectBlobAzureTargetsAsDegradedSpectraS3Request(ids []string) *MarkSuspectBlobAzureTargetsAsDegradedSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &MarkSuspectBlobAzureTargetsAsDegradedSpectraS3Request{
-        content: buildIdListPayload(ids),
-        queryParams: queryParams,
+        Ids: ids,
     }
 }
 
-
-
 func (markSuspectBlobAzureTargetsAsDegradedSpectraS3Request *MarkSuspectBlobAzureTargetsAsDegradedSpectraS3Request) WithForce() *MarkSuspectBlobAzureTargetsAsDegradedSpectraS3Request {
-    markSuspectBlobAzureTargetsAsDegradedSpectraS3Request.queryParams.Set("force", "")
+    markSuspectBlobAzureTargetsAsDegradedSpectraS3Request.Force = true
     return markSuspectBlobAzureTargetsAsDegradedSpectraS3Request
 }
 
-func (MarkSuspectBlobAzureTargetsAsDegradedSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.PUT
-}
-
-func (markSuspectBlobAzureTargetsAsDegradedSpectraS3Request *MarkSuspectBlobAzureTargetsAsDegradedSpectraS3Request) Path() string {
-    return "/_rest_/suspect_blob_azure_target"
-}
-
-func (markSuspectBlobAzureTargetsAsDegradedSpectraS3Request *MarkSuspectBlobAzureTargetsAsDegradedSpectraS3Request) QueryParams() *url.Values {
-    return markSuspectBlobAzureTargetsAsDegradedSpectraS3Request.queryParams
-}
-
-func (MarkSuspectBlobAzureTargetsAsDegradedSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (MarkSuspectBlobAzureTargetsAsDegradedSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (markSuspectBlobAzureTargetsAsDegradedSpectraS3Request *MarkSuspectBlobAzureTargetsAsDegradedSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return markSuspectBlobAzureTargetsAsDegradedSpectraS3Request.content
-}

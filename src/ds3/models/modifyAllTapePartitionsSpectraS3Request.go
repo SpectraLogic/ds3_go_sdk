@@ -13,49 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type ModifyAllTapePartitionsSpectraS3Request struct {
-    quiesced Quiesced
-    queryParams *url.Values
+    Quiesced Quiesced
 }
 
 func NewModifyAllTapePartitionsSpectraS3Request(quiesced Quiesced) *ModifyAllTapePartitionsSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("quiesced", quiesced.String())
-
     return &ModifyAllTapePartitionsSpectraS3Request{
-        quiesced: quiesced,
-        queryParams: queryParams,
+        Quiesced: quiesced,
     }
 }
 
-
-
-
-func (ModifyAllTapePartitionsSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.PUT
-}
-
-func (modifyAllTapePartitionsSpectraS3Request *ModifyAllTapePartitionsSpectraS3Request) Path() string {
-    return "/_rest_/tape_partition"
-}
-
-func (modifyAllTapePartitionsSpectraS3Request *ModifyAllTapePartitionsSpectraS3Request) QueryParams() *url.Values {
-    return modifyAllTapePartitionsSpectraS3Request.queryParams
-}
-
-func (ModifyAllTapePartitionsSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (ModifyAllTapePartitionsSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (ModifyAllTapePartitionsSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

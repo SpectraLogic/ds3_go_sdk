@@ -14,23 +14,23 @@
 package models
 
 type PutBulkJobSpectraS3Request struct {
-    BucketName                  string
-    Aggregating                 *bool
-    ImplicitJobIdResolution     *bool
-    MaxUploadSize               *int64
+    BucketName string
+    Aggregating *bool
+    Force bool
+    IgnoreNamingConflicts bool
+    ImplicitJobIdResolution *bool
+    MaxUploadSize *int64
     MinimizeSpanningAcrossMedia *bool
-    Name                        *string
-    Priority                    Priority
-    VerifyAfterWrite            *bool
-    Objects                     []Ds3PutObject
-    IgnoreNamingConflicts       bool
-    Force                       bool
+    Name *string
+    Objects []Ds3PutObject
+    Priority Priority
+    VerifyAfterWrite *bool
 }
 
 func NewPutBulkJobSpectraS3Request(bucketName string, objects []Ds3PutObject) *PutBulkJobSpectraS3Request {
     return &PutBulkJobSpectraS3Request{
-        BucketName:  bucketName,
-        Objects:     objects,
+        BucketName: bucketName,
+        Objects: objects,
     }
 }
 
@@ -38,24 +38,29 @@ func (putBulkJobSpectraS3Request *PutBulkJobSpectraS3Request) WithAggregating(ag
     putBulkJobSpectraS3Request.Aggregating = &aggregating
     return putBulkJobSpectraS3Request
 }
+
+func (putBulkJobSpectraS3Request *PutBulkJobSpectraS3Request) WithForce() *PutBulkJobSpectraS3Request {
+    putBulkJobSpectraS3Request.Force = true
+    return putBulkJobSpectraS3Request
+}
+
+func (putBulkJobSpectraS3Request *PutBulkJobSpectraS3Request) WithIgnoreNamingConflicts() *PutBulkJobSpectraS3Request {
+    putBulkJobSpectraS3Request.IgnoreNamingConflicts = true
+    return putBulkJobSpectraS3Request
+}
+
 func (putBulkJobSpectraS3Request *PutBulkJobSpectraS3Request) WithImplicitJobIdResolution(implicitJobIdResolution bool) *PutBulkJobSpectraS3Request {
     putBulkJobSpectraS3Request.ImplicitJobIdResolution = &implicitJobIdResolution
     return putBulkJobSpectraS3Request
 }
+
 func (putBulkJobSpectraS3Request *PutBulkJobSpectraS3Request) WithMaxUploadSize(maxUploadSize int64) *PutBulkJobSpectraS3Request {
     putBulkJobSpectraS3Request.MaxUploadSize = &maxUploadSize
     return putBulkJobSpectraS3Request
 }
+
 func (putBulkJobSpectraS3Request *PutBulkJobSpectraS3Request) WithMinimizeSpanningAcrossMedia(minimizeSpanningAcrossMedia bool) *PutBulkJobSpectraS3Request {
     putBulkJobSpectraS3Request.MinimizeSpanningAcrossMedia = &minimizeSpanningAcrossMedia
-    return putBulkJobSpectraS3Request
-}
-func (putBulkJobSpectraS3Request *PutBulkJobSpectraS3Request) WithPriority(priority Priority) *PutBulkJobSpectraS3Request {
-    putBulkJobSpectraS3Request.Priority = priority
-    return putBulkJobSpectraS3Request
-}
-func (putBulkJobSpectraS3Request *PutBulkJobSpectraS3Request) WithVerifyAfterWrite(verifyAfterWrite bool) *PutBulkJobSpectraS3Request {
-    putBulkJobSpectraS3Request.VerifyAfterWrite = &verifyAfterWrite
     return putBulkJobSpectraS3Request
 }
 
@@ -64,11 +69,13 @@ func (putBulkJobSpectraS3Request *PutBulkJobSpectraS3Request) WithName(name stri
     return putBulkJobSpectraS3Request
 }
 
-func (putBulkJobSpectraS3Request *PutBulkJobSpectraS3Request) WithForce() *PutBulkJobSpectraS3Request {
-    putBulkJobSpectraS3Request.Force = true
+func (putBulkJobSpectraS3Request *PutBulkJobSpectraS3Request) WithPriority(priority Priority) *PutBulkJobSpectraS3Request {
+    putBulkJobSpectraS3Request.Priority = priority
     return putBulkJobSpectraS3Request
 }
-func (putBulkJobSpectraS3Request *PutBulkJobSpectraS3Request) WithIgnoreNamingConflicts() *PutBulkJobSpectraS3Request {
-    putBulkJobSpectraS3Request.IgnoreNamingConflicts = true
+
+func (putBulkJobSpectraS3Request *PutBulkJobSpectraS3Request) WithVerifyAfterWrite(verifyAfterWrite bool) *PutBulkJobSpectraS3Request {
+    putBulkJobSpectraS3Request.VerifyAfterWrite = &verifyAfterWrite
     return putBulkJobSpectraS3Request
 }
+

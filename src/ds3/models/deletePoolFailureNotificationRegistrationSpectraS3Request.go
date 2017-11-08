@@ -13,48 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type DeletePoolFailureNotificationRegistrationSpectraS3Request struct {
-    notificationId string
-    queryParams *url.Values
+    NotificationId string
 }
 
 func NewDeletePoolFailureNotificationRegistrationSpectraS3Request(notificationId string) *DeletePoolFailureNotificationRegistrationSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &DeletePoolFailureNotificationRegistrationSpectraS3Request{
-        notificationId: notificationId,
-        queryParams: queryParams,
+        NotificationId: notificationId,
     }
 }
 
-
-
-
-func (DeletePoolFailureNotificationRegistrationSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.DELETE
-}
-
-func (deletePoolFailureNotificationRegistrationSpectraS3Request *DeletePoolFailureNotificationRegistrationSpectraS3Request) Path() string {
-    return "/_rest_/pool_failure_notification_registration/" + deletePoolFailureNotificationRegistrationSpectraS3Request.notificationId
-}
-
-func (deletePoolFailureNotificationRegistrationSpectraS3Request *DeletePoolFailureNotificationRegistrationSpectraS3Request) QueryParams() *url.Values {
-    return deletePoolFailureNotificationRegistrationSpectraS3Request.queryParams
-}
-
-func (DeletePoolFailureNotificationRegistrationSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (DeletePoolFailureNotificationRegistrationSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (DeletePoolFailureNotificationRegistrationSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

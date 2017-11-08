@@ -13,58 +13,21 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type PutPoolStorageDomainMemberSpectraS3Request struct {
-    poolPartitionId string
-    storageDomainId string
-    writePreference WritePreferenceLevel
-    queryParams *url.Values
+    PoolPartitionId string
+    StorageDomainId string
+    WritePreference WritePreferenceLevel
 }
 
 func NewPutPoolStorageDomainMemberSpectraS3Request(poolPartitionId string, storageDomainId string) *PutPoolStorageDomainMemberSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("pool_partition_id", poolPartitionId)
-    queryParams.Set("storage_domain_id", storageDomainId)
-
     return &PutPoolStorageDomainMemberSpectraS3Request{
-        poolPartitionId: poolPartitionId,
-        storageDomainId: storageDomainId,
-        queryParams: queryParams,
+        PoolPartitionId: poolPartitionId,
+        StorageDomainId: storageDomainId,
     }
 }
 
 func (putPoolStorageDomainMemberSpectraS3Request *PutPoolStorageDomainMemberSpectraS3Request) WithWritePreference(writePreference WritePreferenceLevel) *PutPoolStorageDomainMemberSpectraS3Request {
-    putPoolStorageDomainMemberSpectraS3Request.writePreference = writePreference
-    putPoolStorageDomainMemberSpectraS3Request.queryParams.Set("write_preference", writePreference.String())
+    putPoolStorageDomainMemberSpectraS3Request.WritePreference = writePreference
     return putPoolStorageDomainMemberSpectraS3Request
 }
 
-
-
-func (PutPoolStorageDomainMemberSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.POST
-}
-
-func (putPoolStorageDomainMemberSpectraS3Request *PutPoolStorageDomainMemberSpectraS3Request) Path() string {
-    return "/_rest_/storage_domain_member"
-}
-
-func (putPoolStorageDomainMemberSpectraS3Request *PutPoolStorageDomainMemberSpectraS3Request) QueryParams() *url.Values {
-    return putPoolStorageDomainMemberSpectraS3Request.queryParams
-}
-
-func (PutPoolStorageDomainMemberSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (PutPoolStorageDomainMemberSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (PutPoolStorageDomainMemberSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

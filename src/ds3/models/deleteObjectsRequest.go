@@ -30,3 +30,4 @@ func (deleteObjectsRequest *DeleteObjectsRequest) WithRollBack() *DeleteObjectsR
     deleteObjectsRequest.RollBack = true
     return deleteObjectsRequest
 }
+

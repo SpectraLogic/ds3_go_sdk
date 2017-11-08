@@ -13,58 +13,19 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type ModifyPoolPartitionSpectraS3Request struct {
-    name *string
-    poolPartition string
-    queryParams *url.Values
+    Name *string
+    PoolPartition string
 }
 
 func NewModifyPoolPartitionSpectraS3Request(poolPartition string) *ModifyPoolPartitionSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &ModifyPoolPartitionSpectraS3Request{
-        poolPartition: poolPartition,
-        queryParams: queryParams,
+        PoolPartition: poolPartition,
     }
 }
 
-
-func (modifyPoolPartitionSpectraS3Request *ModifyPoolPartitionSpectraS3Request) WithName(name *string) *ModifyPoolPartitionSpectraS3Request {
-    modifyPoolPartitionSpectraS3Request.name = name
-    if name != nil {
-        modifyPoolPartitionSpectraS3Request.queryParams.Set("name", *name)
-    } else {
-        modifyPoolPartitionSpectraS3Request.queryParams.Set("name", "")
-    }
+func (modifyPoolPartitionSpectraS3Request *ModifyPoolPartitionSpectraS3Request) WithName(name string) *ModifyPoolPartitionSpectraS3Request {
+    modifyPoolPartitionSpectraS3Request.Name = &name
     return modifyPoolPartitionSpectraS3Request
 }
 
-
-func (ModifyPoolPartitionSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.PUT
-}
-
-func (modifyPoolPartitionSpectraS3Request *ModifyPoolPartitionSpectraS3Request) Path() string {
-    return "/_rest_/pool_partition/" + modifyPoolPartitionSpectraS3Request.poolPartition
-}
-
-func (modifyPoolPartitionSpectraS3Request *ModifyPoolPartitionSpectraS3Request) QueryParams() *url.Values {
-    return modifyPoolPartitionSpectraS3Request.queryParams
-}
-
-func (ModifyPoolPartitionSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (ModifyPoolPartitionSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (ModifyPoolPartitionSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

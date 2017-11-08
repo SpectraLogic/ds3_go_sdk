@@ -13,59 +13,23 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type GetSuspectObjectsWithFullDetailsSpectraS3Request struct {
-    bucketId string
-    storageDomainId string
-    queryParams *url.Values
+    BucketId *string
+    StorageDomainId *string
 }
 
 func NewGetSuspectObjectsWithFullDetailsSpectraS3Request() *GetSuspectObjectsWithFullDetailsSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("full_details", "")
-
     return &GetSuspectObjectsWithFullDetailsSpectraS3Request{
-        queryParams: queryParams,
     }
 }
 
 func (getSuspectObjectsWithFullDetailsSpectraS3Request *GetSuspectObjectsWithFullDetailsSpectraS3Request) WithBucketId(bucketId string) *GetSuspectObjectsWithFullDetailsSpectraS3Request {
-    getSuspectObjectsWithFullDetailsSpectraS3Request.bucketId = bucketId
-    getSuspectObjectsWithFullDetailsSpectraS3Request.queryParams.Set("bucket_id", bucketId)
+    getSuspectObjectsWithFullDetailsSpectraS3Request.BucketId = &bucketId
     return getSuspectObjectsWithFullDetailsSpectraS3Request
 }
+
 func (getSuspectObjectsWithFullDetailsSpectraS3Request *GetSuspectObjectsWithFullDetailsSpectraS3Request) WithStorageDomainId(storageDomainId string) *GetSuspectObjectsWithFullDetailsSpectraS3Request {
-    getSuspectObjectsWithFullDetailsSpectraS3Request.storageDomainId = storageDomainId
-    getSuspectObjectsWithFullDetailsSpectraS3Request.queryParams.Set("storage_domain_id", storageDomainId)
+    getSuspectObjectsWithFullDetailsSpectraS3Request.StorageDomainId = &storageDomainId
     return getSuspectObjectsWithFullDetailsSpectraS3Request
 }
 
-
-
-func (GetSuspectObjectsWithFullDetailsSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
-}
-
-func (getSuspectObjectsWithFullDetailsSpectraS3Request *GetSuspectObjectsWithFullDetailsSpectraS3Request) Path() string {
-    return "/_rest_/suspect_object"
-}
-
-func (getSuspectObjectsWithFullDetailsSpectraS3Request *GetSuspectObjectsWithFullDetailsSpectraS3Request) QueryParams() *url.Values {
-    return getSuspectObjectsWithFullDetailsSpectraS3Request.queryParams
-}
-
-func (GetSuspectObjectsWithFullDetailsSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetSuspectObjectsWithFullDetailsSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (GetSuspectObjectsWithFullDetailsSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

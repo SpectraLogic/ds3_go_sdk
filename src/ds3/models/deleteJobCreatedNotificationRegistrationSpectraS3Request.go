@@ -13,19 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type DeleteJobCreatedNotificationRegistrationSpectraS3Request struct {
     NotificationId string
 }
 
 func NewDeleteJobCreatedNotificationRegistrationSpectraS3Request(notificationId string) *DeleteJobCreatedNotificationRegistrationSpectraS3Request {
-
     return &DeleteJobCreatedNotificationRegistrationSpectraS3Request{
         NotificationId: notificationId,
     }
 }
+

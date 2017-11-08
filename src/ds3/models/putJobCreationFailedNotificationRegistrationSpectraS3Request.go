@@ -13,67 +13,31 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type PutJobCreationFailedNotificationRegistrationSpectraS3Request struct {
-    format HttpResponseFormatType
-    namingConvention NamingConventionType
-    notificationEndPoint *string
-    notificationHttpMethod RequestType
-    queryParams *url.Values
+    Format HttpResponseFormatType
+    NamingConvention NamingConventionType
+    NotificationEndPoint string
+    NotificationHttpMethod RequestType
 }
 
-func NewPutJobCreationFailedNotificationRegistrationSpectraS3Request(notificationEndPoint *string) *PutJobCreationFailedNotificationRegistrationSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("notification_end_point", *notificationEndPoint)
-
+func NewPutJobCreationFailedNotificationRegistrationSpectraS3Request(notificationEndPoint string) *PutJobCreationFailedNotificationRegistrationSpectraS3Request {
     return &PutJobCreationFailedNotificationRegistrationSpectraS3Request{
-        notificationEndPoint: notificationEndPoint,
-        queryParams: queryParams,
+        NotificationEndPoint: notificationEndPoint,
     }
 }
 
 func (putJobCreationFailedNotificationRegistrationSpectraS3Request *PutJobCreationFailedNotificationRegistrationSpectraS3Request) WithFormat(format HttpResponseFormatType) *PutJobCreationFailedNotificationRegistrationSpectraS3Request {
-    putJobCreationFailedNotificationRegistrationSpectraS3Request.format = format
-    putJobCreationFailedNotificationRegistrationSpectraS3Request.queryParams.Set("format", format.String())
+    putJobCreationFailedNotificationRegistrationSpectraS3Request.Format = format
     return putJobCreationFailedNotificationRegistrationSpectraS3Request
 }
+
 func (putJobCreationFailedNotificationRegistrationSpectraS3Request *PutJobCreationFailedNotificationRegistrationSpectraS3Request) WithNamingConvention(namingConvention NamingConventionType) *PutJobCreationFailedNotificationRegistrationSpectraS3Request {
-    putJobCreationFailedNotificationRegistrationSpectraS3Request.namingConvention = namingConvention
-    putJobCreationFailedNotificationRegistrationSpectraS3Request.queryParams.Set("naming_convention", namingConvention.String())
+    putJobCreationFailedNotificationRegistrationSpectraS3Request.NamingConvention = namingConvention
     return putJobCreationFailedNotificationRegistrationSpectraS3Request
 }
+
 func (putJobCreationFailedNotificationRegistrationSpectraS3Request *PutJobCreationFailedNotificationRegistrationSpectraS3Request) WithNotificationHttpMethod(notificationHttpMethod RequestType) *PutJobCreationFailedNotificationRegistrationSpectraS3Request {
-    putJobCreationFailedNotificationRegistrationSpectraS3Request.notificationHttpMethod = notificationHttpMethod
-    putJobCreationFailedNotificationRegistrationSpectraS3Request.queryParams.Set("notification_http_method", notificationHttpMethod.String())
+    putJobCreationFailedNotificationRegistrationSpectraS3Request.NotificationHttpMethod = notificationHttpMethod
     return putJobCreationFailedNotificationRegistrationSpectraS3Request
 }
 
-
-
-func (PutJobCreationFailedNotificationRegistrationSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.POST
-}
-
-func (putJobCreationFailedNotificationRegistrationSpectraS3Request *PutJobCreationFailedNotificationRegistrationSpectraS3Request) Path() string {
-    return "/_rest_/job_creation_failed_notification_registration"
-}
-
-func (putJobCreationFailedNotificationRegistrationSpectraS3Request *PutJobCreationFailedNotificationRegistrationSpectraS3Request) QueryParams() *url.Values {
-    return putJobCreationFailedNotificationRegistrationSpectraS3Request.queryParams
-}
-
-func (PutJobCreationFailedNotificationRegistrationSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (PutJobCreationFailedNotificationRegistrationSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (PutJobCreationFailedNotificationRegistrationSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

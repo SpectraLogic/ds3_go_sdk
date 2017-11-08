@@ -13,48 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type DeleteTapeFailureSpectraS3Request struct {
-    tapeFailure string
-    queryParams *url.Values
+    TapeFailure string
 }
 
 func NewDeleteTapeFailureSpectraS3Request(tapeFailure string) *DeleteTapeFailureSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &DeleteTapeFailureSpectraS3Request{
-        tapeFailure: tapeFailure,
-        queryParams: queryParams,
+        TapeFailure: tapeFailure,
     }
 }
 
-
-
-
-func (DeleteTapeFailureSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.DELETE
-}
-
-func (deleteTapeFailureSpectraS3Request *DeleteTapeFailureSpectraS3Request) Path() string {
-    return "/_rest_/tape_failure/" + deleteTapeFailureSpectraS3Request.tapeFailure
-}
-
-func (deleteTapeFailureSpectraS3Request *DeleteTapeFailureSpectraS3Request) QueryParams() *url.Values {
-    return deleteTapeFailureSpectraS3Request.queryParams
-}
-
-func (DeleteTapeFailureSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (DeleteTapeFailureSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (DeleteTapeFailureSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

@@ -13,12 +13,6 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type VerifyPhysicalPlacementForObjectsSpectraS3Request struct {
     BucketName string
     ObjectNames []string
@@ -36,3 +30,4 @@ func (verifyPhysicalPlacementForObjectsSpectraS3Request *VerifyPhysicalPlacement
     verifyPhysicalPlacementForObjectsSpectraS3Request.StorageDomainId = &storageDomainId
     return verifyPhysicalPlacementForObjectsSpectraS3Request
 }
+

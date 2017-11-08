@@ -13,55 +13,19 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type VerifyUserIsMemberOfGroupSpectraS3Request struct {
-    group string
-    userId string
-    queryParams *url.Values
+    Group string
+    UserId *string
 }
 
 func NewVerifyUserIsMemberOfGroupSpectraS3Request(group string) *VerifyUserIsMemberOfGroupSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("operation", "verify")
-
     return &VerifyUserIsMemberOfGroupSpectraS3Request{
-        group: group,
-        queryParams: queryParams,
+        Group: group,
     }
 }
 
 func (verifyUserIsMemberOfGroupSpectraS3Request *VerifyUserIsMemberOfGroupSpectraS3Request) WithUserId(userId string) *VerifyUserIsMemberOfGroupSpectraS3Request {
-    verifyUserIsMemberOfGroupSpectraS3Request.userId = userId
-    verifyUserIsMemberOfGroupSpectraS3Request.queryParams.Set("user_id", userId)
+    verifyUserIsMemberOfGroupSpectraS3Request.UserId = &userId
     return verifyUserIsMemberOfGroupSpectraS3Request
 }
 
-
-
-func (VerifyUserIsMemberOfGroupSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.PUT
-}
-
-func (verifyUserIsMemberOfGroupSpectraS3Request *VerifyUserIsMemberOfGroupSpectraS3Request) Path() string {
-    return "/_rest_/group/" + verifyUserIsMemberOfGroupSpectraS3Request.group
-}
-
-func (verifyUserIsMemberOfGroupSpectraS3Request *VerifyUserIsMemberOfGroupSpectraS3Request) QueryParams() *url.Values {
-    return verifyUserIsMemberOfGroupSpectraS3Request.queryParams
-}
-
-func (VerifyUserIsMemberOfGroupSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (VerifyUserIsMemberOfGroupSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (VerifyUserIsMemberOfGroupSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

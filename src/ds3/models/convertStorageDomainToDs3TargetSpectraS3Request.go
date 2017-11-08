@@ -13,51 +13,15 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type ConvertStorageDomainToDs3TargetSpectraS3Request struct {
-    convertToDs3Target string
-    storageDomain string
-    queryParams *url.Values
+    ConvertToDs3Target string
+    StorageDomain string
 }
 
 func NewConvertStorageDomainToDs3TargetSpectraS3Request(convertToDs3Target string, storageDomain string) *ConvertStorageDomainToDs3TargetSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("convert_to_ds3_target", convertToDs3Target)
-
     return &ConvertStorageDomainToDs3TargetSpectraS3Request{
-        storageDomain: storageDomain,
-        convertToDs3Target: convertToDs3Target,
-        queryParams: queryParams,
+        StorageDomain: storageDomain,
+        ConvertToDs3Target: convertToDs3Target,
     }
 }
 
-
-
-
-func (ConvertStorageDomainToDs3TargetSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.PUT
-}
-
-func (convertStorageDomainToDs3TargetSpectraS3Request *ConvertStorageDomainToDs3TargetSpectraS3Request) Path() string {
-    return "/_rest_/storage_domain/" + convertStorageDomainToDs3TargetSpectraS3Request.storageDomain
-}
-
-func (convertStorageDomainToDs3TargetSpectraS3Request *ConvertStorageDomainToDs3TargetSpectraS3Request) QueryParams() *url.Values {
-    return convertStorageDomainToDs3TargetSpectraS3Request.queryParams
-}
-
-func (ConvertStorageDomainToDs3TargetSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (ConvertStorageDomainToDs3TargetSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (ConvertStorageDomainToDs3TargetSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

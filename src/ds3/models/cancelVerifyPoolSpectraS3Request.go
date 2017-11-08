@@ -13,49 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type CancelVerifyPoolSpectraS3Request struct {
-    pool string
-    queryParams *url.Values
+    Pool string
 }
 
 func NewCancelVerifyPoolSpectraS3Request(pool string) *CancelVerifyPoolSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("operation", "cancel_verify")
-
     return &CancelVerifyPoolSpectraS3Request{
-        pool: pool,
-        queryParams: queryParams,
+        Pool: pool,
     }
 }
 
-
-
-
-func (CancelVerifyPoolSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.PUT
-}
-
-func (cancelVerifyPoolSpectraS3Request *CancelVerifyPoolSpectraS3Request) Path() string {
-    return "/_rest_/pool/" + cancelVerifyPoolSpectraS3Request.pool
-}
-
-func (cancelVerifyPoolSpectraS3Request *CancelVerifyPoolSpectraS3Request) QueryParams() *url.Values {
-    return cancelVerifyPoolSpectraS3Request.queryParams
-}
-
-func (CancelVerifyPoolSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (CancelVerifyPoolSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (CancelVerifyPoolSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

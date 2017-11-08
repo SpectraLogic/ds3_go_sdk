@@ -34,3 +34,4 @@ func NewPutMultiPartUploadPartRequest(bucketName string, objectName string, cont
         Content: content,
     }
 }
+

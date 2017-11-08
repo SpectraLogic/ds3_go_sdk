@@ -13,48 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type DeleteDataPolicyAclSpectraS3Request struct {
-    dataPolicyAcl string
-    queryParams *url.Values
+    DataPolicyAcl string
 }
 
 func NewDeleteDataPolicyAclSpectraS3Request(dataPolicyAcl string) *DeleteDataPolicyAclSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &DeleteDataPolicyAclSpectraS3Request{
-        dataPolicyAcl: dataPolicyAcl,
-        queryParams: queryParams,
+        DataPolicyAcl: dataPolicyAcl,
     }
 }
 
-
-
-
-func (DeleteDataPolicyAclSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.DELETE
-}
-
-func (deleteDataPolicyAclSpectraS3Request *DeleteDataPolicyAclSpectraS3Request) Path() string {
-    return "/_rest_/data_policy_acl/" + deleteDataPolicyAclSpectraS3Request.dataPolicyAcl
-}
-
-func (deleteDataPolicyAclSpectraS3Request *DeleteDataPolicyAclSpectraS3Request) QueryParams() *url.Values {
-    return deleteDataPolicyAclSpectraS3Request.queryParams
-}
-
-func (DeleteDataPolicyAclSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (DeleteDataPolicyAclSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (DeleteDataPolicyAclSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

@@ -13,50 +13,17 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type GetDataPlannerBlobStoreTasksSpectraS3Request struct {
-    queryParams *url.Values
+    FullDetails bool
 }
 
 func NewGetDataPlannerBlobStoreTasksSpectraS3Request() *GetDataPlannerBlobStoreTasksSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetDataPlannerBlobStoreTasksSpectraS3Request{
-        queryParams: queryParams,
     }
 }
 
-
-
 func (getDataPlannerBlobStoreTasksSpectraS3Request *GetDataPlannerBlobStoreTasksSpectraS3Request) WithFullDetails() *GetDataPlannerBlobStoreTasksSpectraS3Request {
-    getDataPlannerBlobStoreTasksSpectraS3Request.queryParams.Set("full_details", "")
+    getDataPlannerBlobStoreTasksSpectraS3Request.FullDetails = true
     return getDataPlannerBlobStoreTasksSpectraS3Request
 }
 
-func (GetDataPlannerBlobStoreTasksSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
-}
-
-func (getDataPlannerBlobStoreTasksSpectraS3Request *GetDataPlannerBlobStoreTasksSpectraS3Request) Path() string {
-    return "/_rest_/blob_store_task"
-}
-
-func (getDataPlannerBlobStoreTasksSpectraS3Request *GetDataPlannerBlobStoreTasksSpectraS3Request) QueryParams() *url.Values {
-    return getDataPlannerBlobStoreTasksSpectraS3Request.queryParams
-}
-
-func (GetDataPlannerBlobStoreTasksSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetDataPlannerBlobStoreTasksSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (GetDataPlannerBlobStoreTasksSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

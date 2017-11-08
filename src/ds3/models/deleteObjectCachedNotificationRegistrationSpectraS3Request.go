@@ -13,48 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type DeleteObjectCachedNotificationRegistrationSpectraS3Request struct {
-    notificationId string
-    queryParams *url.Values
+    NotificationId string
 }
 
 func NewDeleteObjectCachedNotificationRegistrationSpectraS3Request(notificationId string) *DeleteObjectCachedNotificationRegistrationSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &DeleteObjectCachedNotificationRegistrationSpectraS3Request{
-        notificationId: notificationId,
-        queryParams: queryParams,
+        NotificationId: notificationId,
     }
 }
 
-
-
-
-func (DeleteObjectCachedNotificationRegistrationSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.DELETE
-}
-
-func (deleteObjectCachedNotificationRegistrationSpectraS3Request *DeleteObjectCachedNotificationRegistrationSpectraS3Request) Path() string {
-    return "/_rest_/object_cached_notification_registration/" + deleteObjectCachedNotificationRegistrationSpectraS3Request.notificationId
-}
-
-func (deleteObjectCachedNotificationRegistrationSpectraS3Request *DeleteObjectCachedNotificationRegistrationSpectraS3Request) QueryParams() *url.Values {
-    return deleteObjectCachedNotificationRegistrationSpectraS3Request.queryParams
-}
-
-func (DeleteObjectCachedNotificationRegistrationSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (DeleteObjectCachedNotificationRegistrationSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (DeleteObjectCachedNotificationRegistrationSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

@@ -13,48 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type DeleteTapeDensityDirectiveSpectraS3Request struct {
-    tapeDensityDirective string
-    queryParams *url.Values
+    TapeDensityDirective string
 }
 
 func NewDeleteTapeDensityDirectiveSpectraS3Request(tapeDensityDirective string) *DeleteTapeDensityDirectiveSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &DeleteTapeDensityDirectiveSpectraS3Request{
-        tapeDensityDirective: tapeDensityDirective,
-        queryParams: queryParams,
+        TapeDensityDirective: tapeDensityDirective,
     }
 }
 
-
-
-
-func (DeleteTapeDensityDirectiveSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.DELETE
-}
-
-func (deleteTapeDensityDirectiveSpectraS3Request *DeleteTapeDensityDirectiveSpectraS3Request) Path() string {
-    return "/_rest_/tape_density_directive/" + deleteTapeDensityDirectiveSpectraS3Request.tapeDensityDirective
-}
-
-func (deleteTapeDensityDirectiveSpectraS3Request *DeleteTapeDensityDirectiveSpectraS3Request) QueryParams() *url.Values {
-    return deleteTapeDensityDirectiveSpectraS3Request.queryParams
-}
-
-func (DeleteTapeDensityDirectiveSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (DeleteTapeDensityDirectiveSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (DeleteTapeDensityDirectiveSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

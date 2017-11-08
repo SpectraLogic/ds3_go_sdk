@@ -13,119 +13,77 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-    "strconv"
-)
-
 type GetAzureTargetsSpectraS3Request struct {
-    accountName *string
-    defaultReadPreference TargetReadPreferenceType
-    https bool
-    name *string
-    pageLength int
-    pageOffset int
-    pageStartMarker string
-    permitGoingOutOfSync bool
-    quiesced Quiesced
-    state TargetState
-    queryParams *url.Values
+    AccountName *string
+    DefaultReadPreference TargetReadPreferenceType
+    Https *bool
+    LastPage bool
+    Name *string
+    PageLength *int
+    PageOffset *int
+    PageStartMarker *string
+    PermitGoingOutOfSync *bool
+    Quiesced Quiesced
+    State TargetState
 }
 
 func NewGetAzureTargetsSpectraS3Request() *GetAzureTargetsSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetAzureTargetsSpectraS3Request{
-        queryParams: queryParams,
     }
+}
+
+func (getAzureTargetsSpectraS3Request *GetAzureTargetsSpectraS3Request) WithAccountName(accountName string) *GetAzureTargetsSpectraS3Request {
+    getAzureTargetsSpectraS3Request.AccountName = &accountName
+    return getAzureTargetsSpectraS3Request
 }
 
 func (getAzureTargetsSpectraS3Request *GetAzureTargetsSpectraS3Request) WithDefaultReadPreference(defaultReadPreference TargetReadPreferenceType) *GetAzureTargetsSpectraS3Request {
-    getAzureTargetsSpectraS3Request.defaultReadPreference = defaultReadPreference
-    getAzureTargetsSpectraS3Request.queryParams.Set("default_read_preference", defaultReadPreference.String())
-    return getAzureTargetsSpectraS3Request
-}
-func (getAzureTargetsSpectraS3Request *GetAzureTargetsSpectraS3Request) WithHttps(https bool) *GetAzureTargetsSpectraS3Request {
-    getAzureTargetsSpectraS3Request.https = https
-    getAzureTargetsSpectraS3Request.queryParams.Set("https", strconv.FormatBool(https))
-    return getAzureTargetsSpectraS3Request
-}
-func (getAzureTargetsSpectraS3Request *GetAzureTargetsSpectraS3Request) WithPageLength(pageLength int) *GetAzureTargetsSpectraS3Request {
-    getAzureTargetsSpectraS3Request.pageLength = pageLength
-    getAzureTargetsSpectraS3Request.queryParams.Set("page_length", strconv.Itoa(pageLength))
-    return getAzureTargetsSpectraS3Request
-}
-func (getAzureTargetsSpectraS3Request *GetAzureTargetsSpectraS3Request) WithPageOffset(pageOffset int) *GetAzureTargetsSpectraS3Request {
-    getAzureTargetsSpectraS3Request.pageOffset = pageOffset
-    getAzureTargetsSpectraS3Request.queryParams.Set("page_offset", strconv.Itoa(pageOffset))
-    return getAzureTargetsSpectraS3Request
-}
-func (getAzureTargetsSpectraS3Request *GetAzureTargetsSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetAzureTargetsSpectraS3Request {
-    getAzureTargetsSpectraS3Request.pageStartMarker = pageStartMarker
-    getAzureTargetsSpectraS3Request.queryParams.Set("page_start_marker", pageStartMarker)
-    return getAzureTargetsSpectraS3Request
-}
-func (getAzureTargetsSpectraS3Request *GetAzureTargetsSpectraS3Request) WithPermitGoingOutOfSync(permitGoingOutOfSync bool) *GetAzureTargetsSpectraS3Request {
-    getAzureTargetsSpectraS3Request.permitGoingOutOfSync = permitGoingOutOfSync
-    getAzureTargetsSpectraS3Request.queryParams.Set("permit_going_out_of_sync", strconv.FormatBool(permitGoingOutOfSync))
-    return getAzureTargetsSpectraS3Request
-}
-func (getAzureTargetsSpectraS3Request *GetAzureTargetsSpectraS3Request) WithQuiesced(quiesced Quiesced) *GetAzureTargetsSpectraS3Request {
-    getAzureTargetsSpectraS3Request.quiesced = quiesced
-    getAzureTargetsSpectraS3Request.queryParams.Set("quiesced", quiesced.String())
-    return getAzureTargetsSpectraS3Request
-}
-func (getAzureTargetsSpectraS3Request *GetAzureTargetsSpectraS3Request) WithState(state TargetState) *GetAzureTargetsSpectraS3Request {
-    getAzureTargetsSpectraS3Request.state = state
-    getAzureTargetsSpectraS3Request.queryParams.Set("state", state.String())
+    getAzureTargetsSpectraS3Request.DefaultReadPreference = defaultReadPreference
     return getAzureTargetsSpectraS3Request
 }
 
-func (getAzureTargetsSpectraS3Request *GetAzureTargetsSpectraS3Request) WithAccountName(accountName *string) *GetAzureTargetsSpectraS3Request {
-    getAzureTargetsSpectraS3Request.accountName = accountName
-    if accountName != nil {
-        getAzureTargetsSpectraS3Request.queryParams.Set("account_name", *accountName)
-    } else {
-        getAzureTargetsSpectraS3Request.queryParams.Set("account_name", "")
-    }
-    return getAzureTargetsSpectraS3Request
-}
-func (getAzureTargetsSpectraS3Request *GetAzureTargetsSpectraS3Request) WithName(name *string) *GetAzureTargetsSpectraS3Request {
-    getAzureTargetsSpectraS3Request.name = name
-    if name != nil {
-        getAzureTargetsSpectraS3Request.queryParams.Set("name", *name)
-    } else {
-        getAzureTargetsSpectraS3Request.queryParams.Set("name", "")
-    }
+func (getAzureTargetsSpectraS3Request *GetAzureTargetsSpectraS3Request) WithHttps(https bool) *GetAzureTargetsSpectraS3Request {
+    getAzureTargetsSpectraS3Request.Https = &https
     return getAzureTargetsSpectraS3Request
 }
 
 func (getAzureTargetsSpectraS3Request *GetAzureTargetsSpectraS3Request) WithLastPage() *GetAzureTargetsSpectraS3Request {
-    getAzureTargetsSpectraS3Request.queryParams.Set("last_page", "")
+    getAzureTargetsSpectraS3Request.LastPage = true
     return getAzureTargetsSpectraS3Request
 }
 
-func (GetAzureTargetsSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
+func (getAzureTargetsSpectraS3Request *GetAzureTargetsSpectraS3Request) WithName(name string) *GetAzureTargetsSpectraS3Request {
+    getAzureTargetsSpectraS3Request.Name = &name
+    return getAzureTargetsSpectraS3Request
 }
 
-func (getAzureTargetsSpectraS3Request *GetAzureTargetsSpectraS3Request) Path() string {
-    return "/_rest_/azure_target"
+func (getAzureTargetsSpectraS3Request *GetAzureTargetsSpectraS3Request) WithPageLength(pageLength int) *GetAzureTargetsSpectraS3Request {
+    getAzureTargetsSpectraS3Request.PageLength = &pageLength
+    return getAzureTargetsSpectraS3Request
 }
 
-func (getAzureTargetsSpectraS3Request *GetAzureTargetsSpectraS3Request) QueryParams() *url.Values {
-    return getAzureTargetsSpectraS3Request.queryParams
+func (getAzureTargetsSpectraS3Request *GetAzureTargetsSpectraS3Request) WithPageOffset(pageOffset int) *GetAzureTargetsSpectraS3Request {
+    getAzureTargetsSpectraS3Request.PageOffset = &pageOffset
+    return getAzureTargetsSpectraS3Request
 }
 
-func (GetAzureTargetsSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetAzureTargetsSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
+func (getAzureTargetsSpectraS3Request *GetAzureTargetsSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetAzureTargetsSpectraS3Request {
+    getAzureTargetsSpectraS3Request.PageStartMarker = &pageStartMarker
+    return getAzureTargetsSpectraS3Request
 }
 
-func (GetAzureTargetsSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
+func (getAzureTargetsSpectraS3Request *GetAzureTargetsSpectraS3Request) WithPermitGoingOutOfSync(permitGoingOutOfSync bool) *GetAzureTargetsSpectraS3Request {
+    getAzureTargetsSpectraS3Request.PermitGoingOutOfSync = &permitGoingOutOfSync
+    return getAzureTargetsSpectraS3Request
 }
+
+func (getAzureTargetsSpectraS3Request *GetAzureTargetsSpectraS3Request) WithQuiesced(quiesced Quiesced) *GetAzureTargetsSpectraS3Request {
+    getAzureTargetsSpectraS3Request.Quiesced = quiesced
+    return getAzureTargetsSpectraS3Request
+}
+
+func (getAzureTargetsSpectraS3Request *GetAzureTargetsSpectraS3Request) WithState(state TargetState) *GetAzureTargetsSpectraS3Request {
+    getAzureTargetsSpectraS3Request.State = state
+    return getAzureTargetsSpectraS3Request
+}
+

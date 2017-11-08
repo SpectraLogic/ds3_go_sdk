@@ -13,67 +13,31 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type PutAzureTargetFailureNotificationRegistrationSpectraS3Request struct {
-    format HttpResponseFormatType
-    namingConvention NamingConventionType
-    notificationEndPoint *string
-    notificationHttpMethod RequestType
-    queryParams *url.Values
+    Format HttpResponseFormatType
+    NamingConvention NamingConventionType
+    NotificationEndPoint string
+    NotificationHttpMethod RequestType
 }
 
-func NewPutAzureTargetFailureNotificationRegistrationSpectraS3Request(notificationEndPoint *string) *PutAzureTargetFailureNotificationRegistrationSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("notification_end_point", *notificationEndPoint)
-
+func NewPutAzureTargetFailureNotificationRegistrationSpectraS3Request(notificationEndPoint string) *PutAzureTargetFailureNotificationRegistrationSpectraS3Request {
     return &PutAzureTargetFailureNotificationRegistrationSpectraS3Request{
-        notificationEndPoint: notificationEndPoint,
-        queryParams: queryParams,
+        NotificationEndPoint: notificationEndPoint,
     }
 }
 
 func (putAzureTargetFailureNotificationRegistrationSpectraS3Request *PutAzureTargetFailureNotificationRegistrationSpectraS3Request) WithFormat(format HttpResponseFormatType) *PutAzureTargetFailureNotificationRegistrationSpectraS3Request {
-    putAzureTargetFailureNotificationRegistrationSpectraS3Request.format = format
-    putAzureTargetFailureNotificationRegistrationSpectraS3Request.queryParams.Set("format", format.String())
+    putAzureTargetFailureNotificationRegistrationSpectraS3Request.Format = format
     return putAzureTargetFailureNotificationRegistrationSpectraS3Request
 }
+
 func (putAzureTargetFailureNotificationRegistrationSpectraS3Request *PutAzureTargetFailureNotificationRegistrationSpectraS3Request) WithNamingConvention(namingConvention NamingConventionType) *PutAzureTargetFailureNotificationRegistrationSpectraS3Request {
-    putAzureTargetFailureNotificationRegistrationSpectraS3Request.namingConvention = namingConvention
-    putAzureTargetFailureNotificationRegistrationSpectraS3Request.queryParams.Set("naming_convention", namingConvention.String())
+    putAzureTargetFailureNotificationRegistrationSpectraS3Request.NamingConvention = namingConvention
     return putAzureTargetFailureNotificationRegistrationSpectraS3Request
 }
+
 func (putAzureTargetFailureNotificationRegistrationSpectraS3Request *PutAzureTargetFailureNotificationRegistrationSpectraS3Request) WithNotificationHttpMethod(notificationHttpMethod RequestType) *PutAzureTargetFailureNotificationRegistrationSpectraS3Request {
-    putAzureTargetFailureNotificationRegistrationSpectraS3Request.notificationHttpMethod = notificationHttpMethod
-    putAzureTargetFailureNotificationRegistrationSpectraS3Request.queryParams.Set("notification_http_method", notificationHttpMethod.String())
+    putAzureTargetFailureNotificationRegistrationSpectraS3Request.NotificationHttpMethod = notificationHttpMethod
     return putAzureTargetFailureNotificationRegistrationSpectraS3Request
 }
 
-
-
-func (PutAzureTargetFailureNotificationRegistrationSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.POST
-}
-
-func (putAzureTargetFailureNotificationRegistrationSpectraS3Request *PutAzureTargetFailureNotificationRegistrationSpectraS3Request) Path() string {
-    return "/_rest_/azure_target_failure_notification_registration"
-}
-
-func (putAzureTargetFailureNotificationRegistrationSpectraS3Request *PutAzureTargetFailureNotificationRegistrationSpectraS3Request) QueryParams() *url.Values {
-    return putAzureTargetFailureNotificationRegistrationSpectraS3Request.queryParams
-}
-
-func (PutAzureTargetFailureNotificationRegistrationSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (PutAzureTargetFailureNotificationRegistrationSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (PutAzureTargetFailureNotificationRegistrationSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

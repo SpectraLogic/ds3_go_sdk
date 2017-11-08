@@ -13,49 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type GetBlobsOnDs3TargetSpectraS3Request struct {
-    ds3Target string
-    queryParams *url.Values
+    Ds3Target string
 }
 
 func NewGetBlobsOnDs3TargetSpectraS3Request(ds3Target string) *GetBlobsOnDs3TargetSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("operation", "get_physical_placement")
-
     return &GetBlobsOnDs3TargetSpectraS3Request{
-        ds3Target: ds3Target,
-        queryParams: queryParams,
+        Ds3Target: ds3Target,
     }
 }
 
-
-
-
-func (GetBlobsOnDs3TargetSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
-}
-
-func (getBlobsOnDs3TargetSpectraS3Request *GetBlobsOnDs3TargetSpectraS3Request) Path() string {
-    return "/_rest_/ds3_target/" + getBlobsOnDs3TargetSpectraS3Request.ds3Target
-}
-
-func (getBlobsOnDs3TargetSpectraS3Request *GetBlobsOnDs3TargetSpectraS3Request) QueryParams() *url.Values {
-    return getBlobsOnDs3TargetSpectraS3Request.queryParams
-}
-
-func (GetBlobsOnDs3TargetSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetBlobsOnDs3TargetSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (GetBlobsOnDs3TargetSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

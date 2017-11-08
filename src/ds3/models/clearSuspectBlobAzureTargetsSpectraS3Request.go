@@ -13,15 +13,9 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type ClearSuspectBlobAzureTargetsSpectraS3Request struct {
-    Ids []string
     Force bool
+    Ids []string
 }
 
 func NewClearSuspectBlobAzureTargetsSpectraS3Request(ids []string) *ClearSuspectBlobAzureTargetsSpectraS3Request {
@@ -34,3 +28,4 @@ func (clearSuspectBlobAzureTargetsSpectraS3Request *ClearSuspectBlobAzureTargets
     clearSuspectBlobAzureTargetsSpectraS3Request.Force = true
     return clearSuspectBlobAzureTargetsSpectraS3Request
 }
+

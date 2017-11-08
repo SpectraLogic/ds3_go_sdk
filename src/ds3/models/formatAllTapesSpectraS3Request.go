@@ -13,51 +13,17 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type FormatAllTapesSpectraS3Request struct {
-    queryParams *url.Values
+    Force bool
 }
 
 func NewFormatAllTapesSpectraS3Request() *FormatAllTapesSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("operation", "format")
-
     return &FormatAllTapesSpectraS3Request{
-        queryParams: queryParams,
     }
 }
 
-
-
 func (formatAllTapesSpectraS3Request *FormatAllTapesSpectraS3Request) WithForce() *FormatAllTapesSpectraS3Request {
-    formatAllTapesSpectraS3Request.queryParams.Set("force", "")
+    formatAllTapesSpectraS3Request.Force = true
     return formatAllTapesSpectraS3Request
 }
 
-func (FormatAllTapesSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.PUT
-}
-
-func (formatAllTapesSpectraS3Request *FormatAllTapesSpectraS3Request) Path() string {
-    return "/_rest_/tape"
-}
-
-func (formatAllTapesSpectraS3Request *FormatAllTapesSpectraS3Request) QueryParams() *url.Values {
-    return formatAllTapesSpectraS3Request.queryParams
-}
-
-func (FormatAllTapesSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (FormatAllTapesSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (FormatAllTapesSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

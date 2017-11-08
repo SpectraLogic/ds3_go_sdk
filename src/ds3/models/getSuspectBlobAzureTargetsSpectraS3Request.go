@@ -13,81 +13,47 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-    "strconv"
-)
-
 type GetSuspectBlobAzureTargetsSpectraS3Request struct {
-    blobId string
-    pageLength int
-    pageOffset int
-    pageStartMarker string
-    targetId string
-    queryParams *url.Values
+    BlobId *string
+    LastPage bool
+    PageLength *int
+    PageOffset *int
+    PageStartMarker *string
+    TargetId *string
 }
 
 func NewGetSuspectBlobAzureTargetsSpectraS3Request() *GetSuspectBlobAzureTargetsSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetSuspectBlobAzureTargetsSpectraS3Request{
-        queryParams: queryParams,
     }
 }
 
 func (getSuspectBlobAzureTargetsSpectraS3Request *GetSuspectBlobAzureTargetsSpectraS3Request) WithBlobId(blobId string) *GetSuspectBlobAzureTargetsSpectraS3Request {
-    getSuspectBlobAzureTargetsSpectraS3Request.blobId = blobId
-    getSuspectBlobAzureTargetsSpectraS3Request.queryParams.Set("blob_id", blobId)
+    getSuspectBlobAzureTargetsSpectraS3Request.BlobId = &blobId
     return getSuspectBlobAzureTargetsSpectraS3Request
 }
-func (getSuspectBlobAzureTargetsSpectraS3Request *GetSuspectBlobAzureTargetsSpectraS3Request) WithPageLength(pageLength int) *GetSuspectBlobAzureTargetsSpectraS3Request {
-    getSuspectBlobAzureTargetsSpectraS3Request.pageLength = pageLength
-    getSuspectBlobAzureTargetsSpectraS3Request.queryParams.Set("page_length", strconv.Itoa(pageLength))
-    return getSuspectBlobAzureTargetsSpectraS3Request
-}
-func (getSuspectBlobAzureTargetsSpectraS3Request *GetSuspectBlobAzureTargetsSpectraS3Request) WithPageOffset(pageOffset int) *GetSuspectBlobAzureTargetsSpectraS3Request {
-    getSuspectBlobAzureTargetsSpectraS3Request.pageOffset = pageOffset
-    getSuspectBlobAzureTargetsSpectraS3Request.queryParams.Set("page_offset", strconv.Itoa(pageOffset))
-    return getSuspectBlobAzureTargetsSpectraS3Request
-}
-func (getSuspectBlobAzureTargetsSpectraS3Request *GetSuspectBlobAzureTargetsSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetSuspectBlobAzureTargetsSpectraS3Request {
-    getSuspectBlobAzureTargetsSpectraS3Request.pageStartMarker = pageStartMarker
-    getSuspectBlobAzureTargetsSpectraS3Request.queryParams.Set("page_start_marker", pageStartMarker)
-    return getSuspectBlobAzureTargetsSpectraS3Request
-}
-func (getSuspectBlobAzureTargetsSpectraS3Request *GetSuspectBlobAzureTargetsSpectraS3Request) WithTargetId(targetId string) *GetSuspectBlobAzureTargetsSpectraS3Request {
-    getSuspectBlobAzureTargetsSpectraS3Request.targetId = targetId
-    getSuspectBlobAzureTargetsSpectraS3Request.queryParams.Set("target_id", targetId)
-    return getSuspectBlobAzureTargetsSpectraS3Request
-}
-
 
 func (getSuspectBlobAzureTargetsSpectraS3Request *GetSuspectBlobAzureTargetsSpectraS3Request) WithLastPage() *GetSuspectBlobAzureTargetsSpectraS3Request {
-    getSuspectBlobAzureTargetsSpectraS3Request.queryParams.Set("last_page", "")
+    getSuspectBlobAzureTargetsSpectraS3Request.LastPage = true
     return getSuspectBlobAzureTargetsSpectraS3Request
 }
 
-func (GetSuspectBlobAzureTargetsSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
+func (getSuspectBlobAzureTargetsSpectraS3Request *GetSuspectBlobAzureTargetsSpectraS3Request) WithPageLength(pageLength int) *GetSuspectBlobAzureTargetsSpectraS3Request {
+    getSuspectBlobAzureTargetsSpectraS3Request.PageLength = &pageLength
+    return getSuspectBlobAzureTargetsSpectraS3Request
 }
 
-func (getSuspectBlobAzureTargetsSpectraS3Request *GetSuspectBlobAzureTargetsSpectraS3Request) Path() string {
-    return "/_rest_/suspect_blob_azure_target"
+func (getSuspectBlobAzureTargetsSpectraS3Request *GetSuspectBlobAzureTargetsSpectraS3Request) WithPageOffset(pageOffset int) *GetSuspectBlobAzureTargetsSpectraS3Request {
+    getSuspectBlobAzureTargetsSpectraS3Request.PageOffset = &pageOffset
+    return getSuspectBlobAzureTargetsSpectraS3Request
 }
 
-func (getSuspectBlobAzureTargetsSpectraS3Request *GetSuspectBlobAzureTargetsSpectraS3Request) QueryParams() *url.Values {
-    return getSuspectBlobAzureTargetsSpectraS3Request.queryParams
+func (getSuspectBlobAzureTargetsSpectraS3Request *GetSuspectBlobAzureTargetsSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetSuspectBlobAzureTargetsSpectraS3Request {
+    getSuspectBlobAzureTargetsSpectraS3Request.PageStartMarker = &pageStartMarker
+    return getSuspectBlobAzureTargetsSpectraS3Request
 }
 
-func (GetSuspectBlobAzureTargetsSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetSuspectBlobAzureTargetsSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
+func (getSuspectBlobAzureTargetsSpectraS3Request *GetSuspectBlobAzureTargetsSpectraS3Request) WithTargetId(targetId string) *GetSuspectBlobAzureTargetsSpectraS3Request {
+    getSuspectBlobAzureTargetsSpectraS3Request.TargetId = &targetId
+    return getSuspectBlobAzureTargetsSpectraS3Request
 }
 
-func (GetSuspectBlobAzureTargetsSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

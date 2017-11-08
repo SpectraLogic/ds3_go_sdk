@@ -13,54 +13,19 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type ModifyTapeDriveSpectraS3Request struct {
-    quiesced Quiesced
-    tapeDriveId string
-    queryParams *url.Values
+    Quiesced Quiesced
+    TapeDriveId string
 }
 
 func NewModifyTapeDriveSpectraS3Request(tapeDriveId string) *ModifyTapeDriveSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &ModifyTapeDriveSpectraS3Request{
-        tapeDriveId: tapeDriveId,
-        queryParams: queryParams,
+        TapeDriveId: tapeDriveId,
     }
 }
 
 func (modifyTapeDriveSpectraS3Request *ModifyTapeDriveSpectraS3Request) WithQuiesced(quiesced Quiesced) *ModifyTapeDriveSpectraS3Request {
-    modifyTapeDriveSpectraS3Request.quiesced = quiesced
-    modifyTapeDriveSpectraS3Request.queryParams.Set("quiesced", quiesced.String())
+    modifyTapeDriveSpectraS3Request.Quiesced = quiesced
     return modifyTapeDriveSpectraS3Request
 }
 
-
-
-func (ModifyTapeDriveSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.PUT
-}
-
-func (modifyTapeDriveSpectraS3Request *ModifyTapeDriveSpectraS3Request) Path() string {
-    return "/_rest_/tape_drive/" + modifyTapeDriveSpectraS3Request.tapeDriveId
-}
-
-func (modifyTapeDriveSpectraS3Request *ModifyTapeDriveSpectraS3Request) QueryParams() *url.Values {
-    return modifyTapeDriveSpectraS3Request.queryParams
-}
-
-func (ModifyTapeDriveSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (ModifyTapeDriveSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (ModifyTapeDriveSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

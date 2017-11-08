@@ -13,47 +13,11 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type CancelFormatOnAllTapesSpectraS3Request struct {
-    queryParams *url.Values
 }
 
 func NewCancelFormatOnAllTapesSpectraS3Request() *CancelFormatOnAllTapesSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("operation", "cancel_format")
-
     return &CancelFormatOnAllTapesSpectraS3Request{
-        queryParams: queryParams,
     }
 }
 
-
-
-
-func (CancelFormatOnAllTapesSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.PUT
-}
-
-func (cancelFormatOnAllTapesSpectraS3Request *CancelFormatOnAllTapesSpectraS3Request) Path() string {
-    return "/_rest_/tape"
-}
-
-func (cancelFormatOnAllTapesSpectraS3Request *CancelFormatOnAllTapesSpectraS3Request) QueryParams() *url.Values {
-    return cancelFormatOnAllTapesSpectraS3Request.queryParams
-}
-
-func (CancelFormatOnAllTapesSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (CancelFormatOnAllTapesSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (CancelFormatOnAllTapesSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

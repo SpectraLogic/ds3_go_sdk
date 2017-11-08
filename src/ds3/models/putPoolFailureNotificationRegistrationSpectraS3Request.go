@@ -13,67 +13,31 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type PutPoolFailureNotificationRegistrationSpectraS3Request struct {
-    format HttpResponseFormatType
-    namingConvention NamingConventionType
-    notificationEndPoint *string
-    notificationHttpMethod RequestType
-    queryParams *url.Values
+    Format HttpResponseFormatType
+    NamingConvention NamingConventionType
+    NotificationEndPoint string
+    NotificationHttpMethod RequestType
 }
 
-func NewPutPoolFailureNotificationRegistrationSpectraS3Request(notificationEndPoint *string) *PutPoolFailureNotificationRegistrationSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("notification_end_point", *notificationEndPoint)
-
+func NewPutPoolFailureNotificationRegistrationSpectraS3Request(notificationEndPoint string) *PutPoolFailureNotificationRegistrationSpectraS3Request {
     return &PutPoolFailureNotificationRegistrationSpectraS3Request{
-        notificationEndPoint: notificationEndPoint,
-        queryParams: queryParams,
+        NotificationEndPoint: notificationEndPoint,
     }
 }
 
 func (putPoolFailureNotificationRegistrationSpectraS3Request *PutPoolFailureNotificationRegistrationSpectraS3Request) WithFormat(format HttpResponseFormatType) *PutPoolFailureNotificationRegistrationSpectraS3Request {
-    putPoolFailureNotificationRegistrationSpectraS3Request.format = format
-    putPoolFailureNotificationRegistrationSpectraS3Request.queryParams.Set("format", format.String())
+    putPoolFailureNotificationRegistrationSpectraS3Request.Format = format
     return putPoolFailureNotificationRegistrationSpectraS3Request
 }
+
 func (putPoolFailureNotificationRegistrationSpectraS3Request *PutPoolFailureNotificationRegistrationSpectraS3Request) WithNamingConvention(namingConvention NamingConventionType) *PutPoolFailureNotificationRegistrationSpectraS3Request {
-    putPoolFailureNotificationRegistrationSpectraS3Request.namingConvention = namingConvention
-    putPoolFailureNotificationRegistrationSpectraS3Request.queryParams.Set("naming_convention", namingConvention.String())
+    putPoolFailureNotificationRegistrationSpectraS3Request.NamingConvention = namingConvention
     return putPoolFailureNotificationRegistrationSpectraS3Request
 }
+
 func (putPoolFailureNotificationRegistrationSpectraS3Request *PutPoolFailureNotificationRegistrationSpectraS3Request) WithNotificationHttpMethod(notificationHttpMethod RequestType) *PutPoolFailureNotificationRegistrationSpectraS3Request {
-    putPoolFailureNotificationRegistrationSpectraS3Request.notificationHttpMethod = notificationHttpMethod
-    putPoolFailureNotificationRegistrationSpectraS3Request.queryParams.Set("notification_http_method", notificationHttpMethod.String())
+    putPoolFailureNotificationRegistrationSpectraS3Request.NotificationHttpMethod = notificationHttpMethod
     return putPoolFailureNotificationRegistrationSpectraS3Request
 }
 
-
-
-func (PutPoolFailureNotificationRegistrationSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.POST
-}
-
-func (putPoolFailureNotificationRegistrationSpectraS3Request *PutPoolFailureNotificationRegistrationSpectraS3Request) Path() string {
-    return "/_rest_/pool_failure_notification_registration"
-}
-
-func (putPoolFailureNotificationRegistrationSpectraS3Request *PutPoolFailureNotificationRegistrationSpectraS3Request) QueryParams() *url.Values {
-    return putPoolFailureNotificationRegistrationSpectraS3Request.queryParams
-}
-
-func (PutPoolFailureNotificationRegistrationSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (PutPoolFailureNotificationRegistrationSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (PutPoolFailureNotificationRegistrationSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

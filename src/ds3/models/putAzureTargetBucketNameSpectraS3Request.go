@@ -13,55 +13,17 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type PutAzureTargetBucketNameSpectraS3Request struct {
-    bucketId string
-    name *string
-    targetId string
-    queryParams *url.Values
+    BucketId string
+    Name string
+    TargetId string
 }
 
-func NewPutAzureTargetBucketNameSpectraS3Request(bucketId string, name *string, targetId string) *PutAzureTargetBucketNameSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("bucket_id", bucketId)
-    queryParams.Set("name", *name)
-    queryParams.Set("target_id", targetId)
-
+func NewPutAzureTargetBucketNameSpectraS3Request(bucketId string, name string, targetId string) *PutAzureTargetBucketNameSpectraS3Request {
     return &PutAzureTargetBucketNameSpectraS3Request{
-        bucketId: bucketId,
-        name: name,
-        targetId: targetId,
-        queryParams: queryParams,
+        BucketId: bucketId,
+        Name: name,
+        TargetId: targetId,
     }
 }
 
-
-
-
-func (PutAzureTargetBucketNameSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.POST
-}
-
-func (putAzureTargetBucketNameSpectraS3Request *PutAzureTargetBucketNameSpectraS3Request) Path() string {
-    return "/_rest_/azure_target_bucket_name"
-}
-
-func (putAzureTargetBucketNameSpectraS3Request *PutAzureTargetBucketNameSpectraS3Request) QueryParams() *url.Values {
-    return putAzureTargetBucketNameSpectraS3Request.queryParams
-}
-
-func (PutAzureTargetBucketNameSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (PutAzureTargetBucketNameSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (PutAzureTargetBucketNameSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

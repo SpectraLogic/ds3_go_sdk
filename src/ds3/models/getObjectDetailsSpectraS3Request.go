@@ -13,51 +13,15 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type GetObjectDetailsSpectraS3Request struct {
-    objectName string
-    bucketId string
-    queryParams *url.Values
+    ObjectName string
+    BucketId string
 }
 
 func NewGetObjectDetailsSpectraS3Request(objectName string, bucketId string) *GetObjectDetailsSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("bucket_id", bucketId)
-
     return &GetObjectDetailsSpectraS3Request{
-        objectName: objectName,
-        bucketId: bucketId,
-        queryParams: queryParams,
+        ObjectName: objectName,
+        BucketId: bucketId,
     }
 }
 
-
-
-
-func (GetObjectDetailsSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
-}
-
-func (getObjectDetailsSpectraS3Request *GetObjectDetailsSpectraS3Request) Path() string {
-    return "/_rest_/object/" + getObjectDetailsSpectraS3Request.objectName
-}
-
-func (getObjectDetailsSpectraS3Request *GetObjectDetailsSpectraS3Request) QueryParams() *url.Values {
-    return getObjectDetailsSpectraS3Request.queryParams
-}
-
-func (GetObjectDetailsSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetObjectDetailsSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (GetObjectDetailsSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

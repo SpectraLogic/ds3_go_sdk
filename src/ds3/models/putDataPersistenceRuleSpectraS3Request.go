@@ -13,69 +13,25 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-    "strconv"
-)
-
 type PutDataPersistenceRuleSpectraS3Request struct {
-    dataPersistenceRuleType DataPersistenceRuleType
-    dataPolicyId string
-    isolationLevel DataIsolationLevel
-    minimumDaysToRetain *int
-    storageDomainId string
-    queryParams *url.Values
+    DataPersistenceRuleType DataPersistenceRuleType
+    DataPolicyId string
+    IsolationLevel DataIsolationLevel
+    MinimumDaysToRetain *int
+    StorageDomainId string
 }
 
 func NewPutDataPersistenceRuleSpectraS3Request(dataPersistenceRuleType DataPersistenceRuleType, dataPolicyId string, isolationLevel DataIsolationLevel, storageDomainId string) *PutDataPersistenceRuleSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("data_policy_id", dataPolicyId)
-    queryParams.Set("isolation_level", isolationLevel.String())
-    queryParams.Set("storage_domain_id", storageDomainId)
-    queryParams.Set("type", dataPersistenceRuleType.String())
-
     return &PutDataPersistenceRuleSpectraS3Request{
-        dataPolicyId: dataPolicyId,
-        isolationLevel: isolationLevel,
-        storageDomainId: storageDomainId,
-        dataPersistenceRuleType: dataPersistenceRuleType,
-        queryParams: queryParams,
+        DataPolicyId: dataPolicyId,
+        IsolationLevel: isolationLevel,
+        StorageDomainId: storageDomainId,
+        DataPersistenceRuleType: dataPersistenceRuleType,
     }
 }
 
-
-func (putDataPersistenceRuleSpectraS3Request *PutDataPersistenceRuleSpectraS3Request) WithMinimumDaysToRetain(minimumDaysToRetain *int) *PutDataPersistenceRuleSpectraS3Request {
-    putDataPersistenceRuleSpectraS3Request.minimumDaysToRetain = minimumDaysToRetain
-    if minimumDaysToRetain != nil {
-        putDataPersistenceRuleSpectraS3Request.queryParams.Set("minimum_days_to_retain", strconv.Itoa(*minimumDaysToRetain))
-    } else {
-        putDataPersistenceRuleSpectraS3Request.queryParams.Set("minimum_days_to_retain", "")
-    }
+func (putDataPersistenceRuleSpectraS3Request *PutDataPersistenceRuleSpectraS3Request) WithMinimumDaysToRetain(minimumDaysToRetain int) *PutDataPersistenceRuleSpectraS3Request {
+    putDataPersistenceRuleSpectraS3Request.MinimumDaysToRetain = &minimumDaysToRetain
     return putDataPersistenceRuleSpectraS3Request
 }
 
-
-func (PutDataPersistenceRuleSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.POST
-}
-
-func (putDataPersistenceRuleSpectraS3Request *PutDataPersistenceRuleSpectraS3Request) Path() string {
-    return "/_rest_/data_persistence_rule"
-}
-
-func (putDataPersistenceRuleSpectraS3Request *PutDataPersistenceRuleSpectraS3Request) QueryParams() *url.Values {
-    return putDataPersistenceRuleSpectraS3Request.queryParams
-}
-
-func (PutDataPersistenceRuleSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (PutDataPersistenceRuleSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (PutDataPersistenceRuleSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

@@ -13,48 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type DeletePermanentlyLostTapeSpectraS3Request struct {
-    tapeId string
-    queryParams *url.Values
+    TapeId string
 }
 
 func NewDeletePermanentlyLostTapeSpectraS3Request(tapeId string) *DeletePermanentlyLostTapeSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &DeletePermanentlyLostTapeSpectraS3Request{
-        tapeId: tapeId,
-        queryParams: queryParams,
+        TapeId: tapeId,
     }
 }
 
-
-
-
-func (DeletePermanentlyLostTapeSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.DELETE
-}
-
-func (deletePermanentlyLostTapeSpectraS3Request *DeletePermanentlyLostTapeSpectraS3Request) Path() string {
-    return "/_rest_/tape/" + deletePermanentlyLostTapeSpectraS3Request.tapeId
-}
-
-func (deletePermanentlyLostTapeSpectraS3Request *DeletePermanentlyLostTapeSpectraS3Request) QueryParams() *url.Values {
-    return deletePermanentlyLostTapeSpectraS3Request.queryParams
-}
-
-func (DeletePermanentlyLostTapeSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (DeletePermanentlyLostTapeSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (DeletePermanentlyLostTapeSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

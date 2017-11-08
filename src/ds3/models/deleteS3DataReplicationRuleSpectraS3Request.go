@@ -13,48 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type DeleteS3DataReplicationRuleSpectraS3Request struct {
-    s3DataReplicationRule string
-    queryParams *url.Values
+    S3DataReplicationRule string
 }
 
 func NewDeleteS3DataReplicationRuleSpectraS3Request(s3DataReplicationRule string) *DeleteS3DataReplicationRuleSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &DeleteS3DataReplicationRuleSpectraS3Request{
-        s3DataReplicationRule: s3DataReplicationRule,
-        queryParams: queryParams,
+        S3DataReplicationRule: s3DataReplicationRule,
     }
 }
 
-
-
-
-func (DeleteS3DataReplicationRuleSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.DELETE
-}
-
-func (deleteS3DataReplicationRuleSpectraS3Request *DeleteS3DataReplicationRuleSpectraS3Request) Path() string {
-    return "/_rest_/s3_data_replication_rule/" + deleteS3DataReplicationRuleSpectraS3Request.s3DataReplicationRule
-}
-
-func (deleteS3DataReplicationRuleSpectraS3Request *DeleteS3DataReplicationRuleSpectraS3Request) QueryParams() *url.Values {
-    return deleteS3DataReplicationRuleSpectraS3Request.queryParams
-}
-
-func (DeleteS3DataReplicationRuleSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (DeleteS3DataReplicationRuleSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (DeleteS3DataReplicationRuleSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

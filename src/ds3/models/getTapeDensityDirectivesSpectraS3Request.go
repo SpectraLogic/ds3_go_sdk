@@ -13,87 +13,53 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-    "strconv"
-)
-
 type GetTapeDensityDirectivesSpectraS3Request struct {
-    density TapeDriveType
-    pageLength int
-    pageOffset int
-    pageStartMarker string
-    partitionId string
-    tapeType TapeType
-    queryParams *url.Values
+    Density TapeDriveType
+    LastPage bool
+    PageLength *int
+    PageOffset *int
+    PageStartMarker *string
+    PartitionId *string
+    TapeType TapeType
 }
 
 func NewGetTapeDensityDirectivesSpectraS3Request() *GetTapeDensityDirectivesSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetTapeDensityDirectivesSpectraS3Request{
-        queryParams: queryParams,
     }
 }
 
 func (getTapeDensityDirectivesSpectraS3Request *GetTapeDensityDirectivesSpectraS3Request) WithDensity(density TapeDriveType) *GetTapeDensityDirectivesSpectraS3Request {
-    getTapeDensityDirectivesSpectraS3Request.density = density
-    getTapeDensityDirectivesSpectraS3Request.queryParams.Set("density", density.String())
+    getTapeDensityDirectivesSpectraS3Request.Density = density
     return getTapeDensityDirectivesSpectraS3Request
 }
-func (getTapeDensityDirectivesSpectraS3Request *GetTapeDensityDirectivesSpectraS3Request) WithPageLength(pageLength int) *GetTapeDensityDirectivesSpectraS3Request {
-    getTapeDensityDirectivesSpectraS3Request.pageLength = pageLength
-    getTapeDensityDirectivesSpectraS3Request.queryParams.Set("page_length", strconv.Itoa(pageLength))
-    return getTapeDensityDirectivesSpectraS3Request
-}
-func (getTapeDensityDirectivesSpectraS3Request *GetTapeDensityDirectivesSpectraS3Request) WithPageOffset(pageOffset int) *GetTapeDensityDirectivesSpectraS3Request {
-    getTapeDensityDirectivesSpectraS3Request.pageOffset = pageOffset
-    getTapeDensityDirectivesSpectraS3Request.queryParams.Set("page_offset", strconv.Itoa(pageOffset))
-    return getTapeDensityDirectivesSpectraS3Request
-}
-func (getTapeDensityDirectivesSpectraS3Request *GetTapeDensityDirectivesSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetTapeDensityDirectivesSpectraS3Request {
-    getTapeDensityDirectivesSpectraS3Request.pageStartMarker = pageStartMarker
-    getTapeDensityDirectivesSpectraS3Request.queryParams.Set("page_start_marker", pageStartMarker)
-    return getTapeDensityDirectivesSpectraS3Request
-}
-func (getTapeDensityDirectivesSpectraS3Request *GetTapeDensityDirectivesSpectraS3Request) WithPartitionId(partitionId string) *GetTapeDensityDirectivesSpectraS3Request {
-    getTapeDensityDirectivesSpectraS3Request.partitionId = partitionId
-    getTapeDensityDirectivesSpectraS3Request.queryParams.Set("partition_id", partitionId)
-    return getTapeDensityDirectivesSpectraS3Request
-}
-func (getTapeDensityDirectivesSpectraS3Request *GetTapeDensityDirectivesSpectraS3Request) WithTapeType(tapeType TapeType) *GetTapeDensityDirectivesSpectraS3Request {
-    getTapeDensityDirectivesSpectraS3Request.tapeType = tapeType
-    getTapeDensityDirectivesSpectraS3Request.queryParams.Set("tape_type", tapeType.String())
-    return getTapeDensityDirectivesSpectraS3Request
-}
-
 
 func (getTapeDensityDirectivesSpectraS3Request *GetTapeDensityDirectivesSpectraS3Request) WithLastPage() *GetTapeDensityDirectivesSpectraS3Request {
-    getTapeDensityDirectivesSpectraS3Request.queryParams.Set("last_page", "")
+    getTapeDensityDirectivesSpectraS3Request.LastPage = true
     return getTapeDensityDirectivesSpectraS3Request
 }
 
-func (GetTapeDensityDirectivesSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
+func (getTapeDensityDirectivesSpectraS3Request *GetTapeDensityDirectivesSpectraS3Request) WithPageLength(pageLength int) *GetTapeDensityDirectivesSpectraS3Request {
+    getTapeDensityDirectivesSpectraS3Request.PageLength = &pageLength
+    return getTapeDensityDirectivesSpectraS3Request
 }
 
-func (getTapeDensityDirectivesSpectraS3Request *GetTapeDensityDirectivesSpectraS3Request) Path() string {
-    return "/_rest_/tape_density_directive"
+func (getTapeDensityDirectivesSpectraS3Request *GetTapeDensityDirectivesSpectraS3Request) WithPageOffset(pageOffset int) *GetTapeDensityDirectivesSpectraS3Request {
+    getTapeDensityDirectivesSpectraS3Request.PageOffset = &pageOffset
+    return getTapeDensityDirectivesSpectraS3Request
 }
 
-func (getTapeDensityDirectivesSpectraS3Request *GetTapeDensityDirectivesSpectraS3Request) QueryParams() *url.Values {
-    return getTapeDensityDirectivesSpectraS3Request.queryParams
+func (getTapeDensityDirectivesSpectraS3Request *GetTapeDensityDirectivesSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetTapeDensityDirectivesSpectraS3Request {
+    getTapeDensityDirectivesSpectraS3Request.PageStartMarker = &pageStartMarker
+    return getTapeDensityDirectivesSpectraS3Request
 }
 
-func (GetTapeDensityDirectivesSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetTapeDensityDirectivesSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
+func (getTapeDensityDirectivesSpectraS3Request *GetTapeDensityDirectivesSpectraS3Request) WithPartitionId(partitionId string) *GetTapeDensityDirectivesSpectraS3Request {
+    getTapeDensityDirectivesSpectraS3Request.PartitionId = &partitionId
+    return getTapeDensityDirectivesSpectraS3Request
 }
 
-func (GetTapeDensityDirectivesSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
+func (getTapeDensityDirectivesSpectraS3Request *GetTapeDensityDirectivesSpectraS3Request) WithTapeType(tapeType TapeType) *GetTapeDensityDirectivesSpectraS3Request {
+    getTapeDensityDirectivesSpectraS3Request.TapeType = tapeType
+    return getTapeDensityDirectivesSpectraS3Request
 }
+

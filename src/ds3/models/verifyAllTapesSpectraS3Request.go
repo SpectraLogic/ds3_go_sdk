@@ -13,53 +13,17 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type VerifyAllTapesSpectraS3Request struct {
-    taskPriority Priority
-    queryParams *url.Values
+    TaskPriority Priority
 }
 
 func NewVerifyAllTapesSpectraS3Request() *VerifyAllTapesSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("operation", "verify")
-
     return &VerifyAllTapesSpectraS3Request{
-        queryParams: queryParams,
     }
 }
 
 func (verifyAllTapesSpectraS3Request *VerifyAllTapesSpectraS3Request) WithTaskPriority(taskPriority Priority) *VerifyAllTapesSpectraS3Request {
-    verifyAllTapesSpectraS3Request.taskPriority = taskPriority
-    verifyAllTapesSpectraS3Request.queryParams.Set("task_priority", taskPriority.String())
+    verifyAllTapesSpectraS3Request.TaskPriority = taskPriority
     return verifyAllTapesSpectraS3Request
 }
 
-
-
-func (VerifyAllTapesSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.PUT
-}
-
-func (verifyAllTapesSpectraS3Request *VerifyAllTapesSpectraS3Request) Path() string {
-    return "/_rest_/tape"
-}
-
-func (verifyAllTapesSpectraS3Request *VerifyAllTapesSpectraS3Request) QueryParams() *url.Values {
-    return verifyAllTapesSpectraS3Request.queryParams
-}
-
-func (VerifyAllTapesSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (VerifyAllTapesSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (VerifyAllTapesSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

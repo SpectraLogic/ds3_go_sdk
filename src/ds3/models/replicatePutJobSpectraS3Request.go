@@ -13,23 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type ReplicatePutJobSpectraS3Request struct {
     BucketName string
-    RequestPayload string
     Priority Priority
+    RequestPayload string
 }
 
 func NewReplicatePutJobSpectraS3Request(bucketName string, requestPayload string) *ReplicatePutJobSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("operation", "start_bulk_put")
-    queryParams.Set("replicate", "")
-
     return &ReplicatePutJobSpectraS3Request{
         BucketName: bucketName,
         RequestPayload: requestPayload,
@@ -40,3 +30,4 @@ func (replicatePutJobSpectraS3Request *ReplicatePutJobSpectraS3Request) WithPrio
     replicatePutJobSpectraS3Request.Priority = priority
     return replicatePutJobSpectraS3Request
 }
+

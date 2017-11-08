@@ -13,48 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type GetDs3TargetReadPreferenceSpectraS3Request struct {
-    ds3TargetReadPreference string
-    queryParams *url.Values
+    Ds3TargetReadPreference string
 }
 
 func NewGetDs3TargetReadPreferenceSpectraS3Request(ds3TargetReadPreference string) *GetDs3TargetReadPreferenceSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetDs3TargetReadPreferenceSpectraS3Request{
-        ds3TargetReadPreference: ds3TargetReadPreference,
-        queryParams: queryParams,
+        Ds3TargetReadPreference: ds3TargetReadPreference,
     }
 }
 
-
-
-
-func (GetDs3TargetReadPreferenceSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
-}
-
-func (getDs3TargetReadPreferenceSpectraS3Request *GetDs3TargetReadPreferenceSpectraS3Request) Path() string {
-    return "/_rest_/ds3_target_read_preference/" + getDs3TargetReadPreferenceSpectraS3Request.ds3TargetReadPreference
-}
-
-func (getDs3TargetReadPreferenceSpectraS3Request *GetDs3TargetReadPreferenceSpectraS3Request) QueryParams() *url.Values {
-    return getDs3TargetReadPreferenceSpectraS3Request.queryParams
-}
-
-func (GetDs3TargetReadPreferenceSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetDs3TargetReadPreferenceSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (GetDs3TargetReadPreferenceSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

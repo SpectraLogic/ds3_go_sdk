@@ -13,68 +13,25 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type ModifyNodeSpectraS3Request struct {
-    dnsName *string
-    name *string
-    node string
-    queryParams *url.Values
+    DnsName *string
+    Name *string
+    Node string
 }
 
 func NewModifyNodeSpectraS3Request(node string) *ModifyNodeSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &ModifyNodeSpectraS3Request{
-        node: node,
-        queryParams: queryParams,
+        Node: node,
     }
 }
 
-
-func (modifyNodeSpectraS3Request *ModifyNodeSpectraS3Request) WithDnsName(dnsName *string) *ModifyNodeSpectraS3Request {
-    modifyNodeSpectraS3Request.dnsName = dnsName
-    if dnsName != nil {
-        modifyNodeSpectraS3Request.queryParams.Set("dns_name", *dnsName)
-    } else {
-        modifyNodeSpectraS3Request.queryParams.Set("dns_name", "")
-    }
-    return modifyNodeSpectraS3Request
-}
-func (modifyNodeSpectraS3Request *ModifyNodeSpectraS3Request) WithName(name *string) *ModifyNodeSpectraS3Request {
-    modifyNodeSpectraS3Request.name = name
-    if name != nil {
-        modifyNodeSpectraS3Request.queryParams.Set("name", *name)
-    } else {
-        modifyNodeSpectraS3Request.queryParams.Set("name", "")
-    }
+func (modifyNodeSpectraS3Request *ModifyNodeSpectraS3Request) WithDnsName(dnsName string) *ModifyNodeSpectraS3Request {
+    modifyNodeSpectraS3Request.DnsName = &dnsName
     return modifyNodeSpectraS3Request
 }
 
-
-func (ModifyNodeSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.PUT
+func (modifyNodeSpectraS3Request *ModifyNodeSpectraS3Request) WithName(name string) *ModifyNodeSpectraS3Request {
+    modifyNodeSpectraS3Request.Name = &name
+    return modifyNodeSpectraS3Request
 }
 
-func (modifyNodeSpectraS3Request *ModifyNodeSpectraS3Request) Path() string {
-    return "/_rest_/node/" + modifyNodeSpectraS3Request.node
-}
-
-func (modifyNodeSpectraS3Request *ModifyNodeSpectraS3Request) QueryParams() *url.Values {
-    return modifyNodeSpectraS3Request.queryParams
-}
-
-func (ModifyNodeSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (ModifyNodeSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (ModifyNodeSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

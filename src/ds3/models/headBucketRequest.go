@@ -13,48 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type HeadBucketRequest struct {
-    bucketName string
-    queryParams *url.Values
+    BucketName string
 }
 
 func NewHeadBucketRequest(bucketName string) *HeadBucketRequest {
-    queryParams := &url.Values{}
-
     return &HeadBucketRequest{
-        bucketName: bucketName,
-        queryParams: queryParams,
+        BucketName: bucketName,
     }
 }
 
-
-
-
-func (HeadBucketRequest) Verb() networking.HttpVerb {
-    return networking.HEAD
-}
-
-func (headBucketRequest *HeadBucketRequest) Path() string {
-    return "/" + headBucketRequest.bucketName
-}
-
-func (headBucketRequest *HeadBucketRequest) QueryParams() *url.Values {
-    return headBucketRequest.queryParams
-}
-
-func (HeadBucketRequest) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (HeadBucketRequest) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (HeadBucketRequest) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

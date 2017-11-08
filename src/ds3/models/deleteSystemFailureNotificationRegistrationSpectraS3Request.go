@@ -13,48 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type DeleteSystemFailureNotificationRegistrationSpectraS3Request struct {
-    notificationId string
-    queryParams *url.Values
+    NotificationId string
 }
 
 func NewDeleteSystemFailureNotificationRegistrationSpectraS3Request(notificationId string) *DeleteSystemFailureNotificationRegistrationSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &DeleteSystemFailureNotificationRegistrationSpectraS3Request{
-        notificationId: notificationId,
-        queryParams: queryParams,
+        NotificationId: notificationId,
     }
 }
 
-
-
-
-func (DeleteSystemFailureNotificationRegistrationSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.DELETE
-}
-
-func (deleteSystemFailureNotificationRegistrationSpectraS3Request *DeleteSystemFailureNotificationRegistrationSpectraS3Request) Path() string {
-    return "/_rest_/system_failure_notification_registration/" + deleteSystemFailureNotificationRegistrationSpectraS3Request.notificationId
-}
-
-func (deleteSystemFailureNotificationRegistrationSpectraS3Request *DeleteSystemFailureNotificationRegistrationSpectraS3Request) QueryParams() *url.Values {
-    return deleteSystemFailureNotificationRegistrationSpectraS3Request.queryParams
-}
-
-func (DeleteSystemFailureNotificationRegistrationSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (DeleteSystemFailureNotificationRegistrationSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (DeleteSystemFailureNotificationRegistrationSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

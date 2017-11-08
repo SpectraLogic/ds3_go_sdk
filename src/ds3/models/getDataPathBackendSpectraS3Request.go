@@ -13,46 +13,11 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type GetDataPathBackendSpectraS3Request struct {
-    queryParams *url.Values
 }
 
 func NewGetDataPathBackendSpectraS3Request() *GetDataPathBackendSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetDataPathBackendSpectraS3Request{
-        queryParams: queryParams,
     }
 }
 
-
-
-
-func (GetDataPathBackendSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
-}
-
-func (getDataPathBackendSpectraS3Request *GetDataPathBackendSpectraS3Request) Path() string {
-    return "/_rest_/data_path_backend"
-}
-
-func (getDataPathBackendSpectraS3Request *GetDataPathBackendSpectraS3Request) QueryParams() *url.Values {
-    return getDataPathBackendSpectraS3Request.queryParams
-}
-
-func (GetDataPathBackendSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetDataPathBackendSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (GetDataPathBackendSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

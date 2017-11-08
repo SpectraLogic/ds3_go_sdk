@@ -13,75 +13,41 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-    "strconv"
-)
-
 type GetJobCompletedNotificationRegistrationsSpectraS3Request struct {
-    pageLength int
-    pageOffset int
-    pageStartMarker string
-    userId string
-    queryParams *url.Values
+    LastPage bool
+    PageLength *int
+    PageOffset *int
+    PageStartMarker *string
+    UserId *string
 }
 
 func NewGetJobCompletedNotificationRegistrationsSpectraS3Request() *GetJobCompletedNotificationRegistrationsSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetJobCompletedNotificationRegistrationsSpectraS3Request{
-        queryParams: queryParams,
     }
 }
 
-func (getJobCompletedNotificationRegistrationsSpectraS3Request *GetJobCompletedNotificationRegistrationsSpectraS3Request) WithPageLength(pageLength int) *GetJobCompletedNotificationRegistrationsSpectraS3Request {
-    getJobCompletedNotificationRegistrationsSpectraS3Request.pageLength = pageLength
-    getJobCompletedNotificationRegistrationsSpectraS3Request.queryParams.Set("page_length", strconv.Itoa(pageLength))
-    return getJobCompletedNotificationRegistrationsSpectraS3Request
-}
-func (getJobCompletedNotificationRegistrationsSpectraS3Request *GetJobCompletedNotificationRegistrationsSpectraS3Request) WithPageOffset(pageOffset int) *GetJobCompletedNotificationRegistrationsSpectraS3Request {
-    getJobCompletedNotificationRegistrationsSpectraS3Request.pageOffset = pageOffset
-    getJobCompletedNotificationRegistrationsSpectraS3Request.queryParams.Set("page_offset", strconv.Itoa(pageOffset))
-    return getJobCompletedNotificationRegistrationsSpectraS3Request
-}
-func (getJobCompletedNotificationRegistrationsSpectraS3Request *GetJobCompletedNotificationRegistrationsSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetJobCompletedNotificationRegistrationsSpectraS3Request {
-    getJobCompletedNotificationRegistrationsSpectraS3Request.pageStartMarker = pageStartMarker
-    getJobCompletedNotificationRegistrationsSpectraS3Request.queryParams.Set("page_start_marker", pageStartMarker)
-    return getJobCompletedNotificationRegistrationsSpectraS3Request
-}
-func (getJobCompletedNotificationRegistrationsSpectraS3Request *GetJobCompletedNotificationRegistrationsSpectraS3Request) WithUserId(userId string) *GetJobCompletedNotificationRegistrationsSpectraS3Request {
-    getJobCompletedNotificationRegistrationsSpectraS3Request.userId = userId
-    getJobCompletedNotificationRegistrationsSpectraS3Request.queryParams.Set("user_id", userId)
-    return getJobCompletedNotificationRegistrationsSpectraS3Request
-}
-
-
 func (getJobCompletedNotificationRegistrationsSpectraS3Request *GetJobCompletedNotificationRegistrationsSpectraS3Request) WithLastPage() *GetJobCompletedNotificationRegistrationsSpectraS3Request {
-    getJobCompletedNotificationRegistrationsSpectraS3Request.queryParams.Set("last_page", "")
+    getJobCompletedNotificationRegistrationsSpectraS3Request.LastPage = true
     return getJobCompletedNotificationRegistrationsSpectraS3Request
 }
 
-func (GetJobCompletedNotificationRegistrationsSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
+func (getJobCompletedNotificationRegistrationsSpectraS3Request *GetJobCompletedNotificationRegistrationsSpectraS3Request) WithPageLength(pageLength int) *GetJobCompletedNotificationRegistrationsSpectraS3Request {
+    getJobCompletedNotificationRegistrationsSpectraS3Request.PageLength = &pageLength
+    return getJobCompletedNotificationRegistrationsSpectraS3Request
 }
 
-func (getJobCompletedNotificationRegistrationsSpectraS3Request *GetJobCompletedNotificationRegistrationsSpectraS3Request) Path() string {
-    return "/_rest_/job_completed_notification_registration"
+func (getJobCompletedNotificationRegistrationsSpectraS3Request *GetJobCompletedNotificationRegistrationsSpectraS3Request) WithPageOffset(pageOffset int) *GetJobCompletedNotificationRegistrationsSpectraS3Request {
+    getJobCompletedNotificationRegistrationsSpectraS3Request.PageOffset = &pageOffset
+    return getJobCompletedNotificationRegistrationsSpectraS3Request
 }
 
-func (getJobCompletedNotificationRegistrationsSpectraS3Request *GetJobCompletedNotificationRegistrationsSpectraS3Request) QueryParams() *url.Values {
-    return getJobCompletedNotificationRegistrationsSpectraS3Request.queryParams
+func (getJobCompletedNotificationRegistrationsSpectraS3Request *GetJobCompletedNotificationRegistrationsSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetJobCompletedNotificationRegistrationsSpectraS3Request {
+    getJobCompletedNotificationRegistrationsSpectraS3Request.PageStartMarker = &pageStartMarker
+    return getJobCompletedNotificationRegistrationsSpectraS3Request
 }
 
-func (GetJobCompletedNotificationRegistrationsSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetJobCompletedNotificationRegistrationsSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
+func (getJobCompletedNotificationRegistrationsSpectraS3Request *GetJobCompletedNotificationRegistrationsSpectraS3Request) WithUserId(userId string) *GetJobCompletedNotificationRegistrationsSpectraS3Request {
+    getJobCompletedNotificationRegistrationsSpectraS3Request.UserId = &userId
+    return getJobCompletedNotificationRegistrationsSpectraS3Request
 }
 
-func (GetJobCompletedNotificationRegistrationsSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

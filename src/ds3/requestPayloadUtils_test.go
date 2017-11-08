@@ -15,6 +15,7 @@ import (
     "testing"
     "io/ioutil"
     "ds3/networking"
+    "ds3/models"
 )
 
 func verifyStreamContent(t *testing.T, contentStream networking.ReaderWithSizeDecorator, expected string) {
@@ -31,7 +32,7 @@ func verifyStreamContent(t *testing.T, contentStream networking.ReaderWithSizeDe
 func TestBuildPartsListStream(t *testing.T) {
     expected := "<CompleteMultipartUpload><Part><PartNumber>1</PartNumber><ETag>eTag1</ETag></Part><Part><PartNumber>2</PartNumber><ETag>eTag2</ETag></Part><Part><PartNumber>3</PartNumber><ETag>eTag3</ETag></Part></CompleteMultipartUpload>"
 
-    parts := []Part{
+    parts := []models.Part{
         {PartNumber:1, ETag:"eTag1"},
         {PartNumber:2, ETag:"eTag2"},
         {PartNumber:3, ETag:"eTag3"},
@@ -46,7 +47,7 @@ func TestBuildPartsListStream(t *testing.T) {
 func TestBuildDs3PutObjectListStream(t *testing.T) {
     expected := "<Objects><Object Name=\"o1\" Size=\"1\"></Object><Object Name=\"o2\" Size=\"2\"></Object><Object Name=\"o3\" Size=\"3\"></Object></Objects>"
 
-    ds3PutObjects := []Ds3PutObject{
+    ds3PutObjects := []models.Ds3PutObject{
         {Name:"o1", Size:1},
         {Name:"o2", Size:2},
         {Name:"o3", Size:3},
@@ -72,10 +73,10 @@ func TestBuildDs3ObjectStreamFromNames(t *testing.T) {
 func TestBuildDs3GetObjectListStream(t *testing.T) {
     expected := "<Objects><Object Name=\"o1\" Length=\"10\" Offset=\"1\"></Object><Object Name=\"o2\" Length=\"20\" Offset=\"2\"></Object><Object Name=\"o3\" Length=\"30\" Offset=\"3\"></Object></Objects>"
 
-    ds3GetObjects := []Ds3GetObject {
-        NewPartialDs3GetObject("o1", 10, 1),
-        NewPartialDs3GetObject("o2", 20, 2),
-        NewPartialDs3GetObject("o3", 30, 3),
+    ds3GetObjects := []models.Ds3GetObject {
+        models.NewPartialDs3GetObject("o1", 10, 1),
+        models.NewPartialDs3GetObject("o2", 20, 2),
+        models.NewPartialDs3GetObject("o3", 30, 3),
     }
 
     contentStream := buildDs3GetObjectListStream(ds3GetObjects)

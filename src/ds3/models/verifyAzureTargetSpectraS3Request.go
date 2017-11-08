@@ -13,53 +13,19 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type VerifyAzureTargetSpectraS3Request struct {
-    azureTarget string
-    queryParams *url.Values
+    AzureTarget string
+    FullDetails bool
 }
 
 func NewVerifyAzureTargetSpectraS3Request(azureTarget string) *VerifyAzureTargetSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("operation", "verify")
-
     return &VerifyAzureTargetSpectraS3Request{
-        azureTarget: azureTarget,
-        queryParams: queryParams,
+        AzureTarget: azureTarget,
     }
 }
 
-
-
 func (verifyAzureTargetSpectraS3Request *VerifyAzureTargetSpectraS3Request) WithFullDetails() *VerifyAzureTargetSpectraS3Request {
-    verifyAzureTargetSpectraS3Request.queryParams.Set("full_details", "")
+    verifyAzureTargetSpectraS3Request.FullDetails = true
     return verifyAzureTargetSpectraS3Request
 }
 
-func (VerifyAzureTargetSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.PUT
-}
-
-func (verifyAzureTargetSpectraS3Request *VerifyAzureTargetSpectraS3Request) Path() string {
-    return "/_rest_/azure_target/" + verifyAzureTargetSpectraS3Request.azureTarget
-}
-
-func (verifyAzureTargetSpectraS3Request *VerifyAzureTargetSpectraS3Request) QueryParams() *url.Values {
-    return verifyAzureTargetSpectraS3Request.queryParams
-}
-
-func (VerifyAzureTargetSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (VerifyAzureTargetSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (VerifyAzureTargetSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

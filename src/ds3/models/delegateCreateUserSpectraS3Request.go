@@ -13,65 +13,25 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type DelegateCreateUserSpectraS3Request struct {
-    id string
-    name *string
-    secretKey *string
-    queryParams *url.Values
+    Id *string
+    Name string
+    SecretKey *string
 }
 
-func NewDelegateCreateUserSpectraS3Request(name *string) *DelegateCreateUserSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("name", *name)
-
+func NewDelegateCreateUserSpectraS3Request(name string) *DelegateCreateUserSpectraS3Request {
     return &DelegateCreateUserSpectraS3Request{
-        name: name,
-        queryParams: queryParams,
+        Name: name,
     }
 }
 
 func (delegateCreateUserSpectraS3Request *DelegateCreateUserSpectraS3Request) WithId(id string) *DelegateCreateUserSpectraS3Request {
-    delegateCreateUserSpectraS3Request.id = id
-    delegateCreateUserSpectraS3Request.queryParams.Set("id", id)
+    delegateCreateUserSpectraS3Request.Id = &id
     return delegateCreateUserSpectraS3Request
 }
 
-func (delegateCreateUserSpectraS3Request *DelegateCreateUserSpectraS3Request) WithSecretKey(secretKey *string) *DelegateCreateUserSpectraS3Request {
-    delegateCreateUserSpectraS3Request.secretKey = secretKey
-    if secretKey != nil {
-        delegateCreateUserSpectraS3Request.queryParams.Set("secret_key", *secretKey)
-    } else {
-        delegateCreateUserSpectraS3Request.queryParams.Set("secret_key", "")
-    }
+func (delegateCreateUserSpectraS3Request *DelegateCreateUserSpectraS3Request) WithSecretKey(secretKey string) *DelegateCreateUserSpectraS3Request {
+    delegateCreateUserSpectraS3Request.SecretKey = &secretKey
     return delegateCreateUserSpectraS3Request
 }
 
-
-func (DelegateCreateUserSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.POST
-}
-
-func (delegateCreateUserSpectraS3Request *DelegateCreateUserSpectraS3Request) Path() string {
-    return "/_rest_/user"
-}
-
-func (delegateCreateUserSpectraS3Request *DelegateCreateUserSpectraS3Request) QueryParams() *url.Values {
-    return delegateCreateUserSpectraS3Request.queryParams
-}
-
-func (DelegateCreateUserSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (DelegateCreateUserSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (DelegateCreateUserSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

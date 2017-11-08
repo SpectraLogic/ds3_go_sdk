@@ -13,52 +13,15 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type PutPoolPartitionSpectraS3Request struct {
-    name *string
-    poolType PoolType
-    queryParams *url.Values
+    Name string
+    PoolType PoolType
 }
 
-func NewPutPoolPartitionSpectraS3Request(name *string, poolType PoolType) *PutPoolPartitionSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("name", *name)
-    queryParams.Set("type", poolType.String())
-
+func NewPutPoolPartitionSpectraS3Request(name string, poolType PoolType) *PutPoolPartitionSpectraS3Request {
     return &PutPoolPartitionSpectraS3Request{
-        name: name,
-        poolType: poolType,
-        queryParams: queryParams,
+        Name: name,
+        PoolType: poolType,
     }
 }
 
-
-
-
-func (PutPoolPartitionSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.POST
-}
-
-func (putPoolPartitionSpectraS3Request *PutPoolPartitionSpectraS3Request) Path() string {
-    return "/_rest_/pool_partition"
-}
-
-func (putPoolPartitionSpectraS3Request *PutPoolPartitionSpectraS3Request) QueryParams() *url.Values {
-    return putPoolPartitionSpectraS3Request.queryParams
-}
-
-func (PutPoolPartitionSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (PutPoolPartitionSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (PutPoolPartitionSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

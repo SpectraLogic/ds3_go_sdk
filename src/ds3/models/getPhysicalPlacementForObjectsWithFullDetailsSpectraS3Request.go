@@ -13,58 +13,21 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type GetPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request struct {
-    bucketName string
-    content networking.ReaderWithSizeDecorator
-    storageDomainId string
-    queryParams *url.Values
+    BucketName string
+    ObjectNames []string
+    StorageDomainId *string
 }
 
 func NewGetPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request(bucketName string, objectNames []string) *GetPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("operation", "get_physical_placement")
-    queryParams.Set("full_details", "")
-
     return &GetPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request{
-        bucketName: bucketName,
-        content: buildDs3ObjectStreamFromNames(objectNames),
-        queryParams: queryParams,
+        BucketName: bucketName,
+        ObjectNames: objectNames,
     }
 }
 
 func (getPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request *GetPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request) WithStorageDomainId(storageDomainId string) *GetPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request {
-    getPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request.storageDomainId = storageDomainId
-    getPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request.queryParams.Set("storage_domain_id", storageDomainId)
+    getPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request.StorageDomainId = &storageDomainId
     return getPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request
 }
 
-
-
-func (GetPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.PUT
-}
-
-func (getPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request *GetPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request) Path() string {
-    return "/_rest_/bucket/" + getPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request.bucketName
-}
-
-func (getPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request *GetPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request) QueryParams() *url.Values {
-    return getPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request.queryParams
-}
-
-func (GetPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (getPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request *GetPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return getPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request.content
-}

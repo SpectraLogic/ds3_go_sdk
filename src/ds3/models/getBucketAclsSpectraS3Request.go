@@ -13,93 +13,59 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-    "strconv"
-)
-
 type GetBucketAclsSpectraS3Request struct {
-    bucketId string
-    groupId string
-    pageLength int
-    pageOffset int
-    pageStartMarker string
-    permission BucketAclPermission
-    userId string
-    queryParams *url.Values
+    BucketId *string
+    GroupId *string
+    LastPage bool
+    PageLength *int
+    PageOffset *int
+    PageStartMarker *string
+    Permission BucketAclPermission
+    UserId *string
 }
 
 func NewGetBucketAclsSpectraS3Request() *GetBucketAclsSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetBucketAclsSpectraS3Request{
-        queryParams: queryParams,
     }
 }
 
 func (getBucketAclsSpectraS3Request *GetBucketAclsSpectraS3Request) WithBucketId(bucketId string) *GetBucketAclsSpectraS3Request {
-    getBucketAclsSpectraS3Request.bucketId = bucketId
-    getBucketAclsSpectraS3Request.queryParams.Set("bucket_id", bucketId)
-    return getBucketAclsSpectraS3Request
-}
-func (getBucketAclsSpectraS3Request *GetBucketAclsSpectraS3Request) WithGroupId(groupId string) *GetBucketAclsSpectraS3Request {
-    getBucketAclsSpectraS3Request.groupId = groupId
-    getBucketAclsSpectraS3Request.queryParams.Set("group_id", groupId)
-    return getBucketAclsSpectraS3Request
-}
-func (getBucketAclsSpectraS3Request *GetBucketAclsSpectraS3Request) WithPageLength(pageLength int) *GetBucketAclsSpectraS3Request {
-    getBucketAclsSpectraS3Request.pageLength = pageLength
-    getBucketAclsSpectraS3Request.queryParams.Set("page_length", strconv.Itoa(pageLength))
-    return getBucketAclsSpectraS3Request
-}
-func (getBucketAclsSpectraS3Request *GetBucketAclsSpectraS3Request) WithPageOffset(pageOffset int) *GetBucketAclsSpectraS3Request {
-    getBucketAclsSpectraS3Request.pageOffset = pageOffset
-    getBucketAclsSpectraS3Request.queryParams.Set("page_offset", strconv.Itoa(pageOffset))
-    return getBucketAclsSpectraS3Request
-}
-func (getBucketAclsSpectraS3Request *GetBucketAclsSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetBucketAclsSpectraS3Request {
-    getBucketAclsSpectraS3Request.pageStartMarker = pageStartMarker
-    getBucketAclsSpectraS3Request.queryParams.Set("page_start_marker", pageStartMarker)
-    return getBucketAclsSpectraS3Request
-}
-func (getBucketAclsSpectraS3Request *GetBucketAclsSpectraS3Request) WithPermission(permission BucketAclPermission) *GetBucketAclsSpectraS3Request {
-    getBucketAclsSpectraS3Request.permission = permission
-    getBucketAclsSpectraS3Request.queryParams.Set("permission", permission.String())
-    return getBucketAclsSpectraS3Request
-}
-func (getBucketAclsSpectraS3Request *GetBucketAclsSpectraS3Request) WithUserId(userId string) *GetBucketAclsSpectraS3Request {
-    getBucketAclsSpectraS3Request.userId = userId
-    getBucketAclsSpectraS3Request.queryParams.Set("user_id", userId)
+    getBucketAclsSpectraS3Request.BucketId = &bucketId
     return getBucketAclsSpectraS3Request
 }
 
+func (getBucketAclsSpectraS3Request *GetBucketAclsSpectraS3Request) WithGroupId(groupId string) *GetBucketAclsSpectraS3Request {
+    getBucketAclsSpectraS3Request.GroupId = &groupId
+    return getBucketAclsSpectraS3Request
+}
 
 func (getBucketAclsSpectraS3Request *GetBucketAclsSpectraS3Request) WithLastPage() *GetBucketAclsSpectraS3Request {
-    getBucketAclsSpectraS3Request.queryParams.Set("last_page", "")
+    getBucketAclsSpectraS3Request.LastPage = true
     return getBucketAclsSpectraS3Request
 }
 
-func (GetBucketAclsSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
+func (getBucketAclsSpectraS3Request *GetBucketAclsSpectraS3Request) WithPageLength(pageLength int) *GetBucketAclsSpectraS3Request {
+    getBucketAclsSpectraS3Request.PageLength = &pageLength
+    return getBucketAclsSpectraS3Request
 }
 
-func (getBucketAclsSpectraS3Request *GetBucketAclsSpectraS3Request) Path() string {
-    return "/_rest_/bucket_acl"
+func (getBucketAclsSpectraS3Request *GetBucketAclsSpectraS3Request) WithPageOffset(pageOffset int) *GetBucketAclsSpectraS3Request {
+    getBucketAclsSpectraS3Request.PageOffset = &pageOffset
+    return getBucketAclsSpectraS3Request
 }
 
-func (getBucketAclsSpectraS3Request *GetBucketAclsSpectraS3Request) QueryParams() *url.Values {
-    return getBucketAclsSpectraS3Request.queryParams
+func (getBucketAclsSpectraS3Request *GetBucketAclsSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetBucketAclsSpectraS3Request {
+    getBucketAclsSpectraS3Request.PageStartMarker = &pageStartMarker
+    return getBucketAclsSpectraS3Request
 }
 
-func (GetBucketAclsSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetBucketAclsSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
+func (getBucketAclsSpectraS3Request *GetBucketAclsSpectraS3Request) WithPermission(permission BucketAclPermission) *GetBucketAclsSpectraS3Request {
+    getBucketAclsSpectraS3Request.Permission = permission
+    return getBucketAclsSpectraS3Request
 }
 
-func (GetBucketAclsSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
+func (getBucketAclsSpectraS3Request *GetBucketAclsSpectraS3Request) WithUserId(userId string) *GetBucketAclsSpectraS3Request {
+    getBucketAclsSpectraS3Request.UserId = &userId
+    return getBucketAclsSpectraS3Request
 }
+

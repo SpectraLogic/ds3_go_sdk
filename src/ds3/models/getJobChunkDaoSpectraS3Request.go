@@ -13,48 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type GetJobChunkDaoSpectraS3Request struct {
-    jobChunkDao string
-    queryParams *url.Values
+    JobChunkDao string
 }
 
 func NewGetJobChunkDaoSpectraS3Request(jobChunkDao string) *GetJobChunkDaoSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetJobChunkDaoSpectraS3Request{
-        jobChunkDao: jobChunkDao,
-        queryParams: queryParams,
+        JobChunkDao: jobChunkDao,
     }
 }
 
-
-
-
-func (GetJobChunkDaoSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
-}
-
-func (getJobChunkDaoSpectraS3Request *GetJobChunkDaoSpectraS3Request) Path() string {
-    return "/_rest_/job_chunk_dao/" + getJobChunkDaoSpectraS3Request.jobChunkDao
-}
-
-func (getJobChunkDaoSpectraS3Request *GetJobChunkDaoSpectraS3Request) QueryParams() *url.Values {
-    return getJobChunkDaoSpectraS3Request.queryParams
-}
-
-func (GetJobChunkDaoSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetJobChunkDaoSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (GetJobChunkDaoSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

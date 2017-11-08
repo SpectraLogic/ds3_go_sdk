@@ -13,87 +13,53 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-    "strconv"
-)
-
 type GetDataPolicyAclsSpectraS3Request struct {
-    dataPolicyId string
-    groupId string
-    pageLength int
-    pageOffset int
-    pageStartMarker string
-    userId string
-    queryParams *url.Values
+    DataPolicyId *string
+    GroupId *string
+    LastPage bool
+    PageLength *int
+    PageOffset *int
+    PageStartMarker *string
+    UserId *string
 }
 
 func NewGetDataPolicyAclsSpectraS3Request() *GetDataPolicyAclsSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetDataPolicyAclsSpectraS3Request{
-        queryParams: queryParams,
     }
 }
 
 func (getDataPolicyAclsSpectraS3Request *GetDataPolicyAclsSpectraS3Request) WithDataPolicyId(dataPolicyId string) *GetDataPolicyAclsSpectraS3Request {
-    getDataPolicyAclsSpectraS3Request.dataPolicyId = dataPolicyId
-    getDataPolicyAclsSpectraS3Request.queryParams.Set("data_policy_id", dataPolicyId)
-    return getDataPolicyAclsSpectraS3Request
-}
-func (getDataPolicyAclsSpectraS3Request *GetDataPolicyAclsSpectraS3Request) WithGroupId(groupId string) *GetDataPolicyAclsSpectraS3Request {
-    getDataPolicyAclsSpectraS3Request.groupId = groupId
-    getDataPolicyAclsSpectraS3Request.queryParams.Set("group_id", groupId)
-    return getDataPolicyAclsSpectraS3Request
-}
-func (getDataPolicyAclsSpectraS3Request *GetDataPolicyAclsSpectraS3Request) WithPageLength(pageLength int) *GetDataPolicyAclsSpectraS3Request {
-    getDataPolicyAclsSpectraS3Request.pageLength = pageLength
-    getDataPolicyAclsSpectraS3Request.queryParams.Set("page_length", strconv.Itoa(pageLength))
-    return getDataPolicyAclsSpectraS3Request
-}
-func (getDataPolicyAclsSpectraS3Request *GetDataPolicyAclsSpectraS3Request) WithPageOffset(pageOffset int) *GetDataPolicyAclsSpectraS3Request {
-    getDataPolicyAclsSpectraS3Request.pageOffset = pageOffset
-    getDataPolicyAclsSpectraS3Request.queryParams.Set("page_offset", strconv.Itoa(pageOffset))
-    return getDataPolicyAclsSpectraS3Request
-}
-func (getDataPolicyAclsSpectraS3Request *GetDataPolicyAclsSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetDataPolicyAclsSpectraS3Request {
-    getDataPolicyAclsSpectraS3Request.pageStartMarker = pageStartMarker
-    getDataPolicyAclsSpectraS3Request.queryParams.Set("page_start_marker", pageStartMarker)
-    return getDataPolicyAclsSpectraS3Request
-}
-func (getDataPolicyAclsSpectraS3Request *GetDataPolicyAclsSpectraS3Request) WithUserId(userId string) *GetDataPolicyAclsSpectraS3Request {
-    getDataPolicyAclsSpectraS3Request.userId = userId
-    getDataPolicyAclsSpectraS3Request.queryParams.Set("user_id", userId)
+    getDataPolicyAclsSpectraS3Request.DataPolicyId = &dataPolicyId
     return getDataPolicyAclsSpectraS3Request
 }
 
+func (getDataPolicyAclsSpectraS3Request *GetDataPolicyAclsSpectraS3Request) WithGroupId(groupId string) *GetDataPolicyAclsSpectraS3Request {
+    getDataPolicyAclsSpectraS3Request.GroupId = &groupId
+    return getDataPolicyAclsSpectraS3Request
+}
 
 func (getDataPolicyAclsSpectraS3Request *GetDataPolicyAclsSpectraS3Request) WithLastPage() *GetDataPolicyAclsSpectraS3Request {
-    getDataPolicyAclsSpectraS3Request.queryParams.Set("last_page", "")
+    getDataPolicyAclsSpectraS3Request.LastPage = true
     return getDataPolicyAclsSpectraS3Request
 }
 
-func (GetDataPolicyAclsSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
+func (getDataPolicyAclsSpectraS3Request *GetDataPolicyAclsSpectraS3Request) WithPageLength(pageLength int) *GetDataPolicyAclsSpectraS3Request {
+    getDataPolicyAclsSpectraS3Request.PageLength = &pageLength
+    return getDataPolicyAclsSpectraS3Request
 }
 
-func (getDataPolicyAclsSpectraS3Request *GetDataPolicyAclsSpectraS3Request) Path() string {
-    return "/_rest_/data_policy_acl"
+func (getDataPolicyAclsSpectraS3Request *GetDataPolicyAclsSpectraS3Request) WithPageOffset(pageOffset int) *GetDataPolicyAclsSpectraS3Request {
+    getDataPolicyAclsSpectraS3Request.PageOffset = &pageOffset
+    return getDataPolicyAclsSpectraS3Request
 }
 
-func (getDataPolicyAclsSpectraS3Request *GetDataPolicyAclsSpectraS3Request) QueryParams() *url.Values {
-    return getDataPolicyAclsSpectraS3Request.queryParams
+func (getDataPolicyAclsSpectraS3Request *GetDataPolicyAclsSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetDataPolicyAclsSpectraS3Request {
+    getDataPolicyAclsSpectraS3Request.PageStartMarker = &pageStartMarker
+    return getDataPolicyAclsSpectraS3Request
 }
 
-func (GetDataPolicyAclsSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetDataPolicyAclsSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
+func (getDataPolicyAclsSpectraS3Request *GetDataPolicyAclsSpectraS3Request) WithUserId(userId string) *GetDataPolicyAclsSpectraS3Request {
+    getDataPolicyAclsSpectraS3Request.UserId = &userId
+    return getDataPolicyAclsSpectraS3Request
 }
 
-func (GetDataPolicyAclsSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

@@ -13,50 +13,15 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type HeadObjectRequest struct {
-    bucketName string
-    objectName string
-    queryParams *url.Values
+    BucketName string
+    ObjectName string
 }
 
 func NewHeadObjectRequest(bucketName string, objectName string) *HeadObjectRequest {
-    queryParams := &url.Values{}
-
     return &HeadObjectRequest{
-        bucketName: bucketName,
-        objectName: objectName,
-        queryParams: queryParams,
+        BucketName: bucketName,
+        ObjectName: objectName,
     }
 }
 
-
-
-
-func (HeadObjectRequest) Verb() networking.HttpVerb {
-    return networking.HEAD
-}
-
-func (headObjectRequest *HeadObjectRequest) Path() string {
-    return "/" + headObjectRequest.bucketName + "/" + headObjectRequest.objectName
-}
-
-func (headObjectRequest *HeadObjectRequest) QueryParams() *url.Values {
-    return headObjectRequest.queryParams
-}
-
-func (HeadObjectRequest) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (HeadObjectRequest) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (HeadObjectRequest) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

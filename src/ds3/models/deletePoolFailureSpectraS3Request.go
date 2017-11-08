@@ -13,48 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type DeletePoolFailureSpectraS3Request struct {
-    poolFailure string
-    queryParams *url.Values
+    PoolFailure string
 }
 
 func NewDeletePoolFailureSpectraS3Request(poolFailure string) *DeletePoolFailureSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &DeletePoolFailureSpectraS3Request{
-        poolFailure: poolFailure,
-        queryParams: queryParams,
+        PoolFailure: poolFailure,
     }
 }
 
-
-
-
-func (DeletePoolFailureSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.DELETE
-}
-
-func (deletePoolFailureSpectraS3Request *DeletePoolFailureSpectraS3Request) Path() string {
-    return "/_rest_/pool_failure/" + deletePoolFailureSpectraS3Request.poolFailure
-}
-
-func (deletePoolFailureSpectraS3Request *DeletePoolFailureSpectraS3Request) QueryParams() *url.Values {
-    return deletePoolFailureSpectraS3Request.queryParams
-}
-
-func (DeletePoolFailureSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (DeletePoolFailureSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (DeletePoolFailureSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

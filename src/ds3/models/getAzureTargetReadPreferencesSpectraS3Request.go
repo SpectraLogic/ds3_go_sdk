@@ -13,87 +13,53 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-    "strconv"
-)
-
 type GetAzureTargetReadPreferencesSpectraS3Request struct {
-    bucketId string
-    pageLength int
-    pageOffset int
-    pageStartMarker string
-    readPreference TargetReadPreferenceType
-    targetId string
-    queryParams *url.Values
+    BucketId *string
+    LastPage bool
+    PageLength *int
+    PageOffset *int
+    PageStartMarker *string
+    ReadPreference TargetReadPreferenceType
+    TargetId *string
 }
 
 func NewGetAzureTargetReadPreferencesSpectraS3Request() *GetAzureTargetReadPreferencesSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetAzureTargetReadPreferencesSpectraS3Request{
-        queryParams: queryParams,
     }
 }
 
 func (getAzureTargetReadPreferencesSpectraS3Request *GetAzureTargetReadPreferencesSpectraS3Request) WithBucketId(bucketId string) *GetAzureTargetReadPreferencesSpectraS3Request {
-    getAzureTargetReadPreferencesSpectraS3Request.bucketId = bucketId
-    getAzureTargetReadPreferencesSpectraS3Request.queryParams.Set("bucket_id", bucketId)
+    getAzureTargetReadPreferencesSpectraS3Request.BucketId = &bucketId
     return getAzureTargetReadPreferencesSpectraS3Request
 }
-func (getAzureTargetReadPreferencesSpectraS3Request *GetAzureTargetReadPreferencesSpectraS3Request) WithPageLength(pageLength int) *GetAzureTargetReadPreferencesSpectraS3Request {
-    getAzureTargetReadPreferencesSpectraS3Request.pageLength = pageLength
-    getAzureTargetReadPreferencesSpectraS3Request.queryParams.Set("page_length", strconv.Itoa(pageLength))
-    return getAzureTargetReadPreferencesSpectraS3Request
-}
-func (getAzureTargetReadPreferencesSpectraS3Request *GetAzureTargetReadPreferencesSpectraS3Request) WithPageOffset(pageOffset int) *GetAzureTargetReadPreferencesSpectraS3Request {
-    getAzureTargetReadPreferencesSpectraS3Request.pageOffset = pageOffset
-    getAzureTargetReadPreferencesSpectraS3Request.queryParams.Set("page_offset", strconv.Itoa(pageOffset))
-    return getAzureTargetReadPreferencesSpectraS3Request
-}
-func (getAzureTargetReadPreferencesSpectraS3Request *GetAzureTargetReadPreferencesSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetAzureTargetReadPreferencesSpectraS3Request {
-    getAzureTargetReadPreferencesSpectraS3Request.pageStartMarker = pageStartMarker
-    getAzureTargetReadPreferencesSpectraS3Request.queryParams.Set("page_start_marker", pageStartMarker)
-    return getAzureTargetReadPreferencesSpectraS3Request
-}
-func (getAzureTargetReadPreferencesSpectraS3Request *GetAzureTargetReadPreferencesSpectraS3Request) WithReadPreference(readPreference TargetReadPreferenceType) *GetAzureTargetReadPreferencesSpectraS3Request {
-    getAzureTargetReadPreferencesSpectraS3Request.readPreference = readPreference
-    getAzureTargetReadPreferencesSpectraS3Request.queryParams.Set("read_preference", readPreference.String())
-    return getAzureTargetReadPreferencesSpectraS3Request
-}
-func (getAzureTargetReadPreferencesSpectraS3Request *GetAzureTargetReadPreferencesSpectraS3Request) WithTargetId(targetId string) *GetAzureTargetReadPreferencesSpectraS3Request {
-    getAzureTargetReadPreferencesSpectraS3Request.targetId = targetId
-    getAzureTargetReadPreferencesSpectraS3Request.queryParams.Set("target_id", targetId)
-    return getAzureTargetReadPreferencesSpectraS3Request
-}
-
 
 func (getAzureTargetReadPreferencesSpectraS3Request *GetAzureTargetReadPreferencesSpectraS3Request) WithLastPage() *GetAzureTargetReadPreferencesSpectraS3Request {
-    getAzureTargetReadPreferencesSpectraS3Request.queryParams.Set("last_page", "")
+    getAzureTargetReadPreferencesSpectraS3Request.LastPage = true
     return getAzureTargetReadPreferencesSpectraS3Request
 }
 
-func (GetAzureTargetReadPreferencesSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
+func (getAzureTargetReadPreferencesSpectraS3Request *GetAzureTargetReadPreferencesSpectraS3Request) WithPageLength(pageLength int) *GetAzureTargetReadPreferencesSpectraS3Request {
+    getAzureTargetReadPreferencesSpectraS3Request.PageLength = &pageLength
+    return getAzureTargetReadPreferencesSpectraS3Request
 }
 
-func (getAzureTargetReadPreferencesSpectraS3Request *GetAzureTargetReadPreferencesSpectraS3Request) Path() string {
-    return "/_rest_/azure_target_read_preference"
+func (getAzureTargetReadPreferencesSpectraS3Request *GetAzureTargetReadPreferencesSpectraS3Request) WithPageOffset(pageOffset int) *GetAzureTargetReadPreferencesSpectraS3Request {
+    getAzureTargetReadPreferencesSpectraS3Request.PageOffset = &pageOffset
+    return getAzureTargetReadPreferencesSpectraS3Request
 }
 
-func (getAzureTargetReadPreferencesSpectraS3Request *GetAzureTargetReadPreferencesSpectraS3Request) QueryParams() *url.Values {
-    return getAzureTargetReadPreferencesSpectraS3Request.queryParams
+func (getAzureTargetReadPreferencesSpectraS3Request *GetAzureTargetReadPreferencesSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetAzureTargetReadPreferencesSpectraS3Request {
+    getAzureTargetReadPreferencesSpectraS3Request.PageStartMarker = &pageStartMarker
+    return getAzureTargetReadPreferencesSpectraS3Request
 }
 
-func (GetAzureTargetReadPreferencesSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetAzureTargetReadPreferencesSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
+func (getAzureTargetReadPreferencesSpectraS3Request *GetAzureTargetReadPreferencesSpectraS3Request) WithReadPreference(readPreference TargetReadPreferenceType) *GetAzureTargetReadPreferencesSpectraS3Request {
+    getAzureTargetReadPreferencesSpectraS3Request.ReadPreference = readPreference
+    return getAzureTargetReadPreferencesSpectraS3Request
 }
 
-func (GetAzureTargetReadPreferencesSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
+func (getAzureTargetReadPreferencesSpectraS3Request *GetAzureTargetReadPreferencesSpectraS3Request) WithTargetId(targetId string) *GetAzureTargetReadPreferencesSpectraS3Request {
+    getAzureTargetReadPreferencesSpectraS3Request.TargetId = &targetId
+    return getAzureTargetReadPreferencesSpectraS3Request
 }
+

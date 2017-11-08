@@ -13,90 +13,53 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-    "strconv"
-)
-
 type ImportAllPoolsSpectraS3Request struct {
-    conflictResolutionMode ImportConflictResolutionMode
-    dataPolicyId string
-    priority Priority
-    storageDomainId string
-    userId string
-    verifyDataAfterImport Priority
-    verifyDataPriorToImport bool
-    queryParams *url.Values
+    ConflictResolutionMode ImportConflictResolutionMode
+    DataPolicyId *string
+    Priority Priority
+    StorageDomainId *string
+    UserId *string
+    VerifyDataAfterImport Priority
+    VerifyDataPriorToImport *bool
 }
 
 func NewImportAllPoolsSpectraS3Request() *ImportAllPoolsSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("operation", "import")
-
     return &ImportAllPoolsSpectraS3Request{
-        queryParams: queryParams,
     }
 }
 
 func (importAllPoolsSpectraS3Request *ImportAllPoolsSpectraS3Request) WithConflictResolutionMode(conflictResolutionMode ImportConflictResolutionMode) *ImportAllPoolsSpectraS3Request {
-    importAllPoolsSpectraS3Request.conflictResolutionMode = conflictResolutionMode
-    importAllPoolsSpectraS3Request.queryParams.Set("conflict_resolution_mode", conflictResolutionMode.String())
+    importAllPoolsSpectraS3Request.ConflictResolutionMode = conflictResolutionMode
     return importAllPoolsSpectraS3Request
 }
+
 func (importAllPoolsSpectraS3Request *ImportAllPoolsSpectraS3Request) WithDataPolicyId(dataPolicyId string) *ImportAllPoolsSpectraS3Request {
-    importAllPoolsSpectraS3Request.dataPolicyId = dataPolicyId
-    importAllPoolsSpectraS3Request.queryParams.Set("data_policy_id", dataPolicyId)
+    importAllPoolsSpectraS3Request.DataPolicyId = &dataPolicyId
     return importAllPoolsSpectraS3Request
 }
+
 func (importAllPoolsSpectraS3Request *ImportAllPoolsSpectraS3Request) WithPriority(priority Priority) *ImportAllPoolsSpectraS3Request {
-    importAllPoolsSpectraS3Request.priority = priority
-    importAllPoolsSpectraS3Request.queryParams.Set("priority", priority.String())
+    importAllPoolsSpectraS3Request.Priority = priority
     return importAllPoolsSpectraS3Request
 }
+
 func (importAllPoolsSpectraS3Request *ImportAllPoolsSpectraS3Request) WithStorageDomainId(storageDomainId string) *ImportAllPoolsSpectraS3Request {
-    importAllPoolsSpectraS3Request.storageDomainId = storageDomainId
-    importAllPoolsSpectraS3Request.queryParams.Set("storage_domain_id", storageDomainId)
+    importAllPoolsSpectraS3Request.StorageDomainId = &storageDomainId
     return importAllPoolsSpectraS3Request
 }
+
 func (importAllPoolsSpectraS3Request *ImportAllPoolsSpectraS3Request) WithUserId(userId string) *ImportAllPoolsSpectraS3Request {
-    importAllPoolsSpectraS3Request.userId = userId
-    importAllPoolsSpectraS3Request.queryParams.Set("user_id", userId)
+    importAllPoolsSpectraS3Request.UserId = &userId
     return importAllPoolsSpectraS3Request
 }
+
 func (importAllPoolsSpectraS3Request *ImportAllPoolsSpectraS3Request) WithVerifyDataAfterImport(verifyDataAfterImport Priority) *ImportAllPoolsSpectraS3Request {
-    importAllPoolsSpectraS3Request.verifyDataAfterImport = verifyDataAfterImport
-    importAllPoolsSpectraS3Request.queryParams.Set("verify_data_after_import", verifyDataAfterImport.String())
+    importAllPoolsSpectraS3Request.VerifyDataAfterImport = verifyDataAfterImport
     return importAllPoolsSpectraS3Request
 }
+
 func (importAllPoolsSpectraS3Request *ImportAllPoolsSpectraS3Request) WithVerifyDataPriorToImport(verifyDataPriorToImport bool) *ImportAllPoolsSpectraS3Request {
-    importAllPoolsSpectraS3Request.verifyDataPriorToImport = verifyDataPriorToImport
-    importAllPoolsSpectraS3Request.queryParams.Set("verify_data_prior_to_import", strconv.FormatBool(verifyDataPriorToImport))
+    importAllPoolsSpectraS3Request.VerifyDataPriorToImport = &verifyDataPriorToImport
     return importAllPoolsSpectraS3Request
 }
 
-
-
-func (ImportAllPoolsSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.PUT
-}
-
-func (importAllPoolsSpectraS3Request *ImportAllPoolsSpectraS3Request) Path() string {
-    return "/_rest_/pool"
-}
-
-func (importAllPoolsSpectraS3Request *ImportAllPoolsSpectraS3Request) QueryParams() *url.Values {
-    return importAllPoolsSpectraS3Request.queryParams
-}
-
-func (ImportAllPoolsSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (ImportAllPoolsSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (ImportAllPoolsSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

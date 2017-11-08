@@ -22,3 +22,4 @@ func NewPutBucketRequest(bucketName string) *PutBucketRequest {
         BucketName: bucketName,
     }
 }
+

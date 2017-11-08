@@ -38,3 +38,4 @@ func (putAzureDataReplicationRuleSpectraS3Request *PutAzureDataReplicationRuleSp
     putAzureDataReplicationRuleSpectraS3Request.ReplicateDeletes = &replicateDeletes
     return putAzureDataReplicationRuleSpectraS3Request
 }
+

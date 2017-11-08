@@ -28,3 +28,4 @@ func NewCompleteMultiPartUploadRequest(bucketName string, objectName string, par
         Parts: parts,
     }
 }
+

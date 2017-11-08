@@ -13,62 +13,25 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type RawImportAllTapesSpectraS3Request struct {
-    bucketId string
-    storageDomainId string
-    taskPriority Priority
-    queryParams *url.Values
+    BucketId string
+    StorageDomainId *string
+    TaskPriority Priority
 }
 
 func NewRawImportAllTapesSpectraS3Request(bucketId string) *RawImportAllTapesSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("operation", "import")
-    queryParams.Set("bucket_id", bucketId)
-
     return &RawImportAllTapesSpectraS3Request{
-        bucketId: bucketId,
-        queryParams: queryParams,
+        BucketId: bucketId,
     }
 }
 
 func (rawImportAllTapesSpectraS3Request *RawImportAllTapesSpectraS3Request) WithStorageDomainId(storageDomainId string) *RawImportAllTapesSpectraS3Request {
-    rawImportAllTapesSpectraS3Request.storageDomainId = storageDomainId
-    rawImportAllTapesSpectraS3Request.queryParams.Set("storage_domain_id", storageDomainId)
+    rawImportAllTapesSpectraS3Request.StorageDomainId = &storageDomainId
     return rawImportAllTapesSpectraS3Request
 }
+
 func (rawImportAllTapesSpectraS3Request *RawImportAllTapesSpectraS3Request) WithTaskPriority(taskPriority Priority) *RawImportAllTapesSpectraS3Request {
-    rawImportAllTapesSpectraS3Request.taskPriority = taskPriority
-    rawImportAllTapesSpectraS3Request.queryParams.Set("task_priority", taskPriority.String())
+    rawImportAllTapesSpectraS3Request.TaskPriority = taskPriority
     return rawImportAllTapesSpectraS3Request
 }
 
-
-
-func (RawImportAllTapesSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.PUT
-}
-
-func (rawImportAllTapesSpectraS3Request *RawImportAllTapesSpectraS3Request) Path() string {
-    return "/_rest_/tape"
-}
-
-func (rawImportAllTapesSpectraS3Request *RawImportAllTapesSpectraS3Request) QueryParams() *url.Values {
-    return rawImportAllTapesSpectraS3Request.queryParams
-}
-
-func (RawImportAllTapesSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (RawImportAllTapesSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (RawImportAllTapesSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

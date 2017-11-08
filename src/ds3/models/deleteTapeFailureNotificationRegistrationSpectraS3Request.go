@@ -13,48 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type DeleteTapeFailureNotificationRegistrationSpectraS3Request struct {
-    notificationId string
-    queryParams *url.Values
+    NotificationId string
 }
 
 func NewDeleteTapeFailureNotificationRegistrationSpectraS3Request(notificationId string) *DeleteTapeFailureNotificationRegistrationSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &DeleteTapeFailureNotificationRegistrationSpectraS3Request{
-        notificationId: notificationId,
-        queryParams: queryParams,
+        NotificationId: notificationId,
     }
 }
 
-
-
-
-func (DeleteTapeFailureNotificationRegistrationSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.DELETE
-}
-
-func (deleteTapeFailureNotificationRegistrationSpectraS3Request *DeleteTapeFailureNotificationRegistrationSpectraS3Request) Path() string {
-    return "/_rest_/tape_failure_notification_registration/" + deleteTapeFailureNotificationRegistrationSpectraS3Request.notificationId
-}
-
-func (deleteTapeFailureNotificationRegistrationSpectraS3Request *DeleteTapeFailureNotificationRegistrationSpectraS3Request) QueryParams() *url.Values {
-    return deleteTapeFailureNotificationRegistrationSpectraS3Request.queryParams
-}
-
-func (DeleteTapeFailureNotificationRegistrationSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (DeleteTapeFailureNotificationRegistrationSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (DeleteTapeFailureNotificationRegistrationSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

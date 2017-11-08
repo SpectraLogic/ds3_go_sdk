@@ -13,46 +13,11 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type VerifySystemHealthSpectraS3Request struct {
-    queryParams *url.Values
 }
 
 func NewVerifySystemHealthSpectraS3Request() *VerifySystemHealthSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &VerifySystemHealthSpectraS3Request{
-        queryParams: queryParams,
     }
 }
 
-
-
-
-func (VerifySystemHealthSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
-}
-
-func (verifySystemHealthSpectraS3Request *VerifySystemHealthSpectraS3Request) Path() string {
-    return "/_rest_/system_health"
-}
-
-func (verifySystemHealthSpectraS3Request *VerifySystemHealthSpectraS3Request) QueryParams() *url.Values {
-    return verifySystemHealthSpectraS3Request.queryParams
-}
-
-func (VerifySystemHealthSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (VerifySystemHealthSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (VerifySystemHealthSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}
