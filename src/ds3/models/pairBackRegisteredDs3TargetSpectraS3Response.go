@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -25,7 +24,7 @@ type PairBackRegisteredDs3TargetSpectraS3Response struct {
 
 
 
-func NewPairBackRegisteredDs3TargetSpectraS3Response(webResponse networking.WebResponse) (*PairBackRegisteredDs3TargetSpectraS3Response, error) {
+func NewPairBackRegisteredDs3TargetSpectraS3Response(webResponse WebResponse) (*PairBackRegisteredDs3TargetSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {

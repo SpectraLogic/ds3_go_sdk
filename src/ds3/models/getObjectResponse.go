@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
     "io"
 )
@@ -26,7 +25,7 @@ type GetObjectResponse struct {
 
 
 
-func NewGetObjectResponse(webResponse networking.WebResponse) (*GetObjectResponse, error) {
+func NewGetObjectResponse(webResponse WebResponse) (*GetObjectResponse, error) {
     expectedStatusCodes := []int { 200, 206 }
 
     switch code := webResponse.StatusCode(); code {

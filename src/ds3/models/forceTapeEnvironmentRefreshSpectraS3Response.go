@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -25,7 +24,7 @@ type ForceTapeEnvironmentRefreshSpectraS3Response struct {
 
 
 
-func NewForceTapeEnvironmentRefreshSpectraS3Response(webResponse networking.WebResponse) (*ForceTapeEnvironmentRefreshSpectraS3Response, error) {
+func NewForceTapeEnvironmentRefreshSpectraS3Response(webResponse WebResponse) (*ForceTapeEnvironmentRefreshSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {

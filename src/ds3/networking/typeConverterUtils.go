@@ -1,6 +1,8 @@
 package networking
 
-import "strconv"
+import (
+    "strconv"
+)
 
 // Contains utils for converting pointers to primitives into string pointers.
 // Used to handle conversions of request handler optional parameters into
@@ -43,15 +45,14 @@ func Float64PtrToStrPtr(float *float64) *string {
 }
 
 // Interface for a to string method
-type ToStringInterface interface {
-    String() string
+type ToStringPtrInterface interface {
+    StringPtr() *string
 }
 
 // Converts an item that meets the ToStringInterface into a *string
-func InterfaceToStrPtr(item ToStringInterface) *string {
+func InterfaceToStrPtr(item ToStringPtrInterface) *string {
     if item == nil {
         return nil
     }
-    str := item.String()
-    return &str
+    return item.StringPtr()
 }

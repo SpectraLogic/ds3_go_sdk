@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -23,11 +22,11 @@ type RegenerateUserSecretKeySpectraS3Response struct {
     Headers *http.Header
 }
 
-func (regenerateUserSecretKeySpectraS3Response *RegenerateUserSecretKeySpectraS3Response) parse(webResponse networking.WebResponse) error {
+func (regenerateUserSecretKeySpectraS3Response *RegenerateUserSecretKeySpectraS3Response) parse(webResponse WebResponse) error {
         return parseResponsePayload(webResponse, &regenerateUserSecretKeySpectraS3Response.SpectraUser)
 }
 
-func NewRegenerateUserSecretKeySpectraS3Response(webResponse networking.WebResponse) (*RegenerateUserSecretKeySpectraS3Response, error) {
+func NewRegenerateUserSecretKeySpectraS3Response(webResponse WebResponse) (*RegenerateUserSecretKeySpectraS3Response, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {

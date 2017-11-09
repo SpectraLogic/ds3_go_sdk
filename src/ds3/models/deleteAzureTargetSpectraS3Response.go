@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -25,7 +24,7 @@ type DeleteAzureTargetSpectraS3Response struct {
 
 
 
-func NewDeleteAzureTargetSpectraS3Response(webResponse networking.WebResponse) (*DeleteAzureTargetSpectraS3Response, error) {
+func NewDeleteAzureTargetSpectraS3Response(webResponse WebResponse) (*DeleteAzureTargetSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {

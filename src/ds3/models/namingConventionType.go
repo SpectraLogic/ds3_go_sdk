@@ -58,3 +58,11 @@ func (namingConventionType NamingConventionType) String() string {
             return ""
     }
 }
+
+func (namingConventionType NamingConventionType) StringPtr() *string {
+    if namingConventionType == UNDEFINED {
+        return nil
+    }
+    result := namingConventionType.String()
+    return &result
+}

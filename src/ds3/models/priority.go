@@ -61,3 +61,11 @@ func (priority Priority) String() string {
             return ""
     }
 }
+
+func (priority Priority) StringPtr() *string {
+    if priority == UNDEFINED {
+        return nil
+    }
+    result := priority.String()
+    return &result
+}

@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -23,11 +22,11 @@ type CloseAggregatingJobSpectraS3Response struct {
     Headers *http.Header
 }
 
-func (closeAggregatingJobSpectraS3Response *CloseAggregatingJobSpectraS3Response) parse(webResponse networking.WebResponse) error {
+func (closeAggregatingJobSpectraS3Response *CloseAggregatingJobSpectraS3Response) parse(webResponse WebResponse) error {
         return parseResponsePayload(webResponse, &closeAggregatingJobSpectraS3Response.MasterObjectList)
 }
 
-func NewCloseAggregatingJobSpectraS3Response(webResponse networking.WebResponse) (*CloseAggregatingJobSpectraS3Response, error) {
+func NewCloseAggregatingJobSpectraS3Response(webResponse WebResponse) (*CloseAggregatingJobSpectraS3Response, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {

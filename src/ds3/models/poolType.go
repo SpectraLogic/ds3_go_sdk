@@ -49,3 +49,11 @@ func (poolType PoolType) String() string {
             return ""
     }
 }
+
+func (poolType PoolType) StringPtr() *string {
+    if poolType == UNDEFINED {
+        return nil
+    }
+    result := poolType.String()
+    return &result
+}

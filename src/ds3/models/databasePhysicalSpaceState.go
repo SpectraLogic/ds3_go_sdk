@@ -55,3 +55,11 @@ func (databasePhysicalSpaceState DatabasePhysicalSpaceState) String() string {
             return ""
     }
 }
+
+func (databasePhysicalSpaceState DatabasePhysicalSpaceState) StringPtr() *string {
+    if databasePhysicalSpaceState == UNDEFINED {
+        return nil
+    }
+    result := databasePhysicalSpaceState.String()
+    return &result
+}

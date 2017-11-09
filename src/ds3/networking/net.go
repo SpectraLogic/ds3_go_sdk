@@ -3,6 +3,7 @@ package networking
 import (
     "net/http"
     "net/url"
+    "ds3/models"
 )
 
 type ConnectionInfo struct {
@@ -17,7 +18,7 @@ type Credentials struct {
 }
 
 type Network interface {
-    Invoke(httpRequest *http.Request) (WebResponse, error)
+    Invoke(httpRequest *http.Request) (models.WebResponse, error)
 }
 
 // Performs http requests
@@ -31,12 +32,12 @@ func NewSendNetwork(connectionInfo *ConnectionInfo) Network {
     }
 }
 
-func (sendNetwork *SendNetwork) Invoke(httpRequest *http.Request) (WebResponse, error) {
+func (sendNetwork *SendNetwork) Invoke(httpRequest *http.Request) (models.WebResponse, error) {
     // Perform the request.
     httpResponse, reqErr := sendNetwork.transport.RoundTrip(httpRequest)
     if reqErr != nil {
         return nil, reqErr
     }
 
-    return &wrappedHttpResponse{httpResponse}, nil
+    return models.NewWrappedHttpResponse(httpResponse), nil
 }

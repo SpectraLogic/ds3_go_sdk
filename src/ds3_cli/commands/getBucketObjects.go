@@ -60,10 +60,10 @@ func buildRequest(args *Arguments, remainingKeys int, marker string) *models.Get
     request := models.NewGetBucketRequest(args.Bucket)
     request.WithMaxKeys(getMinInt(remainingKeys, defaultMaxKeys))
     if args.KeyPrefix != "" {
-        request.WithPrefix(&args.KeyPrefix)
+        request.WithPrefix(args.KeyPrefix)
     }
     if marker != "" {
-        request.WithMarker(&marker)
+        request.WithMarker(marker)
     }
     return request
 }

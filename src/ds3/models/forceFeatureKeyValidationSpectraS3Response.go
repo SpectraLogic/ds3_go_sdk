@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -25,7 +24,7 @@ type ForceFeatureKeyValidationSpectraS3Response struct {
 
 
 
-func NewForceFeatureKeyValidationSpectraS3Response(webResponse networking.WebResponse) (*ForceFeatureKeyValidationSpectraS3Response, error) {
+func NewForceFeatureKeyValidationSpectraS3Response(webResponse WebResponse) (*ForceFeatureKeyValidationSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {

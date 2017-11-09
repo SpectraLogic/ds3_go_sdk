@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -25,7 +24,7 @@ type PutBucketResponse struct {
 
 
 
-func NewPutBucketResponse(webResponse networking.WebResponse) (*PutBucketResponse, error) {
+func NewPutBucketResponse(webResponse WebResponse) (*PutBucketResponse, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {

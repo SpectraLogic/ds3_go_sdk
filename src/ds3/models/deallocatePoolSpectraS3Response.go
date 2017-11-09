@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -25,7 +24,7 @@ type DeallocatePoolSpectraS3Response struct {
 
 
 
-func NewDeallocatePoolSpectraS3Response(webResponse networking.WebResponse) (*DeallocatePoolSpectraS3Response, error) {
+func NewDeallocatePoolSpectraS3Response(webResponse WebResponse) (*DeallocatePoolSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {

@@ -49,3 +49,11 @@ func (importExportConfiguration ImportExportConfiguration) String() string {
             return ""
     }
 }
+
+func (importExportConfiguration ImportExportConfiguration) StringPtr() *string {
+    if importExportConfiguration == UNDEFINED {
+        return nil
+    }
+    result := importExportConfiguration.String()
+    return &result
+}

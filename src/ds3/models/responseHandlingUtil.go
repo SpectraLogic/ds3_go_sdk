@@ -12,7 +12,6 @@
 package models
 
 import (
-    "ds3/networking"
     "encoding/xml"
     "io"
     "io/ioutil"
@@ -24,7 +23,7 @@ type modelParser interface {
 
 // Parses a response payload into the specified model parser. A best effort parsing
 // is performed, and all errors that occur during parsing are captured within an aggregate error.
-func parseResponsePayload(webResponse networking.WebResponse, parsedBody modelParser) error {
+func parseResponsePayload(webResponse WebResponse, parsedBody modelParser) error {
     // Clean up the response body.
     body := webResponse.Body()
     defer body.Close()
@@ -54,7 +53,7 @@ func parseXmlTree(reader io.ReadCloser) (*XmlNode, error) {
     return &xmlNode, nil
 }
 
-func getResponseBodyAsString(webResponse networking.WebResponse) (string, error) {
+func getResponseBodyAsString(webResponse WebResponse) (string, error) {
     // Clean up the response body.
     body := webResponse.Body()
     defer body.Close()

@@ -5,6 +5,7 @@ import (
     "fmt"
     "log"
     "net/http"
+    "ds3/models"
 )
 
 type networkRetryPolicy struct {
@@ -24,7 +25,7 @@ func NewNetworkRetryDecorator(network Network, maxRetires int) (Network) {
     }
 }
 
-func (networkRetryDecorator *NetworkRetryDecorator) Invoke(httpRequest *http.Request) (WebResponse, error) {
+func (networkRetryDecorator *NetworkRetryDecorator) Invoke(httpRequest *http.Request) (models.WebResponse, error) {
     // Handle as many Network related retries as we're allowed.
     var lastErr error
     for i := 0; i <= networkRetryDecorator.policy.maxRetries; i++ {

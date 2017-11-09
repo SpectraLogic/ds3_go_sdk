@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -23,11 +22,11 @@ type GetBucketCapacitySummarySpectraS3Response struct {
     Headers *http.Header
 }
 
-func (getBucketCapacitySummarySpectraS3Response *GetBucketCapacitySummarySpectraS3Response) parse(webResponse networking.WebResponse) error {
+func (getBucketCapacitySummarySpectraS3Response *GetBucketCapacitySummarySpectraS3Response) parse(webResponse WebResponse) error {
         return parseResponsePayload(webResponse, &getBucketCapacitySummarySpectraS3Response.CapacitySummaryContainer)
 }
 
-func NewGetBucketCapacitySummarySpectraS3Response(webResponse networking.WebResponse) (*GetBucketCapacitySummarySpectraS3Response, error) {
+func NewGetBucketCapacitySummarySpectraS3Response(webResponse WebResponse) (*GetBucketCapacitySummarySpectraS3Response, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {

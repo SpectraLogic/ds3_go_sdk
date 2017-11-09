@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -25,7 +24,7 @@ type HeadObjectResponse struct {
 
 
 
-func NewHeadObjectResponse(webResponse networking.WebResponse) (*HeadObjectResponse, error) {
+func NewHeadObjectResponse(webResponse WebResponse) (*HeadObjectResponse, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {

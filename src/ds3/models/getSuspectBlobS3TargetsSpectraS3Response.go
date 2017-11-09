@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -23,11 +22,11 @@ type GetSuspectBlobS3TargetsSpectraS3Response struct {
     Headers *http.Header
 }
 
-func (getSuspectBlobS3TargetsSpectraS3Response *GetSuspectBlobS3TargetsSpectraS3Response) parse(webResponse networking.WebResponse) error {
+func (getSuspectBlobS3TargetsSpectraS3Response *GetSuspectBlobS3TargetsSpectraS3Response) parse(webResponse WebResponse) error {
         return parseResponsePayload(webResponse, &getSuspectBlobS3TargetsSpectraS3Response.SuspectBlobS3TargetList)
 }
 
-func NewGetSuspectBlobS3TargetsSpectraS3Response(webResponse networking.WebResponse) (*GetSuspectBlobS3TargetsSpectraS3Response, error) {
+func NewGetSuspectBlobS3TargetsSpectraS3Response(webResponse WebResponse) (*GetSuspectBlobS3TargetsSpectraS3Response, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {

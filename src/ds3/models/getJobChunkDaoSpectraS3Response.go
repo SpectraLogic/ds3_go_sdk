@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -23,11 +22,11 @@ type GetJobChunkDaoSpectraS3Response struct {
     Headers *http.Header
 }
 
-func (getJobChunkDaoSpectraS3Response *GetJobChunkDaoSpectraS3Response) parse(webResponse networking.WebResponse) error {
+func (getJobChunkDaoSpectraS3Response *GetJobChunkDaoSpectraS3Response) parse(webResponse WebResponse) error {
         return parseResponsePayload(webResponse, &getJobChunkDaoSpectraS3Response.JobChunk)
 }
 
-func NewGetJobChunkDaoSpectraS3Response(webResponse networking.WebResponse) (*GetJobChunkDaoSpectraS3Response, error) {
+func NewGetJobChunkDaoSpectraS3Response(webResponse WebResponse) (*GetJobChunkDaoSpectraS3Response, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {

@@ -13,8 +13,6 @@
 
 package models
 
-import "ds3"
-
 type VerifyBulkJobSpectraS3Request struct {
     BucketName string
     Aggregating *bool
@@ -27,7 +25,7 @@ func NewVerifyBulkJobSpectraS3Request(bucketName string, objectNames []string) *
 
     return &VerifyBulkJobSpectraS3Request{
         BucketName: bucketName,
-        Objects: ds3.BuildDs3GetObjectSliceFromNames(objectNames),
+        Objects: buildDs3GetObjectSliceFromNames(objectNames),
     }
 }
 

@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -25,7 +24,7 @@ type ImportAzureTargetSpectraS3Response struct {
 
 
 
-func NewImportAzureTargetSpectraS3Response(webResponse networking.WebResponse) (*ImportAzureTargetSpectraS3Response, error) {
+func NewImportAzureTargetSpectraS3Response(webResponse WebResponse) (*ImportAzureTargetSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {

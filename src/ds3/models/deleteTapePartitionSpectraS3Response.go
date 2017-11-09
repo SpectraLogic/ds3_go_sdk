@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -25,7 +24,7 @@ type DeleteTapePartitionSpectraS3Response struct {
 
 
 
-func NewDeleteTapePartitionSpectraS3Response(webResponse networking.WebResponse) (*DeleteTapePartitionSpectraS3Response, error) {
+func NewDeleteTapePartitionSpectraS3Response(webResponse WebResponse) (*DeleteTapePartitionSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {

@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -25,7 +24,7 @@ type DeleteStorageDomainFailureSpectraS3Response struct {
 
 
 
-func NewDeleteStorageDomainFailureSpectraS3Response(webResponse networking.WebResponse) (*DeleteStorageDomainFailureSpectraS3Response, error) {
+func NewDeleteStorageDomainFailureSpectraS3Response(webResponse WebResponse) (*DeleteStorageDomainFailureSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {

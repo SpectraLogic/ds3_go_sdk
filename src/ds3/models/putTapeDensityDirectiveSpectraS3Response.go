@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -23,11 +22,11 @@ type PutTapeDensityDirectiveSpectraS3Response struct {
     Headers *http.Header
 }
 
-func (putTapeDensityDirectiveSpectraS3Response *PutTapeDensityDirectiveSpectraS3Response) parse(webResponse networking.WebResponse) error {
+func (putTapeDensityDirectiveSpectraS3Response *PutTapeDensityDirectiveSpectraS3Response) parse(webResponse WebResponse) error {
         return parseResponsePayload(webResponse, &putTapeDensityDirectiveSpectraS3Response.TapeDensityDirective)
 }
 
-func NewPutTapeDensityDirectiveSpectraS3Response(webResponse networking.WebResponse) (*PutTapeDensityDirectiveSpectraS3Response, error) {
+func NewPutTapeDensityDirectiveSpectraS3Response(webResponse WebResponse) (*PutTapeDensityDirectiveSpectraS3Response, error) {
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {

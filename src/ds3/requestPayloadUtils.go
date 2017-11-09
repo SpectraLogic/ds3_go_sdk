@@ -13,24 +13,13 @@ package ds3
 
 import (
     "encoding/xml"
-    "ds3/networking"
     "bytes"
     "ds3/models"
 )
 
-// Converts a list of names into a list of Ds3GetObjects
-func BuildDs3GetObjectSliceFromNames(objectNames []string) []models.Ds3GetObject {
-    // Build the ds3 get object list entity.
-    var objects []models.Ds3GetObject
-    for _, name := range objectNames {
-        objects = append(objects, models.NewDs3GetObject(name))
-    }
-    return objects
-}
-
 // Converts the parts list into a request payload stream of format:
 // <CompleteMultipartUpload><Part><PartNumber>partNumber</PartNumber><ETag>eTag</ETag></Part>...</CompleteMultipartUpload>
-func buildPartsListStream(parts []models.Part) networking.ReadCloserWithSizeDecorator {
+func buildPartsListStream(parts []models.Part) models.ReadCloserWithSizeDecorator {
     completeMultipartUpload := models.CompleteMultipartUpload{ Parts:parts }
     return marshalRequestPayload(completeMultipartUpload)
 }
@@ -50,7 +39,7 @@ func newDs3PutObjectList(ds3PutObjects []models.Ds3PutObject) *ds3PutObjectList 
 
 // Converts the ds3 put object list into a request payload stream of format:
 // <Objects><Object Name="o1" Size="2048"></Object><Object Name="o2" Size="2048"></Object>...</Objects>
-func buildDs3PutObjectListStream(ds3PutObjects []models.Ds3PutObject) networking.ReadCloserWithSizeDecorator {
+func buildDs3PutObjectListStream(ds3PutObjects []models.Ds3PutObject) models.ReadCloserWithSizeDecorator {
     // Build the ds3 put object list entity.
     objects := newDs3PutObjectList(ds3PutObjects)
     return marshalRequestPayload(objects)
@@ -73,7 +62,7 @@ func newDs3GetObjectList(ds3GetObjects []models.Ds3GetObject) *ds3GetObjectList 
 
 // Converts string list into Ds3Object and marshals to request payload stream of format:
 // <Objects><Object Name="o1"></Object><Object Name="o2"></Object>...</Objects>
-func buildDs3ObjectStreamFromNames(objectNames []string) networking.ReadCloserWithSizeDecorator {
+func buildDs3ObjectStreamFromNames(objectNames []string) models.ReadCloserWithSizeDecorator {
     // Build the ds3 get object list entity.
     var objects []models.Ds3GetObject
     for _, name := range objectNames {
@@ -87,7 +76,7 @@ func buildDs3ObjectStreamFromNames(objectNames []string) networking.ReadCloserWi
 
 // Converts the ds3 get object list into a request payload stream of format:
 // <Objects><Object Name="o1" Length="2" Offset="3"></Object><Object Name="o2" Length="3" offset="4"></Object>...</Objects>
-func buildDs3GetObjectListStream(ds3GetObjects []models.Ds3GetObject) networking.ReadCloserWithSizeDecorator {
+func buildDs3GetObjectListStream(ds3GetObjects []models.Ds3GetObject) models.ReadCloserWithSizeDecorator {
     // Build the ds3 get object list entity.
     objects := newDs3GetObjectList(ds3GetObjects)
     return marshalRequestPayload(objects)
@@ -117,7 +106,7 @@ func newDeleteObjectList(objectNames []string) *deleteObjectList {
 
 // Converts a list of object names into a request payload stream for delete objects of format:
 // <Delete><Object><Key>o1</Key></Object><Object><Key>o2</Key></Object>...</Delete>
-func buildDeleteObjectsPayload(objectNames []string) networking.ReadCloserWithSizeDecorator {
+func buildDeleteObjectsPayload(objectNames []string) models.ReadCloserWithSizeDecorator {
     deleteObjects := newDeleteObjectList(objectNames)
     return marshalRequestPayload(deleteObjects)
 }
@@ -137,17 +126,17 @@ func newIdList(objectNames []string) *idList {
 
 // Converts a list of ids into a request payload stream of format:
 // <Ids><Id>id1</Id><Id>id2</Id>...</Ids>
-func buildIdListPayload(ids []string) networking.ReadCloserWithSizeDecorator {
+func buildIdListPayload(ids []string) models.ReadCloserWithSizeDecorator {
     idList := newIdList(ids)
     return marshalRequestPayload(idList)
 }
 
 // Converts a string request payload into a request payload stream.
-func buildStreamFromString(payload string) networking.ReadCloserWithSizeDecorator {
+func buildStreamFromString(payload string) models.ReadCloserWithSizeDecorator {
     return BuildByteReaderWithSizeDecorator([]byte(payload))
 }
 
-func marshalRequestPayload(model interface{}) networking.ReadCloserWithSizeDecorator {
+func marshalRequestPayload(model interface{}) models.ReadCloserWithSizeDecorator {
     xmlBytes, err := xml.Marshal(model)
     if err != nil {
         // Should never happen
@@ -162,7 +151,7 @@ type byteReaderWithSizeDecorator struct {
     size int64
 }
 
-func BuildByteReaderWithSizeDecorator(contentBytes []byte) networking.ReadCloserWithSizeDecorator {
+func BuildByteReaderWithSizeDecorator(contentBytes []byte) models.ReadCloserWithSizeDecorator {
     return &byteReaderWithSizeDecorator{
         bytes.NewReader(contentBytes),
         int64(len(contentBytes)),

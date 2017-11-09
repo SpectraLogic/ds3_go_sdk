@@ -49,3 +49,11 @@ func (versioningLevel VersioningLevel) String() string {
             return ""
     }
 }
+
+func (versioningLevel VersioningLevel) StringPtr() *string {
+    if versioningLevel == UNDEFINED {
+        return nil
+    }
+    result := versioningLevel.String()
+    return &result
+}

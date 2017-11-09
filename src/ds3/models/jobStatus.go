@@ -52,3 +52,11 @@ func (jobStatus JobStatus) String() string {
             return ""
     }
 }
+
+func (jobStatus JobStatus) StringPtr() *string {
+    if jobStatus == UNDEFINED {
+        return nil
+    }
+    result := jobStatus.String()
+    return &result
+}

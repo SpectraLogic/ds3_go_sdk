@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "fmt"
 )
 
@@ -25,7 +24,7 @@ type rangeHeader struct {
 type GetObjectRequest struct {
     BucketName string
     ObjectName string
-    Checksum networking.Checksum
+    Checksum Checksum
     Job *string
     Metadata map[string]string
     Offset *int64
@@ -35,7 +34,8 @@ func NewGetObjectRequest(bucketName string, objectName string) *GetObjectRequest
     return &GetObjectRequest{
         BucketName: bucketName,
         ObjectName: objectName,
-        Checksum: networking.NewNoneChecksum(),
+        Checksum: NewNoneChecksum(),
+        Metadata: make(map[string]string),
     }
 }
 
@@ -50,7 +50,7 @@ func (getObjectRequest *GetObjectRequest) WithOffset(offset int64) *GetObjectReq
 }
 
 
-func (getObjectRequest *GetObjectRequest) WithChecksum(contentHash string, checksumType networking.ChecksumType) *GetObjectRequest {
+func (getObjectRequest *GetObjectRequest) WithChecksum(contentHash string, checksumType ChecksumType) *GetObjectRequest {
     getObjectRequest.Checksum.ContentHash = contentHash
     getObjectRequest.Checksum.Type = checksumType
     return getObjectRequest

@@ -49,3 +49,11 @@ func (dataReplicationRuleType DataReplicationRuleType) String() string {
             return ""
     }
 }
+
+func (dataReplicationRuleType DataReplicationRuleType) StringPtr() *string {
+    if dataReplicationRuleType == UNDEFINED {
+        return nil
+    }
+    result := dataReplicationRuleType.String()
+    return &result
+}

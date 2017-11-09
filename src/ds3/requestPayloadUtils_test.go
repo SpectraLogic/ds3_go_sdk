@@ -14,11 +14,10 @@ package ds3
 import (
     "testing"
     "io/ioutil"
-    "ds3/networking"
     "ds3/models"
 )
 
-func verifyStreamContent(t *testing.T, contentStream networking.ReaderWithSizeDecorator, expected string) {
+func verifyStreamContent(t *testing.T, contentStream models.ReaderWithSizeDecorator, expected string) {
     bs, readErr := ioutil.ReadAll(contentStream)
     if readErr != nil {
         t.Fatalf("Unexpected error: '%s'.", readErr.Error())

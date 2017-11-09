@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -25,7 +24,7 @@ type VerifyAllPoolsSpectraS3Response struct {
 
 
 
-func NewVerifyAllPoolsSpectraS3Response(webResponse networking.WebResponse) (*VerifyAllPoolsSpectraS3Response, error) {
+func NewVerifyAllPoolsSpectraS3Response(webResponse WebResponse) (*VerifyAllPoolsSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {

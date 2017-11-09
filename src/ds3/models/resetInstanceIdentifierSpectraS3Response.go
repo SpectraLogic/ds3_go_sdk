@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -23,11 +22,11 @@ type ResetInstanceIdentifierSpectraS3Response struct {
     Headers *http.Header
 }
 
-func (resetInstanceIdentifierSpectraS3Response *ResetInstanceIdentifierSpectraS3Response) parse(webResponse networking.WebResponse) error {
+func (resetInstanceIdentifierSpectraS3Response *ResetInstanceIdentifierSpectraS3Response) parse(webResponse WebResponse) error {
         return parseResponsePayload(webResponse, &resetInstanceIdentifierSpectraS3Response.DataPathBackend)
 }
 
-func NewResetInstanceIdentifierSpectraS3Response(webResponse networking.WebResponse) (*ResetInstanceIdentifierSpectraS3Response, error) {
+func NewResetInstanceIdentifierSpectraS3Response(webResponse WebResponse) (*ResetInstanceIdentifierSpectraS3Response, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {

@@ -52,3 +52,11 @@ func (importConflictResolutionMode ImportConflictResolutionMode) String() string
             return ""
     }
 }
+
+func (importConflictResolutionMode ImportConflictResolutionMode) StringPtr() *string {
+    if importConflictResolutionMode == UNDEFINED {
+        return nil
+    }
+    result := importConflictResolutionMode.String()
+    return &result
+}

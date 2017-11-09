@@ -31,7 +31,7 @@ func (client *Client) CompleteMultiPartUpload(request *models.CompleteMultiPartU
         return nil, err
     }
 
-    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.sendNetwork), client.clientPolicy.maxRetries)
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
 
     // Invoke the HTTP request.
     response, requestErr := networkRetryDecorator.Invoke(httpRequest)
@@ -57,7 +57,7 @@ func (client *Client) DeleteObjects(request *models.DeleteObjectsRequest) (*mode
         return nil, err
     }
 
-    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.sendNetwork), client.clientPolicy.maxRetries)
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
 
     // Invoke the HTTP request.
     response, requestErr := networkRetryDecorator.Invoke(httpRequest)
@@ -81,7 +81,7 @@ func (client *Client) InitiateMultiPartUpload(request *models.InitiateMultiPartU
         return nil, err
     }
 
-    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.sendNetwork), client.clientPolicy.maxRetries)
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
 
     // Invoke the HTTP request.
     response, requestErr := networkRetryDecorator.Invoke(httpRequest)
@@ -107,7 +107,7 @@ func (client *Client) PutBucketAclForGroupSpectraS3(request *models.PutBucketAcl
         return nil, err
     }
 
-    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.sendNetwork), client.clientPolicy.maxRetries)
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
 
     // Invoke the HTTP request.
     response, requestErr := networkRetryDecorator.Invoke(httpRequest)
@@ -133,7 +133,7 @@ func (client *Client) PutBucketAclForUserSpectraS3(request *models.PutBucketAclF
         return nil, err
     }
 
-    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.sendNetwork), client.clientPolicy.maxRetries)
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
 
     // Invoke the HTTP request.
     response, requestErr := networkRetryDecorator.Invoke(httpRequest)
@@ -158,7 +158,7 @@ func (client *Client) PutDataPolicyAclForGroupSpectraS3(request *models.PutDataP
         return nil, err
     }
 
-    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.sendNetwork), client.clientPolicy.maxRetries)
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
 
     // Invoke the HTTP request.
     response, requestErr := networkRetryDecorator.Invoke(httpRequest)
@@ -183,7 +183,7 @@ func (client *Client) PutDataPolicyAclForUserSpectraS3(request *models.PutDataPo
         return nil, err
     }
 
-    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.sendNetwork), client.clientPolicy.maxRetries)
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
 
     // Invoke the HTTP request.
     response, requestErr := networkRetryDecorator.Invoke(httpRequest)
@@ -208,7 +208,7 @@ func (client *Client) PutGlobalBucketAclForGroupSpectraS3(request *models.PutGlo
         return nil, err
     }
 
-    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.sendNetwork), client.clientPolicy.maxRetries)
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
 
     // Invoke the HTTP request.
     response, requestErr := networkRetryDecorator.Invoke(httpRequest)
@@ -233,7 +233,7 @@ func (client *Client) PutGlobalBucketAclForUserSpectraS3(request *models.PutGlob
         return nil, err
     }
 
-    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.sendNetwork), client.clientPolicy.maxRetries)
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
 
     // Invoke the HTTP request.
     response, requestErr := networkRetryDecorator.Invoke(httpRequest)
@@ -257,7 +257,7 @@ func (client *Client) PutGlobalDataPolicyAclForGroupSpectraS3(request *models.Pu
         return nil, err
     }
 
-    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.sendNetwork), client.clientPolicy.maxRetries)
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
 
     // Invoke the HTTP request.
     response, requestErr := networkRetryDecorator.Invoke(httpRequest)
@@ -281,7 +281,7 @@ func (client *Client) PutGlobalDataPolicyAclForUserSpectraS3(request *models.Put
         return nil, err
     }
 
-    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.sendNetwork), client.clientPolicy.maxRetries)
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
 
     // Invoke the HTTP request.
     response, requestErr := networkRetryDecorator.Invoke(httpRequest)
@@ -308,7 +308,7 @@ func (client *Client) PutBucketSpectraS3(request *models.PutBucketSpectraS3Reque
         return nil, err
     }
 
-    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.sendNetwork), client.clientPolicy.maxRetries)
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
 
     // Invoke the HTTP request.
     response, requestErr := networkRetryDecorator.Invoke(httpRequest)
@@ -336,7 +336,7 @@ func (client *Client) PutAzureDataReplicationRuleSpectraS3(request *models.PutAz
         return nil, err
     }
 
-    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.sendNetwork), client.clientPolicy.maxRetries)
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
 
     // Invoke the HTTP request.
     response, requestErr := networkRetryDecorator.Invoke(httpRequest)
@@ -364,7 +364,7 @@ func (client *Client) PutDataPersistenceRuleSpectraS3(request *models.PutDataPer
         return nil, err
     }
 
-    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.sendNetwork), client.clientPolicy.maxRetries)
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
 
     // Invoke the HTTP request.
     response, requestErr := networkRetryDecorator.Invoke(httpRequest)
@@ -400,7 +400,7 @@ func (client *Client) PutDataPolicySpectraS3(request *models.PutDataPolicySpectr
         return nil, err
     }
 
-    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.sendNetwork), client.clientPolicy.maxRetries)
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
 
     // Invoke the HTTP request.
     response, requestErr := networkRetryDecorator.Invoke(httpRequest)
@@ -428,7 +428,7 @@ func (client *Client) PutDs3DataReplicationRuleSpectraS3(request *models.PutDs3D
         return nil, err
     }
 
-    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.sendNetwork), client.clientPolicy.maxRetries)
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
 
     // Invoke the HTTP request.
     response, requestErr := networkRetryDecorator.Invoke(httpRequest)
@@ -457,7 +457,7 @@ func (client *Client) PutS3DataReplicationRuleSpectraS3(request *models.PutS3Dat
         return nil, err
     }
 
-    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.sendNetwork), client.clientPolicy.maxRetries)
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
 
     // Invoke the HTTP request.
     response, requestErr := networkRetryDecorator.Invoke(httpRequest)
@@ -482,7 +482,7 @@ func (client *Client) PutGroupGroupMemberSpectraS3(request *models.PutGroupGroup
         return nil, err
     }
 
-    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.sendNetwork), client.clientPolicy.maxRetries)
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
 
     // Invoke the HTTP request.
     response, requestErr := networkRetryDecorator.Invoke(httpRequest)
@@ -506,7 +506,7 @@ func (client *Client) PutGroupSpectraS3(request *models.PutGroupSpectraS3Request
         return nil, err
     }
 
-    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.sendNetwork), client.clientPolicy.maxRetries)
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
 
     // Invoke the HTTP request.
     response, requestErr := networkRetryDecorator.Invoke(httpRequest)
@@ -531,7 +531,7 @@ func (client *Client) PutUserGroupMemberSpectraS3(request *models.PutUserGroupMe
         return nil, err
     }
 
-    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.sendNetwork), client.clientPolicy.maxRetries)
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
 
     // Invoke the HTTP request.
     response, requestErr := networkRetryDecorator.Invoke(httpRequest)
@@ -558,7 +558,7 @@ func (client *Client) PutAzureTargetFailureNotificationRegistrationSpectraS3(req
         return nil, err
     }
 
-    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.sendNetwork), client.clientPolicy.maxRetries)
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
 
     // Invoke the HTTP request.
     response, requestErr := networkRetryDecorator.Invoke(httpRequest)
@@ -585,7 +585,7 @@ func (client *Client) PutDs3TargetFailureNotificationRegistrationSpectraS3(reque
         return nil, err
     }
 
-    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.sendNetwork), client.clientPolicy.maxRetries)
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
 
     // Invoke the HTTP request.
     response, requestErr := networkRetryDecorator.Invoke(httpRequest)
@@ -613,7 +613,7 @@ func (client *Client) PutJobCompletedNotificationRegistrationSpectraS3(request *
         return nil, err
     }
 
-    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.sendNetwork), client.clientPolicy.maxRetries)
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
 
     // Invoke the HTTP request.
     response, requestErr := networkRetryDecorator.Invoke(httpRequest)
@@ -640,7 +640,7 @@ func (client *Client) PutJobCreatedNotificationRegistrationSpectraS3(request *mo
         return nil, err
     }
 
-    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.sendNetwork), client.clientPolicy.maxRetries)
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
 
     // Invoke the HTTP request.
     response, requestErr := networkRetryDecorator.Invoke(httpRequest)
@@ -667,7 +667,7 @@ func (client *Client) PutJobCreationFailedNotificationRegistrationSpectraS3(requ
         return nil, err
     }
 
-    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.sendNetwork), client.clientPolicy.maxRetries)
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
 
     // Invoke the HTTP request.
     response, requestErr := networkRetryDecorator.Invoke(httpRequest)
@@ -695,7 +695,7 @@ func (client *Client) PutObjectCachedNotificationRegistrationSpectraS3(request *
         return nil, err
     }
 
-    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.sendNetwork), client.clientPolicy.maxRetries)
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
 
     // Invoke the HTTP request.
     response, requestErr := networkRetryDecorator.Invoke(httpRequest)
@@ -722,7 +722,7 @@ func (client *Client) PutObjectLostNotificationRegistrationSpectraS3(request *mo
         return nil, err
     }
 
-    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.sendNetwork), client.clientPolicy.maxRetries)
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
 
     // Invoke the HTTP request.
     response, requestErr := networkRetryDecorator.Invoke(httpRequest)
@@ -750,7 +750,7 @@ func (client *Client) PutObjectPersistedNotificationRegistrationSpectraS3(reques
         return nil, err
     }
 
-    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.sendNetwork), client.clientPolicy.maxRetries)
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
 
     // Invoke the HTTP request.
     response, requestErr := networkRetryDecorator.Invoke(httpRequest)
@@ -777,7 +777,7 @@ func (client *Client) PutPoolFailureNotificationRegistrationSpectraS3(request *m
         return nil, err
     }
 
-    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.sendNetwork), client.clientPolicy.maxRetries)
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
 
     // Invoke the HTTP request.
     response, requestErr := networkRetryDecorator.Invoke(httpRequest)
@@ -804,7 +804,7 @@ func (client *Client) PutS3TargetFailureNotificationRegistrationSpectraS3(reques
         return nil, err
     }
 
-    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.sendNetwork), client.clientPolicy.maxRetries)
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
 
     // Invoke the HTTP request.
     response, requestErr := networkRetryDecorator.Invoke(httpRequest)
@@ -831,7 +831,7 @@ func (client *Client) PutStorageDomainFailureNotificationRegistrationSpectraS3(r
         return nil, err
     }
 
-    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.sendNetwork), client.clientPolicy.maxRetries)
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
 
     // Invoke the HTTP request.
     response, requestErr := networkRetryDecorator.Invoke(httpRequest)
@@ -858,7 +858,7 @@ func (client *Client) PutSystemFailureNotificationRegistrationSpectraS3(request 
         return nil, err
     }
 
-    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.sendNetwork), client.clientPolicy.maxRetries)
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
 
     // Invoke the HTTP request.
     response, requestErr := networkRetryDecorator.Invoke(httpRequest)
@@ -885,7 +885,7 @@ func (client *Client) PutTapeFailureNotificationRegistrationSpectraS3(request *m
         return nil, err
     }
 
-    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.sendNetwork), client.clientPolicy.maxRetries)
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
 
     // Invoke the HTTP request.
     response, requestErr := networkRetryDecorator.Invoke(httpRequest)
@@ -912,7 +912,7 @@ func (client *Client) PutTapePartitionFailureNotificationRegistrationSpectraS3(r
         return nil, err
     }
 
-    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.sendNetwork), client.clientPolicy.maxRetries)
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
 
     // Invoke the HTTP request.
     response, requestErr := networkRetryDecorator.Invoke(httpRequest)
@@ -937,7 +937,7 @@ func (client *Client) PutPoolPartitionSpectraS3(request *models.PutPoolPartition
         return nil, err
     }
 
-    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.sendNetwork), client.clientPolicy.maxRetries)
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
 
     // Invoke the HTTP request.
     response, requestErr := networkRetryDecorator.Invoke(httpRequest)
@@ -963,7 +963,7 @@ func (client *Client) PutPoolStorageDomainMemberSpectraS3(request *models.PutPoo
         return nil, err
     }
 
-    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.sendNetwork), client.clientPolicy.maxRetries)
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
 
     // Invoke the HTTP request.
     response, requestErr := networkRetryDecorator.Invoke(httpRequest)
@@ -999,7 +999,7 @@ func (client *Client) PutStorageDomainSpectraS3(request *models.PutStorageDomain
         return nil, err
     }
 
-    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.sendNetwork), client.clientPolicy.maxRetries)
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
 
     // Invoke the HTTP request.
     response, requestErr := networkRetryDecorator.Invoke(httpRequest)
@@ -1026,7 +1026,7 @@ func (client *Client) PutTapeStorageDomainMemberSpectraS3(request *models.PutTap
         return nil, err
     }
 
-    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.sendNetwork), client.clientPolicy.maxRetries)
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
 
     // Invoke the HTTP request.
     response, requestErr := networkRetryDecorator.Invoke(httpRequest)
@@ -1052,7 +1052,7 @@ func (client *Client) PutTapeDensityDirectiveSpectraS3(request *models.PutTapeDe
         return nil, err
     }
 
-    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.sendNetwork), client.clientPolicy.maxRetries)
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
 
     // Invoke the HTTP request.
     response, requestErr := networkRetryDecorator.Invoke(httpRequest)
@@ -1078,7 +1078,7 @@ func (client *Client) PutAzureTargetBucketNameSpectraS3(request *models.PutAzure
         return nil, err
     }
 
-    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.sendNetwork), client.clientPolicy.maxRetries)
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
 
     // Invoke the HTTP request.
     response, requestErr := networkRetryDecorator.Invoke(httpRequest)
@@ -1104,7 +1104,7 @@ func (client *Client) PutAzureTargetReadPreferenceSpectraS3(request *models.PutA
         return nil, err
     }
 
-    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.sendNetwork), client.clientPolicy.maxRetries)
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
 
     // Invoke the HTTP request.
     response, requestErr := networkRetryDecorator.Invoke(httpRequest)
@@ -1136,7 +1136,7 @@ func (client *Client) RegisterAzureTargetSpectraS3(request *models.RegisterAzure
         return nil, err
     }
 
-    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.sendNetwork), client.clientPolicy.maxRetries)
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
 
     // Invoke the HTTP request.
     response, requestErr := networkRetryDecorator.Invoke(httpRequest)
@@ -1162,7 +1162,7 @@ func (client *Client) PutDs3TargetReadPreferenceSpectraS3(request *models.PutDs3
         return nil, err
     }
 
-    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.sendNetwork), client.clientPolicy.maxRetries)
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
 
     // Invoke the HTTP request.
     response, requestErr := networkRetryDecorator.Invoke(httpRequest)
@@ -1197,7 +1197,7 @@ func (client *Client) RegisterDs3TargetSpectraS3(request *models.RegisterDs3Targ
         return nil, err
     }
 
-    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.sendNetwork), client.clientPolicy.maxRetries)
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
 
     // Invoke the HTTP request.
     response, requestErr := networkRetryDecorator.Invoke(httpRequest)
@@ -1223,7 +1223,7 @@ func (client *Client) PutS3TargetBucketNameSpectraS3(request *models.PutS3Target
         return nil, err
     }
 
-    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.sendNetwork), client.clientPolicy.maxRetries)
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
 
     // Invoke the HTTP request.
     response, requestErr := networkRetryDecorator.Invoke(httpRequest)
@@ -1249,7 +1249,7 @@ func (client *Client) PutS3TargetReadPreferenceSpectraS3(request *models.PutS3Ta
         return nil, err
     }
 
-    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.sendNetwork), client.clientPolicy.maxRetries)
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
 
     // Invoke the HTTP request.
     response, requestErr := networkRetryDecorator.Invoke(httpRequest)
@@ -1290,7 +1290,7 @@ func (client *Client) RegisterS3TargetSpectraS3(request *models.RegisterS3Target
         return nil, err
     }
 
-    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.sendNetwork), client.clientPolicy.maxRetries)
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
 
     // Invoke the HTTP request.
     response, requestErr := networkRetryDecorator.Invoke(httpRequest)
@@ -1316,7 +1316,7 @@ func (client *Client) DelegateCreateUserSpectraS3(request *models.DelegateCreate
         return nil, err
     }
 
-    networkRetryDecorator := networking.NewNetworkRetryDecorator(&(client.sendNetwork), client.clientPolicy.maxRetries)
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
 
     // Invoke the HTTP request.
     response, requestErr := networkRetryDecorator.Invoke(httpRequest)

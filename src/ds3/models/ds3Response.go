@@ -1,4 +1,4 @@
-package networking
+package models
 
 import (
     "io"
@@ -12,19 +12,23 @@ type WebResponse interface {
     Header() *http.Header
 }
 
-type wrappedHttpResponse struct {
+type WrappedHttpResponse struct {
     rawResponse *http.Response
 }
 
-func (wrappedHttpResponse *wrappedHttpResponse) StatusCode() int {
+func NewWrappedHttpResponse(rawResponse *http.Response) *WrappedHttpResponse {
+    return &WrappedHttpResponse{rawResponse: rawResponse}
+}
+
+func (wrappedHttpResponse *WrappedHttpResponse) StatusCode() int {
     return wrappedHttpResponse.rawResponse.StatusCode
 }
 
-func (wrappedHttpResponse *wrappedHttpResponse) Body() io.ReadCloser {
+func (wrappedHttpResponse *WrappedHttpResponse) Body() io.ReadCloser {
     return wrappedHttpResponse.rawResponse.Body
 }
 
-func (wrappedHttpResponse *wrappedHttpResponse) Header() *http.Header {
+func (wrappedHttpResponse *WrappedHttpResponse) Header() *http.Header {
     // The HTTP spec says headers keys are case insensitive, so we'll just
     // to lower them before processing the response so we can always get the
     // right thing.

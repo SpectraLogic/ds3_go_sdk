@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -25,7 +24,7 @@ type ClearAllCompletedJobsSpectraS3Response struct {
 
 
 
-func NewClearAllCompletedJobsSpectraS3Response(webResponse networking.WebResponse) (*ClearAllCompletedJobsSpectraS3Response, error) {
+func NewClearAllCompletedJobsSpectraS3Response(webResponse WebResponse) (*ClearAllCompletedJobsSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {

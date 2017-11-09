@@ -32,3 +32,13 @@ func NewPartialDs3GetObject(name string, length int64, offset int64) Ds3GetObjec
         Offset:&offset,
     }
 }
+
+// Converts a list of names into a list of Ds3GetObjects
+func buildDs3GetObjectSliceFromNames(objectNames []string) []Ds3GetObject {
+    // Build the ds3 get object list entity.
+    var objects []Ds3GetObject
+    for _, name := range objectNames {
+        objects = append(objects, NewDs3GetObject(name))
+    }
+    return objects
+}

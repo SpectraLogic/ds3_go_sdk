@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -23,11 +22,11 @@ type DelegateCreateUserSpectraS3Response struct {
     Headers *http.Header
 }
 
-func (delegateCreateUserSpectraS3Response *DelegateCreateUserSpectraS3Response) parse(webResponse networking.WebResponse) error {
+func (delegateCreateUserSpectraS3Response *DelegateCreateUserSpectraS3Response) parse(webResponse WebResponse) error {
         return parseResponsePayload(webResponse, &delegateCreateUserSpectraS3Response.SpectraUser)
 }
 
-func NewDelegateCreateUserSpectraS3Response(webResponse networking.WebResponse) (*DelegateCreateUserSpectraS3Response, error) {
+func NewDelegateCreateUserSpectraS3Response(webResponse WebResponse) (*DelegateCreateUserSpectraS3Response, error) {
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {

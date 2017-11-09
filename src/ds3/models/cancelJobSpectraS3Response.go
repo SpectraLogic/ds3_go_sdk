@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -25,7 +24,7 @@ type CancelJobSpectraS3Response struct {
 
 
 
-func NewCancelJobSpectraS3Response(webResponse networking.WebResponse) (*CancelJobSpectraS3Response, error) {
+func NewCancelJobSpectraS3Response(webResponse WebResponse) (*CancelJobSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {

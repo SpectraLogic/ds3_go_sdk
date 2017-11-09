@@ -5,6 +5,7 @@ import (
     "net/http"
     "net/url"
     "strings"
+    "ds3/models"
 )
 
 type HttpRequestBuilder struct {
@@ -13,19 +14,19 @@ type HttpRequestBuilder struct {
     queryParams *url.Values
     headers *http.Header
     signatureFields signatureFields
-    checksumType ChecksumType
+    checksumType models.ChecksumType
 }
 
 func NewHttpRequestBuilder() *HttpRequestBuilder {
     return &HttpRequestBuilder{
         queryParams:&url.Values{},
         headers:&http.Header{},
-        checksumType:NONE,
+        checksumType:models.NONE,
     }
 }
 
 // Internally converts reader with size decorator to limit reader to ensure size is respected
-func (builder *HttpRequestBuilder) WithReader(stream ReaderWithSizeDecorator) *HttpRequestBuilder {
+func (builder *HttpRequestBuilder) WithReader(stream models.ReaderWithSizeDecorator) *HttpRequestBuilder {
     streamSize, _ := stream.Size()
     builder.reader = io.LimitReader(stream, streamSize)
     builder.contentLength = &streamSize
@@ -35,7 +36,7 @@ func (builder *HttpRequestBuilder) WithReader(stream ReaderWithSizeDecorator) *H
 // Internally converts reader with size decorator to limit reader to ensure size is respected
 // and adds the closer functionality to the limit reader. The send network will automatically
 // close the reader when finished.
-func (builder *HttpRequestBuilder) WithReadCloser(stream ReadCloserWithSizeDecorator) *HttpRequestBuilder {
+func (builder *HttpRequestBuilder) WithReadCloser(stream models.ReadCloserWithSizeDecorator) *HttpRequestBuilder {
     streamSize, _ := stream.Size()
     builder.reader = NewLimitReadCloser(stream)
     builder.contentLength = &streamSize
@@ -57,20 +58,9 @@ func (builder *HttpRequestBuilder) WithHeader(key string, value string) *HttpReq
     return builder
 }
 
-const ( AMZ_META_HEADER = "x-amz-meta-" )
-
-func (builder *HttpRequestBuilder) WithAmzHeader(key string, value string) *HttpRequestBuilder {
-    if strings.HasPrefix(strings.ToLower(key), AMZ_META_HEADER) {
-        builder.headers.Add(strings.ToLower(key), value)
-    } else {
-        builder.headers.Add(strings.ToLower(AMZ_META_HEADER + key), value)
-    }
-    return builder
-}
-
 func (builder *HttpRequestBuilder) WithHeaders(headers map[string]string) *HttpRequestBuilder {
     for key, value := range headers {
-        builder.WithAmzHeader(key, value)
+        builder.WithHeader(key, value)
     }
     return builder
 }
@@ -81,7 +71,7 @@ func (builder *HttpRequestBuilder) WithQueryParam(key string, value string) *Htt
 }
 
 func (builder *HttpRequestBuilder) WithOptionalQueryParam(key string, value *string) *HttpRequestBuilder {
-    if value != nil {
+    if value == nil {
         return builder
     }
     builder.queryParams.Set(key, *value)
@@ -95,13 +85,12 @@ func (builder *HttpRequestBuilder) WithOptionalVoidQueryParam(key string, value 
     return builder
 }
 
-func (builder *HttpRequestBuilder) WithChecksum(checksum Checksum) *HttpRequestBuilder {
+func (builder *HttpRequestBuilder) WithChecksum(checksum models.Checksum) *HttpRequestBuilder {
     builder.signatureFields.ContentHash = checksum.ContentHash
     builder.checksumType = checksum.Type
     return builder
 }
 
-//todo not used yet
 func (builder *HttpRequestBuilder) WithContentType(contentType string) *HttpRequestBuilder {
     builder.signatureFields.ContentType = contentType
     return builder
@@ -136,7 +125,7 @@ func (builder *HttpRequestBuilder) addHttpRequestHeaders(httpRequest *http.Reque
     httpRequest.Header.Add("Date", builder.signatureFields.Date)
     httpRequest.Header.Add("Authorization", authHeader)
 
-    if builder.checksumType != NONE {
+    if builder.checksumType != models.NONE {
         checksumKey, err := getChecksumHeaderKey(builder.checksumType)
         if err != nil {
             return nil, err

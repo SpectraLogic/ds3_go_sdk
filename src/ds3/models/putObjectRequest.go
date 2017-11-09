@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "strings"
 )
 
@@ -23,19 +22,19 @@ const ( AMZ_META_HEADER = "x-amz-meta-" )
 type PutObjectRequest struct {
     BucketName string
     ObjectName string
-    Checksum networking.Checksum
-    Content networking.ReaderWithSizeDecorator
+    Checksum Checksum
+    Content ReaderWithSizeDecorator
     Job *string
     Metadata map[string]string
     Offset *int64
 }
 
-func NewPutObjectRequest(bucketName string, objectName string, content networking.ReaderWithSizeDecorator) *PutObjectRequest {
+func NewPutObjectRequest(bucketName string, objectName string, content ReaderWithSizeDecorator) *PutObjectRequest {
     return &PutObjectRequest{
         BucketName: bucketName,
         ObjectName: objectName,
         Content: content,
-        Checksum: networking.NewNoneChecksum(),
+        Checksum: NewNoneChecksum(),
         Metadata: make(map[string]string),
     }
 }
@@ -51,7 +50,7 @@ func (putObjectRequest *PutObjectRequest) WithOffset(offset int64) *PutObjectReq
 }
 
 
-func (putObjectRequest *PutObjectRequest) WithChecksum(contentHash string, checksumType networking.ChecksumType) *PutObjectRequest {
+func (putObjectRequest *PutObjectRequest) WithChecksum(contentHash string, checksumType ChecksumType) *PutObjectRequest {
     putObjectRequest.Checksum.ContentHash = contentHash
     putObjectRequest.Checksum.Type = checksumType
     return putObjectRequest

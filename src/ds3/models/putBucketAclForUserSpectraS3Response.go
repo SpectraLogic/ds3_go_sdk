@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -23,11 +22,11 @@ type PutBucketAclForUserSpectraS3Response struct {
     Headers *http.Header
 }
 
-func (putBucketAclForUserSpectraS3Response *PutBucketAclForUserSpectraS3Response) parse(webResponse networking.WebResponse) error {
+func (putBucketAclForUserSpectraS3Response *PutBucketAclForUserSpectraS3Response) parse(webResponse WebResponse) error {
         return parseResponsePayload(webResponse, &putBucketAclForUserSpectraS3Response.BucketAcl)
 }
 
-func NewPutBucketAclForUserSpectraS3Response(webResponse networking.WebResponse) (*PutBucketAclForUserSpectraS3Response, error) {
+func NewPutBucketAclForUserSpectraS3Response(webResponse WebResponse) (*PutBucketAclForUserSpectraS3Response, error) {
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {

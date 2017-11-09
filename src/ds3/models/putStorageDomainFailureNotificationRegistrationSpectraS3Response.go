@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -23,11 +22,11 @@ type PutStorageDomainFailureNotificationRegistrationSpectraS3Response struct {
     Headers *http.Header
 }
 
-func (putStorageDomainFailureNotificationRegistrationSpectraS3Response *PutStorageDomainFailureNotificationRegistrationSpectraS3Response) parse(webResponse networking.WebResponse) error {
+func (putStorageDomainFailureNotificationRegistrationSpectraS3Response *PutStorageDomainFailureNotificationRegistrationSpectraS3Response) parse(webResponse WebResponse) error {
         return parseResponsePayload(webResponse, &putStorageDomainFailureNotificationRegistrationSpectraS3Response.StorageDomainFailureNotificationRegistration)
 }
 
-func NewPutStorageDomainFailureNotificationRegistrationSpectraS3Response(webResponse networking.WebResponse) (*PutStorageDomainFailureNotificationRegistrationSpectraS3Response, error) {
+func NewPutStorageDomainFailureNotificationRegistrationSpectraS3Response(webResponse WebResponse) (*PutStorageDomainFailureNotificationRegistrationSpectraS3Response, error) {
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {

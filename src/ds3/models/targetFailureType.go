@@ -67,3 +67,11 @@ func (targetFailureType TargetFailureType) String() string {
             return ""
     }
 }
+
+func (targetFailureType TargetFailureType) StringPtr() *string {
+    if targetFailureType == UNDEFINED {
+        return nil
+    }
+    result := targetFailureType.String()
+    return &result
+}

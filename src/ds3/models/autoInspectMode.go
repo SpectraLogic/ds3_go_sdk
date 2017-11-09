@@ -52,3 +52,11 @@ func (autoInspectMode AutoInspectMode) String() string {
             return ""
     }
 }
+
+func (autoInspectMode AutoInspectMode) StringPtr() *string {
+    if autoInspectMode == UNDEFINED {
+        return nil
+    }
+    result := autoInspectMode.String()
+    return &result
+}

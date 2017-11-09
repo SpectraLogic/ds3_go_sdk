@@ -28,6 +28,7 @@ const (
     CHECKSUM_TYPE_MD5 ChecksumType = 1 + iota
     CHECKSUM_TYPE_SHA_256 ChecksumType = 1 + iota
     CHECKSUM_TYPE_SHA_512 ChecksumType = 1 + iota
+    NONE ChecksumType = 1 + iota
 )
 
 func (checksumType *ChecksumType) UnmarshalText(text []byte) error {
@@ -57,4 +58,12 @@ func (checksumType ChecksumType) String() string {
             log.Printf("Error: invalid ChecksumType represented by '%d'", checksumType)
             return ""
     }
+}
+
+func (checksumType ChecksumType) StringPtr() *string {
+    if checksumType == UNDEFINED {
+        return nil
+    }
+    result := checksumType.String()
+    return &result
 }

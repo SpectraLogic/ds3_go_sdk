@@ -13,19 +13,15 @@
 
 package models
 
-import (
-    "ds3/networking"
-)
-
 type PutMultiPartUploadPartRequest struct {
     BucketName string
     ObjectName string
-    Content networking.ReaderWithSizeDecorator
+    Content ReaderWithSizeDecorator
     PartNumber int
     UploadId string
 }
 
-func NewPutMultiPartUploadPartRequest(bucketName string, objectName string, content networking.ReaderWithSizeDecorator, partNumber int, uploadId string) *PutMultiPartUploadPartRequest {
+func NewPutMultiPartUploadPartRequest(bucketName string, objectName string, content ReaderWithSizeDecorator, partNumber int, uploadId string) *PutMultiPartUploadPartRequest {
     return &PutMultiPartUploadPartRequest{
         BucketName: bucketName,
         ObjectName: objectName,

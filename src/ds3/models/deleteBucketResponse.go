@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -25,7 +24,7 @@ type DeleteBucketResponse struct {
 
 
 
-func NewDeleteBucketResponse(webResponse networking.WebResponse) (*DeleteBucketResponse, error) {
+func NewDeleteBucketResponse(webResponse WebResponse) (*DeleteBucketResponse, error) {
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {

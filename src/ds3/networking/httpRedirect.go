@@ -24,7 +24,7 @@ func NewHttpTempRedirectDecorator(network Network, maxRedirect int) (Network) {
     }
 }
 
-func (tempRedirectDecorator *HttpTempRedirectDecorator) Invoke(httpRequest *http.Request) (WebResponse, error) {
+func (tempRedirectDecorator *HttpTempRedirectDecorator) Invoke(httpRequest *http.Request) (models.WebResponse, error) {
     // Handle as many 307's as we're allowed.
     for i := 0; i <= tempRedirectDecorator.policy.maxRedirect; i++ {
         ds3Response, err := tempRedirectDecorator.network.Invoke(httpRequest)

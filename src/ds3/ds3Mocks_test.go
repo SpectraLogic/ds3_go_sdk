@@ -6,8 +6,9 @@ import (
     "testing"
     "net/url"
     "net/http"
-    "ds3/networking"
     "reflect"
+    "ds3/models"
+    "ds3/networking"
 )
 
 func mockedClient(t *testing.T) mockedClientWithTest {
@@ -15,7 +16,7 @@ func mockedClient(t *testing.T) mockedClientWithTest {
 }
 
 type mockedClientWithTest interface {
-    Expecting(verb networking.HttpVerb, path string, queryParams *url.Values, requestHeaders *http.Header, request *string) mockedClientWithExpectation
+    Expecting(verb string, path string, queryParams *url.Values, requestHeaders *http.Header, request *string) mockedClientWithExpectation
 }
 
 type mockedClientWithExpectation interface {
@@ -27,7 +28,7 @@ type mockedNet struct {
     t *testing.T
 
     // Expected data to validate.
-    verb networking.HttpVerb
+    verb string
     path string
     queryParams *url.Values
     requestHeaders *http.Header
@@ -39,7 +40,7 @@ type mockedNet struct {
     headers *http.Header
 }
 
-func (mockedNet *mockedNet) Expecting(verb networking.HttpVerb, path string, queryParams *url.Values, requestHeaders *http.Header, request *string) mockedClientWithExpectation {
+func (mockedNet *mockedNet) Expecting(verb string, path string, queryParams *url.Values, requestHeaders *http.Header, request *string) mockedClientWithExpectation {
     mockedNet.verb = verb
     mockedNet.path = path
     mockedNet.queryParams = queryParams
@@ -52,30 +53,31 @@ func (mockedNet *mockedNet) Returning(statusCode int, response string, headers *
     mockedNet.statusCode = statusCode
     mockedNet.response = response
     mockedNet.headers = headers
-    return &Client{mockedNet, &ClientPolicy{5, 5}}
+    var url url.URL
+    var endpointUrl, _ = url.Parse("/")
+    return &Client{
+        sendNetwork: mockedNet,
+        clientPolicy: &ClientPolicy{5, 5},
+        connectionInfo: &networking.ConnectionInfo{
+            Endpoint: endpointUrl,
+            Credentials: &networking.Credentials{AccessId: "AccessId", Key: "Key"},
+        },
+    }
 }
 
-func (mockedNet *mockedNet) Invoke(ds3Request networking.Ds3Request) (networking.WebResponse, error) {
+func (mockedNet *mockedNet) Invoke(httpRequest *http.Request) (models.WebResponse, error) {
     // Verify the verb.
-    verb := ds3Request.Verb()
-    if verb != mockedNet.verb {
-        actualVerb, err := verb.String()
-        if err != nil {
-            mockedNet.t.Error(err)
-        } else {
-            mockedVerb, _ := mockedNet.verb.String()
-            mockedNet.t.Errorf("Expected verb '%s' but got '%s'.", mockedVerb, actualVerb)
-        }
+    if httpRequest.Method != mockedNet.verb {
+        mockedNet.t.Errorf("Expected verb '%s' but got '%s'.", mockedNet.verb, httpRequest.Method)
     }
 
     // Verify the path.
-    path := ds3Request.Path()
-    if path != mockedNet.path {
-        mockedNet.t.Errorf("Expected path '%s' but got '%s'.", mockedNet.path, path)
+    if httpRequest.URL.Path != mockedNet.path {
+        mockedNet.t.Errorf("Expected path '%s' but got '%s'.", mockedNet.path, httpRequest.URL.Path)
     }
 
     // Verify the query parameters.
-    actualQueryParams := ds3Request.QueryParams().Encode()
+    actualQueryParams := httpRequest.URL.RawQuery
     expectedQueryParams := mockedNet.queryParams.Encode()
     if actualQueryParams != expectedQueryParams {
         mockedNet.t.Errorf(
@@ -86,7 +88,9 @@ func (mockedNet *mockedNet) Invoke(ds3Request networking.Ds3Request) (networking
     }
 
     // Verify request headers
-    actualRequestHeaders := *ds3Request.Header()
+    actualRequestHeaders := httpRequest.Header
+    actualRequestHeaders.Del("Date") //remove date
+    actualRequestHeaders.Del("Authorization") //remove authorization
     expectedRequestHeaders := *mockedNet.requestHeaders
     if len(actualRequestHeaders) != len(expectedRequestHeaders) {
         mockedNet.t.Errorf(
@@ -110,7 +114,7 @@ func (mockedNet *mockedNet) Invoke(ds3Request networking.Ds3Request) (networking
 
     // Verify the request contents.
     if mockedNet.request != nil {
-        contentStream := ds3Request.GetContentStream()
+        contentStream := httpRequest.Body
         if contentStream == nil {
             mockedNet.t.Error("Expected a non-nil content stream, but got nil.")
         } else {
@@ -133,7 +137,7 @@ func (mockedNet *mockedNet) StatusCode() int {
 }
 
 func (mockedNet *mockedNet) Body() io.ReadCloser {
-    return networking.BuildByteReaderWithSizeDecorator([]byte(mockedNet.response))
+    return BuildByteReaderWithSizeDecorator([]byte(mockedNet.response))
 }
 
 func (mockedNet *mockedNet) Header() *http.Header {

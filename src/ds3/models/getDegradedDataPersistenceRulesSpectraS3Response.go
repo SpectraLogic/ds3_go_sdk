@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -23,11 +22,11 @@ type GetDegradedDataPersistenceRulesSpectraS3Response struct {
     Headers *http.Header
 }
 
-func (getDegradedDataPersistenceRulesSpectraS3Response *GetDegradedDataPersistenceRulesSpectraS3Response) parse(webResponse networking.WebResponse) error {
+func (getDegradedDataPersistenceRulesSpectraS3Response *GetDegradedDataPersistenceRulesSpectraS3Response) parse(webResponse WebResponse) error {
         return parseResponsePayload(webResponse, &getDegradedDataPersistenceRulesSpectraS3Response.DataPersistenceRuleList)
 }
 
-func NewGetDegradedDataPersistenceRulesSpectraS3Response(webResponse networking.WebResponse) (*GetDegradedDataPersistenceRulesSpectraS3Response, error) {
+func NewGetDegradedDataPersistenceRulesSpectraS3Response(webResponse WebResponse) (*GetDegradedDataPersistenceRulesSpectraS3Response, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {

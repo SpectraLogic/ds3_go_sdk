@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -25,7 +24,7 @@ type MarkSuspectBlobPoolsAsDegradedSpectraS3Response struct {
 
 
 
-func NewMarkSuspectBlobPoolsAsDegradedSpectraS3Response(webResponse networking.WebResponse) (*MarkSuspectBlobPoolsAsDegradedSpectraS3Response, error) {
+func NewMarkSuspectBlobPoolsAsDegradedSpectraS3Response(webResponse WebResponse) (*MarkSuspectBlobPoolsAsDegradedSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {

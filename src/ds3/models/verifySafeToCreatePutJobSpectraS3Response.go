@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -25,7 +24,7 @@ type VerifySafeToCreatePutJobSpectraS3Response struct {
 
 
 
-func NewVerifySafeToCreatePutJobSpectraS3Response(webResponse networking.WebResponse) (*VerifySafeToCreatePutJobSpectraS3Response, error) {
+func NewVerifySafeToCreatePutJobSpectraS3Response(webResponse WebResponse) (*VerifySafeToCreatePutJobSpectraS3Response, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {

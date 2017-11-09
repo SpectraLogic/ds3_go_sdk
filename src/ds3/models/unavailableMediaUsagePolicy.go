@@ -52,3 +52,11 @@ func (unavailableMediaUsagePolicy UnavailableMediaUsagePolicy) String() string {
             return ""
     }
 }
+
+func (unavailableMediaUsagePolicy UnavailableMediaUsagePolicy) StringPtr() *string {
+    if unavailableMediaUsagePolicy == UNDEFINED {
+        return nil
+    }
+    result := unavailableMediaUsagePolicy.String()
+    return &result
+}

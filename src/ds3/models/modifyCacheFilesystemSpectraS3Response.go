@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -23,11 +22,11 @@ type ModifyCacheFilesystemSpectraS3Response struct {
     Headers *http.Header
 }
 
-func (modifyCacheFilesystemSpectraS3Response *ModifyCacheFilesystemSpectraS3Response) parse(webResponse networking.WebResponse) error {
+func (modifyCacheFilesystemSpectraS3Response *ModifyCacheFilesystemSpectraS3Response) parse(webResponse WebResponse) error {
         return parseResponsePayload(webResponse, &modifyCacheFilesystemSpectraS3Response.CacheFilesystem)
 }
 
-func NewModifyCacheFilesystemSpectraS3Response(webResponse networking.WebResponse) (*ModifyCacheFilesystemSpectraS3Response, error) {
+func NewModifyCacheFilesystemSpectraS3Response(webResponse WebResponse) (*ModifyCacheFilesystemSpectraS3Response, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {

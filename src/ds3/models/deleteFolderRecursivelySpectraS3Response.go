@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -25,7 +24,7 @@ type DeleteFolderRecursivelySpectraS3Response struct {
 
 
 
-func NewDeleteFolderRecursivelySpectraS3Response(webResponse networking.WebResponse) (*DeleteFolderRecursivelySpectraS3Response, error) {
+func NewDeleteFolderRecursivelySpectraS3Response(webResponse WebResponse) (*DeleteFolderRecursivelySpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {

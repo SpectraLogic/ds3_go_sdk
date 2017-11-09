@@ -55,3 +55,11 @@ func (writePreferenceLevel WritePreferenceLevel) String() string {
             return ""
     }
 }
+
+func (writePreferenceLevel WritePreferenceLevel) StringPtr() *string {
+    if writePreferenceLevel == UNDEFINED {
+        return nil
+    }
+    result := writePreferenceLevel.String()
+    return &result
+}

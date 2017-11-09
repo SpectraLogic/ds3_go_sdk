@@ -61,3 +61,11 @@ func (bucketAclPermission BucketAclPermission) String() string {
             return ""
     }
 }
+
+func (bucketAclPermission BucketAclPermission) StringPtr() *string {
+    if bucketAclPermission == UNDEFINED {
+        return nil
+    }
+    result := bucketAclPermission.String()
+    return &result
+}

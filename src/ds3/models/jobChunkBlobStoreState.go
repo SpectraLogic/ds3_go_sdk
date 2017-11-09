@@ -52,3 +52,11 @@ func (jobChunkBlobStoreState JobChunkBlobStoreState) String() string {
             return ""
     }
 }
+
+func (jobChunkBlobStoreState JobChunkBlobStoreState) StringPtr() *string {
+    if jobChunkBlobStoreState == UNDEFINED {
+        return nil
+    }
+    result := jobChunkBlobStoreState.String()
+    return &result
+}

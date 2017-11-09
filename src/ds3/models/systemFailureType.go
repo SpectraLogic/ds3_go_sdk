@@ -61,3 +61,11 @@ func (systemFailureType SystemFailureType) String() string {
             return ""
     }
 }
+
+func (systemFailureType SystemFailureType) StringPtr() *string {
+    if systemFailureType == UNDEFINED {
+        return nil
+    }
+    result := systemFailureType.String()
+    return &result
+}

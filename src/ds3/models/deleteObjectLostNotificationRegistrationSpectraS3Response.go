@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -25,7 +24,7 @@ type DeleteObjectLostNotificationRegistrationSpectraS3Response struct {
 
 
 
-func NewDeleteObjectLostNotificationRegistrationSpectraS3Response(webResponse networking.WebResponse) (*DeleteObjectLostNotificationRegistrationSpectraS3Response, error) {
+func NewDeleteObjectLostNotificationRegistrationSpectraS3Response(webResponse WebResponse) (*DeleteObjectLostNotificationRegistrationSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {

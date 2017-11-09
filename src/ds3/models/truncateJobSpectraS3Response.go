@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -25,7 +24,7 @@ type TruncateJobSpectraS3Response struct {
 
 
 
-func NewTruncateJobSpectraS3Response(webResponse networking.WebResponse) (*TruncateJobSpectraS3Response, error) {
+func NewTruncateJobSpectraS3Response(webResponse WebResponse) (*TruncateJobSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {

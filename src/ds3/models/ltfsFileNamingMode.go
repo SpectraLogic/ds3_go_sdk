@@ -49,3 +49,11 @@ func (ltfsFileNamingMode LtfsFileNamingMode) String() string {
             return ""
     }
 }
+
+func (ltfsFileNamingMode LtfsFileNamingMode) StringPtr() *string {
+    if ltfsFileNamingMode == UNDEFINED {
+        return nil
+    }
+    result := ltfsFileNamingMode.String()
+    return &result
+}

@@ -52,3 +52,11 @@ func (httpResponseFormatType HttpResponseFormatType) String() string {
             return ""
     }
 }
+
+func (httpResponseFormatType HttpResponseFormatType) StringPtr() *string {
+    if httpResponseFormatType == UNDEFINED {
+        return nil
+    }
+    result := httpResponseFormatType.String()
+    return &result
+}

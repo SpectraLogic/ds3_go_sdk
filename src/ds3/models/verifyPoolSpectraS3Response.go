@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -23,11 +22,11 @@ type VerifyPoolSpectraS3Response struct {
     Headers *http.Header
 }
 
-func (verifyPoolSpectraS3Response *VerifyPoolSpectraS3Response) parse(webResponse networking.WebResponse) error {
+func (verifyPoolSpectraS3Response *VerifyPoolSpectraS3Response) parse(webResponse WebResponse) error {
         return parseResponsePayload(webResponse, &verifyPoolSpectraS3Response.Pool)
 }
 
-func NewVerifyPoolSpectraS3Response(webResponse networking.WebResponse) (*VerifyPoolSpectraS3Response, error) {
+func NewVerifyPoolSpectraS3Response(webResponse WebResponse) (*VerifyPoolSpectraS3Response, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {

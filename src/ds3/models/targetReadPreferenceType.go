@@ -61,3 +61,11 @@ func (targetReadPreferenceType TargetReadPreferenceType) String() string {
             return ""
     }
 }
+
+func (targetReadPreferenceType TargetReadPreferenceType) StringPtr() *string {
+    if targetReadPreferenceType == UNDEFINED {
+        return nil
+    }
+    result := targetReadPreferenceType.String()
+    return &result
+}
