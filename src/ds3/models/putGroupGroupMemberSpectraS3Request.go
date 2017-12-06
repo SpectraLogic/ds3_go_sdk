@@ -13,52 +13,15 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type PutGroupGroupMemberSpectraS3Request struct {
-    groupId string
-    memberGroupId string
-    queryParams *url.Values
+    GroupId string
+    MemberGroupId string
 }
 
 func NewPutGroupGroupMemberSpectraS3Request(groupId string, memberGroupId string) *PutGroupGroupMemberSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("group_id", groupId)
-    queryParams.Set("member_group_id", memberGroupId)
-
     return &PutGroupGroupMemberSpectraS3Request{
-        groupId: groupId,
-        memberGroupId: memberGroupId,
-        queryParams: queryParams,
+        GroupId: groupId,
+        MemberGroupId: memberGroupId,
     }
 }
 
-
-
-
-func (PutGroupGroupMemberSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.POST
-}
-
-func (putGroupGroupMemberSpectraS3Request *PutGroupGroupMemberSpectraS3Request) Path() string {
-    return "/_rest_/group_member"
-}
-
-func (putGroupGroupMemberSpectraS3Request *PutGroupGroupMemberSpectraS3Request) QueryParams() *url.Values {
-    return putGroupGroupMemberSpectraS3Request.queryParams
-}
-
-func (PutGroupGroupMemberSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (PutGroupGroupMemberSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (PutGroupGroupMemberSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

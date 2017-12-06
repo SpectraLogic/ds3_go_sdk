@@ -49,3 +49,11 @@ func (cacheEntryState CacheEntryState) String() string {
             return ""
     }
 }
+
+func (cacheEntryState CacheEntryState) StringPtr() *string {
+    if cacheEntryState == UNDEFINED {
+        return nil
+    }
+    result := cacheEntryState.String()
+    return &result
+}

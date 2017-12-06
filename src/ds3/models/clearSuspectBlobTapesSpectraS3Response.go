@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -25,7 +24,7 @@ type ClearSuspectBlobTapesSpectraS3Response struct {
 
 
 
-func NewClearSuspectBlobTapesSpectraS3Response(webResponse networking.WebResponse) (*ClearSuspectBlobTapesSpectraS3Response, error) {
+func NewClearSuspectBlobTapesSpectraS3Response(webResponse WebResponse) (*ClearSuspectBlobTapesSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {

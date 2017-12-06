@@ -4,6 +4,8 @@ import (
     "errors"
     "fmt"
     "log"
+    "net/http"
+    "ds3/models"
 )
 
 type networkRetryPolicy struct {
@@ -12,31 +14,26 @@ type networkRetryPolicy struct {
 
 // Decorator for Network which handles network related retries
 type NetworkRetryDecorator struct {
-    network *Network
+    network Network
     policy *networkRetryPolicy
 }
 
-func NewNetworkRetryDecorator(network *Network, maxRetires int) (Network) {
+func NewNetworkRetryDecorator(network Network, maxRetires int) (Network) {
     return &NetworkRetryDecorator{
         network: network,
-        policy: &networkRetryPolicy{ maxRetries: maxRetires},
+        policy: &networkRetryPolicy{ maxRetries: maxRetires },
     }
 }
 
-func (networkRetryDecorator *NetworkRetryDecorator) Invoke(request Ds3Request) (WebResponse, error) {
+func (networkRetryDecorator *NetworkRetryDecorator) Invoke(httpRequest *http.Request) (models.WebResponse, error) {
     // Handle as many Network related retries as we're allowed.
     var lastErr error
     for i := 0; i <= networkRetryDecorator.policy.maxRetries; i++ {
-        ds3Response, err := (*networkRetryDecorator.network).Invoke(request)
+        ds3Response, err := networkRetryDecorator.network.Invoke(httpRequest)
 
         // If request was performed successfully then return response.
         if err == nil {
             return ds3Response, nil
-        }
-
-        // If there was a non-network error then return.
-        if _, ok := err.(RoundTripError); ok == false {
-            return nil, err
         }
 
         // Log the network error, and try again if max retries has not been attempted

@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -25,7 +24,7 @@ type DeleteStorageDomainFailureNotificationRegistrationSpectraS3Response struct 
 
 
 
-func NewDeleteStorageDomainFailureNotificationRegistrationSpectraS3Response(webResponse networking.WebResponse) (*DeleteStorageDomainFailureNotificationRegistrationSpectraS3Response, error) {
+func NewDeleteStorageDomainFailureNotificationRegistrationSpectraS3Response(webResponse WebResponse) (*DeleteStorageDomainFailureNotificationRegistrationSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {

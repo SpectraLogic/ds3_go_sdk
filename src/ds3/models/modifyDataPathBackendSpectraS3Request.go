@@ -13,115 +13,71 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-    "strconv"
-)
-
 type ModifyDataPathBackendSpectraS3Request struct {
-    activated bool
-    autoActivateTimeoutInMins *int
-    autoInspect AutoInspectMode
-    defaultImportConflictResolutionMode ImportConflictResolutionMode
-    defaultVerifyDataAfterImport Priority
-    defaultVerifyDataPriorToImport bool
-    partiallyVerifyLastPercentOfTapes *int
-    unavailableMediaPolicy UnavailableMediaUsagePolicy
-    unavailablePoolMaxJobRetryInMins int
-    unavailableTapePartitionMaxJobRetryInMins int
-    queryParams *url.Values
+    Activated *bool
+    AutoActivateTimeoutInMins *int
+    AutoInspect AutoInspectMode
+    DefaultImportConflictResolutionMode ImportConflictResolutionMode
+    DefaultVerifyDataAfterImport Priority
+    DefaultVerifyDataPriorToImport *bool
+    PartiallyVerifyLastPercentOfTapes *int
+    UnavailableMediaPolicy UnavailableMediaUsagePolicy
+    UnavailablePoolMaxJobRetryInMins *int
+    UnavailableTapePartitionMaxJobRetryInMins *int
 }
 
 func NewModifyDataPathBackendSpectraS3Request() *ModifyDataPathBackendSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &ModifyDataPathBackendSpectraS3Request{
-        queryParams: queryParams,
     }
 }
 
 func (modifyDataPathBackendSpectraS3Request *ModifyDataPathBackendSpectraS3Request) WithActivated(activated bool) *ModifyDataPathBackendSpectraS3Request {
-    modifyDataPathBackendSpectraS3Request.activated = activated
-    modifyDataPathBackendSpectraS3Request.queryParams.Set("activated", strconv.FormatBool(activated))
+    modifyDataPathBackendSpectraS3Request.Activated = &activated
     return modifyDataPathBackendSpectraS3Request
 }
+
+func (modifyDataPathBackendSpectraS3Request *ModifyDataPathBackendSpectraS3Request) WithAutoActivateTimeoutInMins(autoActivateTimeoutInMins int) *ModifyDataPathBackendSpectraS3Request {
+    modifyDataPathBackendSpectraS3Request.AutoActivateTimeoutInMins = &autoActivateTimeoutInMins
+    return modifyDataPathBackendSpectraS3Request
+}
+
 func (modifyDataPathBackendSpectraS3Request *ModifyDataPathBackendSpectraS3Request) WithAutoInspect(autoInspect AutoInspectMode) *ModifyDataPathBackendSpectraS3Request {
-    modifyDataPathBackendSpectraS3Request.autoInspect = autoInspect
-    modifyDataPathBackendSpectraS3Request.queryParams.Set("auto_inspect", autoInspect.String())
+    modifyDataPathBackendSpectraS3Request.AutoInspect = autoInspect
     return modifyDataPathBackendSpectraS3Request
 }
+
 func (modifyDataPathBackendSpectraS3Request *ModifyDataPathBackendSpectraS3Request) WithDefaultImportConflictResolutionMode(defaultImportConflictResolutionMode ImportConflictResolutionMode) *ModifyDataPathBackendSpectraS3Request {
-    modifyDataPathBackendSpectraS3Request.defaultImportConflictResolutionMode = defaultImportConflictResolutionMode
-    modifyDataPathBackendSpectraS3Request.queryParams.Set("default_import_conflict_resolution_mode", defaultImportConflictResolutionMode.String())
+    modifyDataPathBackendSpectraS3Request.DefaultImportConflictResolutionMode = defaultImportConflictResolutionMode
     return modifyDataPathBackendSpectraS3Request
 }
+
 func (modifyDataPathBackendSpectraS3Request *ModifyDataPathBackendSpectraS3Request) WithDefaultVerifyDataAfterImport(defaultVerifyDataAfterImport Priority) *ModifyDataPathBackendSpectraS3Request {
-    modifyDataPathBackendSpectraS3Request.defaultVerifyDataAfterImport = defaultVerifyDataAfterImport
-    modifyDataPathBackendSpectraS3Request.queryParams.Set("default_verify_data_after_import", defaultVerifyDataAfterImport.String())
+    modifyDataPathBackendSpectraS3Request.DefaultVerifyDataAfterImport = defaultVerifyDataAfterImport
     return modifyDataPathBackendSpectraS3Request
 }
+
 func (modifyDataPathBackendSpectraS3Request *ModifyDataPathBackendSpectraS3Request) WithDefaultVerifyDataPriorToImport(defaultVerifyDataPriorToImport bool) *ModifyDataPathBackendSpectraS3Request {
-    modifyDataPathBackendSpectraS3Request.defaultVerifyDataPriorToImport = defaultVerifyDataPriorToImport
-    modifyDataPathBackendSpectraS3Request.queryParams.Set("default_verify_data_prior_to_import", strconv.FormatBool(defaultVerifyDataPriorToImport))
+    modifyDataPathBackendSpectraS3Request.DefaultVerifyDataPriorToImport = &defaultVerifyDataPriorToImport
     return modifyDataPathBackendSpectraS3Request
 }
+
+func (modifyDataPathBackendSpectraS3Request *ModifyDataPathBackendSpectraS3Request) WithPartiallyVerifyLastPercentOfTapes(partiallyVerifyLastPercentOfTapes int) *ModifyDataPathBackendSpectraS3Request {
+    modifyDataPathBackendSpectraS3Request.PartiallyVerifyLastPercentOfTapes = &partiallyVerifyLastPercentOfTapes
+    return modifyDataPathBackendSpectraS3Request
+}
+
 func (modifyDataPathBackendSpectraS3Request *ModifyDataPathBackendSpectraS3Request) WithUnavailableMediaPolicy(unavailableMediaPolicy UnavailableMediaUsagePolicy) *ModifyDataPathBackendSpectraS3Request {
-    modifyDataPathBackendSpectraS3Request.unavailableMediaPolicy = unavailableMediaPolicy
-    modifyDataPathBackendSpectraS3Request.queryParams.Set("unavailable_media_policy", unavailableMediaPolicy.String())
+    modifyDataPathBackendSpectraS3Request.UnavailableMediaPolicy = unavailableMediaPolicy
     return modifyDataPathBackendSpectraS3Request
 }
+
 func (modifyDataPathBackendSpectraS3Request *ModifyDataPathBackendSpectraS3Request) WithUnavailablePoolMaxJobRetryInMins(unavailablePoolMaxJobRetryInMins int) *ModifyDataPathBackendSpectraS3Request {
-    modifyDataPathBackendSpectraS3Request.unavailablePoolMaxJobRetryInMins = unavailablePoolMaxJobRetryInMins
-    modifyDataPathBackendSpectraS3Request.queryParams.Set("unavailable_pool_max_job_retry_in_mins", strconv.Itoa(unavailablePoolMaxJobRetryInMins))
+    modifyDataPathBackendSpectraS3Request.UnavailablePoolMaxJobRetryInMins = &unavailablePoolMaxJobRetryInMins
     return modifyDataPathBackendSpectraS3Request
 }
+
 func (modifyDataPathBackendSpectraS3Request *ModifyDataPathBackendSpectraS3Request) WithUnavailableTapePartitionMaxJobRetryInMins(unavailableTapePartitionMaxJobRetryInMins int) *ModifyDataPathBackendSpectraS3Request {
-    modifyDataPathBackendSpectraS3Request.unavailableTapePartitionMaxJobRetryInMins = unavailableTapePartitionMaxJobRetryInMins
-    modifyDataPathBackendSpectraS3Request.queryParams.Set("unavailable_tape_partition_max_job_retry_in_mins", strconv.Itoa(unavailableTapePartitionMaxJobRetryInMins))
+    modifyDataPathBackendSpectraS3Request.UnavailableTapePartitionMaxJobRetryInMins = &unavailableTapePartitionMaxJobRetryInMins
     return modifyDataPathBackendSpectraS3Request
 }
 
-func (modifyDataPathBackendSpectraS3Request *ModifyDataPathBackendSpectraS3Request) WithAutoActivateTimeoutInMins(autoActivateTimeoutInMins *int) *ModifyDataPathBackendSpectraS3Request {
-    modifyDataPathBackendSpectraS3Request.autoActivateTimeoutInMins = autoActivateTimeoutInMins
-    if autoActivateTimeoutInMins != nil {
-        modifyDataPathBackendSpectraS3Request.queryParams.Set("auto_activate_timeout_in_mins", strconv.Itoa(*autoActivateTimeoutInMins))
-    } else {
-        modifyDataPathBackendSpectraS3Request.queryParams.Set("auto_activate_timeout_in_mins", "")
-    }
-    return modifyDataPathBackendSpectraS3Request
-}
-func (modifyDataPathBackendSpectraS3Request *ModifyDataPathBackendSpectraS3Request) WithPartiallyVerifyLastPercentOfTapes(partiallyVerifyLastPercentOfTapes *int) *ModifyDataPathBackendSpectraS3Request {
-    modifyDataPathBackendSpectraS3Request.partiallyVerifyLastPercentOfTapes = partiallyVerifyLastPercentOfTapes
-    if partiallyVerifyLastPercentOfTapes != nil {
-        modifyDataPathBackendSpectraS3Request.queryParams.Set("partially_verify_last_percent_of_tapes", strconv.Itoa(*partiallyVerifyLastPercentOfTapes))
-    } else {
-        modifyDataPathBackendSpectraS3Request.queryParams.Set("partially_verify_last_percent_of_tapes", "")
-    }
-    return modifyDataPathBackendSpectraS3Request
-}
-
-
-func (ModifyDataPathBackendSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.PUT
-}
-
-func (modifyDataPathBackendSpectraS3Request *ModifyDataPathBackendSpectraS3Request) Path() string {
-    return "/_rest_/data_path_backend"
-}
-
-func (modifyDataPathBackendSpectraS3Request *ModifyDataPathBackendSpectraS3Request) QueryParams() *url.Values {
-    return modifyDataPathBackendSpectraS3Request.queryParams
-}
-
-func (ModifyDataPathBackendSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (ModifyDataPathBackendSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (ModifyDataPathBackendSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

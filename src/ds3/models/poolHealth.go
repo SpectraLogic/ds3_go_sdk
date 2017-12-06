@@ -49,3 +49,11 @@ func (poolHealth PoolHealth) String() string {
             return ""
     }
 }
+
+func (poolHealth PoolHealth) StringPtr() *string {
+    if poolHealth == UNDEFINED {
+        return nil
+    }
+    result := poolHealth.String()
+    return &result
+}

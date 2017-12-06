@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -25,7 +24,7 @@ type ModifyAllDs3TargetsSpectraS3Response struct {
 
 
 
-func NewModifyAllDs3TargetsSpectraS3Response(webResponse networking.WebResponse) (*ModifyAllDs3TargetsSpectraS3Response, error) {
+func NewModifyAllDs3TargetsSpectraS3Response(webResponse WebResponse) (*ModifyAllDs3TargetsSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {

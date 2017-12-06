@@ -13,96 +13,43 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-    "strconv"
-)
-
 type ListMultiPartUploadsRequest struct {
-    bucketName string
-    delimiter *string
-    keyMarker *string
-    maxUploads int
-    prefix *string
-    uploadIdMarker *string
-    queryParams *url.Values
+    BucketName string
+    Delimiter *string
+    KeyMarker *string
+    MaxUploads *int
+    Prefix *string
+    UploadIdMarker *string
 }
 
 func NewListMultiPartUploadsRequest(bucketName string) *ListMultiPartUploadsRequest {
-    queryParams := &url.Values{}
-    queryParams.Set("uploads", "")
-
     return &ListMultiPartUploadsRequest{
-        bucketName: bucketName,
-        queryParams: queryParams,
+        BucketName: bucketName,
     }
+}
+
+func (listMultiPartUploadsRequest *ListMultiPartUploadsRequest) WithDelimiter(delimiter string) *ListMultiPartUploadsRequest {
+    listMultiPartUploadsRequest.Delimiter = &delimiter
+    return listMultiPartUploadsRequest
+}
+
+func (listMultiPartUploadsRequest *ListMultiPartUploadsRequest) WithKeyMarker(keyMarker string) *ListMultiPartUploadsRequest {
+    listMultiPartUploadsRequest.KeyMarker = &keyMarker
+    return listMultiPartUploadsRequest
 }
 
 func (listMultiPartUploadsRequest *ListMultiPartUploadsRequest) WithMaxUploads(maxUploads int) *ListMultiPartUploadsRequest {
-    listMultiPartUploadsRequest.maxUploads = maxUploads
-    listMultiPartUploadsRequest.queryParams.Set("max_uploads", strconv.Itoa(maxUploads))
+    listMultiPartUploadsRequest.MaxUploads = &maxUploads
     return listMultiPartUploadsRequest
 }
 
-func (listMultiPartUploadsRequest *ListMultiPartUploadsRequest) WithDelimiter(delimiter *string) *ListMultiPartUploadsRequest {
-    listMultiPartUploadsRequest.delimiter = delimiter
-    if delimiter != nil {
-        listMultiPartUploadsRequest.queryParams.Set("delimiter", *delimiter)
-    } else {
-        listMultiPartUploadsRequest.queryParams.Set("delimiter", "")
-    }
-    return listMultiPartUploadsRequest
-}
-func (listMultiPartUploadsRequest *ListMultiPartUploadsRequest) WithKeyMarker(keyMarker *string) *ListMultiPartUploadsRequest {
-    listMultiPartUploadsRequest.keyMarker = keyMarker
-    if keyMarker != nil {
-        listMultiPartUploadsRequest.queryParams.Set("key_marker", *keyMarker)
-    } else {
-        listMultiPartUploadsRequest.queryParams.Set("key_marker", "")
-    }
-    return listMultiPartUploadsRequest
-}
-func (listMultiPartUploadsRequest *ListMultiPartUploadsRequest) WithPrefix(prefix *string) *ListMultiPartUploadsRequest {
-    listMultiPartUploadsRequest.prefix = prefix
-    if prefix != nil {
-        listMultiPartUploadsRequest.queryParams.Set("prefix", *prefix)
-    } else {
-        listMultiPartUploadsRequest.queryParams.Set("prefix", "")
-    }
-    return listMultiPartUploadsRequest
-}
-func (listMultiPartUploadsRequest *ListMultiPartUploadsRequest) WithUploadIdMarker(uploadIdMarker *string) *ListMultiPartUploadsRequest {
-    listMultiPartUploadsRequest.uploadIdMarker = uploadIdMarker
-    if uploadIdMarker != nil {
-        listMultiPartUploadsRequest.queryParams.Set("upload_id_marker", *uploadIdMarker)
-    } else {
-        listMultiPartUploadsRequest.queryParams.Set("upload_id_marker", "")
-    }
+func (listMultiPartUploadsRequest *ListMultiPartUploadsRequest) WithPrefix(prefix string) *ListMultiPartUploadsRequest {
+    listMultiPartUploadsRequest.Prefix = &prefix
     return listMultiPartUploadsRequest
 }
 
-
-func (ListMultiPartUploadsRequest) Verb() networking.HttpVerb {
-    return networking.GET
+func (listMultiPartUploadsRequest *ListMultiPartUploadsRequest) WithUploadIdMarker(uploadIdMarker string) *ListMultiPartUploadsRequest {
+    listMultiPartUploadsRequest.UploadIdMarker = &uploadIdMarker
+    return listMultiPartUploadsRequest
 }
 
-func (listMultiPartUploadsRequest *ListMultiPartUploadsRequest) Path() string {
-    return "/" + listMultiPartUploadsRequest.bucketName
-}
-
-func (listMultiPartUploadsRequest *ListMultiPartUploadsRequest) QueryParams() *url.Values {
-    return listMultiPartUploadsRequest.queryParams
-}
-
-func (ListMultiPartUploadsRequest) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (ListMultiPartUploadsRequest) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (ListMultiPartUploadsRequest) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

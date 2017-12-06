@@ -13,46 +13,11 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type GetSystemInformationSpectraS3Request struct {
-    queryParams *url.Values
 }
 
 func NewGetSystemInformationSpectraS3Request() *GetSystemInformationSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetSystemInformationSpectraS3Request{
-        queryParams: queryParams,
     }
 }
 
-
-
-
-func (GetSystemInformationSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
-}
-
-func (getSystemInformationSpectraS3Request *GetSystemInformationSpectraS3Request) Path() string {
-    return "/_rest_/system_information"
-}
-
-func (getSystemInformationSpectraS3Request *GetSystemInformationSpectraS3Request) QueryParams() *url.Values {
-    return getSystemInformationSpectraS3Request.queryParams
-}
-
-func (GetSystemInformationSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetSystemInformationSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (GetSystemInformationSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

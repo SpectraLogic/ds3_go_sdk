@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -23,11 +22,11 @@ type InitiateMultiPartUploadResponse struct {
     Headers *http.Header
 }
 
-func (initiateMultiPartUploadResponse *InitiateMultiPartUploadResponse) parse(webResponse networking.WebResponse) error {
+func (initiateMultiPartUploadResponse *InitiateMultiPartUploadResponse) parse(webResponse WebResponse) error {
         return parseResponsePayload(webResponse, &initiateMultiPartUploadResponse.InitiateMultipartUploadResult)
 }
 
-func NewInitiateMultiPartUploadResponse(webResponse networking.WebResponse) (*InitiateMultiPartUploadResponse, error) {
+func NewInitiateMultiPartUploadResponse(webResponse WebResponse) (*InitiateMultiPartUploadResponse, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {

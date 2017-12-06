@@ -13,49 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type PutGlobalDataPolicyAclForGroupSpectraS3Request struct {
-    groupId string
-    queryParams *url.Values
+    GroupId string
 }
 
 func NewPutGlobalDataPolicyAclForGroupSpectraS3Request(groupId string) *PutGlobalDataPolicyAclForGroupSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("group_id", groupId)
-
     return &PutGlobalDataPolicyAclForGroupSpectraS3Request{
-        groupId: groupId,
-        queryParams: queryParams,
+        GroupId: groupId,
     }
 }
 
-
-
-
-func (PutGlobalDataPolicyAclForGroupSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.POST
-}
-
-func (putGlobalDataPolicyAclForGroupSpectraS3Request *PutGlobalDataPolicyAclForGroupSpectraS3Request) Path() string {
-    return "/_rest_/data_policy_acl"
-}
-
-func (putGlobalDataPolicyAclForGroupSpectraS3Request *PutGlobalDataPolicyAclForGroupSpectraS3Request) QueryParams() *url.Values {
-    return putGlobalDataPolicyAclForGroupSpectraS3Request.queryParams
-}
-
-func (PutGlobalDataPolicyAclForGroupSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (PutGlobalDataPolicyAclForGroupSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (PutGlobalDataPolicyAclForGroupSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

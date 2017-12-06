@@ -106,3 +106,11 @@ func (tapeFailureType TapeFailureType) String() string {
             return ""
     }
 }
+
+func (tapeFailureType TapeFailureType) StringPtr() *string {
+    if tapeFailureType == UNDEFINED {
+        return nil
+    }
+    result := tapeFailureType.String()
+    return &result
+}

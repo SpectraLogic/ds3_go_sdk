@@ -13,82 +13,45 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type GetBucketCapacitySummarySpectraS3Request struct {
-    bucketId string
-    poolHealth PoolHealth
-    poolState PoolState
-    poolType PoolType
-    storageDomainId string
-    tapeState TapeState
-    tapeType TapeType
-    queryParams *url.Values
+    BucketId string
+    PoolHealth PoolHealth
+    PoolState PoolState
+    PoolType PoolType
+    StorageDomainId string
+    TapeState TapeState
+    TapeType TapeType
 }
 
 func NewGetBucketCapacitySummarySpectraS3Request(bucketId string, storageDomainId string) *GetBucketCapacitySummarySpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("bucket_id", bucketId)
-    queryParams.Set("storage_domain_id", storageDomainId)
-
     return &GetBucketCapacitySummarySpectraS3Request{
-        bucketId: bucketId,
-        storageDomainId: storageDomainId,
-        queryParams: queryParams,
+        BucketId: bucketId,
+        StorageDomainId: storageDomainId,
     }
 }
 
 func (getBucketCapacitySummarySpectraS3Request *GetBucketCapacitySummarySpectraS3Request) WithPoolHealth(poolHealth PoolHealth) *GetBucketCapacitySummarySpectraS3Request {
-    getBucketCapacitySummarySpectraS3Request.poolHealth = poolHealth
-    getBucketCapacitySummarySpectraS3Request.queryParams.Set("pool_health", poolHealth.String())
+    getBucketCapacitySummarySpectraS3Request.PoolHealth = poolHealth
     return getBucketCapacitySummarySpectraS3Request
 }
+
 func (getBucketCapacitySummarySpectraS3Request *GetBucketCapacitySummarySpectraS3Request) WithPoolState(poolState PoolState) *GetBucketCapacitySummarySpectraS3Request {
-    getBucketCapacitySummarySpectraS3Request.poolState = poolState
-    getBucketCapacitySummarySpectraS3Request.queryParams.Set("pool_state", poolState.String())
+    getBucketCapacitySummarySpectraS3Request.PoolState = poolState
     return getBucketCapacitySummarySpectraS3Request
 }
+
 func (getBucketCapacitySummarySpectraS3Request *GetBucketCapacitySummarySpectraS3Request) WithPoolType(poolType PoolType) *GetBucketCapacitySummarySpectraS3Request {
-    getBucketCapacitySummarySpectraS3Request.poolType = poolType
-    getBucketCapacitySummarySpectraS3Request.queryParams.Set("pool_type", poolType.String())
+    getBucketCapacitySummarySpectraS3Request.PoolType = poolType
     return getBucketCapacitySummarySpectraS3Request
 }
+
 func (getBucketCapacitySummarySpectraS3Request *GetBucketCapacitySummarySpectraS3Request) WithTapeState(tapeState TapeState) *GetBucketCapacitySummarySpectraS3Request {
-    getBucketCapacitySummarySpectraS3Request.tapeState = tapeState
-    getBucketCapacitySummarySpectraS3Request.queryParams.Set("tape_state", tapeState.String())
+    getBucketCapacitySummarySpectraS3Request.TapeState = tapeState
     return getBucketCapacitySummarySpectraS3Request
 }
+
 func (getBucketCapacitySummarySpectraS3Request *GetBucketCapacitySummarySpectraS3Request) WithTapeType(tapeType TapeType) *GetBucketCapacitySummarySpectraS3Request {
-    getBucketCapacitySummarySpectraS3Request.tapeType = tapeType
-    getBucketCapacitySummarySpectraS3Request.queryParams.Set("tape_type", tapeType.String())
+    getBucketCapacitySummarySpectraS3Request.TapeType = tapeType
     return getBucketCapacitySummarySpectraS3Request
 }
 
-
-
-func (GetBucketCapacitySummarySpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
-}
-
-func (getBucketCapacitySummarySpectraS3Request *GetBucketCapacitySummarySpectraS3Request) Path() string {
-    return "/_rest_/capacity_summary"
-}
-
-func (getBucketCapacitySummarySpectraS3Request *GetBucketCapacitySummarySpectraS3Request) QueryParams() *url.Values {
-    return getBucketCapacitySummarySpectraS3Request.queryParams
-}
-
-func (GetBucketCapacitySummarySpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetBucketCapacitySummarySpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (GetBucketCapacitySummarySpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

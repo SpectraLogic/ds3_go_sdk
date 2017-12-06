@@ -55,3 +55,11 @@ func (tapeDriveState TapeDriveState) String() string {
             return ""
     }
 }
+
+func (tapeDriveState TapeDriveState) StringPtr() *string {
+    if tapeDriveState == UNDEFINED {
+        return nil
+    }
+    result := tapeDriveState.String()
+    return &result
+}

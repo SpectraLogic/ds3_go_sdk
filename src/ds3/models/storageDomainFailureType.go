@@ -52,3 +52,11 @@ func (storageDomainFailureType StorageDomainFailureType) String() string {
             return ""
     }
 }
+
+func (storageDomainFailureType StorageDomainFailureType) StringPtr() *string {
+    if storageDomainFailureType == UNDEFINED {
+        return nil
+    }
+    result := storageDomainFailureType.String()
+    return &result
+}

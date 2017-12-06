@@ -13,56 +13,23 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type GetJobsSpectraS3Request struct {
-    bucketId string
-    queryParams *url.Values
+    BucketId *string
+    FullDetails bool
 }
 
 func NewGetJobsSpectraS3Request() *GetJobsSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetJobsSpectraS3Request{
-        queryParams: queryParams,
     }
 }
 
 func (getJobsSpectraS3Request *GetJobsSpectraS3Request) WithBucketId(bucketId string) *GetJobsSpectraS3Request {
-    getJobsSpectraS3Request.bucketId = bucketId
-    getJobsSpectraS3Request.queryParams.Set("bucket_id", bucketId)
+    getJobsSpectraS3Request.BucketId = &bucketId
     return getJobsSpectraS3Request
 }
-
 
 func (getJobsSpectraS3Request *GetJobsSpectraS3Request) WithFullDetails() *GetJobsSpectraS3Request {
-    getJobsSpectraS3Request.queryParams.Set("full_details", "")
+    getJobsSpectraS3Request.FullDetails = true
     return getJobsSpectraS3Request
 }
 
-func (GetJobsSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
-}
-
-func (getJobsSpectraS3Request *GetJobsSpectraS3Request) Path() string {
-    return "/_rest_/job"
-}
-
-func (getJobsSpectraS3Request *GetJobsSpectraS3Request) QueryParams() *url.Values {
-    return getJobsSpectraS3Request.queryParams
-}
-
-func (GetJobsSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetJobsSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (GetJobsSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

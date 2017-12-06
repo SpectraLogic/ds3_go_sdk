@@ -13,91 +13,53 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-    "strconv"
-)
-
 type GetDegradedBucketsSpectraS3Request struct {
-    dataPolicyId string
-    name *string
-    pageLength int
-    pageOffset int
-    pageStartMarker string
-    userId string
-    queryParams *url.Values
+    DataPolicyId *string
+    LastPage bool
+    Name *string
+    PageLength *int
+    PageOffset *int
+    PageStartMarker *string
+    UserId *string
 }
 
 func NewGetDegradedBucketsSpectraS3Request() *GetDegradedBucketsSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetDegradedBucketsSpectraS3Request{
-        queryParams: queryParams,
     }
 }
 
 func (getDegradedBucketsSpectraS3Request *GetDegradedBucketsSpectraS3Request) WithDataPolicyId(dataPolicyId string) *GetDegradedBucketsSpectraS3Request {
-    getDegradedBucketsSpectraS3Request.dataPolicyId = dataPolicyId
-    getDegradedBucketsSpectraS3Request.queryParams.Set("data_policy_id", dataPolicyId)
-    return getDegradedBucketsSpectraS3Request
-}
-func (getDegradedBucketsSpectraS3Request *GetDegradedBucketsSpectraS3Request) WithPageLength(pageLength int) *GetDegradedBucketsSpectraS3Request {
-    getDegradedBucketsSpectraS3Request.pageLength = pageLength
-    getDegradedBucketsSpectraS3Request.queryParams.Set("page_length", strconv.Itoa(pageLength))
-    return getDegradedBucketsSpectraS3Request
-}
-func (getDegradedBucketsSpectraS3Request *GetDegradedBucketsSpectraS3Request) WithPageOffset(pageOffset int) *GetDegradedBucketsSpectraS3Request {
-    getDegradedBucketsSpectraS3Request.pageOffset = pageOffset
-    getDegradedBucketsSpectraS3Request.queryParams.Set("page_offset", strconv.Itoa(pageOffset))
-    return getDegradedBucketsSpectraS3Request
-}
-func (getDegradedBucketsSpectraS3Request *GetDegradedBucketsSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetDegradedBucketsSpectraS3Request {
-    getDegradedBucketsSpectraS3Request.pageStartMarker = pageStartMarker
-    getDegradedBucketsSpectraS3Request.queryParams.Set("page_start_marker", pageStartMarker)
-    return getDegradedBucketsSpectraS3Request
-}
-func (getDegradedBucketsSpectraS3Request *GetDegradedBucketsSpectraS3Request) WithUserId(userId string) *GetDegradedBucketsSpectraS3Request {
-    getDegradedBucketsSpectraS3Request.userId = userId
-    getDegradedBucketsSpectraS3Request.queryParams.Set("user_id", userId)
-    return getDegradedBucketsSpectraS3Request
-}
-
-func (getDegradedBucketsSpectraS3Request *GetDegradedBucketsSpectraS3Request) WithName(name *string) *GetDegradedBucketsSpectraS3Request {
-    getDegradedBucketsSpectraS3Request.name = name
-    if name != nil {
-        getDegradedBucketsSpectraS3Request.queryParams.Set("name", *name)
-    } else {
-        getDegradedBucketsSpectraS3Request.queryParams.Set("name", "")
-    }
+    getDegradedBucketsSpectraS3Request.DataPolicyId = &dataPolicyId
     return getDegradedBucketsSpectraS3Request
 }
 
 func (getDegradedBucketsSpectraS3Request *GetDegradedBucketsSpectraS3Request) WithLastPage() *GetDegradedBucketsSpectraS3Request {
-    getDegradedBucketsSpectraS3Request.queryParams.Set("last_page", "")
+    getDegradedBucketsSpectraS3Request.LastPage = true
     return getDegradedBucketsSpectraS3Request
 }
 
-func (GetDegradedBucketsSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
+func (getDegradedBucketsSpectraS3Request *GetDegradedBucketsSpectraS3Request) WithName(name string) *GetDegradedBucketsSpectraS3Request {
+    getDegradedBucketsSpectraS3Request.Name = &name
+    return getDegradedBucketsSpectraS3Request
 }
 
-func (getDegradedBucketsSpectraS3Request *GetDegradedBucketsSpectraS3Request) Path() string {
-    return "/_rest_/degraded_bucket"
+func (getDegradedBucketsSpectraS3Request *GetDegradedBucketsSpectraS3Request) WithPageLength(pageLength int) *GetDegradedBucketsSpectraS3Request {
+    getDegradedBucketsSpectraS3Request.PageLength = &pageLength
+    return getDegradedBucketsSpectraS3Request
 }
 
-func (getDegradedBucketsSpectraS3Request *GetDegradedBucketsSpectraS3Request) QueryParams() *url.Values {
-    return getDegradedBucketsSpectraS3Request.queryParams
+func (getDegradedBucketsSpectraS3Request *GetDegradedBucketsSpectraS3Request) WithPageOffset(pageOffset int) *GetDegradedBucketsSpectraS3Request {
+    getDegradedBucketsSpectraS3Request.PageOffset = &pageOffset
+    return getDegradedBucketsSpectraS3Request
 }
 
-func (GetDegradedBucketsSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetDegradedBucketsSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
+func (getDegradedBucketsSpectraS3Request *GetDegradedBucketsSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetDegradedBucketsSpectraS3Request {
+    getDegradedBucketsSpectraS3Request.PageStartMarker = &pageStartMarker
+    return getDegradedBucketsSpectraS3Request
 }
 
-func (GetDegradedBucketsSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
+func (getDegradedBucketsSpectraS3Request *GetDegradedBucketsSpectraS3Request) WithUserId(userId string) *GetDegradedBucketsSpectraS3Request {
+    getDegradedBucketsSpectraS3Request.UserId = &userId
+    return getDegradedBucketsSpectraS3Request
 }
+

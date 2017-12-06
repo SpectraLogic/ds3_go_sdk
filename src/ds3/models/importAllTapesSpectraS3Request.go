@@ -13,90 +13,53 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-    "strconv"
-)
-
 type ImportAllTapesSpectraS3Request struct {
-    conflictResolutionMode ImportConflictResolutionMode
-    dataPolicyId string
-    priority Priority
-    storageDomainId string
-    userId string
-    verifyDataAfterImport Priority
-    verifyDataPriorToImport bool
-    queryParams *url.Values
+    ConflictResolutionMode ImportConflictResolutionMode
+    DataPolicyId *string
+    Priority Priority
+    StorageDomainId *string
+    UserId *string
+    VerifyDataAfterImport Priority
+    VerifyDataPriorToImport *bool
 }
 
 func NewImportAllTapesSpectraS3Request() *ImportAllTapesSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("operation", "import")
-
     return &ImportAllTapesSpectraS3Request{
-        queryParams: queryParams,
     }
 }
 
 func (importAllTapesSpectraS3Request *ImportAllTapesSpectraS3Request) WithConflictResolutionMode(conflictResolutionMode ImportConflictResolutionMode) *ImportAllTapesSpectraS3Request {
-    importAllTapesSpectraS3Request.conflictResolutionMode = conflictResolutionMode
-    importAllTapesSpectraS3Request.queryParams.Set("conflict_resolution_mode", conflictResolutionMode.String())
+    importAllTapesSpectraS3Request.ConflictResolutionMode = conflictResolutionMode
     return importAllTapesSpectraS3Request
 }
+
 func (importAllTapesSpectraS3Request *ImportAllTapesSpectraS3Request) WithDataPolicyId(dataPolicyId string) *ImportAllTapesSpectraS3Request {
-    importAllTapesSpectraS3Request.dataPolicyId = dataPolicyId
-    importAllTapesSpectraS3Request.queryParams.Set("data_policy_id", dataPolicyId)
+    importAllTapesSpectraS3Request.DataPolicyId = &dataPolicyId
     return importAllTapesSpectraS3Request
 }
+
 func (importAllTapesSpectraS3Request *ImportAllTapesSpectraS3Request) WithPriority(priority Priority) *ImportAllTapesSpectraS3Request {
-    importAllTapesSpectraS3Request.priority = priority
-    importAllTapesSpectraS3Request.queryParams.Set("priority", priority.String())
+    importAllTapesSpectraS3Request.Priority = priority
     return importAllTapesSpectraS3Request
 }
+
 func (importAllTapesSpectraS3Request *ImportAllTapesSpectraS3Request) WithStorageDomainId(storageDomainId string) *ImportAllTapesSpectraS3Request {
-    importAllTapesSpectraS3Request.storageDomainId = storageDomainId
-    importAllTapesSpectraS3Request.queryParams.Set("storage_domain_id", storageDomainId)
+    importAllTapesSpectraS3Request.StorageDomainId = &storageDomainId
     return importAllTapesSpectraS3Request
 }
+
 func (importAllTapesSpectraS3Request *ImportAllTapesSpectraS3Request) WithUserId(userId string) *ImportAllTapesSpectraS3Request {
-    importAllTapesSpectraS3Request.userId = userId
-    importAllTapesSpectraS3Request.queryParams.Set("user_id", userId)
+    importAllTapesSpectraS3Request.UserId = &userId
     return importAllTapesSpectraS3Request
 }
+
 func (importAllTapesSpectraS3Request *ImportAllTapesSpectraS3Request) WithVerifyDataAfterImport(verifyDataAfterImport Priority) *ImportAllTapesSpectraS3Request {
-    importAllTapesSpectraS3Request.verifyDataAfterImport = verifyDataAfterImport
-    importAllTapesSpectraS3Request.queryParams.Set("verify_data_after_import", verifyDataAfterImport.String())
+    importAllTapesSpectraS3Request.VerifyDataAfterImport = verifyDataAfterImport
     return importAllTapesSpectraS3Request
 }
+
 func (importAllTapesSpectraS3Request *ImportAllTapesSpectraS3Request) WithVerifyDataPriorToImport(verifyDataPriorToImport bool) *ImportAllTapesSpectraS3Request {
-    importAllTapesSpectraS3Request.verifyDataPriorToImport = verifyDataPriorToImport
-    importAllTapesSpectraS3Request.queryParams.Set("verify_data_prior_to_import", strconv.FormatBool(verifyDataPriorToImport))
+    importAllTapesSpectraS3Request.VerifyDataPriorToImport = &verifyDataPriorToImport
     return importAllTapesSpectraS3Request
 }
 
-
-
-func (ImportAllTapesSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.PUT
-}
-
-func (importAllTapesSpectraS3Request *ImportAllTapesSpectraS3Request) Path() string {
-    return "/_rest_/tape"
-}
-
-func (importAllTapesSpectraS3Request *ImportAllTapesSpectraS3Request) QueryParams() *url.Values {
-    return importAllTapesSpectraS3Request.queryParams
-}
-
-func (ImportAllTapesSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (ImportAllTapesSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (ImportAllTapesSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

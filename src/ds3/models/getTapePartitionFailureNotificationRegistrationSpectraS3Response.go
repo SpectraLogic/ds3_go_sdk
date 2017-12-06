@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -23,11 +22,11 @@ type GetTapePartitionFailureNotificationRegistrationSpectraS3Response struct {
     Headers *http.Header
 }
 
-func (getTapePartitionFailureNotificationRegistrationSpectraS3Response *GetTapePartitionFailureNotificationRegistrationSpectraS3Response) parse(webResponse networking.WebResponse) error {
+func (getTapePartitionFailureNotificationRegistrationSpectraS3Response *GetTapePartitionFailureNotificationRegistrationSpectraS3Response) parse(webResponse WebResponse) error {
         return parseResponsePayload(webResponse, &getTapePartitionFailureNotificationRegistrationSpectraS3Response.TapePartitionFailureNotificationRegistration)
 }
 
-func NewGetTapePartitionFailureNotificationRegistrationSpectraS3Response(webResponse networking.WebResponse) (*GetTapePartitionFailureNotificationRegistrationSpectraS3Response, error) {
+func NewGetTapePartitionFailureNotificationRegistrationSpectraS3Response(webResponse WebResponse) (*GetTapePartitionFailureNotificationRegistrationSpectraS3Response, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {

@@ -13,46 +13,11 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type ResetInstanceIdentifierSpectraS3Request struct {
-    queryParams *url.Values
 }
 
 func NewResetInstanceIdentifierSpectraS3Request() *ResetInstanceIdentifierSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &ResetInstanceIdentifierSpectraS3Request{
-        queryParams: queryParams,
     }
 }
 
-
-
-
-func (ResetInstanceIdentifierSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.PUT
-}
-
-func (resetInstanceIdentifierSpectraS3Request *ResetInstanceIdentifierSpectraS3Request) Path() string {
-    return "/_rest_/instance_identifier"
-}
-
-func (resetInstanceIdentifierSpectraS3Request *ResetInstanceIdentifierSpectraS3Request) QueryParams() *url.Values {
-    return resetInstanceIdentifierSpectraS3Request.queryParams
-}
-
-func (ResetInstanceIdentifierSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (ResetInstanceIdentifierSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (ResetInstanceIdentifierSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

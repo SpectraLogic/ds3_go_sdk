@@ -13,49 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type GetTapePartitionWithFullDetailsSpectraS3Request struct {
-    tapePartition string
-    queryParams *url.Values
+    TapePartition string
 }
 
 func NewGetTapePartitionWithFullDetailsSpectraS3Request(tapePartition string) *GetTapePartitionWithFullDetailsSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("full_details", "")
-
     return &GetTapePartitionWithFullDetailsSpectraS3Request{
-        tapePartition: tapePartition,
-        queryParams: queryParams,
+        TapePartition: tapePartition,
     }
 }
 
-
-
-
-func (GetTapePartitionWithFullDetailsSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
-}
-
-func (getTapePartitionWithFullDetailsSpectraS3Request *GetTapePartitionWithFullDetailsSpectraS3Request) Path() string {
-    return "/_rest_/tape_partition/" + getTapePartitionWithFullDetailsSpectraS3Request.tapePartition
-}
-
-func (getTapePartitionWithFullDetailsSpectraS3Request *GetTapePartitionWithFullDetailsSpectraS3Request) QueryParams() *url.Values {
-    return getTapePartitionWithFullDetailsSpectraS3Request.queryParams
-}
-
-func (GetTapePartitionWithFullDetailsSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetTapePartitionWithFullDetailsSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (GetTapePartitionWithFullDetailsSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

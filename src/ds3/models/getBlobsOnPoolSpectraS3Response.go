@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -23,11 +22,11 @@ type GetBlobsOnPoolSpectraS3Response struct {
     Headers *http.Header
 }
 
-func (getBlobsOnPoolSpectraS3Response *GetBlobsOnPoolSpectraS3Response) parse(webResponse networking.WebResponse) error {
+func (getBlobsOnPoolSpectraS3Response *GetBlobsOnPoolSpectraS3Response) parse(webResponse WebResponse) error {
         return parseResponsePayload(webResponse, &getBlobsOnPoolSpectraS3Response.BulkObjectList)
 }
 
-func NewGetBlobsOnPoolSpectraS3Response(webResponse networking.WebResponse) (*GetBlobsOnPoolSpectraS3Response, error) {
+func NewGetBlobsOnPoolSpectraS3Response(webResponse WebResponse) (*GetBlobsOnPoolSpectraS3Response, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {

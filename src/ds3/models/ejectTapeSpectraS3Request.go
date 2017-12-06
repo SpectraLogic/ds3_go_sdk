@@ -13,69 +13,25 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type EjectTapeSpectraS3Request struct {
-    ejectLabel *string
-    ejectLocation *string
-    tapeId string
-    queryParams *url.Values
+    EjectLabel *string
+    EjectLocation *string
+    TapeId string
 }
 
 func NewEjectTapeSpectraS3Request(tapeId string) *EjectTapeSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("operation", "eject")
-
     return &EjectTapeSpectraS3Request{
-        tapeId: tapeId,
-        queryParams: queryParams,
+        TapeId: tapeId,
     }
 }
 
-
-func (ejectTapeSpectraS3Request *EjectTapeSpectraS3Request) WithEjectLabel(ejectLabel *string) *EjectTapeSpectraS3Request {
-    ejectTapeSpectraS3Request.ejectLabel = ejectLabel
-    if ejectLabel != nil {
-        ejectTapeSpectraS3Request.queryParams.Set("eject_label", *ejectLabel)
-    } else {
-        ejectTapeSpectraS3Request.queryParams.Set("eject_label", "")
-    }
-    return ejectTapeSpectraS3Request
-}
-func (ejectTapeSpectraS3Request *EjectTapeSpectraS3Request) WithEjectLocation(ejectLocation *string) *EjectTapeSpectraS3Request {
-    ejectTapeSpectraS3Request.ejectLocation = ejectLocation
-    if ejectLocation != nil {
-        ejectTapeSpectraS3Request.queryParams.Set("eject_location", *ejectLocation)
-    } else {
-        ejectTapeSpectraS3Request.queryParams.Set("eject_location", "")
-    }
+func (ejectTapeSpectraS3Request *EjectTapeSpectraS3Request) WithEjectLabel(ejectLabel string) *EjectTapeSpectraS3Request {
+    ejectTapeSpectraS3Request.EjectLabel = &ejectLabel
     return ejectTapeSpectraS3Request
 }
 
-
-func (EjectTapeSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.PUT
+func (ejectTapeSpectraS3Request *EjectTapeSpectraS3Request) WithEjectLocation(ejectLocation string) *EjectTapeSpectraS3Request {
+    ejectTapeSpectraS3Request.EjectLocation = &ejectLocation
+    return ejectTapeSpectraS3Request
 }
 
-func (ejectTapeSpectraS3Request *EjectTapeSpectraS3Request) Path() string {
-    return "/_rest_/tape/" + ejectTapeSpectraS3Request.tapeId
-}
-
-func (ejectTapeSpectraS3Request *EjectTapeSpectraS3Request) QueryParams() *url.Values {
-    return ejectTapeSpectraS3Request.queryParams
-}
-
-func (EjectTapeSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (EjectTapeSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (EjectTapeSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

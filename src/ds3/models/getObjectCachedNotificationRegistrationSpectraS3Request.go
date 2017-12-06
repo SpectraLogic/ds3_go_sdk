@@ -13,48 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type GetObjectCachedNotificationRegistrationSpectraS3Request struct {
-    notificationId string
-    queryParams *url.Values
+    NotificationId string
 }
 
 func NewGetObjectCachedNotificationRegistrationSpectraS3Request(notificationId string) *GetObjectCachedNotificationRegistrationSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetObjectCachedNotificationRegistrationSpectraS3Request{
-        notificationId: notificationId,
-        queryParams: queryParams,
+        NotificationId: notificationId,
     }
 }
 
-
-
-
-func (GetObjectCachedNotificationRegistrationSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
-}
-
-func (getObjectCachedNotificationRegistrationSpectraS3Request *GetObjectCachedNotificationRegistrationSpectraS3Request) Path() string {
-    return "/_rest_/object_cached_notification_registration/" + getObjectCachedNotificationRegistrationSpectraS3Request.notificationId
-}
-
-func (getObjectCachedNotificationRegistrationSpectraS3Request *GetObjectCachedNotificationRegistrationSpectraS3Request) QueryParams() *url.Values {
-    return getObjectCachedNotificationRegistrationSpectraS3Request.queryParams
-}
-
-func (GetObjectCachedNotificationRegistrationSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetObjectCachedNotificationRegistrationSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (GetObjectCachedNotificationRegistrationSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

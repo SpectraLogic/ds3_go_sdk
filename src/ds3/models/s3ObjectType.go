@@ -49,3 +49,11 @@ func (s3ObjectType S3ObjectType) String() string {
             return ""
     }
 }
+
+func (s3ObjectType S3ObjectType) StringPtr() *string {
+    if s3ObjectType == UNDEFINED {
+        return nil
+    }
+    result := s3ObjectType.String()
+    return &result
+}

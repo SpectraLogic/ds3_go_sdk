@@ -13,49 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type CloseAggregatingJobSpectraS3Request struct {
-    jobId string
-    queryParams *url.Values
+    JobId string
 }
 
 func NewCloseAggregatingJobSpectraS3Request(jobId string) *CloseAggregatingJobSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("close_aggregating_job", "")
-
     return &CloseAggregatingJobSpectraS3Request{
-        jobId: jobId,
-        queryParams: queryParams,
+        JobId: jobId,
     }
 }
 
-
-
-
-func (CloseAggregatingJobSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.PUT
-}
-
-func (closeAggregatingJobSpectraS3Request *CloseAggregatingJobSpectraS3Request) Path() string {
-    return "/_rest_/job/" + closeAggregatingJobSpectraS3Request.jobId
-}
-
-func (closeAggregatingJobSpectraS3Request *CloseAggregatingJobSpectraS3Request) QueryParams() *url.Values {
-    return closeAggregatingJobSpectraS3Request.queryParams
-}
-
-func (CloseAggregatingJobSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (CloseAggregatingJobSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (CloseAggregatingJobSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

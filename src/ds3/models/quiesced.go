@@ -52,3 +52,11 @@ func (quiesced Quiesced) String() string {
             return ""
     }
 }
+
+func (quiesced Quiesced) StringPtr() *string {
+    if quiesced == UNDEFINED {
+        return nil
+    }
+    result := quiesced.String()
+    return &result
+}

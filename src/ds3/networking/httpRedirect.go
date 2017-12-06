@@ -3,30 +3,31 @@ package networking
 import (
     "errors"
     "fmt"
+    "net/http"
+    "ds3/models"
 )
 
 type httpRedirectPolicy struct {
     maxRedirect int
 }
 
+// Decorator for Network which handles 307 temporary redirect retries
 type HttpTempRedirectDecorator struct {
-    network *Network
+    network Network
     policy *httpRedirectPolicy
 }
 
-
-// Decorator for Network which handles 307 redirect retries
-func NewHttpTempRedirectDecorator(network *Network, maxRedirect int) (Network) {
+func NewHttpTempRedirectDecorator(network Network, maxRedirect int) (Network) {
     return &HttpTempRedirectDecorator{
         network: network,
         policy: &httpRedirectPolicy{maxRedirect: maxRedirect},
     }
 }
 
-func (tempRedirectDecorator *HttpTempRedirectDecorator) Invoke(request Ds3Request) (WebResponse, error) {
+func (tempRedirectDecorator *HttpTempRedirectDecorator) Invoke(httpRequest *http.Request) (models.WebResponse, error) {
     // Handle as many 307's as we're allowed.
     for i := 0; i <= tempRedirectDecorator.policy.maxRedirect; i++ {
-        ds3Response, err := (*tempRedirectDecorator.network).Invoke(request)
+        ds3Response, err := tempRedirectDecorator.network.Invoke(httpRequest)
 
         // If request was performed successfully then return response.
         if err == nil {
@@ -34,7 +35,7 @@ func (tempRedirectDecorator *HttpTempRedirectDecorator) Invoke(request Ds3Reques
         }
 
         // If there was a non-redirect error then return.
-        if _, ok := err.(TemporaryRedirectError); ok == false {
+        if statusErr, ok := err.(models.BadStatusCodeError); ok == false || statusErr.ActualStatusCode != http.StatusTemporaryRedirect {
             return nil, err
         }
     }

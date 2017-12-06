@@ -13,91 +13,53 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-    "strconv"
-)
-
 type GetDs3TargetFailuresSpectraS3Request struct {
-    errorMessage *string
-    pageLength int
-    pageOffset int
-    pageStartMarker string
-    targetFailureType TargetFailureType
-    targetId string
-    queryParams *url.Values
+    ErrorMessage *string
+    LastPage bool
+    PageLength *int
+    PageOffset *int
+    PageStartMarker *string
+    TargetFailureType TargetFailureType
+    TargetId *string
 }
 
 func NewGetDs3TargetFailuresSpectraS3Request() *GetDs3TargetFailuresSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetDs3TargetFailuresSpectraS3Request{
-        queryParams: queryParams,
     }
 }
 
-func (getDs3TargetFailuresSpectraS3Request *GetDs3TargetFailuresSpectraS3Request) WithPageLength(pageLength int) *GetDs3TargetFailuresSpectraS3Request {
-    getDs3TargetFailuresSpectraS3Request.pageLength = pageLength
-    getDs3TargetFailuresSpectraS3Request.queryParams.Set("page_length", strconv.Itoa(pageLength))
-    return getDs3TargetFailuresSpectraS3Request
-}
-func (getDs3TargetFailuresSpectraS3Request *GetDs3TargetFailuresSpectraS3Request) WithPageOffset(pageOffset int) *GetDs3TargetFailuresSpectraS3Request {
-    getDs3TargetFailuresSpectraS3Request.pageOffset = pageOffset
-    getDs3TargetFailuresSpectraS3Request.queryParams.Set("page_offset", strconv.Itoa(pageOffset))
-    return getDs3TargetFailuresSpectraS3Request
-}
-func (getDs3TargetFailuresSpectraS3Request *GetDs3TargetFailuresSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetDs3TargetFailuresSpectraS3Request {
-    getDs3TargetFailuresSpectraS3Request.pageStartMarker = pageStartMarker
-    getDs3TargetFailuresSpectraS3Request.queryParams.Set("page_start_marker", pageStartMarker)
-    return getDs3TargetFailuresSpectraS3Request
-}
-func (getDs3TargetFailuresSpectraS3Request *GetDs3TargetFailuresSpectraS3Request) WithTargetId(targetId string) *GetDs3TargetFailuresSpectraS3Request {
-    getDs3TargetFailuresSpectraS3Request.targetId = targetId
-    getDs3TargetFailuresSpectraS3Request.queryParams.Set("target_id", targetId)
-    return getDs3TargetFailuresSpectraS3Request
-}
-func (getDs3TargetFailuresSpectraS3Request *GetDs3TargetFailuresSpectraS3Request) WithTargetFailureType(targetFailureType TargetFailureType) *GetDs3TargetFailuresSpectraS3Request {
-    getDs3TargetFailuresSpectraS3Request.targetFailureType = targetFailureType
-    getDs3TargetFailuresSpectraS3Request.queryParams.Set("type", targetFailureType.String())
-    return getDs3TargetFailuresSpectraS3Request
-}
-
-func (getDs3TargetFailuresSpectraS3Request *GetDs3TargetFailuresSpectraS3Request) WithErrorMessage(errorMessage *string) *GetDs3TargetFailuresSpectraS3Request {
-    getDs3TargetFailuresSpectraS3Request.errorMessage = errorMessage
-    if errorMessage != nil {
-        getDs3TargetFailuresSpectraS3Request.queryParams.Set("error_message", *errorMessage)
-    } else {
-        getDs3TargetFailuresSpectraS3Request.queryParams.Set("error_message", "")
-    }
+func (getDs3TargetFailuresSpectraS3Request *GetDs3TargetFailuresSpectraS3Request) WithErrorMessage(errorMessage string) *GetDs3TargetFailuresSpectraS3Request {
+    getDs3TargetFailuresSpectraS3Request.ErrorMessage = &errorMessage
     return getDs3TargetFailuresSpectraS3Request
 }
 
 func (getDs3TargetFailuresSpectraS3Request *GetDs3TargetFailuresSpectraS3Request) WithLastPage() *GetDs3TargetFailuresSpectraS3Request {
-    getDs3TargetFailuresSpectraS3Request.queryParams.Set("last_page", "")
+    getDs3TargetFailuresSpectraS3Request.LastPage = true
     return getDs3TargetFailuresSpectraS3Request
 }
 
-func (GetDs3TargetFailuresSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
+func (getDs3TargetFailuresSpectraS3Request *GetDs3TargetFailuresSpectraS3Request) WithPageLength(pageLength int) *GetDs3TargetFailuresSpectraS3Request {
+    getDs3TargetFailuresSpectraS3Request.PageLength = &pageLength
+    return getDs3TargetFailuresSpectraS3Request
 }
 
-func (getDs3TargetFailuresSpectraS3Request *GetDs3TargetFailuresSpectraS3Request) Path() string {
-    return "/_rest_/ds3_target_failure"
+func (getDs3TargetFailuresSpectraS3Request *GetDs3TargetFailuresSpectraS3Request) WithPageOffset(pageOffset int) *GetDs3TargetFailuresSpectraS3Request {
+    getDs3TargetFailuresSpectraS3Request.PageOffset = &pageOffset
+    return getDs3TargetFailuresSpectraS3Request
 }
 
-func (getDs3TargetFailuresSpectraS3Request *GetDs3TargetFailuresSpectraS3Request) QueryParams() *url.Values {
-    return getDs3TargetFailuresSpectraS3Request.queryParams
+func (getDs3TargetFailuresSpectraS3Request *GetDs3TargetFailuresSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetDs3TargetFailuresSpectraS3Request {
+    getDs3TargetFailuresSpectraS3Request.PageStartMarker = &pageStartMarker
+    return getDs3TargetFailuresSpectraS3Request
 }
 
-func (GetDs3TargetFailuresSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetDs3TargetFailuresSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
+func (getDs3TargetFailuresSpectraS3Request *GetDs3TargetFailuresSpectraS3Request) WithTargetId(targetId string) *GetDs3TargetFailuresSpectraS3Request {
+    getDs3TargetFailuresSpectraS3Request.TargetId = &targetId
+    return getDs3TargetFailuresSpectraS3Request
 }
 
-func (GetDs3TargetFailuresSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
+func (getDs3TargetFailuresSpectraS3Request *GetDs3TargetFailuresSpectraS3Request) WithTargetFailureType(targetFailureType TargetFailureType) *GetDs3TargetFailuresSpectraS3Request {
+    getDs3TargetFailuresSpectraS3Request.TargetFailureType = targetFailureType
+    return getDs3TargetFailuresSpectraS3Request
 }
+

@@ -49,3 +49,11 @@ func (dataIsolationLevel DataIsolationLevel) String() string {
             return ""
     }
 }
+
+func (dataIsolationLevel DataIsolationLevel) StringPtr() *string {
+    if dataIsolationLevel == UNDEFINED {
+        return nil
+    }
+    result := dataIsolationLevel.String()
+    return &result
+}

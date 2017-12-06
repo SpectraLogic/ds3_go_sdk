@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -25,7 +24,7 @@ type DeleteS3TargetReadPreferenceSpectraS3Response struct {
 
 
 
-func NewDeleteS3TargetReadPreferenceSpectraS3Response(webResponse networking.WebResponse) (*DeleteS3TargetReadPreferenceSpectraS3Response, error) {
+func NewDeleteS3TargetReadPreferenceSpectraS3Response(webResponse WebResponse) (*DeleteS3TargetReadPreferenceSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {

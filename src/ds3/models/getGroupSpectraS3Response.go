@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -23,11 +22,11 @@ type GetGroupSpectraS3Response struct {
     Headers *http.Header
 }
 
-func (getGroupSpectraS3Response *GetGroupSpectraS3Response) parse(webResponse networking.WebResponse) error {
+func (getGroupSpectraS3Response *GetGroupSpectraS3Response) parse(webResponse WebResponse) error {
         return parseResponsePayload(webResponse, &getGroupSpectraS3Response.Group)
 }
 
-func NewGetGroupSpectraS3Response(webResponse networking.WebResponse) (*GetGroupSpectraS3Response, error) {
+func NewGetGroupSpectraS3Response(webResponse WebResponse) (*GetGroupSpectraS3Response, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {

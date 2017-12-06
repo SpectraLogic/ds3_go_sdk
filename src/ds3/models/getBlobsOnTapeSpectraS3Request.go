@@ -13,49 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type GetBlobsOnTapeSpectraS3Request struct {
-    tapeId string
-    queryParams *url.Values
+    TapeId string
 }
 
 func NewGetBlobsOnTapeSpectraS3Request(tapeId string) *GetBlobsOnTapeSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("operation", "get_physical_placement")
-
     return &GetBlobsOnTapeSpectraS3Request{
-        tapeId: tapeId,
-        queryParams: queryParams,
+        TapeId: tapeId,
     }
 }
 
-
-
-
-func (GetBlobsOnTapeSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
-}
-
-func (getBlobsOnTapeSpectraS3Request *GetBlobsOnTapeSpectraS3Request) Path() string {
-    return "/_rest_/tape/" + getBlobsOnTapeSpectraS3Request.tapeId
-}
-
-func (getBlobsOnTapeSpectraS3Request *GetBlobsOnTapeSpectraS3Request) QueryParams() *url.Values {
-    return getBlobsOnTapeSpectraS3Request.queryParams
-}
-
-func (GetBlobsOnTapeSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetBlobsOnTapeSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (GetBlobsOnTapeSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

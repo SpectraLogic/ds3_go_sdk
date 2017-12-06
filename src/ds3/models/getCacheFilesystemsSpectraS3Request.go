@@ -13,75 +13,41 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-    "strconv"
-)
-
 type GetCacheFilesystemsSpectraS3Request struct {
-    nodeId string
-    pageLength int
-    pageOffset int
-    pageStartMarker string
-    queryParams *url.Values
+    LastPage bool
+    NodeId *string
+    PageLength *int
+    PageOffset *int
+    PageStartMarker *string
 }
 
 func NewGetCacheFilesystemsSpectraS3Request() *GetCacheFilesystemsSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetCacheFilesystemsSpectraS3Request{
-        queryParams: queryParams,
     }
 }
 
-func (getCacheFilesystemsSpectraS3Request *GetCacheFilesystemsSpectraS3Request) WithNodeId(nodeId string) *GetCacheFilesystemsSpectraS3Request {
-    getCacheFilesystemsSpectraS3Request.nodeId = nodeId
-    getCacheFilesystemsSpectraS3Request.queryParams.Set("node_id", nodeId)
-    return getCacheFilesystemsSpectraS3Request
-}
-func (getCacheFilesystemsSpectraS3Request *GetCacheFilesystemsSpectraS3Request) WithPageLength(pageLength int) *GetCacheFilesystemsSpectraS3Request {
-    getCacheFilesystemsSpectraS3Request.pageLength = pageLength
-    getCacheFilesystemsSpectraS3Request.queryParams.Set("page_length", strconv.Itoa(pageLength))
-    return getCacheFilesystemsSpectraS3Request
-}
-func (getCacheFilesystemsSpectraS3Request *GetCacheFilesystemsSpectraS3Request) WithPageOffset(pageOffset int) *GetCacheFilesystemsSpectraS3Request {
-    getCacheFilesystemsSpectraS3Request.pageOffset = pageOffset
-    getCacheFilesystemsSpectraS3Request.queryParams.Set("page_offset", strconv.Itoa(pageOffset))
-    return getCacheFilesystemsSpectraS3Request
-}
-func (getCacheFilesystemsSpectraS3Request *GetCacheFilesystemsSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetCacheFilesystemsSpectraS3Request {
-    getCacheFilesystemsSpectraS3Request.pageStartMarker = pageStartMarker
-    getCacheFilesystemsSpectraS3Request.queryParams.Set("page_start_marker", pageStartMarker)
-    return getCacheFilesystemsSpectraS3Request
-}
-
-
 func (getCacheFilesystemsSpectraS3Request *GetCacheFilesystemsSpectraS3Request) WithLastPage() *GetCacheFilesystemsSpectraS3Request {
-    getCacheFilesystemsSpectraS3Request.queryParams.Set("last_page", "")
+    getCacheFilesystemsSpectraS3Request.LastPage = true
     return getCacheFilesystemsSpectraS3Request
 }
 
-func (GetCacheFilesystemsSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
+func (getCacheFilesystemsSpectraS3Request *GetCacheFilesystemsSpectraS3Request) WithNodeId(nodeId string) *GetCacheFilesystemsSpectraS3Request {
+    getCacheFilesystemsSpectraS3Request.NodeId = &nodeId
+    return getCacheFilesystemsSpectraS3Request
 }
 
-func (getCacheFilesystemsSpectraS3Request *GetCacheFilesystemsSpectraS3Request) Path() string {
-    return "/_rest_/cache_filesystem"
+func (getCacheFilesystemsSpectraS3Request *GetCacheFilesystemsSpectraS3Request) WithPageLength(pageLength int) *GetCacheFilesystemsSpectraS3Request {
+    getCacheFilesystemsSpectraS3Request.PageLength = &pageLength
+    return getCacheFilesystemsSpectraS3Request
 }
 
-func (getCacheFilesystemsSpectraS3Request *GetCacheFilesystemsSpectraS3Request) QueryParams() *url.Values {
-    return getCacheFilesystemsSpectraS3Request.queryParams
+func (getCacheFilesystemsSpectraS3Request *GetCacheFilesystemsSpectraS3Request) WithPageOffset(pageOffset int) *GetCacheFilesystemsSpectraS3Request {
+    getCacheFilesystemsSpectraS3Request.PageOffset = &pageOffset
+    return getCacheFilesystemsSpectraS3Request
 }
 
-func (GetCacheFilesystemsSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetCacheFilesystemsSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
+func (getCacheFilesystemsSpectraS3Request *GetCacheFilesystemsSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetCacheFilesystemsSpectraS3Request {
+    getCacheFilesystemsSpectraS3Request.PageStartMarker = &pageStartMarker
+    return getCacheFilesystemsSpectraS3Request
 }
 
-func (GetCacheFilesystemsSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

@@ -58,3 +58,11 @@ func (blobStoreTaskState BlobStoreTaskState) String() string {
             return ""
     }
 }
+
+func (blobStoreTaskState BlobStoreTaskState) StringPtr() *string {
+    if blobStoreTaskState == UNDEFINED {
+        return nil
+    }
+    result := blobStoreTaskState.String()
+    return &result
+}

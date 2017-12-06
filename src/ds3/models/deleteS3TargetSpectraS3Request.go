@@ -13,48 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type DeleteS3TargetSpectraS3Request struct {
-    s3Target string
-    queryParams *url.Values
+    S3Target string
 }
 
 func NewDeleteS3TargetSpectraS3Request(s3Target string) *DeleteS3TargetSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &DeleteS3TargetSpectraS3Request{
-        s3Target: s3Target,
-        queryParams: queryParams,
+        S3Target: s3Target,
     }
 }
 
-
-
-
-func (DeleteS3TargetSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.DELETE
-}
-
-func (deleteS3TargetSpectraS3Request *DeleteS3TargetSpectraS3Request) Path() string {
-    return "/_rest_/s3_target/" + deleteS3TargetSpectraS3Request.s3Target
-}
-
-func (deleteS3TargetSpectraS3Request *DeleteS3TargetSpectraS3Request) QueryParams() *url.Values {
-    return deleteS3TargetSpectraS3Request.queryParams
-}
-
-func (DeleteS3TargetSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (DeleteS3TargetSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (DeleteS3TargetSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

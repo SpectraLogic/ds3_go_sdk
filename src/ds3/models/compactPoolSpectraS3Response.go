@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -23,11 +22,11 @@ type CompactPoolSpectraS3Response struct {
     Headers *http.Header
 }
 
-func (compactPoolSpectraS3Response *CompactPoolSpectraS3Response) parse(webResponse networking.WebResponse) error {
+func (compactPoolSpectraS3Response *CompactPoolSpectraS3Response) parse(webResponse WebResponse) error {
         return parseResponsePayload(webResponse, &compactPoolSpectraS3Response.Pool)
 }
 
-func NewCompactPoolSpectraS3Response(webResponse networking.WebResponse) (*CompactPoolSpectraS3Response, error) {
+func NewCompactPoolSpectraS3Response(webResponse WebResponse) (*CompactPoolSpectraS3Response, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {

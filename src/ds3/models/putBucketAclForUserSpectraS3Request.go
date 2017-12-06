@@ -13,55 +13,17 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type PutBucketAclForUserSpectraS3Request struct {
-    bucketId string
-    permission BucketAclPermission
-    userId string
-    queryParams *url.Values
+    BucketId string
+    Permission BucketAclPermission
+    UserId string
 }
 
 func NewPutBucketAclForUserSpectraS3Request(bucketId string, permission BucketAclPermission, userId string) *PutBucketAclForUserSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("bucket_id", bucketId)
-    queryParams.Set("permission", permission.String())
-    queryParams.Set("user_id", userId)
-
     return &PutBucketAclForUserSpectraS3Request{
-        bucketId: bucketId,
-        permission: permission,
-        userId: userId,
-        queryParams: queryParams,
+        BucketId: bucketId,
+        Permission: permission,
+        UserId: userId,
     }
 }
 
-
-
-
-func (PutBucketAclForUserSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.POST
-}
-
-func (putBucketAclForUserSpectraS3Request *PutBucketAclForUserSpectraS3Request) Path() string {
-    return "/_rest_/bucket_acl"
-}
-
-func (putBucketAclForUserSpectraS3Request *PutBucketAclForUserSpectraS3Request) QueryParams() *url.Values {
-    return putBucketAclForUserSpectraS3Request.queryParams
-}
-
-func (PutBucketAclForUserSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (PutBucketAclForUserSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (PutBucketAclForUserSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

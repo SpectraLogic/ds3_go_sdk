@@ -13,93 +13,59 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-    "strconv"
-)
-
 type GetDegradedBlobsSpectraS3Request struct {
-    blobId string
-    bucketId string
-    ds3ReplicationRuleId string
-    pageLength int
-    pageOffset int
-    pageStartMarker string
-    persistenceRuleId string
-    queryParams *url.Values
+    BlobId *string
+    BucketId *string
+    Ds3ReplicationRuleId *string
+    LastPage bool
+    PageLength *int
+    PageOffset *int
+    PageStartMarker *string
+    PersistenceRuleId *string
 }
 
 func NewGetDegradedBlobsSpectraS3Request() *GetDegradedBlobsSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetDegradedBlobsSpectraS3Request{
-        queryParams: queryParams,
     }
 }
 
 func (getDegradedBlobsSpectraS3Request *GetDegradedBlobsSpectraS3Request) WithBlobId(blobId string) *GetDegradedBlobsSpectraS3Request {
-    getDegradedBlobsSpectraS3Request.blobId = blobId
-    getDegradedBlobsSpectraS3Request.queryParams.Set("blob_id", blobId)
-    return getDegradedBlobsSpectraS3Request
-}
-func (getDegradedBlobsSpectraS3Request *GetDegradedBlobsSpectraS3Request) WithBucketId(bucketId string) *GetDegradedBlobsSpectraS3Request {
-    getDegradedBlobsSpectraS3Request.bucketId = bucketId
-    getDegradedBlobsSpectraS3Request.queryParams.Set("bucket_id", bucketId)
-    return getDegradedBlobsSpectraS3Request
-}
-func (getDegradedBlobsSpectraS3Request *GetDegradedBlobsSpectraS3Request) WithDs3ReplicationRuleId(ds3ReplicationRuleId string) *GetDegradedBlobsSpectraS3Request {
-    getDegradedBlobsSpectraS3Request.ds3ReplicationRuleId = ds3ReplicationRuleId
-    getDegradedBlobsSpectraS3Request.queryParams.Set("ds3_replication_rule_id", ds3ReplicationRuleId)
-    return getDegradedBlobsSpectraS3Request
-}
-func (getDegradedBlobsSpectraS3Request *GetDegradedBlobsSpectraS3Request) WithPageLength(pageLength int) *GetDegradedBlobsSpectraS3Request {
-    getDegradedBlobsSpectraS3Request.pageLength = pageLength
-    getDegradedBlobsSpectraS3Request.queryParams.Set("page_length", strconv.Itoa(pageLength))
-    return getDegradedBlobsSpectraS3Request
-}
-func (getDegradedBlobsSpectraS3Request *GetDegradedBlobsSpectraS3Request) WithPageOffset(pageOffset int) *GetDegradedBlobsSpectraS3Request {
-    getDegradedBlobsSpectraS3Request.pageOffset = pageOffset
-    getDegradedBlobsSpectraS3Request.queryParams.Set("page_offset", strconv.Itoa(pageOffset))
-    return getDegradedBlobsSpectraS3Request
-}
-func (getDegradedBlobsSpectraS3Request *GetDegradedBlobsSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetDegradedBlobsSpectraS3Request {
-    getDegradedBlobsSpectraS3Request.pageStartMarker = pageStartMarker
-    getDegradedBlobsSpectraS3Request.queryParams.Set("page_start_marker", pageStartMarker)
-    return getDegradedBlobsSpectraS3Request
-}
-func (getDegradedBlobsSpectraS3Request *GetDegradedBlobsSpectraS3Request) WithPersistenceRuleId(persistenceRuleId string) *GetDegradedBlobsSpectraS3Request {
-    getDegradedBlobsSpectraS3Request.persistenceRuleId = persistenceRuleId
-    getDegradedBlobsSpectraS3Request.queryParams.Set("persistence_rule_id", persistenceRuleId)
+    getDegradedBlobsSpectraS3Request.BlobId = &blobId
     return getDegradedBlobsSpectraS3Request
 }
 
+func (getDegradedBlobsSpectraS3Request *GetDegradedBlobsSpectraS3Request) WithBucketId(bucketId string) *GetDegradedBlobsSpectraS3Request {
+    getDegradedBlobsSpectraS3Request.BucketId = &bucketId
+    return getDegradedBlobsSpectraS3Request
+}
+
+func (getDegradedBlobsSpectraS3Request *GetDegradedBlobsSpectraS3Request) WithDs3ReplicationRuleId(ds3ReplicationRuleId string) *GetDegradedBlobsSpectraS3Request {
+    getDegradedBlobsSpectraS3Request.Ds3ReplicationRuleId = &ds3ReplicationRuleId
+    return getDegradedBlobsSpectraS3Request
+}
 
 func (getDegradedBlobsSpectraS3Request *GetDegradedBlobsSpectraS3Request) WithLastPage() *GetDegradedBlobsSpectraS3Request {
-    getDegradedBlobsSpectraS3Request.queryParams.Set("last_page", "")
+    getDegradedBlobsSpectraS3Request.LastPage = true
     return getDegradedBlobsSpectraS3Request
 }
 
-func (GetDegradedBlobsSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
+func (getDegradedBlobsSpectraS3Request *GetDegradedBlobsSpectraS3Request) WithPageLength(pageLength int) *GetDegradedBlobsSpectraS3Request {
+    getDegradedBlobsSpectraS3Request.PageLength = &pageLength
+    return getDegradedBlobsSpectraS3Request
 }
 
-func (getDegradedBlobsSpectraS3Request *GetDegradedBlobsSpectraS3Request) Path() string {
-    return "/_rest_/degraded_blob"
+func (getDegradedBlobsSpectraS3Request *GetDegradedBlobsSpectraS3Request) WithPageOffset(pageOffset int) *GetDegradedBlobsSpectraS3Request {
+    getDegradedBlobsSpectraS3Request.PageOffset = &pageOffset
+    return getDegradedBlobsSpectraS3Request
 }
 
-func (getDegradedBlobsSpectraS3Request *GetDegradedBlobsSpectraS3Request) QueryParams() *url.Values {
-    return getDegradedBlobsSpectraS3Request.queryParams
+func (getDegradedBlobsSpectraS3Request *GetDegradedBlobsSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetDegradedBlobsSpectraS3Request {
+    getDegradedBlobsSpectraS3Request.PageStartMarker = &pageStartMarker
+    return getDegradedBlobsSpectraS3Request
 }
 
-func (GetDegradedBlobsSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetDegradedBlobsSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
+func (getDegradedBlobsSpectraS3Request *GetDegradedBlobsSpectraS3Request) WithPersistenceRuleId(persistenceRuleId string) *GetDegradedBlobsSpectraS3Request {
+    getDegradedBlobsSpectraS3Request.PersistenceRuleId = &persistenceRuleId
+    return getDegradedBlobsSpectraS3Request
 }
 
-func (GetDegradedBlobsSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

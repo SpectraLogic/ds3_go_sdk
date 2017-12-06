@@ -13,59 +13,21 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-    "strconv"
-)
-
 type PutMultiPartUploadPartRequest struct {
-    bucketName string
-    objectName string
-    content networking.ReaderWithSizeDecorator
-    partNumber int
-    uploadId string
-    queryParams *url.Values
+    BucketName string
+    ObjectName string
+    Content ReaderWithSizeDecorator
+    PartNumber int
+    UploadId string
 }
 
-func NewPutMultiPartUploadPartRequest(bucketName string, objectName string, content networking.ReaderWithSizeDecorator, partNumber int, uploadId string) *PutMultiPartUploadPartRequest {
-    queryParams := &url.Values{}
-    queryParams.Set("part_number", strconv.Itoa(partNumber))
-    queryParams.Set("upload_id", uploadId)
-
+func NewPutMultiPartUploadPartRequest(bucketName string, objectName string, content ReaderWithSizeDecorator, partNumber int, uploadId string) *PutMultiPartUploadPartRequest {
     return &PutMultiPartUploadPartRequest{
-        bucketName: bucketName,
-        objectName: objectName,
-        partNumber: partNumber,
-        uploadId: uploadId,
-        content: content,
-        queryParams: queryParams,
+        BucketName: bucketName,
+        ObjectName: objectName,
+        PartNumber: partNumber,
+        UploadId: uploadId,
+        Content: content,
     }
 }
 
-
-
-
-func (PutMultiPartUploadPartRequest) Verb() networking.HttpVerb {
-    return networking.PUT
-}
-
-func (putMultiPartUploadPartRequest *PutMultiPartUploadPartRequest) Path() string {
-    return "/" + putMultiPartUploadPartRequest.bucketName + "/" + putMultiPartUploadPartRequest.objectName
-}
-
-func (putMultiPartUploadPartRequest *PutMultiPartUploadPartRequest) QueryParams() *url.Values {
-    return putMultiPartUploadPartRequest.queryParams
-}
-
-func (PutMultiPartUploadPartRequest) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (PutMultiPartUploadPartRequest) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (putMultiPartUploadPartRequest *PutMultiPartUploadPartRequest) GetContentStream() networking.ReaderWithSizeDecorator {
-    return putMultiPartUploadPartRequest.content
-}

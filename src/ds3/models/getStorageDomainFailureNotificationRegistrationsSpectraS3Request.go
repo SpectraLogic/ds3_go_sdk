@@ -13,75 +13,41 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-    "strconv"
-)
-
 type GetStorageDomainFailureNotificationRegistrationsSpectraS3Request struct {
-    pageLength int
-    pageOffset int
-    pageStartMarker string
-    userId string
-    queryParams *url.Values
+    LastPage bool
+    PageLength *int
+    PageOffset *int
+    PageStartMarker *string
+    UserId *string
 }
 
 func NewGetStorageDomainFailureNotificationRegistrationsSpectraS3Request() *GetStorageDomainFailureNotificationRegistrationsSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetStorageDomainFailureNotificationRegistrationsSpectraS3Request{
-        queryParams: queryParams,
     }
 }
 
-func (getStorageDomainFailureNotificationRegistrationsSpectraS3Request *GetStorageDomainFailureNotificationRegistrationsSpectraS3Request) WithPageLength(pageLength int) *GetStorageDomainFailureNotificationRegistrationsSpectraS3Request {
-    getStorageDomainFailureNotificationRegistrationsSpectraS3Request.pageLength = pageLength
-    getStorageDomainFailureNotificationRegistrationsSpectraS3Request.queryParams.Set("page_length", strconv.Itoa(pageLength))
-    return getStorageDomainFailureNotificationRegistrationsSpectraS3Request
-}
-func (getStorageDomainFailureNotificationRegistrationsSpectraS3Request *GetStorageDomainFailureNotificationRegistrationsSpectraS3Request) WithPageOffset(pageOffset int) *GetStorageDomainFailureNotificationRegistrationsSpectraS3Request {
-    getStorageDomainFailureNotificationRegistrationsSpectraS3Request.pageOffset = pageOffset
-    getStorageDomainFailureNotificationRegistrationsSpectraS3Request.queryParams.Set("page_offset", strconv.Itoa(pageOffset))
-    return getStorageDomainFailureNotificationRegistrationsSpectraS3Request
-}
-func (getStorageDomainFailureNotificationRegistrationsSpectraS3Request *GetStorageDomainFailureNotificationRegistrationsSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetStorageDomainFailureNotificationRegistrationsSpectraS3Request {
-    getStorageDomainFailureNotificationRegistrationsSpectraS3Request.pageStartMarker = pageStartMarker
-    getStorageDomainFailureNotificationRegistrationsSpectraS3Request.queryParams.Set("page_start_marker", pageStartMarker)
-    return getStorageDomainFailureNotificationRegistrationsSpectraS3Request
-}
-func (getStorageDomainFailureNotificationRegistrationsSpectraS3Request *GetStorageDomainFailureNotificationRegistrationsSpectraS3Request) WithUserId(userId string) *GetStorageDomainFailureNotificationRegistrationsSpectraS3Request {
-    getStorageDomainFailureNotificationRegistrationsSpectraS3Request.userId = userId
-    getStorageDomainFailureNotificationRegistrationsSpectraS3Request.queryParams.Set("user_id", userId)
-    return getStorageDomainFailureNotificationRegistrationsSpectraS3Request
-}
-
-
 func (getStorageDomainFailureNotificationRegistrationsSpectraS3Request *GetStorageDomainFailureNotificationRegistrationsSpectraS3Request) WithLastPage() *GetStorageDomainFailureNotificationRegistrationsSpectraS3Request {
-    getStorageDomainFailureNotificationRegistrationsSpectraS3Request.queryParams.Set("last_page", "")
+    getStorageDomainFailureNotificationRegistrationsSpectraS3Request.LastPage = true
     return getStorageDomainFailureNotificationRegistrationsSpectraS3Request
 }
 
-func (GetStorageDomainFailureNotificationRegistrationsSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
+func (getStorageDomainFailureNotificationRegistrationsSpectraS3Request *GetStorageDomainFailureNotificationRegistrationsSpectraS3Request) WithPageLength(pageLength int) *GetStorageDomainFailureNotificationRegistrationsSpectraS3Request {
+    getStorageDomainFailureNotificationRegistrationsSpectraS3Request.PageLength = &pageLength
+    return getStorageDomainFailureNotificationRegistrationsSpectraS3Request
 }
 
-func (getStorageDomainFailureNotificationRegistrationsSpectraS3Request *GetStorageDomainFailureNotificationRegistrationsSpectraS3Request) Path() string {
-    return "/_rest_/storage_domain_failure_notification_registration"
+func (getStorageDomainFailureNotificationRegistrationsSpectraS3Request *GetStorageDomainFailureNotificationRegistrationsSpectraS3Request) WithPageOffset(pageOffset int) *GetStorageDomainFailureNotificationRegistrationsSpectraS3Request {
+    getStorageDomainFailureNotificationRegistrationsSpectraS3Request.PageOffset = &pageOffset
+    return getStorageDomainFailureNotificationRegistrationsSpectraS3Request
 }
 
-func (getStorageDomainFailureNotificationRegistrationsSpectraS3Request *GetStorageDomainFailureNotificationRegistrationsSpectraS3Request) QueryParams() *url.Values {
-    return getStorageDomainFailureNotificationRegistrationsSpectraS3Request.queryParams
+func (getStorageDomainFailureNotificationRegistrationsSpectraS3Request *GetStorageDomainFailureNotificationRegistrationsSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetStorageDomainFailureNotificationRegistrationsSpectraS3Request {
+    getStorageDomainFailureNotificationRegistrationsSpectraS3Request.PageStartMarker = &pageStartMarker
+    return getStorageDomainFailureNotificationRegistrationsSpectraS3Request
 }
 
-func (GetStorageDomainFailureNotificationRegistrationsSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetStorageDomainFailureNotificationRegistrationsSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
+func (getStorageDomainFailureNotificationRegistrationsSpectraS3Request *GetStorageDomainFailureNotificationRegistrationsSpectraS3Request) WithUserId(userId string) *GetStorageDomainFailureNotificationRegistrationsSpectraS3Request {
+    getStorageDomainFailureNotificationRegistrationsSpectraS3Request.UserId = &userId
+    return getStorageDomainFailureNotificationRegistrationsSpectraS3Request
 }
 
-func (GetStorageDomainFailureNotificationRegistrationsSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

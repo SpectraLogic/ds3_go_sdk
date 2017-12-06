@@ -13,125 +13,83 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-    "strconv"
-)
-
 type GetStorageDomainsSpectraS3Request struct {
-    autoEjectUponCron *string
-    autoEjectUponJobCancellation bool
-    autoEjectUponJobCompletion bool
-    autoEjectUponMediaFull bool
-    mediaEjectionAllowed bool
-    name *string
-    pageLength int
-    pageOffset int
-    pageStartMarker string
-    secureMediaAllocation bool
-    writeOptimization WriteOptimization
-    queryParams *url.Values
+    AutoEjectUponCron *string
+    AutoEjectUponJobCancellation *bool
+    AutoEjectUponJobCompletion *bool
+    AutoEjectUponMediaFull *bool
+    LastPage bool
+    MediaEjectionAllowed *bool
+    Name *string
+    PageLength *int
+    PageOffset *int
+    PageStartMarker *string
+    SecureMediaAllocation *bool
+    WriteOptimization WriteOptimization
 }
 
 func NewGetStorageDomainsSpectraS3Request() *GetStorageDomainsSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetStorageDomainsSpectraS3Request{
-        queryParams: queryParams,
     }
+}
+
+func (getStorageDomainsSpectraS3Request *GetStorageDomainsSpectraS3Request) WithAutoEjectUponCron(autoEjectUponCron string) *GetStorageDomainsSpectraS3Request {
+    getStorageDomainsSpectraS3Request.AutoEjectUponCron = &autoEjectUponCron
+    return getStorageDomainsSpectraS3Request
 }
 
 func (getStorageDomainsSpectraS3Request *GetStorageDomainsSpectraS3Request) WithAutoEjectUponJobCancellation(autoEjectUponJobCancellation bool) *GetStorageDomainsSpectraS3Request {
-    getStorageDomainsSpectraS3Request.autoEjectUponJobCancellation = autoEjectUponJobCancellation
-    getStorageDomainsSpectraS3Request.queryParams.Set("auto_eject_upon_job_cancellation", strconv.FormatBool(autoEjectUponJobCancellation))
-    return getStorageDomainsSpectraS3Request
-}
-func (getStorageDomainsSpectraS3Request *GetStorageDomainsSpectraS3Request) WithAutoEjectUponJobCompletion(autoEjectUponJobCompletion bool) *GetStorageDomainsSpectraS3Request {
-    getStorageDomainsSpectraS3Request.autoEjectUponJobCompletion = autoEjectUponJobCompletion
-    getStorageDomainsSpectraS3Request.queryParams.Set("auto_eject_upon_job_completion", strconv.FormatBool(autoEjectUponJobCompletion))
-    return getStorageDomainsSpectraS3Request
-}
-func (getStorageDomainsSpectraS3Request *GetStorageDomainsSpectraS3Request) WithAutoEjectUponMediaFull(autoEjectUponMediaFull bool) *GetStorageDomainsSpectraS3Request {
-    getStorageDomainsSpectraS3Request.autoEjectUponMediaFull = autoEjectUponMediaFull
-    getStorageDomainsSpectraS3Request.queryParams.Set("auto_eject_upon_media_full", strconv.FormatBool(autoEjectUponMediaFull))
-    return getStorageDomainsSpectraS3Request
-}
-func (getStorageDomainsSpectraS3Request *GetStorageDomainsSpectraS3Request) WithMediaEjectionAllowed(mediaEjectionAllowed bool) *GetStorageDomainsSpectraS3Request {
-    getStorageDomainsSpectraS3Request.mediaEjectionAllowed = mediaEjectionAllowed
-    getStorageDomainsSpectraS3Request.queryParams.Set("media_ejection_allowed", strconv.FormatBool(mediaEjectionAllowed))
-    return getStorageDomainsSpectraS3Request
-}
-func (getStorageDomainsSpectraS3Request *GetStorageDomainsSpectraS3Request) WithPageLength(pageLength int) *GetStorageDomainsSpectraS3Request {
-    getStorageDomainsSpectraS3Request.pageLength = pageLength
-    getStorageDomainsSpectraS3Request.queryParams.Set("page_length", strconv.Itoa(pageLength))
-    return getStorageDomainsSpectraS3Request
-}
-func (getStorageDomainsSpectraS3Request *GetStorageDomainsSpectraS3Request) WithPageOffset(pageOffset int) *GetStorageDomainsSpectraS3Request {
-    getStorageDomainsSpectraS3Request.pageOffset = pageOffset
-    getStorageDomainsSpectraS3Request.queryParams.Set("page_offset", strconv.Itoa(pageOffset))
-    return getStorageDomainsSpectraS3Request
-}
-func (getStorageDomainsSpectraS3Request *GetStorageDomainsSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetStorageDomainsSpectraS3Request {
-    getStorageDomainsSpectraS3Request.pageStartMarker = pageStartMarker
-    getStorageDomainsSpectraS3Request.queryParams.Set("page_start_marker", pageStartMarker)
-    return getStorageDomainsSpectraS3Request
-}
-func (getStorageDomainsSpectraS3Request *GetStorageDomainsSpectraS3Request) WithSecureMediaAllocation(secureMediaAllocation bool) *GetStorageDomainsSpectraS3Request {
-    getStorageDomainsSpectraS3Request.secureMediaAllocation = secureMediaAllocation
-    getStorageDomainsSpectraS3Request.queryParams.Set("secure_media_allocation", strconv.FormatBool(secureMediaAllocation))
-    return getStorageDomainsSpectraS3Request
-}
-func (getStorageDomainsSpectraS3Request *GetStorageDomainsSpectraS3Request) WithWriteOptimization(writeOptimization WriteOptimization) *GetStorageDomainsSpectraS3Request {
-    getStorageDomainsSpectraS3Request.writeOptimization = writeOptimization
-    getStorageDomainsSpectraS3Request.queryParams.Set("write_optimization", writeOptimization.String())
+    getStorageDomainsSpectraS3Request.AutoEjectUponJobCancellation = &autoEjectUponJobCancellation
     return getStorageDomainsSpectraS3Request
 }
 
-func (getStorageDomainsSpectraS3Request *GetStorageDomainsSpectraS3Request) WithAutoEjectUponCron(autoEjectUponCron *string) *GetStorageDomainsSpectraS3Request {
-    getStorageDomainsSpectraS3Request.autoEjectUponCron = autoEjectUponCron
-    if autoEjectUponCron != nil {
-        getStorageDomainsSpectraS3Request.queryParams.Set("auto_eject_upon_cron", *autoEjectUponCron)
-    } else {
-        getStorageDomainsSpectraS3Request.queryParams.Set("auto_eject_upon_cron", "")
-    }
+func (getStorageDomainsSpectraS3Request *GetStorageDomainsSpectraS3Request) WithAutoEjectUponJobCompletion(autoEjectUponJobCompletion bool) *GetStorageDomainsSpectraS3Request {
+    getStorageDomainsSpectraS3Request.AutoEjectUponJobCompletion = &autoEjectUponJobCompletion
     return getStorageDomainsSpectraS3Request
 }
-func (getStorageDomainsSpectraS3Request *GetStorageDomainsSpectraS3Request) WithName(name *string) *GetStorageDomainsSpectraS3Request {
-    getStorageDomainsSpectraS3Request.name = name
-    if name != nil {
-        getStorageDomainsSpectraS3Request.queryParams.Set("name", *name)
-    } else {
-        getStorageDomainsSpectraS3Request.queryParams.Set("name", "")
-    }
+
+func (getStorageDomainsSpectraS3Request *GetStorageDomainsSpectraS3Request) WithAutoEjectUponMediaFull(autoEjectUponMediaFull bool) *GetStorageDomainsSpectraS3Request {
+    getStorageDomainsSpectraS3Request.AutoEjectUponMediaFull = &autoEjectUponMediaFull
     return getStorageDomainsSpectraS3Request
 }
 
 func (getStorageDomainsSpectraS3Request *GetStorageDomainsSpectraS3Request) WithLastPage() *GetStorageDomainsSpectraS3Request {
-    getStorageDomainsSpectraS3Request.queryParams.Set("last_page", "")
+    getStorageDomainsSpectraS3Request.LastPage = true
     return getStorageDomainsSpectraS3Request
 }
 
-func (GetStorageDomainsSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
+func (getStorageDomainsSpectraS3Request *GetStorageDomainsSpectraS3Request) WithMediaEjectionAllowed(mediaEjectionAllowed bool) *GetStorageDomainsSpectraS3Request {
+    getStorageDomainsSpectraS3Request.MediaEjectionAllowed = &mediaEjectionAllowed
+    return getStorageDomainsSpectraS3Request
 }
 
-func (getStorageDomainsSpectraS3Request *GetStorageDomainsSpectraS3Request) Path() string {
-    return "/_rest_/storage_domain"
+func (getStorageDomainsSpectraS3Request *GetStorageDomainsSpectraS3Request) WithName(name string) *GetStorageDomainsSpectraS3Request {
+    getStorageDomainsSpectraS3Request.Name = &name
+    return getStorageDomainsSpectraS3Request
 }
 
-func (getStorageDomainsSpectraS3Request *GetStorageDomainsSpectraS3Request) QueryParams() *url.Values {
-    return getStorageDomainsSpectraS3Request.queryParams
+func (getStorageDomainsSpectraS3Request *GetStorageDomainsSpectraS3Request) WithPageLength(pageLength int) *GetStorageDomainsSpectraS3Request {
+    getStorageDomainsSpectraS3Request.PageLength = &pageLength
+    return getStorageDomainsSpectraS3Request
 }
 
-func (GetStorageDomainsSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetStorageDomainsSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
+func (getStorageDomainsSpectraS3Request *GetStorageDomainsSpectraS3Request) WithPageOffset(pageOffset int) *GetStorageDomainsSpectraS3Request {
+    getStorageDomainsSpectraS3Request.PageOffset = &pageOffset
+    return getStorageDomainsSpectraS3Request
 }
 
-func (GetStorageDomainsSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
+func (getStorageDomainsSpectraS3Request *GetStorageDomainsSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetStorageDomainsSpectraS3Request {
+    getStorageDomainsSpectraS3Request.PageStartMarker = &pageStartMarker
+    return getStorageDomainsSpectraS3Request
 }
+
+func (getStorageDomainsSpectraS3Request *GetStorageDomainsSpectraS3Request) WithSecureMediaAllocation(secureMediaAllocation bool) *GetStorageDomainsSpectraS3Request {
+    getStorageDomainsSpectraS3Request.SecureMediaAllocation = &secureMediaAllocation
+    return getStorageDomainsSpectraS3Request
+}
+
+func (getStorageDomainsSpectraS3Request *GetStorageDomainsSpectraS3Request) WithWriteOptimization(writeOptimization WriteOptimization) *GetStorageDomainsSpectraS3Request {
+    getStorageDomainsSpectraS3Request.WriteOptimization = writeOptimization
+    return getStorageDomainsSpectraS3Request
+}
+

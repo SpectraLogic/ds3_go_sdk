@@ -13,85 +13,47 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-    "strconv"
-)
-
 type GetPoolPartitionsSpectraS3Request struct {
-    name *string
-    pageLength int
-    pageOffset int
-    pageStartMarker string
-    poolType PoolType
-    queryParams *url.Values
+    LastPage bool
+    Name *string
+    PageLength *int
+    PageOffset *int
+    PageStartMarker *string
+    PoolType PoolType
 }
 
 func NewGetPoolPartitionsSpectraS3Request() *GetPoolPartitionsSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetPoolPartitionsSpectraS3Request{
-        queryParams: queryParams,
     }
-}
-
-func (getPoolPartitionsSpectraS3Request *GetPoolPartitionsSpectraS3Request) WithPageLength(pageLength int) *GetPoolPartitionsSpectraS3Request {
-    getPoolPartitionsSpectraS3Request.pageLength = pageLength
-    getPoolPartitionsSpectraS3Request.queryParams.Set("page_length", strconv.Itoa(pageLength))
-    return getPoolPartitionsSpectraS3Request
-}
-func (getPoolPartitionsSpectraS3Request *GetPoolPartitionsSpectraS3Request) WithPageOffset(pageOffset int) *GetPoolPartitionsSpectraS3Request {
-    getPoolPartitionsSpectraS3Request.pageOffset = pageOffset
-    getPoolPartitionsSpectraS3Request.queryParams.Set("page_offset", strconv.Itoa(pageOffset))
-    return getPoolPartitionsSpectraS3Request
-}
-func (getPoolPartitionsSpectraS3Request *GetPoolPartitionsSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetPoolPartitionsSpectraS3Request {
-    getPoolPartitionsSpectraS3Request.pageStartMarker = pageStartMarker
-    getPoolPartitionsSpectraS3Request.queryParams.Set("page_start_marker", pageStartMarker)
-    return getPoolPartitionsSpectraS3Request
-}
-func (getPoolPartitionsSpectraS3Request *GetPoolPartitionsSpectraS3Request) WithPoolType(poolType PoolType) *GetPoolPartitionsSpectraS3Request {
-    getPoolPartitionsSpectraS3Request.poolType = poolType
-    getPoolPartitionsSpectraS3Request.queryParams.Set("type", poolType.String())
-    return getPoolPartitionsSpectraS3Request
-}
-
-func (getPoolPartitionsSpectraS3Request *GetPoolPartitionsSpectraS3Request) WithName(name *string) *GetPoolPartitionsSpectraS3Request {
-    getPoolPartitionsSpectraS3Request.name = name
-    if name != nil {
-        getPoolPartitionsSpectraS3Request.queryParams.Set("name", *name)
-    } else {
-        getPoolPartitionsSpectraS3Request.queryParams.Set("name", "")
-    }
-    return getPoolPartitionsSpectraS3Request
 }
 
 func (getPoolPartitionsSpectraS3Request *GetPoolPartitionsSpectraS3Request) WithLastPage() *GetPoolPartitionsSpectraS3Request {
-    getPoolPartitionsSpectraS3Request.queryParams.Set("last_page", "")
+    getPoolPartitionsSpectraS3Request.LastPage = true
     return getPoolPartitionsSpectraS3Request
 }
 
-func (GetPoolPartitionsSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
+func (getPoolPartitionsSpectraS3Request *GetPoolPartitionsSpectraS3Request) WithName(name string) *GetPoolPartitionsSpectraS3Request {
+    getPoolPartitionsSpectraS3Request.Name = &name
+    return getPoolPartitionsSpectraS3Request
 }
 
-func (getPoolPartitionsSpectraS3Request *GetPoolPartitionsSpectraS3Request) Path() string {
-    return "/_rest_/pool_partition"
+func (getPoolPartitionsSpectraS3Request *GetPoolPartitionsSpectraS3Request) WithPageLength(pageLength int) *GetPoolPartitionsSpectraS3Request {
+    getPoolPartitionsSpectraS3Request.PageLength = &pageLength
+    return getPoolPartitionsSpectraS3Request
 }
 
-func (getPoolPartitionsSpectraS3Request *GetPoolPartitionsSpectraS3Request) QueryParams() *url.Values {
-    return getPoolPartitionsSpectraS3Request.queryParams
+func (getPoolPartitionsSpectraS3Request *GetPoolPartitionsSpectraS3Request) WithPageOffset(pageOffset int) *GetPoolPartitionsSpectraS3Request {
+    getPoolPartitionsSpectraS3Request.PageOffset = &pageOffset
+    return getPoolPartitionsSpectraS3Request
 }
 
-func (GetPoolPartitionsSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetPoolPartitionsSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
+func (getPoolPartitionsSpectraS3Request *GetPoolPartitionsSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetPoolPartitionsSpectraS3Request {
+    getPoolPartitionsSpectraS3Request.PageStartMarker = &pageStartMarker
+    return getPoolPartitionsSpectraS3Request
 }
 
-func (GetPoolPartitionsSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
+func (getPoolPartitionsSpectraS3Request *GetPoolPartitionsSpectraS3Request) WithPoolType(poolType PoolType) *GetPoolPartitionsSpectraS3Request {
+    getPoolPartitionsSpectraS3Request.PoolType = poolType
+    return getPoolPartitionsSpectraS3Request
 }
+

@@ -2,7 +2,6 @@ package models
 
 import (
     "fmt"
-    "ds3/networking"
     "io"
     "io/ioutil"
     "encoding/xml"
@@ -14,7 +13,7 @@ type BadStatusCodeError struct {
     ErrorBody *Error
 }
 
-func buildBadStatusCodeError(webResponse networking.WebResponse, expectedStatusCodes []int) *BadStatusCodeError {
+func buildBadStatusCodeError(webResponse WebResponse, expectedStatusCodes []int) *BadStatusCodeError {
     var errorBody Error
     var errorBodyPtr *Error
 

@@ -13,48 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type GetTapeFailureNotificationRegistrationSpectraS3Request struct {
-    notificationId string
-    queryParams *url.Values
+    NotificationId string
 }
 
 func NewGetTapeFailureNotificationRegistrationSpectraS3Request(notificationId string) *GetTapeFailureNotificationRegistrationSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetTapeFailureNotificationRegistrationSpectraS3Request{
-        notificationId: notificationId,
-        queryParams: queryParams,
+        NotificationId: notificationId,
     }
 }
 
-
-
-
-func (GetTapeFailureNotificationRegistrationSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
-}
-
-func (getTapeFailureNotificationRegistrationSpectraS3Request *GetTapeFailureNotificationRegistrationSpectraS3Request) Path() string {
-    return "/_rest_/tape_failure_notification_registration/" + getTapeFailureNotificationRegistrationSpectraS3Request.notificationId
-}
-
-func (getTapeFailureNotificationRegistrationSpectraS3Request *GetTapeFailureNotificationRegistrationSpectraS3Request) QueryParams() *url.Values {
-    return getTapeFailureNotificationRegistrationSpectraS3Request.queryParams
-}
-
-func (GetTapeFailureNotificationRegistrationSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetTapeFailureNotificationRegistrationSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (GetTapeFailureNotificationRegistrationSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

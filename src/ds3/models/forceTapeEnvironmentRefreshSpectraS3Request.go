@@ -13,46 +13,11 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type ForceTapeEnvironmentRefreshSpectraS3Request struct {
-    queryParams *url.Values
 }
 
 func NewForceTapeEnvironmentRefreshSpectraS3Request() *ForceTapeEnvironmentRefreshSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &ForceTapeEnvironmentRefreshSpectraS3Request{
-        queryParams: queryParams,
     }
 }
 
-
-
-
-func (ForceTapeEnvironmentRefreshSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.PUT
-}
-
-func (forceTapeEnvironmentRefreshSpectraS3Request *ForceTapeEnvironmentRefreshSpectraS3Request) Path() string {
-    return "/_rest_/tape_environment"
-}
-
-func (forceTapeEnvironmentRefreshSpectraS3Request *ForceTapeEnvironmentRefreshSpectraS3Request) QueryParams() *url.Values {
-    return forceTapeEnvironmentRefreshSpectraS3Request.queryParams
-}
-
-func (ForceTapeEnvironmentRefreshSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (ForceTapeEnvironmentRefreshSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (ForceTapeEnvironmentRefreshSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

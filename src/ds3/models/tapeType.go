@@ -85,3 +85,11 @@ func (tapeType TapeType) String() string {
             return ""
     }
 }
+
+func (tapeType TapeType) StringPtr() *string {
+    if tapeType == UNDEFINED {
+        return nil
+    }
+    result := tapeType.String()
+    return &result
+}

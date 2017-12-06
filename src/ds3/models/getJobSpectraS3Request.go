@@ -13,48 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type GetJobSpectraS3Request struct {
-    jobId string
-    queryParams *url.Values
+    JobId string
 }
 
 func NewGetJobSpectraS3Request(jobId string) *GetJobSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetJobSpectraS3Request{
-        jobId: jobId,
-        queryParams: queryParams,
+        JobId: jobId,
     }
 }
 
-
-
-
-func (GetJobSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
-}
-
-func (getJobSpectraS3Request *GetJobSpectraS3Request) Path() string {
-    return "/_rest_/job/" + getJobSpectraS3Request.jobId
-}
-
-func (getJobSpectraS3Request *GetJobSpectraS3Request) QueryParams() *url.Values {
-    return getJobSpectraS3Request.queryParams
-}
-
-func (GetJobSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetJobSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (GetJobSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

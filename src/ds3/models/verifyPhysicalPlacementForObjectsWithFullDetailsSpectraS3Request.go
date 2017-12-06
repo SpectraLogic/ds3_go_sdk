@@ -13,58 +13,21 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type VerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request struct {
-    bucketName string
-    content networking.ReaderWithSizeDecorator
-    storageDomainId string
-    queryParams *url.Values
+    BucketName string
+    ObjectNames []string
+    StorageDomainId *string
 }
 
 func NewVerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request(bucketName string, objectNames []string) *VerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("operation", "verify_physical_placement")
-    queryParams.Set("full_details", "")
-
     return &VerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request{
-        bucketName: bucketName,
-        content: buildDs3ObjectStreamFromNames(objectNames),
-        queryParams: queryParams,
+        BucketName: bucketName,
+        ObjectNames: objectNames,
     }
 }
 
 func (verifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request *VerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request) WithStorageDomainId(storageDomainId string) *VerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request {
-    verifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request.storageDomainId = storageDomainId
-    verifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request.queryParams.Set("storage_domain_id", storageDomainId)
+    verifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request.StorageDomainId = &storageDomainId
     return verifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request
 }
 
-
-
-func (VerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
-}
-
-func (verifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request *VerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request) Path() string {
-    return "/_rest_/bucket/" + verifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request.bucketName
-}
-
-func (verifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request *VerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request) QueryParams() *url.Values {
-    return verifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request.queryParams
-}
-
-func (VerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (VerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (verifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request *VerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return verifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request.content
-}

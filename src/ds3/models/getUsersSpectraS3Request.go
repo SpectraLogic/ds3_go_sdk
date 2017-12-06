@@ -13,95 +13,53 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-    "strconv"
-)
-
 type GetUsersSpectraS3Request struct {
-    authId *string
-    defaultDataPolicyId string
-    name *string
-    pageLength int
-    pageOffset int
-    pageStartMarker string
-    queryParams *url.Values
+    AuthId *string
+    DefaultDataPolicyId *string
+    LastPage bool
+    Name *string
+    PageLength *int
+    PageOffset *int
+    PageStartMarker *string
 }
 
 func NewGetUsersSpectraS3Request() *GetUsersSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetUsersSpectraS3Request{
-        queryParams: queryParams,
     }
+}
+
+func (getUsersSpectraS3Request *GetUsersSpectraS3Request) WithAuthId(authId string) *GetUsersSpectraS3Request {
+    getUsersSpectraS3Request.AuthId = &authId
+    return getUsersSpectraS3Request
 }
 
 func (getUsersSpectraS3Request *GetUsersSpectraS3Request) WithDefaultDataPolicyId(defaultDataPolicyId string) *GetUsersSpectraS3Request {
-    getUsersSpectraS3Request.defaultDataPolicyId = defaultDataPolicyId
-    getUsersSpectraS3Request.queryParams.Set("default_data_policy_id", defaultDataPolicyId)
-    return getUsersSpectraS3Request
-}
-func (getUsersSpectraS3Request *GetUsersSpectraS3Request) WithPageLength(pageLength int) *GetUsersSpectraS3Request {
-    getUsersSpectraS3Request.pageLength = pageLength
-    getUsersSpectraS3Request.queryParams.Set("page_length", strconv.Itoa(pageLength))
-    return getUsersSpectraS3Request
-}
-func (getUsersSpectraS3Request *GetUsersSpectraS3Request) WithPageOffset(pageOffset int) *GetUsersSpectraS3Request {
-    getUsersSpectraS3Request.pageOffset = pageOffset
-    getUsersSpectraS3Request.queryParams.Set("page_offset", strconv.Itoa(pageOffset))
-    return getUsersSpectraS3Request
-}
-func (getUsersSpectraS3Request *GetUsersSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetUsersSpectraS3Request {
-    getUsersSpectraS3Request.pageStartMarker = pageStartMarker
-    getUsersSpectraS3Request.queryParams.Set("page_start_marker", pageStartMarker)
-    return getUsersSpectraS3Request
-}
-
-func (getUsersSpectraS3Request *GetUsersSpectraS3Request) WithAuthId(authId *string) *GetUsersSpectraS3Request {
-    getUsersSpectraS3Request.authId = authId
-    if authId != nil {
-        getUsersSpectraS3Request.queryParams.Set("auth_id", *authId)
-    } else {
-        getUsersSpectraS3Request.queryParams.Set("auth_id", "")
-    }
-    return getUsersSpectraS3Request
-}
-func (getUsersSpectraS3Request *GetUsersSpectraS3Request) WithName(name *string) *GetUsersSpectraS3Request {
-    getUsersSpectraS3Request.name = name
-    if name != nil {
-        getUsersSpectraS3Request.queryParams.Set("name", *name)
-    } else {
-        getUsersSpectraS3Request.queryParams.Set("name", "")
-    }
+    getUsersSpectraS3Request.DefaultDataPolicyId = &defaultDataPolicyId
     return getUsersSpectraS3Request
 }
 
 func (getUsersSpectraS3Request *GetUsersSpectraS3Request) WithLastPage() *GetUsersSpectraS3Request {
-    getUsersSpectraS3Request.queryParams.Set("last_page", "")
+    getUsersSpectraS3Request.LastPage = true
     return getUsersSpectraS3Request
 }
 
-func (GetUsersSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
+func (getUsersSpectraS3Request *GetUsersSpectraS3Request) WithName(name string) *GetUsersSpectraS3Request {
+    getUsersSpectraS3Request.Name = &name
+    return getUsersSpectraS3Request
 }
 
-func (getUsersSpectraS3Request *GetUsersSpectraS3Request) Path() string {
-    return "/_rest_/user"
+func (getUsersSpectraS3Request *GetUsersSpectraS3Request) WithPageLength(pageLength int) *GetUsersSpectraS3Request {
+    getUsersSpectraS3Request.PageLength = &pageLength
+    return getUsersSpectraS3Request
 }
 
-func (getUsersSpectraS3Request *GetUsersSpectraS3Request) QueryParams() *url.Values {
-    return getUsersSpectraS3Request.queryParams
+func (getUsersSpectraS3Request *GetUsersSpectraS3Request) WithPageOffset(pageOffset int) *GetUsersSpectraS3Request {
+    getUsersSpectraS3Request.PageOffset = &pageOffset
+    return getUsersSpectraS3Request
 }
 
-func (GetUsersSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetUsersSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
+func (getUsersSpectraS3Request *GetUsersSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetUsersSpectraS3Request {
+    getUsersSpectraS3Request.PageStartMarker = &pageStartMarker
+    return getUsersSpectraS3Request
 }
 
-func (GetUsersSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

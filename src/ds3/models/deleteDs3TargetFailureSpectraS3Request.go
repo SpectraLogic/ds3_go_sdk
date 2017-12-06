@@ -13,48 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type DeleteDs3TargetFailureSpectraS3Request struct {
-    ds3TargetFailure string
-    queryParams *url.Values
+    Ds3TargetFailure string
 }
 
 func NewDeleteDs3TargetFailureSpectraS3Request(ds3TargetFailure string) *DeleteDs3TargetFailureSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &DeleteDs3TargetFailureSpectraS3Request{
-        ds3TargetFailure: ds3TargetFailure,
-        queryParams: queryParams,
+        Ds3TargetFailure: ds3TargetFailure,
     }
 }
 
-
-
-
-func (DeleteDs3TargetFailureSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.DELETE
-}
-
-func (deleteDs3TargetFailureSpectraS3Request *DeleteDs3TargetFailureSpectraS3Request) Path() string {
-    return "/_rest_/ds3_target_failure/" + deleteDs3TargetFailureSpectraS3Request.ds3TargetFailure
-}
-
-func (deleteDs3TargetFailureSpectraS3Request *DeleteDs3TargetFailureSpectraS3Request) QueryParams() *url.Values {
-    return deleteDs3TargetFailureSpectraS3Request.queryParams
-}
-
-func (DeleteDs3TargetFailureSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (DeleteDs3TargetFailureSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (DeleteDs3TargetFailureSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

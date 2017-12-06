@@ -58,3 +58,11 @@ func (requestType RequestType) String() string {
             return ""
     }
 }
+
+func (requestType RequestType) StringPtr() *string {
+    if requestType == UNDEFINED {
+        return nil
+    }
+    result := requestType.String()
+    return &result
+}

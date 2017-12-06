@@ -5,7 +5,6 @@ import (
     "ds3/models"
     "ds3"
     "io/ioutil"
-    "ds3/networking"
     "errors"
     "ds3/buildclient"
     "log"
@@ -90,8 +89,8 @@ func DeleteBucketContents(client *ds3.Client, bucketName string) {
     }
 }
 
-func GetResourceBooks() (map[string]networking.ReaderWithSizeDecorator, error) {
-    result := make(map[string]networking.ReaderWithSizeDecorator)
+func GetResourceBooks() (map[string]models.ReaderWithSizeDecorator, error) {
+    result := make(map[string]models.ReaderWithSizeDecorator)
     for _, title := range BookTitles {
         curStream, err := GetResourceBookAsStream(title)
         if err != nil {
@@ -102,7 +101,7 @@ func GetResourceBooks() (map[string]networking.ReaderWithSizeDecorator, error) {
     return result, nil
 }
 
-func ConvertBooksToDs3Objects(books map[string]networking.ReaderWithSizeDecorator) ([]models.Ds3PutObject, error) {
+func ConvertBooksToDs3Objects(books map[string]models.ReaderWithSizeDecorator) ([]models.Ds3PutObject, error) {
     var ds3Objects []models.Ds3PutObject
     for title, stream := range books {
         size, err := stream.Size()
@@ -118,12 +117,12 @@ func ConvertBooksToDs3Objects(books map[string]networking.ReaderWithSizeDecorato
     return ds3Objects, nil
 }
 
-func GetResourceBookAsStream(book string) (*networking.ReaderWithSizeDecorator, error) {
+func GetResourceBookAsStream(book string) (*models.ReadCloserWithSizeDecorator, error) {
     content, err := LoadBook(book)
     if err != nil {
         return nil, err
     }
-    stream := networking.BuildByteReaderWithSizeDecorator(content)
+    stream := ds3.BuildByteReaderWithSizeDecorator(content)
     return &stream, nil
 }
 
@@ -155,7 +154,7 @@ func PutObjectLogError(t *testing.T, client *ds3.Client, bucketName string, obje
 
 // Puts the specified object. Returns an error if not successful.
 func PutObject(client *ds3.Client, bucketName string, objectName string, data []byte) (error) {
-    putObjectResponse, putErr := client.PutObject(models.NewPutObjectRequest(bucketName, objectName, networking.BuildByteReaderWithSizeDecorator(data)))
+    putObjectResponse, putErr := client.PutObject(models.NewPutObjectRequest(bucketName, objectName, ds3.BuildByteReaderWithSizeDecorator(data)))
     if putErr != nil {
         return putErr
     }
@@ -288,7 +287,7 @@ func DeleteDataPolicyLogError(t *testing.T, client *ds3.Client, dataPolicyId str
 // Creates the specified data policy. If an error occurs, it is logged, and the calling
 // test is marked as failed, but continues running.
 func PutDataPolicyLogError(t *testing.T, client *ds3.Client, dataPolicyName string) (*models.PutDataPolicySpectraS3Response, error) {
-    response, err := client.PutDataPolicySpectraS3(models.NewPutDataPolicySpectraS3Request(&dataPolicyName))
+    response, err := client.PutDataPolicySpectraS3(models.NewPutDataPolicySpectraS3Request(dataPolicyName))
     if err != nil {
         t.Errorf("Unable to create Data Policy '%s': '%s'.", dataPolicyName, err.Error())
     }
@@ -309,7 +308,7 @@ func GetDataPolicyLogError(t *testing.T, client *ds3.Client, dataPolicyId string
 // If there is not exactly 1 user with the specified name, it is treated as an error. If an
 // error occurs, it is logged, and the calling  test is marked as failed, but continues running.
 func GetUserByNameLogError(t *testing.T, client *ds3.Client, userName string) (*models.SpectraUser, error) {
-    response, err := client.GetUsersSpectraS3(models.NewGetUsersSpectraS3Request().WithName(&userName))
+    response, err := client.GetUsersSpectraS3(models.NewGetUsersSpectraS3Request().WithName(userName))
     if err != nil {
         t.Errorf("Unable to get user '%s': '%s'.", userName, err.Error())
         return nil, err
@@ -354,7 +353,7 @@ func SetupTestEnv(testBucket string, userName string, envTestNameSpace string) (
     }
 
     // Create data policy
-    dataPolicyResponse, dataPolicyErr := client.PutDataPolicySpectraS3(models.NewPutDataPolicySpectraS3Request(&envTestNameSpace))
+    dataPolicyResponse, dataPolicyErr := client.PutDataPolicySpectraS3(models.NewPutDataPolicySpectraS3Request(envTestNameSpace))
     if dataPolicyErr != nil {
         return nil, &ids, dataPolicyErr
     }
@@ -371,7 +370,7 @@ func SetupTestEnv(testBucket string, userName string, envTestNameSpace string) (
 
     // Create pool partition
     poolPartitionResponse, poolPartitionErr := client.PutPoolPartitionSpectraS3(models.NewPutPoolPartitionSpectraS3Request(
-        &envTestNameSpace,
+        envTestNameSpace,
         models.POOL_TYPE_ONLINE))
     if poolPartitionErr != nil {
         return nil, &ids, poolPartitionErr
@@ -379,7 +378,7 @@ func SetupTestEnv(testBucket string, userName string, envTestNameSpace string) (
     ids.PoolPartitionId = &poolPartitionResponse.PoolPartition.Id
 
     // Create storage domain
-    storageDomainResponse, storageDomainErr := client.PutStorageDomainSpectraS3(models.NewPutStorageDomainSpectraS3Request(&envTestNameSpace))
+    storageDomainResponse, storageDomainErr := client.PutStorageDomainSpectraS3(models.NewPutStorageDomainSpectraS3Request(envTestNameSpace))
     if storageDomainErr != nil {
         return nil, &ids, storageDomainErr
     }

@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -23,11 +22,11 @@ type PutPoolPartitionSpectraS3Response struct {
     Headers *http.Header
 }
 
-func (putPoolPartitionSpectraS3Response *PutPoolPartitionSpectraS3Response) parse(webResponse networking.WebResponse) error {
+func (putPoolPartitionSpectraS3Response *PutPoolPartitionSpectraS3Response) parse(webResponse WebResponse) error {
         return parseResponsePayload(webResponse, &putPoolPartitionSpectraS3Response.PoolPartition)
 }
 
-func NewPutPoolPartitionSpectraS3Response(webResponse networking.WebResponse) (*PutPoolPartitionSpectraS3Response, error) {
+func NewPutPoolPartitionSpectraS3Response(webResponse WebResponse) (*PutPoolPartitionSpectraS3Response, error) {
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {

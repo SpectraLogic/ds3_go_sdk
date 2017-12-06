@@ -13,61 +13,23 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type PutTapeStorageDomainMemberSpectraS3Request struct {
-    storageDomainId string
-    tapePartitionId string
-    tapeType TapeType
-    writePreference WritePreferenceLevel
-    queryParams *url.Values
+    StorageDomainId string
+    TapePartitionId string
+    TapeType TapeType
+    WritePreference WritePreferenceLevel
 }
 
 func NewPutTapeStorageDomainMemberSpectraS3Request(storageDomainId string, tapePartitionId string, tapeType TapeType) *PutTapeStorageDomainMemberSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("storage_domain_id", storageDomainId)
-    queryParams.Set("tape_partition_id", tapePartitionId)
-    queryParams.Set("tape_type", tapeType.String())
-
     return &PutTapeStorageDomainMemberSpectraS3Request{
-        storageDomainId: storageDomainId,
-        tapePartitionId: tapePartitionId,
-        tapeType: tapeType,
-        queryParams: queryParams,
+        StorageDomainId: storageDomainId,
+        TapePartitionId: tapePartitionId,
+        TapeType: tapeType,
     }
 }
 
 func (putTapeStorageDomainMemberSpectraS3Request *PutTapeStorageDomainMemberSpectraS3Request) WithWritePreference(writePreference WritePreferenceLevel) *PutTapeStorageDomainMemberSpectraS3Request {
-    putTapeStorageDomainMemberSpectraS3Request.writePreference = writePreference
-    putTapeStorageDomainMemberSpectraS3Request.queryParams.Set("write_preference", writePreference.String())
+    putTapeStorageDomainMemberSpectraS3Request.WritePreference = writePreference
     return putTapeStorageDomainMemberSpectraS3Request
 }
 
-
-
-func (PutTapeStorageDomainMemberSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.POST
-}
-
-func (putTapeStorageDomainMemberSpectraS3Request *PutTapeStorageDomainMemberSpectraS3Request) Path() string {
-    return "/_rest_/storage_domain_member"
-}
-
-func (putTapeStorageDomainMemberSpectraS3Request *PutTapeStorageDomainMemberSpectraS3Request) QueryParams() *url.Values {
-    return putTapeStorageDomainMemberSpectraS3Request.queryParams
-}
-
-func (PutTapeStorageDomainMemberSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (PutTapeStorageDomainMemberSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (PutTapeStorageDomainMemberSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

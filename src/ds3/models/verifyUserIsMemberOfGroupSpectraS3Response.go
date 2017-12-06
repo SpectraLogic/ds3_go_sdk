@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -23,11 +22,11 @@ type VerifyUserIsMemberOfGroupSpectraS3Response struct {
     Headers *http.Header
 }
 
-func (verifyUserIsMemberOfGroupSpectraS3Response *VerifyUserIsMemberOfGroupSpectraS3Response) parse(webResponse networking.WebResponse) error {
+func (verifyUserIsMemberOfGroupSpectraS3Response *VerifyUserIsMemberOfGroupSpectraS3Response) parse(webResponse WebResponse) error {
         return parseResponsePayload(webResponse, verifyUserIsMemberOfGroupSpectraS3Response.Group)
 }
 
-func NewVerifyUserIsMemberOfGroupSpectraS3Response(webResponse networking.WebResponse) (*VerifyUserIsMemberOfGroupSpectraS3Response, error) {
+func NewVerifyUserIsMemberOfGroupSpectraS3Response(webResponse WebResponse) (*VerifyUserIsMemberOfGroupSpectraS3Response, error) {
     expectedStatusCodes := []int { 200, 204 }
 
     switch code := webResponse.StatusCode(); code {

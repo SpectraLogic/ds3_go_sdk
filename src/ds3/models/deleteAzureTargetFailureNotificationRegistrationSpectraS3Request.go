@@ -13,48 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type DeleteAzureTargetFailureNotificationRegistrationSpectraS3Request struct {
-    azureTargetFailureNotificationRegistration string
-    queryParams *url.Values
+    AzureTargetFailureNotificationRegistration string
 }
 
 func NewDeleteAzureTargetFailureNotificationRegistrationSpectraS3Request(azureTargetFailureNotificationRegistration string) *DeleteAzureTargetFailureNotificationRegistrationSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &DeleteAzureTargetFailureNotificationRegistrationSpectraS3Request{
-        azureTargetFailureNotificationRegistration: azureTargetFailureNotificationRegistration,
-        queryParams: queryParams,
+        AzureTargetFailureNotificationRegistration: azureTargetFailureNotificationRegistration,
     }
 }
 
-
-
-
-func (DeleteAzureTargetFailureNotificationRegistrationSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.DELETE
-}
-
-func (deleteAzureTargetFailureNotificationRegistrationSpectraS3Request *DeleteAzureTargetFailureNotificationRegistrationSpectraS3Request) Path() string {
-    return "/_rest_/azure_target_failure_notification_registration/" + deleteAzureTargetFailureNotificationRegistrationSpectraS3Request.azureTargetFailureNotificationRegistration
-}
-
-func (deleteAzureTargetFailureNotificationRegistrationSpectraS3Request *DeleteAzureTargetFailureNotificationRegistrationSpectraS3Request) QueryParams() *url.Values {
-    return deleteAzureTargetFailureNotificationRegistrationSpectraS3Request.queryParams
-}
-
-func (DeleteAzureTargetFailureNotificationRegistrationSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (DeleteAzureTargetFailureNotificationRegistrationSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (DeleteAzureTargetFailureNotificationRegistrationSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

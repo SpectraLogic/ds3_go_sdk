@@ -13,48 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type GetObjectLostNotificationRegistrationSpectraS3Request struct {
-    notificationId string
-    queryParams *url.Values
+    NotificationId string
 }
 
 func NewGetObjectLostNotificationRegistrationSpectraS3Request(notificationId string) *GetObjectLostNotificationRegistrationSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetObjectLostNotificationRegistrationSpectraS3Request{
-        notificationId: notificationId,
-        queryParams: queryParams,
+        NotificationId: notificationId,
     }
 }
 
-
-
-
-func (GetObjectLostNotificationRegistrationSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
-}
-
-func (getObjectLostNotificationRegistrationSpectraS3Request *GetObjectLostNotificationRegistrationSpectraS3Request) Path() string {
-    return "/_rest_/object_lost_notification_registration/" + getObjectLostNotificationRegistrationSpectraS3Request.notificationId
-}
-
-func (getObjectLostNotificationRegistrationSpectraS3Request *GetObjectLostNotificationRegistrationSpectraS3Request) QueryParams() *url.Values {
-    return getObjectLostNotificationRegistrationSpectraS3Request.queryParams
-}
-
-func (GetObjectLostNotificationRegistrationSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetObjectLostNotificationRegistrationSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (GetObjectLostNotificationRegistrationSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

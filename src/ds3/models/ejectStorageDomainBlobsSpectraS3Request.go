@@ -13,76 +13,29 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type EjectStorageDomainBlobsSpectraS3Request struct {
-    bucketId string
-    content networking.ReaderWithSizeDecorator
-    ejectLabel *string
-    ejectLocation *string
-    storageDomainId string
-    queryParams *url.Values
+    BucketId string
+    EjectLabel *string
+    EjectLocation *string
+    ObjectNames []string
+    StorageDomainId string
 }
 
 func NewEjectStorageDomainBlobsSpectraS3Request(bucketId string, objectNames []string, storageDomainId string) *EjectStorageDomainBlobsSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("operation", "eject")
-    queryParams.Set("blobs", "")
-    queryParams.Set("bucket_id", bucketId)
-    queryParams.Set("storage_domain_id", storageDomainId)
-
     return &EjectStorageDomainBlobsSpectraS3Request{
-        bucketId: bucketId,
-        storageDomainId: storageDomainId,
-        content: buildDs3ObjectStreamFromNames(objectNames),
-        queryParams: queryParams,
+        BucketId: bucketId,
+        StorageDomainId: storageDomainId,
+        ObjectNames: objectNames,
     }
 }
 
-
-func (ejectStorageDomainBlobsSpectraS3Request *EjectStorageDomainBlobsSpectraS3Request) WithEjectLabel(ejectLabel *string) *EjectStorageDomainBlobsSpectraS3Request {
-    ejectStorageDomainBlobsSpectraS3Request.ejectLabel = ejectLabel
-    if ejectLabel != nil {
-        ejectStorageDomainBlobsSpectraS3Request.queryParams.Set("eject_label", *ejectLabel)
-    } else {
-        ejectStorageDomainBlobsSpectraS3Request.queryParams.Set("eject_label", "")
-    }
-    return ejectStorageDomainBlobsSpectraS3Request
-}
-func (ejectStorageDomainBlobsSpectraS3Request *EjectStorageDomainBlobsSpectraS3Request) WithEjectLocation(ejectLocation *string) *EjectStorageDomainBlobsSpectraS3Request {
-    ejectStorageDomainBlobsSpectraS3Request.ejectLocation = ejectLocation
-    if ejectLocation != nil {
-        ejectStorageDomainBlobsSpectraS3Request.queryParams.Set("eject_location", *ejectLocation)
-    } else {
-        ejectStorageDomainBlobsSpectraS3Request.queryParams.Set("eject_location", "")
-    }
+func (ejectStorageDomainBlobsSpectraS3Request *EjectStorageDomainBlobsSpectraS3Request) WithEjectLabel(ejectLabel string) *EjectStorageDomainBlobsSpectraS3Request {
+    ejectStorageDomainBlobsSpectraS3Request.EjectLabel = &ejectLabel
     return ejectStorageDomainBlobsSpectraS3Request
 }
 
-
-func (EjectStorageDomainBlobsSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.PUT
+func (ejectStorageDomainBlobsSpectraS3Request *EjectStorageDomainBlobsSpectraS3Request) WithEjectLocation(ejectLocation string) *EjectStorageDomainBlobsSpectraS3Request {
+    ejectStorageDomainBlobsSpectraS3Request.EjectLocation = &ejectLocation
+    return ejectStorageDomainBlobsSpectraS3Request
 }
 
-func (ejectStorageDomainBlobsSpectraS3Request *EjectStorageDomainBlobsSpectraS3Request) Path() string {
-    return "/_rest_/tape"
-}
-
-func (ejectStorageDomainBlobsSpectraS3Request *EjectStorageDomainBlobsSpectraS3Request) QueryParams() *url.Values {
-    return ejectStorageDomainBlobsSpectraS3Request.queryParams
-}
-
-func (EjectStorageDomainBlobsSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (EjectStorageDomainBlobsSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (ejectStorageDomainBlobsSpectraS3Request *EjectStorageDomainBlobsSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return ejectStorageDomainBlobsSpectraS3Request.content
-}

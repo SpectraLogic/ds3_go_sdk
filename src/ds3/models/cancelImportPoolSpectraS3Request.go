@@ -13,49 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type CancelImportPoolSpectraS3Request struct {
-    pool string
-    queryParams *url.Values
+    Pool string
 }
 
 func NewCancelImportPoolSpectraS3Request(pool string) *CancelImportPoolSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("operation", "cancel_import")
-
     return &CancelImportPoolSpectraS3Request{
-        pool: pool,
-        queryParams: queryParams,
+        Pool: pool,
     }
 }
 
-
-
-
-func (CancelImportPoolSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.PUT
-}
-
-func (cancelImportPoolSpectraS3Request *CancelImportPoolSpectraS3Request) Path() string {
-    return "/_rest_/pool/" + cancelImportPoolSpectraS3Request.pool
-}
-
-func (cancelImportPoolSpectraS3Request *CancelImportPoolSpectraS3Request) QueryParams() *url.Values {
-    return cancelImportPoolSpectraS3Request.queryParams
-}
-
-func (CancelImportPoolSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (CancelImportPoolSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (CancelImportPoolSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

@@ -13,67 +13,31 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type PutDs3TargetFailureNotificationRegistrationSpectraS3Request struct {
-    format HttpResponseFormatType
-    namingConvention NamingConventionType
-    notificationEndPoint *string
-    notificationHttpMethod RequestType
-    queryParams *url.Values
+    Format HttpResponseFormatType
+    NamingConvention NamingConventionType
+    NotificationEndPoint string
+    NotificationHttpMethod RequestType
 }
 
-func NewPutDs3TargetFailureNotificationRegistrationSpectraS3Request(notificationEndPoint *string) *PutDs3TargetFailureNotificationRegistrationSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("notification_end_point", *notificationEndPoint)
-
+func NewPutDs3TargetFailureNotificationRegistrationSpectraS3Request(notificationEndPoint string) *PutDs3TargetFailureNotificationRegistrationSpectraS3Request {
     return &PutDs3TargetFailureNotificationRegistrationSpectraS3Request{
-        notificationEndPoint: notificationEndPoint,
-        queryParams: queryParams,
+        NotificationEndPoint: notificationEndPoint,
     }
 }
 
 func (putDs3TargetFailureNotificationRegistrationSpectraS3Request *PutDs3TargetFailureNotificationRegistrationSpectraS3Request) WithFormat(format HttpResponseFormatType) *PutDs3TargetFailureNotificationRegistrationSpectraS3Request {
-    putDs3TargetFailureNotificationRegistrationSpectraS3Request.format = format
-    putDs3TargetFailureNotificationRegistrationSpectraS3Request.queryParams.Set("format", format.String())
+    putDs3TargetFailureNotificationRegistrationSpectraS3Request.Format = format
     return putDs3TargetFailureNotificationRegistrationSpectraS3Request
 }
+
 func (putDs3TargetFailureNotificationRegistrationSpectraS3Request *PutDs3TargetFailureNotificationRegistrationSpectraS3Request) WithNamingConvention(namingConvention NamingConventionType) *PutDs3TargetFailureNotificationRegistrationSpectraS3Request {
-    putDs3TargetFailureNotificationRegistrationSpectraS3Request.namingConvention = namingConvention
-    putDs3TargetFailureNotificationRegistrationSpectraS3Request.queryParams.Set("naming_convention", namingConvention.String())
+    putDs3TargetFailureNotificationRegistrationSpectraS3Request.NamingConvention = namingConvention
     return putDs3TargetFailureNotificationRegistrationSpectraS3Request
 }
+
 func (putDs3TargetFailureNotificationRegistrationSpectraS3Request *PutDs3TargetFailureNotificationRegistrationSpectraS3Request) WithNotificationHttpMethod(notificationHttpMethod RequestType) *PutDs3TargetFailureNotificationRegistrationSpectraS3Request {
-    putDs3TargetFailureNotificationRegistrationSpectraS3Request.notificationHttpMethod = notificationHttpMethod
-    putDs3TargetFailureNotificationRegistrationSpectraS3Request.queryParams.Set("notification_http_method", notificationHttpMethod.String())
+    putDs3TargetFailureNotificationRegistrationSpectraS3Request.NotificationHttpMethod = notificationHttpMethod
     return putDs3TargetFailureNotificationRegistrationSpectraS3Request
 }
 
-
-
-func (PutDs3TargetFailureNotificationRegistrationSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.POST
-}
-
-func (putDs3TargetFailureNotificationRegistrationSpectraS3Request *PutDs3TargetFailureNotificationRegistrationSpectraS3Request) Path() string {
-    return "/_rest_/ds3_target_failure_notification_registration"
-}
-
-func (putDs3TargetFailureNotificationRegistrationSpectraS3Request *PutDs3TargetFailureNotificationRegistrationSpectraS3Request) QueryParams() *url.Values {
-    return putDs3TargetFailureNotificationRegistrationSpectraS3Request.queryParams
-}
-
-func (PutDs3TargetFailureNotificationRegistrationSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (PutDs3TargetFailureNotificationRegistrationSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (PutDs3TargetFailureNotificationRegistrationSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

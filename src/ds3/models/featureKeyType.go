@@ -49,3 +49,11 @@ func (featureKeyType FeatureKeyType) String() string {
             return ""
     }
 }
+
+func (featureKeyType FeatureKeyType) StringPtr() *string {
+    if featureKeyType == UNDEFINED {
+        return nil
+    }
+    result := featureKeyType.String()
+    return &result
+}

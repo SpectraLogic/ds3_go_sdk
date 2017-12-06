@@ -13,48 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type DeleteAzureTargetReadPreferenceSpectraS3Request struct {
-    azureTargetReadPreference string
-    queryParams *url.Values
+    AzureTargetReadPreference string
 }
 
 func NewDeleteAzureTargetReadPreferenceSpectraS3Request(azureTargetReadPreference string) *DeleteAzureTargetReadPreferenceSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &DeleteAzureTargetReadPreferenceSpectraS3Request{
-        azureTargetReadPreference: azureTargetReadPreference,
-        queryParams: queryParams,
+        AzureTargetReadPreference: azureTargetReadPreference,
     }
 }
 
-
-
-
-func (DeleteAzureTargetReadPreferenceSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.DELETE
-}
-
-func (deleteAzureTargetReadPreferenceSpectraS3Request *DeleteAzureTargetReadPreferenceSpectraS3Request) Path() string {
-    return "/_rest_/azure_target_read_preference/" + deleteAzureTargetReadPreferenceSpectraS3Request.azureTargetReadPreference
-}
-
-func (deleteAzureTargetReadPreferenceSpectraS3Request *DeleteAzureTargetReadPreferenceSpectraS3Request) QueryParams() *url.Values {
-    return deleteAzureTargetReadPreferenceSpectraS3Request.queryParams
-}
-
-func (DeleteAzureTargetReadPreferenceSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (DeleteAzureTargetReadPreferenceSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (DeleteAzureTargetReadPreferenceSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

@@ -13,53 +13,17 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type AbortMultiPartUploadRequest struct {
-    bucketName string
-    objectName string
-    uploadId string
-    queryParams *url.Values
+    BucketName string
+    ObjectName string
+    UploadId string
 }
 
 func NewAbortMultiPartUploadRequest(bucketName string, objectName string, uploadId string) *AbortMultiPartUploadRequest {
-    queryParams := &url.Values{}
-    queryParams.Set("upload_id", uploadId)
-
     return &AbortMultiPartUploadRequest{
-        bucketName: bucketName,
-        objectName: objectName,
-        uploadId: uploadId,
-        queryParams: queryParams,
+        BucketName: bucketName,
+        ObjectName: objectName,
+        UploadId: uploadId,
     }
 }
 
-
-
-
-func (AbortMultiPartUploadRequest) Verb() networking.HttpVerb {
-    return networking.DELETE
-}
-
-func (abortMultiPartUploadRequest *AbortMultiPartUploadRequest) Path() string {
-    return "/" + abortMultiPartUploadRequest.bucketName + "/" + abortMultiPartUploadRequest.objectName
-}
-
-func (abortMultiPartUploadRequest *AbortMultiPartUploadRequest) QueryParams() *url.Values {
-    return abortMultiPartUploadRequest.queryParams
-}
-
-func (AbortMultiPartUploadRequest) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (AbortMultiPartUploadRequest) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (AbortMultiPartUploadRequest) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

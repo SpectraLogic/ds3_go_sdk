@@ -13,58 +13,19 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type ModifyGroupSpectraS3Request struct {
-    group string
-    name *string
-    queryParams *url.Values
+    Group string
+    Name *string
 }
 
 func NewModifyGroupSpectraS3Request(group string) *ModifyGroupSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &ModifyGroupSpectraS3Request{
-        group: group,
-        queryParams: queryParams,
+        Group: group,
     }
 }
 
-
-func (modifyGroupSpectraS3Request *ModifyGroupSpectraS3Request) WithName(name *string) *ModifyGroupSpectraS3Request {
-    modifyGroupSpectraS3Request.name = name
-    if name != nil {
-        modifyGroupSpectraS3Request.queryParams.Set("name", *name)
-    } else {
-        modifyGroupSpectraS3Request.queryParams.Set("name", "")
-    }
+func (modifyGroupSpectraS3Request *ModifyGroupSpectraS3Request) WithName(name string) *ModifyGroupSpectraS3Request {
+    modifyGroupSpectraS3Request.Name = &name
     return modifyGroupSpectraS3Request
 }
 
-
-func (ModifyGroupSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.PUT
-}
-
-func (modifyGroupSpectraS3Request *ModifyGroupSpectraS3Request) Path() string {
-    return "/_rest_/group/" + modifyGroupSpectraS3Request.group
-}
-
-func (modifyGroupSpectraS3Request *ModifyGroupSpectraS3Request) QueryParams() *url.Values {
-    return modifyGroupSpectraS3Request.queryParams
-}
-
-func (ModifyGroupSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (ModifyGroupSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (ModifyGroupSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

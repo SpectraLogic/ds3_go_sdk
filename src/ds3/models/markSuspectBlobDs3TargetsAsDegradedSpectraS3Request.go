@@ -13,52 +13,19 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type MarkSuspectBlobDs3TargetsAsDegradedSpectraS3Request struct {
-    content networking.ReaderWithSizeDecorator
-    queryParams *url.Values
+    Force bool
+    Ids []string
 }
 
 func NewMarkSuspectBlobDs3TargetsAsDegradedSpectraS3Request(ids []string) *MarkSuspectBlobDs3TargetsAsDegradedSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &MarkSuspectBlobDs3TargetsAsDegradedSpectraS3Request{
-        content: buildIdListPayload(ids),
-        queryParams: queryParams,
+        Ids: ids,
     }
 }
 
-
-
 func (markSuspectBlobDs3TargetsAsDegradedSpectraS3Request *MarkSuspectBlobDs3TargetsAsDegradedSpectraS3Request) WithForce() *MarkSuspectBlobDs3TargetsAsDegradedSpectraS3Request {
-    markSuspectBlobDs3TargetsAsDegradedSpectraS3Request.queryParams.Set("force", "")
+    markSuspectBlobDs3TargetsAsDegradedSpectraS3Request.Force = true
     return markSuspectBlobDs3TargetsAsDegradedSpectraS3Request
 }
 
-func (MarkSuspectBlobDs3TargetsAsDegradedSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.PUT
-}
-
-func (markSuspectBlobDs3TargetsAsDegradedSpectraS3Request *MarkSuspectBlobDs3TargetsAsDegradedSpectraS3Request) Path() string {
-    return "/_rest_/suspect_blob_ds3_target"
-}
-
-func (markSuspectBlobDs3TargetsAsDegradedSpectraS3Request *MarkSuspectBlobDs3TargetsAsDegradedSpectraS3Request) QueryParams() *url.Values {
-    return markSuspectBlobDs3TargetsAsDegradedSpectraS3Request.queryParams
-}
-
-func (MarkSuspectBlobDs3TargetsAsDegradedSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (MarkSuspectBlobDs3TargetsAsDegradedSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (markSuspectBlobDs3TargetsAsDegradedSpectraS3Request *MarkSuspectBlobDs3TargetsAsDegradedSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return markSuspectBlobDs3TargetsAsDegradedSpectraS3Request.content
-}

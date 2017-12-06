@@ -13,71 +13,31 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-    "strconv"
-)
-
 type ModifyDataPersistenceRuleSpectraS3Request struct {
-    dataPersistenceRuleId string
-    dataPersistenceRuleType DataPersistenceRuleType
-    isolationLevel DataIsolationLevel
-    minimumDaysToRetain *int
-    queryParams *url.Values
+    DataPersistenceRuleId string
+    DataPersistenceRuleType DataPersistenceRuleType
+    IsolationLevel DataIsolationLevel
+    MinimumDaysToRetain *int
 }
 
 func NewModifyDataPersistenceRuleSpectraS3Request(dataPersistenceRuleId string) *ModifyDataPersistenceRuleSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &ModifyDataPersistenceRuleSpectraS3Request{
-        dataPersistenceRuleId: dataPersistenceRuleId,
-        queryParams: queryParams,
+        DataPersistenceRuleId: dataPersistenceRuleId,
     }
 }
 
 func (modifyDataPersistenceRuleSpectraS3Request *ModifyDataPersistenceRuleSpectraS3Request) WithIsolationLevel(isolationLevel DataIsolationLevel) *ModifyDataPersistenceRuleSpectraS3Request {
-    modifyDataPersistenceRuleSpectraS3Request.isolationLevel = isolationLevel
-    modifyDataPersistenceRuleSpectraS3Request.queryParams.Set("isolation_level", isolationLevel.String())
+    modifyDataPersistenceRuleSpectraS3Request.IsolationLevel = isolationLevel
     return modifyDataPersistenceRuleSpectraS3Request
 }
+
+func (modifyDataPersistenceRuleSpectraS3Request *ModifyDataPersistenceRuleSpectraS3Request) WithMinimumDaysToRetain(minimumDaysToRetain int) *ModifyDataPersistenceRuleSpectraS3Request {
+    modifyDataPersistenceRuleSpectraS3Request.MinimumDaysToRetain = &minimumDaysToRetain
+    return modifyDataPersistenceRuleSpectraS3Request
+}
+
 func (modifyDataPersistenceRuleSpectraS3Request *ModifyDataPersistenceRuleSpectraS3Request) WithDataPersistenceRuleType(dataPersistenceRuleType DataPersistenceRuleType) *ModifyDataPersistenceRuleSpectraS3Request {
-    modifyDataPersistenceRuleSpectraS3Request.dataPersistenceRuleType = dataPersistenceRuleType
-    modifyDataPersistenceRuleSpectraS3Request.queryParams.Set("type", dataPersistenceRuleType.String())
+    modifyDataPersistenceRuleSpectraS3Request.DataPersistenceRuleType = dataPersistenceRuleType
     return modifyDataPersistenceRuleSpectraS3Request
 }
 
-func (modifyDataPersistenceRuleSpectraS3Request *ModifyDataPersistenceRuleSpectraS3Request) WithMinimumDaysToRetain(minimumDaysToRetain *int) *ModifyDataPersistenceRuleSpectraS3Request {
-    modifyDataPersistenceRuleSpectraS3Request.minimumDaysToRetain = minimumDaysToRetain
-    if minimumDaysToRetain != nil {
-        modifyDataPersistenceRuleSpectraS3Request.queryParams.Set("minimum_days_to_retain", strconv.Itoa(*minimumDaysToRetain))
-    } else {
-        modifyDataPersistenceRuleSpectraS3Request.queryParams.Set("minimum_days_to_retain", "")
-    }
-    return modifyDataPersistenceRuleSpectraS3Request
-}
-
-
-func (ModifyDataPersistenceRuleSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.PUT
-}
-
-func (modifyDataPersistenceRuleSpectraS3Request *ModifyDataPersistenceRuleSpectraS3Request) Path() string {
-    return "/_rest_/data_persistence_rule/" + modifyDataPersistenceRuleSpectraS3Request.dataPersistenceRuleId
-}
-
-func (modifyDataPersistenceRuleSpectraS3Request *ModifyDataPersistenceRuleSpectraS3Request) QueryParams() *url.Values {
-    return modifyDataPersistenceRuleSpectraS3Request.queryParams
-}
-
-func (ModifyDataPersistenceRuleSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (ModifyDataPersistenceRuleSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (ModifyDataPersistenceRuleSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

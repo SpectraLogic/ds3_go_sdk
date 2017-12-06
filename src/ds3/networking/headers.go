@@ -3,11 +3,11 @@ package networking
 import (
     "fmt"
     "time"
-    "net/http"
     "crypto/hmac"
     "crypto/sha1"
     "encoding/base64"
     "errors"
+    "ds3/models"
 )
 
 // Http Headers
@@ -21,39 +21,19 @@ const ContentTypeKey string = "Content-Type" // This header describes the format
 type headerFields struct {
     AuthHeaderVal string
     DateHeaderVal string
-    ChecksumType  ChecksumType
+    ChecksumType  models.ChecksumType
     ContentHash   string
 }
 
-// Set the Http Request headers
-func setHttpRequestHeaders(httpRequest *http.Request, ds3Request Ds3Request, fields headerFields) (error) {
-    httpRequest.Header.Add("Date", fields.DateHeaderVal)
-    httpRequest.Header.Add("Authorization", fields.AuthHeaderVal)
-
-    if fields.ChecksumType != NONE {
-        checksumKey, err := getChecksumHeaderKey(fields.ChecksumType)
-        if err != nil {
-            return err
-        }
-        httpRequest.Header.Add(checksumKey, fields.ContentHash)
-    }
-
-    // Copy the headers from the Ds3Request object.
-    for key, val := range *ds3Request.Header() {
-        httpRequest.Header.Add(key, val[0])
-    }
-    return nil
-}
-
 // Gets the correct header key for the specified checksum type
-func getChecksumHeaderKey(checksumType ChecksumType) (string, error) {
+func getChecksumHeaderKey(checksumType models.ChecksumType) (string, error) {
     switch checksumType {
-        case CRC_32: return ContentCRC32, nil
-        case CRC_32C: return ContentCRC32C, nil
-        case MD5: return ContentMd5, nil
-        case SHA_256: return ContentSha256, nil
-        case SHA_512: return ContentSha512, nil
-        case NONE: return "", nil
+        case models.CHECKSUM_TYPE_CRC_32: return ContentCRC32, nil
+        case models.CHECKSUM_TYPE_CRC_32C: return ContentCRC32C, nil
+        case models.CHECKSUM_TYPE_MD5: return ContentMd5, nil
+        case models.CHECKSUM_TYPE_SHA_256: return ContentSha256, nil
+        case models.CHECKSUM_TYPE_SHA_512: return ContentSha512, nil
+        case models.NONE: return "", nil
         default:
             return "", errors.New(fmt.Sprintf("Invalid ChecksumType represented by: %d", checksumType))
     }

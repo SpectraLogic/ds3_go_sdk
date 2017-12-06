@@ -13,81 +13,47 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-    "strconv"
-)
-
 type GetSuspectBlobTapesSpectraS3Request struct {
-    blobId string
-    pageLength int
-    pageOffset int
-    pageStartMarker string
-    tapeId string
-    queryParams *url.Values
+    BlobId *string
+    LastPage bool
+    PageLength *int
+    PageOffset *int
+    PageStartMarker *string
+    TapeId *string
 }
 
 func NewGetSuspectBlobTapesSpectraS3Request() *GetSuspectBlobTapesSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetSuspectBlobTapesSpectraS3Request{
-        queryParams: queryParams,
     }
 }
 
 func (getSuspectBlobTapesSpectraS3Request *GetSuspectBlobTapesSpectraS3Request) WithBlobId(blobId string) *GetSuspectBlobTapesSpectraS3Request {
-    getSuspectBlobTapesSpectraS3Request.blobId = blobId
-    getSuspectBlobTapesSpectraS3Request.queryParams.Set("blob_id", blobId)
+    getSuspectBlobTapesSpectraS3Request.BlobId = &blobId
     return getSuspectBlobTapesSpectraS3Request
 }
-func (getSuspectBlobTapesSpectraS3Request *GetSuspectBlobTapesSpectraS3Request) WithPageLength(pageLength int) *GetSuspectBlobTapesSpectraS3Request {
-    getSuspectBlobTapesSpectraS3Request.pageLength = pageLength
-    getSuspectBlobTapesSpectraS3Request.queryParams.Set("page_length", strconv.Itoa(pageLength))
-    return getSuspectBlobTapesSpectraS3Request
-}
-func (getSuspectBlobTapesSpectraS3Request *GetSuspectBlobTapesSpectraS3Request) WithPageOffset(pageOffset int) *GetSuspectBlobTapesSpectraS3Request {
-    getSuspectBlobTapesSpectraS3Request.pageOffset = pageOffset
-    getSuspectBlobTapesSpectraS3Request.queryParams.Set("page_offset", strconv.Itoa(pageOffset))
-    return getSuspectBlobTapesSpectraS3Request
-}
-func (getSuspectBlobTapesSpectraS3Request *GetSuspectBlobTapesSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetSuspectBlobTapesSpectraS3Request {
-    getSuspectBlobTapesSpectraS3Request.pageStartMarker = pageStartMarker
-    getSuspectBlobTapesSpectraS3Request.queryParams.Set("page_start_marker", pageStartMarker)
-    return getSuspectBlobTapesSpectraS3Request
-}
-func (getSuspectBlobTapesSpectraS3Request *GetSuspectBlobTapesSpectraS3Request) WithTapeId(tapeId string) *GetSuspectBlobTapesSpectraS3Request {
-    getSuspectBlobTapesSpectraS3Request.tapeId = tapeId
-    getSuspectBlobTapesSpectraS3Request.queryParams.Set("tape_id", tapeId)
-    return getSuspectBlobTapesSpectraS3Request
-}
-
 
 func (getSuspectBlobTapesSpectraS3Request *GetSuspectBlobTapesSpectraS3Request) WithLastPage() *GetSuspectBlobTapesSpectraS3Request {
-    getSuspectBlobTapesSpectraS3Request.queryParams.Set("last_page", "")
+    getSuspectBlobTapesSpectraS3Request.LastPage = true
     return getSuspectBlobTapesSpectraS3Request
 }
 
-func (GetSuspectBlobTapesSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
+func (getSuspectBlobTapesSpectraS3Request *GetSuspectBlobTapesSpectraS3Request) WithPageLength(pageLength int) *GetSuspectBlobTapesSpectraS3Request {
+    getSuspectBlobTapesSpectraS3Request.PageLength = &pageLength
+    return getSuspectBlobTapesSpectraS3Request
 }
 
-func (getSuspectBlobTapesSpectraS3Request *GetSuspectBlobTapesSpectraS3Request) Path() string {
-    return "/_rest_/suspect_blob_tape"
+func (getSuspectBlobTapesSpectraS3Request *GetSuspectBlobTapesSpectraS3Request) WithPageOffset(pageOffset int) *GetSuspectBlobTapesSpectraS3Request {
+    getSuspectBlobTapesSpectraS3Request.PageOffset = &pageOffset
+    return getSuspectBlobTapesSpectraS3Request
 }
 
-func (getSuspectBlobTapesSpectraS3Request *GetSuspectBlobTapesSpectraS3Request) QueryParams() *url.Values {
-    return getSuspectBlobTapesSpectraS3Request.queryParams
+func (getSuspectBlobTapesSpectraS3Request *GetSuspectBlobTapesSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetSuspectBlobTapesSpectraS3Request {
+    getSuspectBlobTapesSpectraS3Request.PageStartMarker = &pageStartMarker
+    return getSuspectBlobTapesSpectraS3Request
 }
 
-func (GetSuspectBlobTapesSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetSuspectBlobTapesSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
+func (getSuspectBlobTapesSpectraS3Request *GetSuspectBlobTapesSpectraS3Request) WithTapeId(tapeId string) *GetSuspectBlobTapesSpectraS3Request {
+    getSuspectBlobTapesSpectraS3Request.TapeId = &tapeId
+    return getSuspectBlobTapesSpectraS3Request
 }
 
-func (GetSuspectBlobTapesSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

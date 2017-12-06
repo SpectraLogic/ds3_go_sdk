@@ -13,47 +13,11 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type ForceFullCacheReclaimSpectraS3Request struct {
-    queryParams *url.Values
 }
 
 func NewForceFullCacheReclaimSpectraS3Request() *ForceFullCacheReclaimSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("reclaim", "")
-
     return &ForceFullCacheReclaimSpectraS3Request{
-        queryParams: queryParams,
     }
 }
 
-
-
-
-func (ForceFullCacheReclaimSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.PUT
-}
-
-func (forceFullCacheReclaimSpectraS3Request *ForceFullCacheReclaimSpectraS3Request) Path() string {
-    return "/_rest_/cache_filesystem"
-}
-
-func (forceFullCacheReclaimSpectraS3Request *ForceFullCacheReclaimSpectraS3Request) QueryParams() *url.Values {
-    return forceFullCacheReclaimSpectraS3Request.queryParams
-}
-
-func (ForceFullCacheReclaimSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (ForceFullCacheReclaimSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (ForceFullCacheReclaimSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

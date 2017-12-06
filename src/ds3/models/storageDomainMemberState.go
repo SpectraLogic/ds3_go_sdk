@@ -49,3 +49,11 @@ func (storageDomainMemberState StorageDomainMemberState) String() string {
             return ""
     }
 }
+
+func (storageDomainMemberState StorageDomainMemberState) StringPtr() *string {
+    if storageDomainMemberState == UNDEFINED {
+        return nil
+    }
+    result := storageDomainMemberState.String()
+    return &result
+}

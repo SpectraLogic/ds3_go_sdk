@@ -13,48 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type GetDs3TargetFailureNotificationRegistrationSpectraS3Request struct {
-    notificationId string
-    queryParams *url.Values
+    NotificationId string
 }
 
 func NewGetDs3TargetFailureNotificationRegistrationSpectraS3Request(notificationId string) *GetDs3TargetFailureNotificationRegistrationSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetDs3TargetFailureNotificationRegistrationSpectraS3Request{
-        notificationId: notificationId,
-        queryParams: queryParams,
+        NotificationId: notificationId,
     }
 }
 
-
-
-
-func (GetDs3TargetFailureNotificationRegistrationSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
-}
-
-func (getDs3TargetFailureNotificationRegistrationSpectraS3Request *GetDs3TargetFailureNotificationRegistrationSpectraS3Request) Path() string {
-    return "/_rest_/ds3_target_failure_notification_registration/" + getDs3TargetFailureNotificationRegistrationSpectraS3Request.notificationId
-}
-
-func (getDs3TargetFailureNotificationRegistrationSpectraS3Request *GetDs3TargetFailureNotificationRegistrationSpectraS3Request) QueryParams() *url.Values {
-    return getDs3TargetFailureNotificationRegistrationSpectraS3Request.queryParams
-}
-
-func (GetDs3TargetFailureNotificationRegistrationSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetDs3TargetFailureNotificationRegistrationSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (GetDs3TargetFailureNotificationRegistrationSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

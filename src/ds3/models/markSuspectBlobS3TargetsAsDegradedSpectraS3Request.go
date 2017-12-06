@@ -13,52 +13,19 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type MarkSuspectBlobS3TargetsAsDegradedSpectraS3Request struct {
-    content networking.ReaderWithSizeDecorator
-    queryParams *url.Values
+    Force bool
+    Ids []string
 }
 
 func NewMarkSuspectBlobS3TargetsAsDegradedSpectraS3Request(ids []string) *MarkSuspectBlobS3TargetsAsDegradedSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &MarkSuspectBlobS3TargetsAsDegradedSpectraS3Request{
-        content: buildIdListPayload(ids),
-        queryParams: queryParams,
+        Ids: ids,
     }
 }
 
-
-
 func (markSuspectBlobS3TargetsAsDegradedSpectraS3Request *MarkSuspectBlobS3TargetsAsDegradedSpectraS3Request) WithForce() *MarkSuspectBlobS3TargetsAsDegradedSpectraS3Request {
-    markSuspectBlobS3TargetsAsDegradedSpectraS3Request.queryParams.Set("force", "")
+    markSuspectBlobS3TargetsAsDegradedSpectraS3Request.Force = true
     return markSuspectBlobS3TargetsAsDegradedSpectraS3Request
 }
 
-func (MarkSuspectBlobS3TargetsAsDegradedSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.PUT
-}
-
-func (markSuspectBlobS3TargetsAsDegradedSpectraS3Request *MarkSuspectBlobS3TargetsAsDegradedSpectraS3Request) Path() string {
-    return "/_rest_/suspect_blob_s3_target"
-}
-
-func (markSuspectBlobS3TargetsAsDegradedSpectraS3Request *MarkSuspectBlobS3TargetsAsDegradedSpectraS3Request) QueryParams() *url.Values {
-    return markSuspectBlobS3TargetsAsDegradedSpectraS3Request.queryParams
-}
-
-func (MarkSuspectBlobS3TargetsAsDegradedSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (MarkSuspectBlobS3TargetsAsDegradedSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (markSuspectBlobS3TargetsAsDegradedSpectraS3Request *MarkSuspectBlobS3TargetsAsDegradedSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return markSuspectBlobS3TargetsAsDegradedSpectraS3Request.content
-}

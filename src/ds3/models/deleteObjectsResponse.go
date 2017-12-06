@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -23,11 +22,11 @@ type DeleteObjectsResponse struct {
     Headers *http.Header
 }
 
-func (deleteObjectsResponse *DeleteObjectsResponse) parse(webResponse networking.WebResponse) error {
+func (deleteObjectsResponse *DeleteObjectsResponse) parse(webResponse WebResponse) error {
         return parseResponsePayload(webResponse, &deleteObjectsResponse.DeleteResult)
 }
 
-func NewDeleteObjectsResponse(webResponse networking.WebResponse) (*DeleteObjectsResponse, error) {
+func NewDeleteObjectsResponse(webResponse WebResponse) (*DeleteObjectsResponse, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {

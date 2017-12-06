@@ -13,51 +13,15 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type InitiateMultiPartUploadRequest struct {
-    bucketName string
-    objectName string
-    queryParams *url.Values
+    BucketName string
+    ObjectName string
 }
 
 func NewInitiateMultiPartUploadRequest(bucketName string, objectName string) *InitiateMultiPartUploadRequest {
-    queryParams := &url.Values{}
-    queryParams.Set("uploads", "")
-
     return &InitiateMultiPartUploadRequest{
-        bucketName: bucketName,
-        objectName: objectName,
-        queryParams: queryParams,
+        BucketName: bucketName,
+        ObjectName: objectName,
     }
 }
 
-
-
-
-func (InitiateMultiPartUploadRequest) Verb() networking.HttpVerb {
-    return networking.POST
-}
-
-func (initiateMultiPartUploadRequest *InitiateMultiPartUploadRequest) Path() string {
-    return "/" + initiateMultiPartUploadRequest.bucketName + "/" + initiateMultiPartUploadRequest.objectName
-}
-
-func (initiateMultiPartUploadRequest *InitiateMultiPartUploadRequest) QueryParams() *url.Values {
-    return initiateMultiPartUploadRequest.queryParams
-}
-
-func (InitiateMultiPartUploadRequest) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (InitiateMultiPartUploadRequest) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (InitiateMultiPartUploadRequest) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

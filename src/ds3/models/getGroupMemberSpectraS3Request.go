@@ -13,48 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type GetGroupMemberSpectraS3Request struct {
-    groupMember string
-    queryParams *url.Values
+    GroupMember string
 }
 
 func NewGetGroupMemberSpectraS3Request(groupMember string) *GetGroupMemberSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetGroupMemberSpectraS3Request{
-        groupMember: groupMember,
-        queryParams: queryParams,
+        GroupMember: groupMember,
     }
 }
 
-
-
-
-func (GetGroupMemberSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
-}
-
-func (getGroupMemberSpectraS3Request *GetGroupMemberSpectraS3Request) Path() string {
-    return "/_rest_/group_member/" + getGroupMemberSpectraS3Request.groupMember
-}
-
-func (getGroupMemberSpectraS3Request *GetGroupMemberSpectraS3Request) QueryParams() *url.Values {
-    return getGroupMemberSpectraS3Request.queryParams
-}
-
-func (GetGroupMemberSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetGroupMemberSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (GetGroupMemberSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

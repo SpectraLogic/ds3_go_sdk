@@ -196,8 +196,12 @@ func TestGetBucketPagination(t *testing.T) {
     }
 
     // Test files indexed 5-9
-    result2, err := client.GetBucket(models.NewGetBucketRequest(testBucket).WithMaxKeys(5).WithMarker(result1.ListBucketResult.NextMarker))
-    ds3Testing.AssertNilError(t, err)
+    result2, err := client.GetBucket(
+        models.NewGetBucketRequest(testBucket).
+            WithMaxKeys(5).
+            WithMarker(*result1.ListBucketResult.NextMarker))
+
+        ds3Testing.AssertNilError(t, err)
     ds3Testing.AssertInt(t, "Number of Objects", 5, len(result2.ListBucketResult.Objects))
     if result2.ListBucketResult.NextMarker == nil {
         t.Fatal("Expected NextMarker to be non-nil value.")
@@ -207,7 +211,11 @@ func TestGetBucketPagination(t *testing.T) {
     }
 
     // Test files indexed 10-14
-    result3, err := client.GetBucket(models.NewGetBucketRequest(testBucket).WithMaxKeys(5).WithMarker(result2.ListBucketResult.NextMarker))
+    result3, err := client.GetBucket(
+        models.NewGetBucketRequest(testBucket).
+            WithMaxKeys(5).
+            WithMarker(*result2.ListBucketResult.NextMarker))
+
     ds3Testing.AssertNilError(t, err)
     ds3Testing.AssertInt(t, "Number of Objects", 5, len(result3.ListBucketResult.Objects))
     if result2.ListBucketResult.NextMarker == nil {
@@ -237,8 +245,7 @@ func TestGetBucketDelimiter(t *testing.T) {
     ds3Testing.AssertNilError(t, putBulkErr)
 
     //Test files indexed 0-4
-    delimiter := "/"
-    result, err := client.GetBucket(models.NewGetBucketRequest(testBucket).WithDelimiter(&delimiter))
+    result, err := client.GetBucket(models.NewGetBucketRequest(testBucket).WithDelimiter("/"))
     ds3Testing.AssertNilError(t, err)
     ds3Testing.AssertInt(t, "Number of Objects", 10, len(result.ListBucketResult.Objects))
     ds3Testing.AssertInt(t, "Number of Common Prefixes", 1, len(result.ListBucketResult.CommonPrefixes))
@@ -363,7 +370,7 @@ func TestStorageDomain(t *testing.T) {
     storageDomainName := "GoTestStorageDomain"
 
     // Create storage domain
-    putResponse, putErr := client.PutStorageDomainSpectraS3(models.NewPutStorageDomainSpectraS3Request(&storageDomainName))
+    putResponse, putErr := client.PutStorageDomainSpectraS3(models.NewPutStorageDomainSpectraS3Request(storageDomainName))
     ds3Testing.AssertNilError(t, putErr)
 
     defer client.DeleteStorageDomainSpectraS3(models.NewDeleteStorageDomainSpectraS3Request(storageDomainName))
@@ -375,7 +382,7 @@ func TestPoolPartition(t *testing.T) {
     poolPartitionName := "GoTestPoolPartition"
 
     // Create pool partition
-    putResponse, putErr := client.PutPoolPartitionSpectraS3(models.NewPutPoolPartitionSpectraS3Request(&poolPartitionName, models.POOL_TYPE_ONLINE))
+    putResponse, putErr := client.PutPoolPartitionSpectraS3(models.NewPutPoolPartitionSpectraS3Request(poolPartitionName, models.POOL_TYPE_ONLINE))
     ds3Testing.AssertNilError(t, putErr)
 
     defer client.DeletePoolPartitionSpectraS3(models.NewDeletePoolPartitionSpectraS3Request(poolPartitionName))
@@ -390,13 +397,13 @@ func TestStorageDomainMember(t *testing.T) {
     varTestName := "GoTestStorageDomainMember"
 
     // Create storage domain
-    storageDomainResponse, storageDomainErr := client.PutStorageDomainSpectraS3(models.NewPutStorageDomainSpectraS3Request(&varTestName))
+    storageDomainResponse, storageDomainErr := client.PutStorageDomainSpectraS3(models.NewPutStorageDomainSpectraS3Request(varTestName))
     ds3Testing.AssertNilError(t, storageDomainErr)
 
     defer client.DeleteStorageDomainSpectraS3(models.NewDeleteStorageDomainSpectraS3Request(varTestName))
 
     // Create pool partition
-    poolPartitionResponse, poolPartitionErr := client.PutPoolPartitionSpectraS3(models.NewPutPoolPartitionSpectraS3Request(&varTestName, models.POOL_TYPE_ONLINE))
+    poolPartitionResponse, poolPartitionErr := client.PutPoolPartitionSpectraS3(models.NewPutPoolPartitionSpectraS3Request(varTestName, models.POOL_TYPE_ONLINE))
     ds3Testing.AssertNilError(t, poolPartitionErr)
 
     defer client.DeletePoolPartitionSpectraS3(models.NewDeletePoolPartitionSpectraS3Request(varTestName))
@@ -425,13 +432,13 @@ func TestDataPersistenceRule(t *testing.T) {
     defer testutils.DeleteDataPolicyLogError(t, client, varTestName)
 
     // Create storage domain
-    storageDomainResponse, storageDomainErr := client.PutStorageDomainSpectraS3(models.NewPutStorageDomainSpectraS3Request(&varTestName))
+    storageDomainResponse, storageDomainErr := client.PutStorageDomainSpectraS3(models.NewPutStorageDomainSpectraS3Request(varTestName))
     ds3Testing.AssertNilError(t, storageDomainErr)
 
     defer client.DeleteStorageDomainSpectraS3(models.NewDeleteStorageDomainSpectraS3Request(varTestName))
 
     // Create pool partition
-    poolPartitionResponse, poolPartitionErr := client.PutPoolPartitionSpectraS3(models.NewPutPoolPartitionSpectraS3Request(&varTestName, models.POOL_TYPE_ONLINE))
+    poolPartitionResponse, poolPartitionErr := client.PutPoolPartitionSpectraS3(models.NewPutPoolPartitionSpectraS3Request(varTestName, models.POOL_TYPE_ONLINE))
     ds3Testing.AssertNilError(t, poolPartitionErr)
 
     defer client.DeletePoolPartitionSpectraS3(models.NewDeletePoolPartitionSpectraS3Request(varTestName))

@@ -52,3 +52,11 @@ func (dataPersistenceRuleType DataPersistenceRuleType) String() string {
             return ""
     }
 }
+
+func (dataPersistenceRuleType DataPersistenceRuleType) StringPtr() *string {
+    if dataPersistenceRuleType == UNDEFINED {
+        return nil
+    }
+    result := dataPersistenceRuleType.String()
+    return &result
+}

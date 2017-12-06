@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -23,11 +22,11 @@ type PutJobCompletedNotificationRegistrationSpectraS3Response struct {
     Headers *http.Header
 }
 
-func (putJobCompletedNotificationRegistrationSpectraS3Response *PutJobCompletedNotificationRegistrationSpectraS3Response) parse(webResponse networking.WebResponse) error {
+func (putJobCompletedNotificationRegistrationSpectraS3Response *PutJobCompletedNotificationRegistrationSpectraS3Response) parse(webResponse WebResponse) error {
         return parseResponsePayload(webResponse, &putJobCompletedNotificationRegistrationSpectraS3Response.JobCompletedNotificationRegistration)
 }
 
-func NewPutJobCompletedNotificationRegistrationSpectraS3Response(webResponse networking.WebResponse) (*PutJobCompletedNotificationRegistrationSpectraS3Response, error) {
+func NewPutJobCompletedNotificationRegistrationSpectraS3Response(webResponse WebResponse) (*PutJobCompletedNotificationRegistrationSpectraS3Response, error) {
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {

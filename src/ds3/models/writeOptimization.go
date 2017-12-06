@@ -49,3 +49,11 @@ func (writeOptimization WriteOptimization) String() string {
             return ""
     }
 }
+
+func (writeOptimization WriteOptimization) StringPtr() *string {
+    if writeOptimization == UNDEFINED {
+        return nil
+    }
+    result := writeOptimization.String()
+    return &result
+}

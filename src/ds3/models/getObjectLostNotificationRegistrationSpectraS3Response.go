@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -23,11 +22,11 @@ type GetObjectLostNotificationRegistrationSpectraS3Response struct {
     Headers *http.Header
 }
 
-func (getObjectLostNotificationRegistrationSpectraS3Response *GetObjectLostNotificationRegistrationSpectraS3Response) parse(webResponse networking.WebResponse) error {
+func (getObjectLostNotificationRegistrationSpectraS3Response *GetObjectLostNotificationRegistrationSpectraS3Response) parse(webResponse WebResponse) error {
         return parseResponsePayload(webResponse, &getObjectLostNotificationRegistrationSpectraS3Response.S3ObjectLostNotificationRegistration)
 }
 
-func NewGetObjectLostNotificationRegistrationSpectraS3Response(webResponse networking.WebResponse) (*GetObjectLostNotificationRegistrationSpectraS3Response, error) {
+func NewGetObjectLostNotificationRegistrationSpectraS3Response(webResponse WebResponse) (*GetObjectLostNotificationRegistrationSpectraS3Response, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {

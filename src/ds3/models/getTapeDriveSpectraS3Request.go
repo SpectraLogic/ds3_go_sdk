@@ -13,48 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type GetTapeDriveSpectraS3Request struct {
-    tapeDriveId string
-    queryParams *url.Values
+    TapeDriveId string
 }
 
 func NewGetTapeDriveSpectraS3Request(tapeDriveId string) *GetTapeDriveSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetTapeDriveSpectraS3Request{
-        tapeDriveId: tapeDriveId,
-        queryParams: queryParams,
+        TapeDriveId: tapeDriveId,
     }
 }
 
-
-
-
-func (GetTapeDriveSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
-}
-
-func (getTapeDriveSpectraS3Request *GetTapeDriveSpectraS3Request) Path() string {
-    return "/_rest_/tape_drive/" + getTapeDriveSpectraS3Request.tapeDriveId
-}
-
-func (getTapeDriveSpectraS3Request *GetTapeDriveSpectraS3Request) QueryParams() *url.Values {
-    return getTapeDriveSpectraS3Request.queryParams
-}
-
-func (GetTapeDriveSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetTapeDriveSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (GetTapeDriveSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

@@ -5,9 +5,19 @@ import (
     "net/url"
 )
 
+const (
+    HTTP_VERB_GET    = "GET"
+    HTTP_VERB_PUT    = "PUT"
+    HTTP_VERB_POST   = "POST"
+    HTTP_VERB_DELETE = "DELETE"
+    HTTP_VERB_HEAD   = "HEAD"
+    HTTP_VERB_PATCH  = "PATCH"
+)
+
 type Client struct {
-    netLayer networking.Network
-    clientPolicy *ClientPolicy
+    sendNetwork    networking.Network
+    clientPolicy   *ClientPolicy
+    connectionInfo *networking.ConnectionInfo
 }
 
 type ClientBuilder struct {
@@ -26,9 +36,9 @@ const DEFAULT_MAX_REDIRECTS = 5
 func NewClientBuilder(endpoint *url.URL, creds *networking.Credentials) *ClientBuilder {
     return &ClientBuilder{
         &networking.ConnectionInfo{
-            Endpoint: endpoint,
-            Creds: creds,
-            Proxy: nil},
+            Endpoint:    endpoint,
+            Credentials: creds,
+            Proxy:       nil},
         &ClientPolicy{
             maxRetries: DEFAULT_MAX_RETRIES,
             maxRedirect: DEFAULT_MAX_REDIRECTS}}
@@ -51,8 +61,8 @@ func (clientBuilder *ClientBuilder) WithNetworkRetryCount(count int) *ClientBuil
 
 func (clientBuilder *ClientBuilder) BuildClient() *Client {
     return &Client{
-        networking.NewHttpNetwork(clientBuilder.connectionInfo),
-        clientBuilder.clientPolicy,
+        sendNetwork:    networking.NewSendNetwork(clientBuilder.connectionInfo),
+        clientPolicy:   clientBuilder.clientPolicy,
+        connectionInfo: clientBuilder.connectionInfo,
     }
 }
-

@@ -13,74 +13,31 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type ModifyUserSpectraS3Request struct {
-    defaultDataPolicyId string
-    name *string
-    secretKey *string
-    userId string
-    queryParams *url.Values
+    DefaultDataPolicyId *string
+    Name *string
+    SecretKey *string
+    UserId string
 }
 
 func NewModifyUserSpectraS3Request(userId string) *ModifyUserSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &ModifyUserSpectraS3Request{
-        userId: userId,
-        queryParams: queryParams,
+        UserId: userId,
     }
 }
 
 func (modifyUserSpectraS3Request *ModifyUserSpectraS3Request) WithDefaultDataPolicyId(defaultDataPolicyId string) *ModifyUserSpectraS3Request {
-    modifyUserSpectraS3Request.defaultDataPolicyId = defaultDataPolicyId
-    modifyUserSpectraS3Request.queryParams.Set("default_data_policy_id", defaultDataPolicyId)
+    modifyUserSpectraS3Request.DefaultDataPolicyId = &defaultDataPolicyId
     return modifyUserSpectraS3Request
 }
 
-func (modifyUserSpectraS3Request *ModifyUserSpectraS3Request) WithName(name *string) *ModifyUserSpectraS3Request {
-    modifyUserSpectraS3Request.name = name
-    if name != nil {
-        modifyUserSpectraS3Request.queryParams.Set("name", *name)
-    } else {
-        modifyUserSpectraS3Request.queryParams.Set("name", "")
-    }
-    return modifyUserSpectraS3Request
-}
-func (modifyUserSpectraS3Request *ModifyUserSpectraS3Request) WithSecretKey(secretKey *string) *ModifyUserSpectraS3Request {
-    modifyUserSpectraS3Request.secretKey = secretKey
-    if secretKey != nil {
-        modifyUserSpectraS3Request.queryParams.Set("secret_key", *secretKey)
-    } else {
-        modifyUserSpectraS3Request.queryParams.Set("secret_key", "")
-    }
+func (modifyUserSpectraS3Request *ModifyUserSpectraS3Request) WithName(name string) *ModifyUserSpectraS3Request {
+    modifyUserSpectraS3Request.Name = &name
     return modifyUserSpectraS3Request
 }
 
-
-func (ModifyUserSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.PUT
+func (modifyUserSpectraS3Request *ModifyUserSpectraS3Request) WithSecretKey(secretKey string) *ModifyUserSpectraS3Request {
+    modifyUserSpectraS3Request.SecretKey = &secretKey
+    return modifyUserSpectraS3Request
 }
 
-func (modifyUserSpectraS3Request *ModifyUserSpectraS3Request) Path() string {
-    return "/_rest_/user/" + modifyUserSpectraS3Request.userId
-}
-
-func (modifyUserSpectraS3Request *ModifyUserSpectraS3Request) QueryParams() *url.Values {
-    return modifyUserSpectraS3Request.queryParams
-}
-
-func (ModifyUserSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (ModifyUserSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (ModifyUserSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

@@ -13,121 +13,83 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-    "strconv"
-)
-
 type GetCompletedJobsSpectraS3Request struct {
-    bucketId string
-    chunkClientProcessingOrderGuarantee JobChunkClientProcessingOrderGuarantee
-    name *string
-    pageLength int
-    pageOffset int
-    pageStartMarker string
-    priority Priority
-    rechunked string
-    requestType JobRequestType
-    truncated bool
-    userId string
-    queryParams *url.Values
+    BucketId *string
+    ChunkClientProcessingOrderGuarantee JobChunkClientProcessingOrderGuarantee
+    LastPage bool
+    Name *string
+    PageLength *int
+    PageOffset *int
+    PageStartMarker *string
+    Priority Priority
+    Rechunked *string
+    RequestType JobRequestType
+    Truncated *bool
+    UserId *string
 }
 
 func NewGetCompletedJobsSpectraS3Request() *GetCompletedJobsSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetCompletedJobsSpectraS3Request{
-        queryParams: queryParams,
     }
 }
 
 func (getCompletedJobsSpectraS3Request *GetCompletedJobsSpectraS3Request) WithBucketId(bucketId string) *GetCompletedJobsSpectraS3Request {
-    getCompletedJobsSpectraS3Request.bucketId = bucketId
-    getCompletedJobsSpectraS3Request.queryParams.Set("bucket_id", bucketId)
-    return getCompletedJobsSpectraS3Request
-}
-func (getCompletedJobsSpectraS3Request *GetCompletedJobsSpectraS3Request) WithChunkClientProcessingOrderGuarantee(chunkClientProcessingOrderGuarantee JobChunkClientProcessingOrderGuarantee) *GetCompletedJobsSpectraS3Request {
-    getCompletedJobsSpectraS3Request.chunkClientProcessingOrderGuarantee = chunkClientProcessingOrderGuarantee
-    getCompletedJobsSpectraS3Request.queryParams.Set("chunk_client_processing_order_guarantee", chunkClientProcessingOrderGuarantee.String())
-    return getCompletedJobsSpectraS3Request
-}
-func (getCompletedJobsSpectraS3Request *GetCompletedJobsSpectraS3Request) WithPageLength(pageLength int) *GetCompletedJobsSpectraS3Request {
-    getCompletedJobsSpectraS3Request.pageLength = pageLength
-    getCompletedJobsSpectraS3Request.queryParams.Set("page_length", strconv.Itoa(pageLength))
-    return getCompletedJobsSpectraS3Request
-}
-func (getCompletedJobsSpectraS3Request *GetCompletedJobsSpectraS3Request) WithPageOffset(pageOffset int) *GetCompletedJobsSpectraS3Request {
-    getCompletedJobsSpectraS3Request.pageOffset = pageOffset
-    getCompletedJobsSpectraS3Request.queryParams.Set("page_offset", strconv.Itoa(pageOffset))
-    return getCompletedJobsSpectraS3Request
-}
-func (getCompletedJobsSpectraS3Request *GetCompletedJobsSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetCompletedJobsSpectraS3Request {
-    getCompletedJobsSpectraS3Request.pageStartMarker = pageStartMarker
-    getCompletedJobsSpectraS3Request.queryParams.Set("page_start_marker", pageStartMarker)
-    return getCompletedJobsSpectraS3Request
-}
-func (getCompletedJobsSpectraS3Request *GetCompletedJobsSpectraS3Request) WithPriority(priority Priority) *GetCompletedJobsSpectraS3Request {
-    getCompletedJobsSpectraS3Request.priority = priority
-    getCompletedJobsSpectraS3Request.queryParams.Set("priority", priority.String())
-    return getCompletedJobsSpectraS3Request
-}
-func (getCompletedJobsSpectraS3Request *GetCompletedJobsSpectraS3Request) WithRechunked(rechunked string) *GetCompletedJobsSpectraS3Request {
-    getCompletedJobsSpectraS3Request.rechunked = rechunked
-    getCompletedJobsSpectraS3Request.queryParams.Set("rechunked", rechunked)
-    return getCompletedJobsSpectraS3Request
-}
-func (getCompletedJobsSpectraS3Request *GetCompletedJobsSpectraS3Request) WithRequestType(requestType JobRequestType) *GetCompletedJobsSpectraS3Request {
-    getCompletedJobsSpectraS3Request.requestType = requestType
-    getCompletedJobsSpectraS3Request.queryParams.Set("request_type", requestType.String())
-    return getCompletedJobsSpectraS3Request
-}
-func (getCompletedJobsSpectraS3Request *GetCompletedJobsSpectraS3Request) WithTruncated(truncated bool) *GetCompletedJobsSpectraS3Request {
-    getCompletedJobsSpectraS3Request.truncated = truncated
-    getCompletedJobsSpectraS3Request.queryParams.Set("truncated", strconv.FormatBool(truncated))
-    return getCompletedJobsSpectraS3Request
-}
-func (getCompletedJobsSpectraS3Request *GetCompletedJobsSpectraS3Request) WithUserId(userId string) *GetCompletedJobsSpectraS3Request {
-    getCompletedJobsSpectraS3Request.userId = userId
-    getCompletedJobsSpectraS3Request.queryParams.Set("user_id", userId)
+    getCompletedJobsSpectraS3Request.BucketId = &bucketId
     return getCompletedJobsSpectraS3Request
 }
 
-func (getCompletedJobsSpectraS3Request *GetCompletedJobsSpectraS3Request) WithName(name *string) *GetCompletedJobsSpectraS3Request {
-    getCompletedJobsSpectraS3Request.name = name
-    if name != nil {
-        getCompletedJobsSpectraS3Request.queryParams.Set("name", *name)
-    } else {
-        getCompletedJobsSpectraS3Request.queryParams.Set("name", "")
-    }
+func (getCompletedJobsSpectraS3Request *GetCompletedJobsSpectraS3Request) WithChunkClientProcessingOrderGuarantee(chunkClientProcessingOrderGuarantee JobChunkClientProcessingOrderGuarantee) *GetCompletedJobsSpectraS3Request {
+    getCompletedJobsSpectraS3Request.ChunkClientProcessingOrderGuarantee = chunkClientProcessingOrderGuarantee
     return getCompletedJobsSpectraS3Request
 }
 
 func (getCompletedJobsSpectraS3Request *GetCompletedJobsSpectraS3Request) WithLastPage() *GetCompletedJobsSpectraS3Request {
-    getCompletedJobsSpectraS3Request.queryParams.Set("last_page", "")
+    getCompletedJobsSpectraS3Request.LastPage = true
     return getCompletedJobsSpectraS3Request
 }
 
-func (GetCompletedJobsSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
+func (getCompletedJobsSpectraS3Request *GetCompletedJobsSpectraS3Request) WithName(name string) *GetCompletedJobsSpectraS3Request {
+    getCompletedJobsSpectraS3Request.Name = &name
+    return getCompletedJobsSpectraS3Request
 }
 
-func (getCompletedJobsSpectraS3Request *GetCompletedJobsSpectraS3Request) Path() string {
-    return "/_rest_/completed_job"
+func (getCompletedJobsSpectraS3Request *GetCompletedJobsSpectraS3Request) WithPageLength(pageLength int) *GetCompletedJobsSpectraS3Request {
+    getCompletedJobsSpectraS3Request.PageLength = &pageLength
+    return getCompletedJobsSpectraS3Request
 }
 
-func (getCompletedJobsSpectraS3Request *GetCompletedJobsSpectraS3Request) QueryParams() *url.Values {
-    return getCompletedJobsSpectraS3Request.queryParams
+func (getCompletedJobsSpectraS3Request *GetCompletedJobsSpectraS3Request) WithPageOffset(pageOffset int) *GetCompletedJobsSpectraS3Request {
+    getCompletedJobsSpectraS3Request.PageOffset = &pageOffset
+    return getCompletedJobsSpectraS3Request
 }
 
-func (GetCompletedJobsSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetCompletedJobsSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
+func (getCompletedJobsSpectraS3Request *GetCompletedJobsSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetCompletedJobsSpectraS3Request {
+    getCompletedJobsSpectraS3Request.PageStartMarker = &pageStartMarker
+    return getCompletedJobsSpectraS3Request
 }
 
-func (GetCompletedJobsSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
+func (getCompletedJobsSpectraS3Request *GetCompletedJobsSpectraS3Request) WithPriority(priority Priority) *GetCompletedJobsSpectraS3Request {
+    getCompletedJobsSpectraS3Request.Priority = priority
+    return getCompletedJobsSpectraS3Request
 }
+
+func (getCompletedJobsSpectraS3Request *GetCompletedJobsSpectraS3Request) WithRechunked(rechunked string) *GetCompletedJobsSpectraS3Request {
+    getCompletedJobsSpectraS3Request.Rechunked = &rechunked
+    return getCompletedJobsSpectraS3Request
+}
+
+func (getCompletedJobsSpectraS3Request *GetCompletedJobsSpectraS3Request) WithRequestType(requestType JobRequestType) *GetCompletedJobsSpectraS3Request {
+    getCompletedJobsSpectraS3Request.RequestType = requestType
+    return getCompletedJobsSpectraS3Request
+}
+
+func (getCompletedJobsSpectraS3Request *GetCompletedJobsSpectraS3Request) WithTruncated(truncated bool) *GetCompletedJobsSpectraS3Request {
+    getCompletedJobsSpectraS3Request.Truncated = &truncated
+    return getCompletedJobsSpectraS3Request
+}
+
+func (getCompletedJobsSpectraS3Request *GetCompletedJobsSpectraS3Request) WithUserId(userId string) *GetCompletedJobsSpectraS3Request {
+    getCompletedJobsSpectraS3Request.UserId = &userId
+    return getCompletedJobsSpectraS3Request
+}
+

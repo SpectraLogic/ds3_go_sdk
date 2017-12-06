@@ -13,48 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type GetSystemFailureNotificationRegistrationSpectraS3Request struct {
-    notificationId string
-    queryParams *url.Values
+    NotificationId string
 }
 
 func NewGetSystemFailureNotificationRegistrationSpectraS3Request(notificationId string) *GetSystemFailureNotificationRegistrationSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetSystemFailureNotificationRegistrationSpectraS3Request{
-        notificationId: notificationId,
-        queryParams: queryParams,
+        NotificationId: notificationId,
     }
 }
 
-
-
-
-func (GetSystemFailureNotificationRegistrationSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
-}
-
-func (getSystemFailureNotificationRegistrationSpectraS3Request *GetSystemFailureNotificationRegistrationSpectraS3Request) Path() string {
-    return "/_rest_/system_failure_notification_registration/" + getSystemFailureNotificationRegistrationSpectraS3Request.notificationId
-}
-
-func (getSystemFailureNotificationRegistrationSpectraS3Request *GetSystemFailureNotificationRegistrationSpectraS3Request) QueryParams() *url.Values {
-    return getSystemFailureNotificationRegistrationSpectraS3Request.queryParams
-}
-
-func (GetSystemFailureNotificationRegistrationSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetSystemFailureNotificationRegistrationSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (GetSystemFailureNotificationRegistrationSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

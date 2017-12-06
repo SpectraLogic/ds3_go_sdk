@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -25,7 +24,7 @@ type DeletePermanentlyLostPoolSpectraS3Response struct {
 
 
 
-func NewDeletePermanentlyLostPoolSpectraS3Response(webResponse networking.WebResponse) (*DeletePermanentlyLostPoolSpectraS3Response, error) {
+func NewDeletePermanentlyLostPoolSpectraS3Response(webResponse WebResponse) (*DeletePermanentlyLostPoolSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {

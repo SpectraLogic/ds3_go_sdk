@@ -82,3 +82,11 @@ func (poolFailureType PoolFailureType) String() string {
             return ""
     }
 }
+
+func (poolFailureType PoolFailureType) StringPtr() *string {
+    if poolFailureType == UNDEFINED {
+        return nil
+    }
+    result := poolFailureType.String()
+    return &result
+}

@@ -13,67 +13,31 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type PutBucketSpectraS3Request struct {
-    dataPolicyId string
-    id string
-    name *string
-    userId string
-    queryParams *url.Values
+    DataPolicyId *string
+    Id *string
+    Name string
+    UserId *string
 }
 
-func NewPutBucketSpectraS3Request(name *string) *PutBucketSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("name", *name)
-
+func NewPutBucketSpectraS3Request(name string) *PutBucketSpectraS3Request {
     return &PutBucketSpectraS3Request{
-        name: name,
-        queryParams: queryParams,
+        Name: name,
     }
 }
 
 func (putBucketSpectraS3Request *PutBucketSpectraS3Request) WithDataPolicyId(dataPolicyId string) *PutBucketSpectraS3Request {
-    putBucketSpectraS3Request.dataPolicyId = dataPolicyId
-    putBucketSpectraS3Request.queryParams.Set("data_policy_id", dataPolicyId)
+    putBucketSpectraS3Request.DataPolicyId = &dataPolicyId
     return putBucketSpectraS3Request
 }
+
 func (putBucketSpectraS3Request *PutBucketSpectraS3Request) WithId(id string) *PutBucketSpectraS3Request {
-    putBucketSpectraS3Request.id = id
-    putBucketSpectraS3Request.queryParams.Set("id", id)
+    putBucketSpectraS3Request.Id = &id
     return putBucketSpectraS3Request
 }
+
 func (putBucketSpectraS3Request *PutBucketSpectraS3Request) WithUserId(userId string) *PutBucketSpectraS3Request {
-    putBucketSpectraS3Request.userId = userId
-    putBucketSpectraS3Request.queryParams.Set("user_id", userId)
+    putBucketSpectraS3Request.UserId = &userId
     return putBucketSpectraS3Request
 }
 
-
-
-func (PutBucketSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.POST
-}
-
-func (putBucketSpectraS3Request *PutBucketSpectraS3Request) Path() string {
-    return "/_rest_/bucket"
-}
-
-func (putBucketSpectraS3Request *PutBucketSpectraS3Request) QueryParams() *url.Values {
-    return putBucketSpectraS3Request.queryParams
-}
-
-func (PutBucketSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (PutBucketSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (PutBucketSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

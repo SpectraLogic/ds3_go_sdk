@@ -13,48 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type GetAzureTargetReadPreferenceSpectraS3Request struct {
-    azureTargetReadPreference string
-    queryParams *url.Values
+    AzureTargetReadPreference string
 }
 
 func NewGetAzureTargetReadPreferenceSpectraS3Request(azureTargetReadPreference string) *GetAzureTargetReadPreferenceSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetAzureTargetReadPreferenceSpectraS3Request{
-        azureTargetReadPreference: azureTargetReadPreference,
-        queryParams: queryParams,
+        AzureTargetReadPreference: azureTargetReadPreference,
     }
 }
 
-
-
-
-func (GetAzureTargetReadPreferenceSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
-}
-
-func (getAzureTargetReadPreferenceSpectraS3Request *GetAzureTargetReadPreferenceSpectraS3Request) Path() string {
-    return "/_rest_/azure_target_read_preference/" + getAzureTargetReadPreferenceSpectraS3Request.azureTargetReadPreference
-}
-
-func (getAzureTargetReadPreferenceSpectraS3Request *GetAzureTargetReadPreferenceSpectraS3Request) QueryParams() *url.Values {
-    return getAzureTargetReadPreferenceSpectraS3Request.queryParams
-}
-
-func (GetAzureTargetReadPreferenceSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetAzureTargetReadPreferenceSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (GetAzureTargetReadPreferenceSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -25,7 +24,7 @@ type HeadBucketResponse struct {
 
 
 
-func NewHeadBucketResponse(webResponse networking.WebResponse) (*HeadBucketResponse, error) {
+func NewHeadBucketResponse(webResponse WebResponse) (*HeadBucketResponse, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {

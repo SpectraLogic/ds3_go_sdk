@@ -13,73 +13,37 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type PutObjectCachedNotificationRegistrationSpectraS3Request struct {
-    format HttpResponseFormatType
-    jobId string
-    namingConvention NamingConventionType
-    notificationEndPoint *string
-    notificationHttpMethod RequestType
-    queryParams *url.Values
+    Format HttpResponseFormatType
+    JobId *string
+    NamingConvention NamingConventionType
+    NotificationEndPoint string
+    NotificationHttpMethod RequestType
 }
 
-func NewPutObjectCachedNotificationRegistrationSpectraS3Request(notificationEndPoint *string) *PutObjectCachedNotificationRegistrationSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("notification_end_point", *notificationEndPoint)
-
+func NewPutObjectCachedNotificationRegistrationSpectraS3Request(notificationEndPoint string) *PutObjectCachedNotificationRegistrationSpectraS3Request {
     return &PutObjectCachedNotificationRegistrationSpectraS3Request{
-        notificationEndPoint: notificationEndPoint,
-        queryParams: queryParams,
+        NotificationEndPoint: notificationEndPoint,
     }
 }
 
 func (putObjectCachedNotificationRegistrationSpectraS3Request *PutObjectCachedNotificationRegistrationSpectraS3Request) WithFormat(format HttpResponseFormatType) *PutObjectCachedNotificationRegistrationSpectraS3Request {
-    putObjectCachedNotificationRegistrationSpectraS3Request.format = format
-    putObjectCachedNotificationRegistrationSpectraS3Request.queryParams.Set("format", format.String())
+    putObjectCachedNotificationRegistrationSpectraS3Request.Format = format
     return putObjectCachedNotificationRegistrationSpectraS3Request
 }
+
 func (putObjectCachedNotificationRegistrationSpectraS3Request *PutObjectCachedNotificationRegistrationSpectraS3Request) WithJobId(jobId string) *PutObjectCachedNotificationRegistrationSpectraS3Request {
-    putObjectCachedNotificationRegistrationSpectraS3Request.jobId = jobId
-    putObjectCachedNotificationRegistrationSpectraS3Request.queryParams.Set("job_id", jobId)
+    putObjectCachedNotificationRegistrationSpectraS3Request.JobId = &jobId
     return putObjectCachedNotificationRegistrationSpectraS3Request
 }
+
 func (putObjectCachedNotificationRegistrationSpectraS3Request *PutObjectCachedNotificationRegistrationSpectraS3Request) WithNamingConvention(namingConvention NamingConventionType) *PutObjectCachedNotificationRegistrationSpectraS3Request {
-    putObjectCachedNotificationRegistrationSpectraS3Request.namingConvention = namingConvention
-    putObjectCachedNotificationRegistrationSpectraS3Request.queryParams.Set("naming_convention", namingConvention.String())
+    putObjectCachedNotificationRegistrationSpectraS3Request.NamingConvention = namingConvention
     return putObjectCachedNotificationRegistrationSpectraS3Request
 }
+
 func (putObjectCachedNotificationRegistrationSpectraS3Request *PutObjectCachedNotificationRegistrationSpectraS3Request) WithNotificationHttpMethod(notificationHttpMethod RequestType) *PutObjectCachedNotificationRegistrationSpectraS3Request {
-    putObjectCachedNotificationRegistrationSpectraS3Request.notificationHttpMethod = notificationHttpMethod
-    putObjectCachedNotificationRegistrationSpectraS3Request.queryParams.Set("notification_http_method", notificationHttpMethod.String())
+    putObjectCachedNotificationRegistrationSpectraS3Request.NotificationHttpMethod = notificationHttpMethod
     return putObjectCachedNotificationRegistrationSpectraS3Request
 }
 
-
-
-func (PutObjectCachedNotificationRegistrationSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.POST
-}
-
-func (putObjectCachedNotificationRegistrationSpectraS3Request *PutObjectCachedNotificationRegistrationSpectraS3Request) Path() string {
-    return "/_rest_/object_cached_notification_registration"
-}
-
-func (putObjectCachedNotificationRegistrationSpectraS3Request *PutObjectCachedNotificationRegistrationSpectraS3Request) QueryParams() *url.Values {
-    return putObjectCachedNotificationRegistrationSpectraS3Request.queryParams
-}
-
-func (PutObjectCachedNotificationRegistrationSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (PutObjectCachedNotificationRegistrationSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (PutObjectCachedNotificationRegistrationSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

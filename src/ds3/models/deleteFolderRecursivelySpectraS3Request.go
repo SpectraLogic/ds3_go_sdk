@@ -13,56 +13,21 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type DeleteFolderRecursivelySpectraS3Request struct {
-    bucketId string
-    folder string
-    queryParams *url.Values
+    BucketId string
+    Folder string
+    RollBack bool
 }
 
 func NewDeleteFolderRecursivelySpectraS3Request(bucketId string, folder string) *DeleteFolderRecursivelySpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("bucket_id", bucketId)
-    queryParams.Set("recursive", "")
-
     return &DeleteFolderRecursivelySpectraS3Request{
-        folder: folder,
-        bucketId: bucketId,
-        queryParams: queryParams,
+        Folder: folder,
+        BucketId: bucketId,
     }
 }
 
-
-
 func (deleteFolderRecursivelySpectraS3Request *DeleteFolderRecursivelySpectraS3Request) WithRollBack() *DeleteFolderRecursivelySpectraS3Request {
-    deleteFolderRecursivelySpectraS3Request.queryParams.Set("roll_back", "")
+    deleteFolderRecursivelySpectraS3Request.RollBack = true
     return deleteFolderRecursivelySpectraS3Request
 }
 
-func (DeleteFolderRecursivelySpectraS3Request) Verb() networking.HttpVerb {
-    return networking.DELETE
-}
-
-func (deleteFolderRecursivelySpectraS3Request *DeleteFolderRecursivelySpectraS3Request) Path() string {
-    return "/_rest_/folder/" + deleteFolderRecursivelySpectraS3Request.folder
-}
-
-func (deleteFolderRecursivelySpectraS3Request *DeleteFolderRecursivelySpectraS3Request) QueryParams() *url.Values {
-    return deleteFolderRecursivelySpectraS3Request.queryParams
-}
-
-func (DeleteFolderRecursivelySpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (DeleteFolderRecursivelySpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (DeleteFolderRecursivelySpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

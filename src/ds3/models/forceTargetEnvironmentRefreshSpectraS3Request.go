@@ -13,46 +13,11 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type ForceTargetEnvironmentRefreshSpectraS3Request struct {
-    queryParams *url.Values
 }
 
 func NewForceTargetEnvironmentRefreshSpectraS3Request() *ForceTargetEnvironmentRefreshSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &ForceTargetEnvironmentRefreshSpectraS3Request{
-        queryParams: queryParams,
     }
 }
 
-
-
-
-func (ForceTargetEnvironmentRefreshSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.PUT
-}
-
-func (forceTargetEnvironmentRefreshSpectraS3Request *ForceTargetEnvironmentRefreshSpectraS3Request) Path() string {
-    return "/_rest_/target_environment"
-}
-
-func (forceTargetEnvironmentRefreshSpectraS3Request *ForceTargetEnvironmentRefreshSpectraS3Request) QueryParams() *url.Values {
-    return forceTargetEnvironmentRefreshSpectraS3Request.queryParams
-}
-
-func (ForceTargetEnvironmentRefreshSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (ForceTargetEnvironmentRefreshSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (ForceTargetEnvironmentRefreshSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

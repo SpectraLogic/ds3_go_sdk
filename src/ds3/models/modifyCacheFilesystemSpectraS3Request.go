@@ -13,77 +13,37 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-    "strconv"
-)
-
 type ModifyCacheFilesystemSpectraS3Request struct {
-    autoReclaimInitiateThreshold float64
-    autoReclaimTerminateThreshold float64
-    burstThreshold float64
-    cacheFilesystem string
-    maxCapacityInBytes *int64
-    queryParams *url.Values
+    AutoReclaimInitiateThreshold *float64
+    AutoReclaimTerminateThreshold *float64
+    BurstThreshold *float64
+    CacheFilesystem string
+    MaxCapacityInBytes *int64
 }
 
 func NewModifyCacheFilesystemSpectraS3Request(cacheFilesystem string) *ModifyCacheFilesystemSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &ModifyCacheFilesystemSpectraS3Request{
-        cacheFilesystem: cacheFilesystem,
-        queryParams: queryParams,
+        CacheFilesystem: cacheFilesystem,
     }
 }
 
 func (modifyCacheFilesystemSpectraS3Request *ModifyCacheFilesystemSpectraS3Request) WithAutoReclaimInitiateThreshold(autoReclaimInitiateThreshold float64) *ModifyCacheFilesystemSpectraS3Request {
-    modifyCacheFilesystemSpectraS3Request.autoReclaimInitiateThreshold = autoReclaimInitiateThreshold
-    modifyCacheFilesystemSpectraS3Request.queryParams.Set("auto_reclaim_initiate_threshold", strconv.FormatFloat(autoReclaimInitiateThreshold, 'f', -1, 64))
+    modifyCacheFilesystemSpectraS3Request.AutoReclaimInitiateThreshold = &autoReclaimInitiateThreshold
     return modifyCacheFilesystemSpectraS3Request
 }
+
 func (modifyCacheFilesystemSpectraS3Request *ModifyCacheFilesystemSpectraS3Request) WithAutoReclaimTerminateThreshold(autoReclaimTerminateThreshold float64) *ModifyCacheFilesystemSpectraS3Request {
-    modifyCacheFilesystemSpectraS3Request.autoReclaimTerminateThreshold = autoReclaimTerminateThreshold
-    modifyCacheFilesystemSpectraS3Request.queryParams.Set("auto_reclaim_terminate_threshold", strconv.FormatFloat(autoReclaimTerminateThreshold, 'f', -1, 64))
+    modifyCacheFilesystemSpectraS3Request.AutoReclaimTerminateThreshold = &autoReclaimTerminateThreshold
     return modifyCacheFilesystemSpectraS3Request
 }
+
 func (modifyCacheFilesystemSpectraS3Request *ModifyCacheFilesystemSpectraS3Request) WithBurstThreshold(burstThreshold float64) *ModifyCacheFilesystemSpectraS3Request {
-    modifyCacheFilesystemSpectraS3Request.burstThreshold = burstThreshold
-    modifyCacheFilesystemSpectraS3Request.queryParams.Set("burst_threshold", strconv.FormatFloat(burstThreshold, 'f', -1, 64))
+    modifyCacheFilesystemSpectraS3Request.BurstThreshold = &burstThreshold
     return modifyCacheFilesystemSpectraS3Request
 }
 
-func (modifyCacheFilesystemSpectraS3Request *ModifyCacheFilesystemSpectraS3Request) WithMaxCapacityInBytes(maxCapacityInBytes *int64) *ModifyCacheFilesystemSpectraS3Request {
-    modifyCacheFilesystemSpectraS3Request.maxCapacityInBytes = maxCapacityInBytes
-    if maxCapacityInBytes != nil {
-        modifyCacheFilesystemSpectraS3Request.queryParams.Set("max_capacity_in_bytes", strconv.FormatInt(*maxCapacityInBytes, 10))
-    } else {
-        modifyCacheFilesystemSpectraS3Request.queryParams.Set("max_capacity_in_bytes", "")
-    }
+func (modifyCacheFilesystemSpectraS3Request *ModifyCacheFilesystemSpectraS3Request) WithMaxCapacityInBytes(maxCapacityInBytes int64) *ModifyCacheFilesystemSpectraS3Request {
+    modifyCacheFilesystemSpectraS3Request.MaxCapacityInBytes = &maxCapacityInBytes
     return modifyCacheFilesystemSpectraS3Request
 }
 
-
-func (ModifyCacheFilesystemSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.PUT
-}
-
-func (modifyCacheFilesystemSpectraS3Request *ModifyCacheFilesystemSpectraS3Request) Path() string {
-    return "/_rest_/cache_filesystem/" + modifyCacheFilesystemSpectraS3Request.cacheFilesystem
-}
-
-func (modifyCacheFilesystemSpectraS3Request *ModifyCacheFilesystemSpectraS3Request) QueryParams() *url.Values {
-    return modifyCacheFilesystemSpectraS3Request.queryParams
-}
-
-func (ModifyCacheFilesystemSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (ModifyCacheFilesystemSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (ModifyCacheFilesystemSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

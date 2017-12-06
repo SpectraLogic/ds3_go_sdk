@@ -13,46 +13,11 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type ForceFeatureKeyValidationSpectraS3Request struct {
-    queryParams *url.Values
 }
 
 func NewForceFeatureKeyValidationSpectraS3Request() *ForceFeatureKeyValidationSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &ForceFeatureKeyValidationSpectraS3Request{
-        queryParams: queryParams,
     }
 }
 
-
-
-
-func (ForceFeatureKeyValidationSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.PUT
-}
-
-func (forceFeatureKeyValidationSpectraS3Request *ForceFeatureKeyValidationSpectraS3Request) Path() string {
-    return "/_rest_/feature_key"
-}
-
-func (forceFeatureKeyValidationSpectraS3Request *ForceFeatureKeyValidationSpectraS3Request) QueryParams() *url.Values {
-    return forceFeatureKeyValidationSpectraS3Request.queryParams
-}
-
-func (ForceFeatureKeyValidationSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (ForceFeatureKeyValidationSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (ForceFeatureKeyValidationSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

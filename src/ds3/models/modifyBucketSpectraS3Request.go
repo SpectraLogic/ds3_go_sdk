@@ -13,60 +13,25 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type ModifyBucketSpectraS3Request struct {
-    bucketName string
-    dataPolicyId string
-    userId string
-    queryParams *url.Values
+    BucketName string
+    DataPolicyId *string
+    UserId *string
 }
 
 func NewModifyBucketSpectraS3Request(bucketName string) *ModifyBucketSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &ModifyBucketSpectraS3Request{
-        bucketName: bucketName,
-        queryParams: queryParams,
+        BucketName: bucketName,
     }
 }
 
 func (modifyBucketSpectraS3Request *ModifyBucketSpectraS3Request) WithDataPolicyId(dataPolicyId string) *ModifyBucketSpectraS3Request {
-    modifyBucketSpectraS3Request.dataPolicyId = dataPolicyId
-    modifyBucketSpectraS3Request.queryParams.Set("data_policy_id", dataPolicyId)
+    modifyBucketSpectraS3Request.DataPolicyId = &dataPolicyId
     return modifyBucketSpectraS3Request
 }
+
 func (modifyBucketSpectraS3Request *ModifyBucketSpectraS3Request) WithUserId(userId string) *ModifyBucketSpectraS3Request {
-    modifyBucketSpectraS3Request.userId = userId
-    modifyBucketSpectraS3Request.queryParams.Set("user_id", userId)
+    modifyBucketSpectraS3Request.UserId = &userId
     return modifyBucketSpectraS3Request
 }
 
-
-
-func (ModifyBucketSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.PUT
-}
-
-func (modifyBucketSpectraS3Request *ModifyBucketSpectraS3Request) Path() string {
-    return "/_rest_/bucket/" + modifyBucketSpectraS3Request.bucketName
-}
-
-func (modifyBucketSpectraS3Request *ModifyBucketSpectraS3Request) QueryParams() *url.Values {
-    return modifyBucketSpectraS3Request.queryParams
-}
-
-func (ModifyBucketSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (ModifyBucketSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (ModifyBucketSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

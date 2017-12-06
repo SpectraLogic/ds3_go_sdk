@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -23,11 +22,11 @@ type FormatTapeSpectraS3Response struct {
     Headers *http.Header
 }
 
-func (formatTapeSpectraS3Response *FormatTapeSpectraS3Response) parse(webResponse networking.WebResponse) error {
+func (formatTapeSpectraS3Response *FormatTapeSpectraS3Response) parse(webResponse WebResponse) error {
         return parseResponsePayload(webResponse, &formatTapeSpectraS3Response.Tape)
 }
 
-func NewFormatTapeSpectraS3Response(webResponse networking.WebResponse) (*FormatTapeSpectraS3Response, error) {
+func NewFormatTapeSpectraS3Response(webResponse WebResponse) (*FormatTapeSpectraS3Response, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {

@@ -13,72 +13,29 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-    "strconv"
-)
-
 type PutDs3DataReplicationRuleSpectraS3Request struct {
-    dataPolicyId string
-    dataReplicationRuleType DataReplicationRuleType
-    replicateDeletes bool
-    targetDataPolicy *string
-    targetId string
-    queryParams *url.Values
+    DataPolicyId string
+    DataReplicationRuleType DataReplicationRuleType
+    ReplicateDeletes *bool
+    TargetDataPolicy *string
+    TargetId string
 }
 
 func NewPutDs3DataReplicationRuleSpectraS3Request(dataPolicyId string, dataReplicationRuleType DataReplicationRuleType, targetId string) *PutDs3DataReplicationRuleSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("data_policy_id", dataPolicyId)
-    queryParams.Set("target_id", targetId)
-    queryParams.Set("type", dataReplicationRuleType.String())
-
     return &PutDs3DataReplicationRuleSpectraS3Request{
-        dataPolicyId: dataPolicyId,
-        targetId: targetId,
-        dataReplicationRuleType: dataReplicationRuleType,
-        queryParams: queryParams,
+        DataPolicyId: dataPolicyId,
+        TargetId: targetId,
+        DataReplicationRuleType: dataReplicationRuleType,
     }
 }
 
 func (putDs3DataReplicationRuleSpectraS3Request *PutDs3DataReplicationRuleSpectraS3Request) WithReplicateDeletes(replicateDeletes bool) *PutDs3DataReplicationRuleSpectraS3Request {
-    putDs3DataReplicationRuleSpectraS3Request.replicateDeletes = replicateDeletes
-    putDs3DataReplicationRuleSpectraS3Request.queryParams.Set("replicate_deletes", strconv.FormatBool(replicateDeletes))
+    putDs3DataReplicationRuleSpectraS3Request.ReplicateDeletes = &replicateDeletes
     return putDs3DataReplicationRuleSpectraS3Request
 }
 
-func (putDs3DataReplicationRuleSpectraS3Request *PutDs3DataReplicationRuleSpectraS3Request) WithTargetDataPolicy(targetDataPolicy *string) *PutDs3DataReplicationRuleSpectraS3Request {
-    putDs3DataReplicationRuleSpectraS3Request.targetDataPolicy = targetDataPolicy
-    if targetDataPolicy != nil {
-        putDs3DataReplicationRuleSpectraS3Request.queryParams.Set("target_data_policy", *targetDataPolicy)
-    } else {
-        putDs3DataReplicationRuleSpectraS3Request.queryParams.Set("target_data_policy", "")
-    }
+func (putDs3DataReplicationRuleSpectraS3Request *PutDs3DataReplicationRuleSpectraS3Request) WithTargetDataPolicy(targetDataPolicy string) *PutDs3DataReplicationRuleSpectraS3Request {
+    putDs3DataReplicationRuleSpectraS3Request.TargetDataPolicy = &targetDataPolicy
     return putDs3DataReplicationRuleSpectraS3Request
 }
 
-
-func (PutDs3DataReplicationRuleSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.POST
-}
-
-func (putDs3DataReplicationRuleSpectraS3Request *PutDs3DataReplicationRuleSpectraS3Request) Path() string {
-    return "/_rest_/ds3_data_replication_rule"
-}
-
-func (putDs3DataReplicationRuleSpectraS3Request *PutDs3DataReplicationRuleSpectraS3Request) QueryParams() *url.Values {
-    return putDs3DataReplicationRuleSpectraS3Request.queryParams
-}
-
-func (PutDs3DataReplicationRuleSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (PutDs3DataReplicationRuleSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (PutDs3DataReplicationRuleSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

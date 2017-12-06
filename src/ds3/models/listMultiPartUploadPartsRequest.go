@@ -13,70 +13,29 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-    "strconv"
-)
-
 type ListMultiPartUploadPartsRequest struct {
-    bucketName string
-    objectName string
-    maxParts int
-    partNumberMarker *int
-    uploadId string
-    queryParams *url.Values
+    BucketName string
+    ObjectName string
+    MaxParts *int
+    PartNumberMarker *int
+    UploadId string
 }
 
 func NewListMultiPartUploadPartsRequest(bucketName string, objectName string, uploadId string) *ListMultiPartUploadPartsRequest {
-    queryParams := &url.Values{}
-    queryParams.Set("upload_id", uploadId)
-
     return &ListMultiPartUploadPartsRequest{
-        bucketName: bucketName,
-        objectName: objectName,
-        uploadId: uploadId,
-        queryParams: queryParams,
+        BucketName: bucketName,
+        ObjectName: objectName,
+        UploadId: uploadId,
     }
 }
 
 func (listMultiPartUploadPartsRequest *ListMultiPartUploadPartsRequest) WithMaxParts(maxParts int) *ListMultiPartUploadPartsRequest {
-    listMultiPartUploadPartsRequest.maxParts = maxParts
-    listMultiPartUploadPartsRequest.queryParams.Set("max_parts", strconv.Itoa(maxParts))
+    listMultiPartUploadPartsRequest.MaxParts = &maxParts
     return listMultiPartUploadPartsRequest
 }
 
-func (listMultiPartUploadPartsRequest *ListMultiPartUploadPartsRequest) WithPartNumberMarker(partNumberMarker *int) *ListMultiPartUploadPartsRequest {
-    listMultiPartUploadPartsRequest.partNumberMarker = partNumberMarker
-    if partNumberMarker != nil {
-        listMultiPartUploadPartsRequest.queryParams.Set("part_number_marker", strconv.Itoa(*partNumberMarker))
-    } else {
-        listMultiPartUploadPartsRequest.queryParams.Set("part_number_marker", "")
-    }
+func (listMultiPartUploadPartsRequest *ListMultiPartUploadPartsRequest) WithPartNumberMarker(partNumberMarker int) *ListMultiPartUploadPartsRequest {
+    listMultiPartUploadPartsRequest.PartNumberMarker = &partNumberMarker
     return listMultiPartUploadPartsRequest
 }
 
-
-func (ListMultiPartUploadPartsRequest) Verb() networking.HttpVerb {
-    return networking.GET
-}
-
-func (listMultiPartUploadPartsRequest *ListMultiPartUploadPartsRequest) Path() string {
-    return "/" + listMultiPartUploadPartsRequest.bucketName + "/" + listMultiPartUploadPartsRequest.objectName
-}
-
-func (listMultiPartUploadPartsRequest *ListMultiPartUploadPartsRequest) QueryParams() *url.Values {
-    return listMultiPartUploadPartsRequest.queryParams
-}
-
-func (ListMultiPartUploadPartsRequest) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (ListMultiPartUploadPartsRequest) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (ListMultiPartUploadPartsRequest) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

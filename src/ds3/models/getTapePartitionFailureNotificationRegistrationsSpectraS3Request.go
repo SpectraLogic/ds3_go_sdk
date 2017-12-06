@@ -13,75 +13,41 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-    "strconv"
-)
-
 type GetTapePartitionFailureNotificationRegistrationsSpectraS3Request struct {
-    pageLength int
-    pageOffset int
-    pageStartMarker string
-    userId string
-    queryParams *url.Values
+    LastPage bool
+    PageLength *int
+    PageOffset *int
+    PageStartMarker *string
+    UserId *string
 }
 
 func NewGetTapePartitionFailureNotificationRegistrationsSpectraS3Request() *GetTapePartitionFailureNotificationRegistrationsSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetTapePartitionFailureNotificationRegistrationsSpectraS3Request{
-        queryParams: queryParams,
     }
 }
 
-func (getTapePartitionFailureNotificationRegistrationsSpectraS3Request *GetTapePartitionFailureNotificationRegistrationsSpectraS3Request) WithPageLength(pageLength int) *GetTapePartitionFailureNotificationRegistrationsSpectraS3Request {
-    getTapePartitionFailureNotificationRegistrationsSpectraS3Request.pageLength = pageLength
-    getTapePartitionFailureNotificationRegistrationsSpectraS3Request.queryParams.Set("page_length", strconv.Itoa(pageLength))
-    return getTapePartitionFailureNotificationRegistrationsSpectraS3Request
-}
-func (getTapePartitionFailureNotificationRegistrationsSpectraS3Request *GetTapePartitionFailureNotificationRegistrationsSpectraS3Request) WithPageOffset(pageOffset int) *GetTapePartitionFailureNotificationRegistrationsSpectraS3Request {
-    getTapePartitionFailureNotificationRegistrationsSpectraS3Request.pageOffset = pageOffset
-    getTapePartitionFailureNotificationRegistrationsSpectraS3Request.queryParams.Set("page_offset", strconv.Itoa(pageOffset))
-    return getTapePartitionFailureNotificationRegistrationsSpectraS3Request
-}
-func (getTapePartitionFailureNotificationRegistrationsSpectraS3Request *GetTapePartitionFailureNotificationRegistrationsSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetTapePartitionFailureNotificationRegistrationsSpectraS3Request {
-    getTapePartitionFailureNotificationRegistrationsSpectraS3Request.pageStartMarker = pageStartMarker
-    getTapePartitionFailureNotificationRegistrationsSpectraS3Request.queryParams.Set("page_start_marker", pageStartMarker)
-    return getTapePartitionFailureNotificationRegistrationsSpectraS3Request
-}
-func (getTapePartitionFailureNotificationRegistrationsSpectraS3Request *GetTapePartitionFailureNotificationRegistrationsSpectraS3Request) WithUserId(userId string) *GetTapePartitionFailureNotificationRegistrationsSpectraS3Request {
-    getTapePartitionFailureNotificationRegistrationsSpectraS3Request.userId = userId
-    getTapePartitionFailureNotificationRegistrationsSpectraS3Request.queryParams.Set("user_id", userId)
-    return getTapePartitionFailureNotificationRegistrationsSpectraS3Request
-}
-
-
 func (getTapePartitionFailureNotificationRegistrationsSpectraS3Request *GetTapePartitionFailureNotificationRegistrationsSpectraS3Request) WithLastPage() *GetTapePartitionFailureNotificationRegistrationsSpectraS3Request {
-    getTapePartitionFailureNotificationRegistrationsSpectraS3Request.queryParams.Set("last_page", "")
+    getTapePartitionFailureNotificationRegistrationsSpectraS3Request.LastPage = true
     return getTapePartitionFailureNotificationRegistrationsSpectraS3Request
 }
 
-func (GetTapePartitionFailureNotificationRegistrationsSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
+func (getTapePartitionFailureNotificationRegistrationsSpectraS3Request *GetTapePartitionFailureNotificationRegistrationsSpectraS3Request) WithPageLength(pageLength int) *GetTapePartitionFailureNotificationRegistrationsSpectraS3Request {
+    getTapePartitionFailureNotificationRegistrationsSpectraS3Request.PageLength = &pageLength
+    return getTapePartitionFailureNotificationRegistrationsSpectraS3Request
 }
 
-func (getTapePartitionFailureNotificationRegistrationsSpectraS3Request *GetTapePartitionFailureNotificationRegistrationsSpectraS3Request) Path() string {
-    return "/_rest_/tape_partition_failure_notification_registration"
+func (getTapePartitionFailureNotificationRegistrationsSpectraS3Request *GetTapePartitionFailureNotificationRegistrationsSpectraS3Request) WithPageOffset(pageOffset int) *GetTapePartitionFailureNotificationRegistrationsSpectraS3Request {
+    getTapePartitionFailureNotificationRegistrationsSpectraS3Request.PageOffset = &pageOffset
+    return getTapePartitionFailureNotificationRegistrationsSpectraS3Request
 }
 
-func (getTapePartitionFailureNotificationRegistrationsSpectraS3Request *GetTapePartitionFailureNotificationRegistrationsSpectraS3Request) QueryParams() *url.Values {
-    return getTapePartitionFailureNotificationRegistrationsSpectraS3Request.queryParams
+func (getTapePartitionFailureNotificationRegistrationsSpectraS3Request *GetTapePartitionFailureNotificationRegistrationsSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetTapePartitionFailureNotificationRegistrationsSpectraS3Request {
+    getTapePartitionFailureNotificationRegistrationsSpectraS3Request.PageStartMarker = &pageStartMarker
+    return getTapePartitionFailureNotificationRegistrationsSpectraS3Request
 }
 
-func (GetTapePartitionFailureNotificationRegistrationsSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetTapePartitionFailureNotificationRegistrationsSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
+func (getTapePartitionFailureNotificationRegistrationsSpectraS3Request *GetTapePartitionFailureNotificationRegistrationsSpectraS3Request) WithUserId(userId string) *GetTapePartitionFailureNotificationRegistrationsSpectraS3Request {
+    getTapePartitionFailureNotificationRegistrationsSpectraS3Request.UserId = &userId
+    return getTapePartitionFailureNotificationRegistrationsSpectraS3Request
 }
 
-func (GetTapePartitionFailureNotificationRegistrationsSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

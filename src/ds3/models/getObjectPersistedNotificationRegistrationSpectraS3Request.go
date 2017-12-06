@@ -13,48 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type GetObjectPersistedNotificationRegistrationSpectraS3Request struct {
-    notificationId string
-    queryParams *url.Values
+    NotificationId string
 }
 
 func NewGetObjectPersistedNotificationRegistrationSpectraS3Request(notificationId string) *GetObjectPersistedNotificationRegistrationSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetObjectPersistedNotificationRegistrationSpectraS3Request{
-        notificationId: notificationId,
-        queryParams: queryParams,
+        NotificationId: notificationId,
     }
 }
 
-
-
-
-func (GetObjectPersistedNotificationRegistrationSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
-}
-
-func (getObjectPersistedNotificationRegistrationSpectraS3Request *GetObjectPersistedNotificationRegistrationSpectraS3Request) Path() string {
-    return "/_rest_/object_persisted_notification_registration/" + getObjectPersistedNotificationRegistrationSpectraS3Request.notificationId
-}
-
-func (getObjectPersistedNotificationRegistrationSpectraS3Request *GetObjectPersistedNotificationRegistrationSpectraS3Request) QueryParams() *url.Values {
-    return getObjectPersistedNotificationRegistrationSpectraS3Request.queryParams
-}
-
-func (GetObjectPersistedNotificationRegistrationSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetObjectPersistedNotificationRegistrationSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (GetObjectPersistedNotificationRegistrationSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

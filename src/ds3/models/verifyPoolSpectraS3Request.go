@@ -13,55 +13,19 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type VerifyPoolSpectraS3Request struct {
-    pool string
-    priority Priority
-    queryParams *url.Values
+    Pool string
+    Priority Priority
 }
 
 func NewVerifyPoolSpectraS3Request(pool string) *VerifyPoolSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("operation", "verify")
-
     return &VerifyPoolSpectraS3Request{
-        pool: pool,
-        queryParams: queryParams,
+        Pool: pool,
     }
 }
 
 func (verifyPoolSpectraS3Request *VerifyPoolSpectraS3Request) WithPriority(priority Priority) *VerifyPoolSpectraS3Request {
-    verifyPoolSpectraS3Request.priority = priority
-    verifyPoolSpectraS3Request.queryParams.Set("priority", priority.String())
+    verifyPoolSpectraS3Request.Priority = priority
     return verifyPoolSpectraS3Request
 }
 
-
-
-func (VerifyPoolSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.PUT
-}
-
-func (verifyPoolSpectraS3Request *VerifyPoolSpectraS3Request) Path() string {
-    return "/_rest_/pool/" + verifyPoolSpectraS3Request.pool
-}
-
-func (verifyPoolSpectraS3Request *VerifyPoolSpectraS3Request) QueryParams() *url.Values {
-    return verifyPoolSpectraS3Request.queryParams
-}
-
-func (VerifyPoolSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (VerifyPoolSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (VerifyPoolSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

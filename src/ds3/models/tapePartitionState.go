@@ -52,3 +52,11 @@ func (tapePartitionState TapePartitionState) String() string {
             return ""
     }
 }
+
+func (tapePartitionState TapePartitionState) StringPtr() *string {
+    if tapePartitionState == UNDEFINED {
+        return nil
+    }
+    result := tapePartitionState.String()
+    return &result
+}

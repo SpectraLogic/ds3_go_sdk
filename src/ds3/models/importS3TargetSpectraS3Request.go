@@ -13,76 +13,39 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type ImportS3TargetSpectraS3Request struct {
-    cloudBucketName *string
-    conflictResolutionMode ImportConflictResolutionMode
-    dataPolicyId string
-    priority Priority
-    s3Target string
-    userId string
-    queryParams *url.Values
+    CloudBucketName string
+    ConflictResolutionMode ImportConflictResolutionMode
+    DataPolicyId *string
+    Priority Priority
+    S3Target string
+    UserId *string
 }
 
-func NewImportS3TargetSpectraS3Request(cloudBucketName *string, s3Target string) *ImportS3TargetSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("operation", "import")
-    queryParams.Set("cloud_bucket_name", *cloudBucketName)
-
+func NewImportS3TargetSpectraS3Request(cloudBucketName string, s3Target string) *ImportS3TargetSpectraS3Request {
     return &ImportS3TargetSpectraS3Request{
-        s3Target: s3Target,
-        cloudBucketName: cloudBucketName,
-        queryParams: queryParams,
+        S3Target: s3Target,
+        CloudBucketName: cloudBucketName,
     }
 }
 
 func (importS3TargetSpectraS3Request *ImportS3TargetSpectraS3Request) WithConflictResolutionMode(conflictResolutionMode ImportConflictResolutionMode) *ImportS3TargetSpectraS3Request {
-    importS3TargetSpectraS3Request.conflictResolutionMode = conflictResolutionMode
-    importS3TargetSpectraS3Request.queryParams.Set("conflict_resolution_mode", conflictResolutionMode.String())
+    importS3TargetSpectraS3Request.ConflictResolutionMode = conflictResolutionMode
     return importS3TargetSpectraS3Request
 }
+
 func (importS3TargetSpectraS3Request *ImportS3TargetSpectraS3Request) WithDataPolicyId(dataPolicyId string) *ImportS3TargetSpectraS3Request {
-    importS3TargetSpectraS3Request.dataPolicyId = dataPolicyId
-    importS3TargetSpectraS3Request.queryParams.Set("data_policy_id", dataPolicyId)
+    importS3TargetSpectraS3Request.DataPolicyId = &dataPolicyId
     return importS3TargetSpectraS3Request
 }
+
 func (importS3TargetSpectraS3Request *ImportS3TargetSpectraS3Request) WithPriority(priority Priority) *ImportS3TargetSpectraS3Request {
-    importS3TargetSpectraS3Request.priority = priority
-    importS3TargetSpectraS3Request.queryParams.Set("priority", priority.String())
+    importS3TargetSpectraS3Request.Priority = priority
     return importS3TargetSpectraS3Request
 }
+
 func (importS3TargetSpectraS3Request *ImportS3TargetSpectraS3Request) WithUserId(userId string) *ImportS3TargetSpectraS3Request {
-    importS3TargetSpectraS3Request.userId = userId
-    importS3TargetSpectraS3Request.queryParams.Set("user_id", userId)
+    importS3TargetSpectraS3Request.UserId = &userId
     return importS3TargetSpectraS3Request
 }
 
-
-
-func (ImportS3TargetSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.PUT
-}
-
-func (importS3TargetSpectraS3Request *ImportS3TargetSpectraS3Request) Path() string {
-    return "/_rest_/s3_target/" + importS3TargetSpectraS3Request.s3Target
-}
-
-func (importS3TargetSpectraS3Request *ImportS3TargetSpectraS3Request) QueryParams() *url.Values {
-    return importS3TargetSpectraS3Request.queryParams
-}
-
-func (ImportS3TargetSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (ImportS3TargetSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (ImportS3TargetSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

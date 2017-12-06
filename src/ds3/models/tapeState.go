@@ -121,3 +121,11 @@ func (tapeState TapeState) String() string {
             return ""
     }
 }
+
+func (tapeState TapeState) StringPtr() *string {
+    if tapeState == UNDEFINED {
+        return nil
+    }
+    result := tapeState.String()
+    return &result
+}

@@ -13,48 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type DeleteStorageDomainSpectraS3Request struct {
-    storageDomain string
-    queryParams *url.Values
+    StorageDomain string
 }
 
 func NewDeleteStorageDomainSpectraS3Request(storageDomain string) *DeleteStorageDomainSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &DeleteStorageDomainSpectraS3Request{
-        storageDomain: storageDomain,
-        queryParams: queryParams,
+        StorageDomain: storageDomain,
     }
 }
 
-
-
-
-func (DeleteStorageDomainSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.DELETE
-}
-
-func (deleteStorageDomainSpectraS3Request *DeleteStorageDomainSpectraS3Request) Path() string {
-    return "/_rest_/storage_domain/" + deleteStorageDomainSpectraS3Request.storageDomain
-}
-
-func (deleteStorageDomainSpectraS3Request *DeleteStorageDomainSpectraS3Request) QueryParams() *url.Values {
-    return deleteStorageDomainSpectraS3Request.queryParams
-}
-
-func (DeleteStorageDomainSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (DeleteStorageDomainSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (DeleteStorageDomainSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

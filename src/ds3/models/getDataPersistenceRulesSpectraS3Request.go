@@ -13,99 +13,65 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-    "strconv"
-)
-
 type GetDataPersistenceRulesSpectraS3Request struct {
-    dataPersistenceRuleType DataPersistenceRuleType
-    dataPolicyId string
-    isolationLevel DataIsolationLevel
-    pageLength int
-    pageOffset int
-    pageStartMarker string
-    state DataPlacementRuleState
-    storageDomainId string
-    queryParams *url.Values
+    DataPersistenceRuleType DataPersistenceRuleType
+    DataPolicyId *string
+    IsolationLevel DataIsolationLevel
+    LastPage bool
+    PageLength *int
+    PageOffset *int
+    PageStartMarker *string
+    State DataPlacementRuleState
+    StorageDomainId *string
 }
 
 func NewGetDataPersistenceRulesSpectraS3Request() *GetDataPersistenceRulesSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetDataPersistenceRulesSpectraS3Request{
-        queryParams: queryParams,
     }
 }
 
 func (getDataPersistenceRulesSpectraS3Request *GetDataPersistenceRulesSpectraS3Request) WithDataPolicyId(dataPolicyId string) *GetDataPersistenceRulesSpectraS3Request {
-    getDataPersistenceRulesSpectraS3Request.dataPolicyId = dataPolicyId
-    getDataPersistenceRulesSpectraS3Request.queryParams.Set("data_policy_id", dataPolicyId)
-    return getDataPersistenceRulesSpectraS3Request
-}
-func (getDataPersistenceRulesSpectraS3Request *GetDataPersistenceRulesSpectraS3Request) WithIsolationLevel(isolationLevel DataIsolationLevel) *GetDataPersistenceRulesSpectraS3Request {
-    getDataPersistenceRulesSpectraS3Request.isolationLevel = isolationLevel
-    getDataPersistenceRulesSpectraS3Request.queryParams.Set("isolation_level", isolationLevel.String())
-    return getDataPersistenceRulesSpectraS3Request
-}
-func (getDataPersistenceRulesSpectraS3Request *GetDataPersistenceRulesSpectraS3Request) WithPageLength(pageLength int) *GetDataPersistenceRulesSpectraS3Request {
-    getDataPersistenceRulesSpectraS3Request.pageLength = pageLength
-    getDataPersistenceRulesSpectraS3Request.queryParams.Set("page_length", strconv.Itoa(pageLength))
-    return getDataPersistenceRulesSpectraS3Request
-}
-func (getDataPersistenceRulesSpectraS3Request *GetDataPersistenceRulesSpectraS3Request) WithPageOffset(pageOffset int) *GetDataPersistenceRulesSpectraS3Request {
-    getDataPersistenceRulesSpectraS3Request.pageOffset = pageOffset
-    getDataPersistenceRulesSpectraS3Request.queryParams.Set("page_offset", strconv.Itoa(pageOffset))
-    return getDataPersistenceRulesSpectraS3Request
-}
-func (getDataPersistenceRulesSpectraS3Request *GetDataPersistenceRulesSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetDataPersistenceRulesSpectraS3Request {
-    getDataPersistenceRulesSpectraS3Request.pageStartMarker = pageStartMarker
-    getDataPersistenceRulesSpectraS3Request.queryParams.Set("page_start_marker", pageStartMarker)
-    return getDataPersistenceRulesSpectraS3Request
-}
-func (getDataPersistenceRulesSpectraS3Request *GetDataPersistenceRulesSpectraS3Request) WithState(state DataPlacementRuleState) *GetDataPersistenceRulesSpectraS3Request {
-    getDataPersistenceRulesSpectraS3Request.state = state
-    getDataPersistenceRulesSpectraS3Request.queryParams.Set("state", state.String())
-    return getDataPersistenceRulesSpectraS3Request
-}
-func (getDataPersistenceRulesSpectraS3Request *GetDataPersistenceRulesSpectraS3Request) WithStorageDomainId(storageDomainId string) *GetDataPersistenceRulesSpectraS3Request {
-    getDataPersistenceRulesSpectraS3Request.storageDomainId = storageDomainId
-    getDataPersistenceRulesSpectraS3Request.queryParams.Set("storage_domain_id", storageDomainId)
-    return getDataPersistenceRulesSpectraS3Request
-}
-func (getDataPersistenceRulesSpectraS3Request *GetDataPersistenceRulesSpectraS3Request) WithDataPersistenceRuleType(dataPersistenceRuleType DataPersistenceRuleType) *GetDataPersistenceRulesSpectraS3Request {
-    getDataPersistenceRulesSpectraS3Request.dataPersistenceRuleType = dataPersistenceRuleType
-    getDataPersistenceRulesSpectraS3Request.queryParams.Set("type", dataPersistenceRuleType.String())
+    getDataPersistenceRulesSpectraS3Request.DataPolicyId = &dataPolicyId
     return getDataPersistenceRulesSpectraS3Request
 }
 
+func (getDataPersistenceRulesSpectraS3Request *GetDataPersistenceRulesSpectraS3Request) WithIsolationLevel(isolationLevel DataIsolationLevel) *GetDataPersistenceRulesSpectraS3Request {
+    getDataPersistenceRulesSpectraS3Request.IsolationLevel = isolationLevel
+    return getDataPersistenceRulesSpectraS3Request
+}
 
 func (getDataPersistenceRulesSpectraS3Request *GetDataPersistenceRulesSpectraS3Request) WithLastPage() *GetDataPersistenceRulesSpectraS3Request {
-    getDataPersistenceRulesSpectraS3Request.queryParams.Set("last_page", "")
+    getDataPersistenceRulesSpectraS3Request.LastPage = true
     return getDataPersistenceRulesSpectraS3Request
 }
 
-func (GetDataPersistenceRulesSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
+func (getDataPersistenceRulesSpectraS3Request *GetDataPersistenceRulesSpectraS3Request) WithPageLength(pageLength int) *GetDataPersistenceRulesSpectraS3Request {
+    getDataPersistenceRulesSpectraS3Request.PageLength = &pageLength
+    return getDataPersistenceRulesSpectraS3Request
 }
 
-func (getDataPersistenceRulesSpectraS3Request *GetDataPersistenceRulesSpectraS3Request) Path() string {
-    return "/_rest_/data_persistence_rule"
+func (getDataPersistenceRulesSpectraS3Request *GetDataPersistenceRulesSpectraS3Request) WithPageOffset(pageOffset int) *GetDataPersistenceRulesSpectraS3Request {
+    getDataPersistenceRulesSpectraS3Request.PageOffset = &pageOffset
+    return getDataPersistenceRulesSpectraS3Request
 }
 
-func (getDataPersistenceRulesSpectraS3Request *GetDataPersistenceRulesSpectraS3Request) QueryParams() *url.Values {
-    return getDataPersistenceRulesSpectraS3Request.queryParams
+func (getDataPersistenceRulesSpectraS3Request *GetDataPersistenceRulesSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetDataPersistenceRulesSpectraS3Request {
+    getDataPersistenceRulesSpectraS3Request.PageStartMarker = &pageStartMarker
+    return getDataPersistenceRulesSpectraS3Request
 }
 
-func (GetDataPersistenceRulesSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetDataPersistenceRulesSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
+func (getDataPersistenceRulesSpectraS3Request *GetDataPersistenceRulesSpectraS3Request) WithState(state DataPlacementRuleState) *GetDataPersistenceRulesSpectraS3Request {
+    getDataPersistenceRulesSpectraS3Request.State = state
+    return getDataPersistenceRulesSpectraS3Request
 }
 
-func (GetDataPersistenceRulesSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
+func (getDataPersistenceRulesSpectraS3Request *GetDataPersistenceRulesSpectraS3Request) WithStorageDomainId(storageDomainId string) *GetDataPersistenceRulesSpectraS3Request {
+    getDataPersistenceRulesSpectraS3Request.StorageDomainId = &storageDomainId
+    return getDataPersistenceRulesSpectraS3Request
 }
+
+func (getDataPersistenceRulesSpectraS3Request *GetDataPersistenceRulesSpectraS3Request) WithDataPersistenceRuleType(dataPersistenceRuleType DataPersistenceRuleType) *GetDataPersistenceRulesSpectraS3Request {
+    getDataPersistenceRulesSpectraS3Request.DataPersistenceRuleType = dataPersistenceRuleType
+    return getDataPersistenceRulesSpectraS3Request
+}
+

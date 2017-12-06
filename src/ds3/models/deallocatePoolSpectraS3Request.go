@@ -13,49 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type DeallocatePoolSpectraS3Request struct {
-    pool string
-    queryParams *url.Values
+    Pool string
 }
 
 func NewDeallocatePoolSpectraS3Request(pool string) *DeallocatePoolSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("operation", "deallocate")
-
     return &DeallocatePoolSpectraS3Request{
-        pool: pool,
-        queryParams: queryParams,
+        Pool: pool,
     }
 }
 
-
-
-
-func (DeallocatePoolSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.PUT
-}
-
-func (deallocatePoolSpectraS3Request *DeallocatePoolSpectraS3Request) Path() string {
-    return "/_rest_/pool/" + deallocatePoolSpectraS3Request.pool
-}
-
-func (deallocatePoolSpectraS3Request *DeallocatePoolSpectraS3Request) QueryParams() *url.Values {
-    return deallocatePoolSpectraS3Request.queryParams
-}
-
-func (DeallocatePoolSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (DeallocatePoolSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (DeallocatePoolSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

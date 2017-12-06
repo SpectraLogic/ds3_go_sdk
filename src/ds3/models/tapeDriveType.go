@@ -67,3 +67,11 @@ func (tapeDriveType TapeDriveType) String() string {
             return ""
     }
 }
+
+func (tapeDriveType TapeDriveType) StringPtr() *string {
+    if tapeDriveType == UNDEFINED {
+        return nil
+    }
+    result := tapeDriveType.String()
+    return &result
+}

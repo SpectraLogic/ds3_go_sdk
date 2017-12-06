@@ -13,114 +13,71 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-    "strconv"
-)
-
 type GetTapePartitionsWithFullDetailsSpectraS3Request struct {
-    importExportConfiguration ImportExportConfiguration
-    libraryId string
-    name *string
-    pageLength int
-    pageOffset int
-    pageStartMarker string
-    quiesced Quiesced
-    serialNumber *string
-    state TapePartitionState
-    queryParams *url.Values
+    ImportExportConfiguration ImportExportConfiguration
+    LastPage bool
+    LibraryId *string
+    Name *string
+    PageLength *int
+    PageOffset *int
+    PageStartMarker *string
+    Quiesced Quiesced
+    SerialNumber *string
+    State TapePartitionState
 }
 
 func NewGetTapePartitionsWithFullDetailsSpectraS3Request() *GetTapePartitionsWithFullDetailsSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("full_details", "")
-
     return &GetTapePartitionsWithFullDetailsSpectraS3Request{
-        queryParams: queryParams,
     }
 }
 
 func (getTapePartitionsWithFullDetailsSpectraS3Request *GetTapePartitionsWithFullDetailsSpectraS3Request) WithImportExportConfiguration(importExportConfiguration ImportExportConfiguration) *GetTapePartitionsWithFullDetailsSpectraS3Request {
-    getTapePartitionsWithFullDetailsSpectraS3Request.importExportConfiguration = importExportConfiguration
-    getTapePartitionsWithFullDetailsSpectraS3Request.queryParams.Set("import_export_configuration", importExportConfiguration.String())
-    return getTapePartitionsWithFullDetailsSpectraS3Request
-}
-func (getTapePartitionsWithFullDetailsSpectraS3Request *GetTapePartitionsWithFullDetailsSpectraS3Request) WithLibraryId(libraryId string) *GetTapePartitionsWithFullDetailsSpectraS3Request {
-    getTapePartitionsWithFullDetailsSpectraS3Request.libraryId = libraryId
-    getTapePartitionsWithFullDetailsSpectraS3Request.queryParams.Set("library_id", libraryId)
-    return getTapePartitionsWithFullDetailsSpectraS3Request
-}
-func (getTapePartitionsWithFullDetailsSpectraS3Request *GetTapePartitionsWithFullDetailsSpectraS3Request) WithPageLength(pageLength int) *GetTapePartitionsWithFullDetailsSpectraS3Request {
-    getTapePartitionsWithFullDetailsSpectraS3Request.pageLength = pageLength
-    getTapePartitionsWithFullDetailsSpectraS3Request.queryParams.Set("page_length", strconv.Itoa(pageLength))
-    return getTapePartitionsWithFullDetailsSpectraS3Request
-}
-func (getTapePartitionsWithFullDetailsSpectraS3Request *GetTapePartitionsWithFullDetailsSpectraS3Request) WithPageOffset(pageOffset int) *GetTapePartitionsWithFullDetailsSpectraS3Request {
-    getTapePartitionsWithFullDetailsSpectraS3Request.pageOffset = pageOffset
-    getTapePartitionsWithFullDetailsSpectraS3Request.queryParams.Set("page_offset", strconv.Itoa(pageOffset))
-    return getTapePartitionsWithFullDetailsSpectraS3Request
-}
-func (getTapePartitionsWithFullDetailsSpectraS3Request *GetTapePartitionsWithFullDetailsSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetTapePartitionsWithFullDetailsSpectraS3Request {
-    getTapePartitionsWithFullDetailsSpectraS3Request.pageStartMarker = pageStartMarker
-    getTapePartitionsWithFullDetailsSpectraS3Request.queryParams.Set("page_start_marker", pageStartMarker)
-    return getTapePartitionsWithFullDetailsSpectraS3Request
-}
-func (getTapePartitionsWithFullDetailsSpectraS3Request *GetTapePartitionsWithFullDetailsSpectraS3Request) WithQuiesced(quiesced Quiesced) *GetTapePartitionsWithFullDetailsSpectraS3Request {
-    getTapePartitionsWithFullDetailsSpectraS3Request.quiesced = quiesced
-    getTapePartitionsWithFullDetailsSpectraS3Request.queryParams.Set("quiesced", quiesced.String())
-    return getTapePartitionsWithFullDetailsSpectraS3Request
-}
-func (getTapePartitionsWithFullDetailsSpectraS3Request *GetTapePartitionsWithFullDetailsSpectraS3Request) WithState(state TapePartitionState) *GetTapePartitionsWithFullDetailsSpectraS3Request {
-    getTapePartitionsWithFullDetailsSpectraS3Request.state = state
-    getTapePartitionsWithFullDetailsSpectraS3Request.queryParams.Set("state", state.String())
-    return getTapePartitionsWithFullDetailsSpectraS3Request
-}
-
-func (getTapePartitionsWithFullDetailsSpectraS3Request *GetTapePartitionsWithFullDetailsSpectraS3Request) WithName(name *string) *GetTapePartitionsWithFullDetailsSpectraS3Request {
-    getTapePartitionsWithFullDetailsSpectraS3Request.name = name
-    if name != nil {
-        getTapePartitionsWithFullDetailsSpectraS3Request.queryParams.Set("name", *name)
-    } else {
-        getTapePartitionsWithFullDetailsSpectraS3Request.queryParams.Set("name", "")
-    }
-    return getTapePartitionsWithFullDetailsSpectraS3Request
-}
-func (getTapePartitionsWithFullDetailsSpectraS3Request *GetTapePartitionsWithFullDetailsSpectraS3Request) WithSerialNumber(serialNumber *string) *GetTapePartitionsWithFullDetailsSpectraS3Request {
-    getTapePartitionsWithFullDetailsSpectraS3Request.serialNumber = serialNumber
-    if serialNumber != nil {
-        getTapePartitionsWithFullDetailsSpectraS3Request.queryParams.Set("serial_number", *serialNumber)
-    } else {
-        getTapePartitionsWithFullDetailsSpectraS3Request.queryParams.Set("serial_number", "")
-    }
+    getTapePartitionsWithFullDetailsSpectraS3Request.ImportExportConfiguration = importExportConfiguration
     return getTapePartitionsWithFullDetailsSpectraS3Request
 }
 
 func (getTapePartitionsWithFullDetailsSpectraS3Request *GetTapePartitionsWithFullDetailsSpectraS3Request) WithLastPage() *GetTapePartitionsWithFullDetailsSpectraS3Request {
-    getTapePartitionsWithFullDetailsSpectraS3Request.queryParams.Set("last_page", "")
+    getTapePartitionsWithFullDetailsSpectraS3Request.LastPage = true
     return getTapePartitionsWithFullDetailsSpectraS3Request
 }
 
-func (GetTapePartitionsWithFullDetailsSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
+func (getTapePartitionsWithFullDetailsSpectraS3Request *GetTapePartitionsWithFullDetailsSpectraS3Request) WithLibraryId(libraryId string) *GetTapePartitionsWithFullDetailsSpectraS3Request {
+    getTapePartitionsWithFullDetailsSpectraS3Request.LibraryId = &libraryId
+    return getTapePartitionsWithFullDetailsSpectraS3Request
 }
 
-func (getTapePartitionsWithFullDetailsSpectraS3Request *GetTapePartitionsWithFullDetailsSpectraS3Request) Path() string {
-    return "/_rest_/tape_partition"
+func (getTapePartitionsWithFullDetailsSpectraS3Request *GetTapePartitionsWithFullDetailsSpectraS3Request) WithName(name string) *GetTapePartitionsWithFullDetailsSpectraS3Request {
+    getTapePartitionsWithFullDetailsSpectraS3Request.Name = &name
+    return getTapePartitionsWithFullDetailsSpectraS3Request
 }
 
-func (getTapePartitionsWithFullDetailsSpectraS3Request *GetTapePartitionsWithFullDetailsSpectraS3Request) QueryParams() *url.Values {
-    return getTapePartitionsWithFullDetailsSpectraS3Request.queryParams
+func (getTapePartitionsWithFullDetailsSpectraS3Request *GetTapePartitionsWithFullDetailsSpectraS3Request) WithPageLength(pageLength int) *GetTapePartitionsWithFullDetailsSpectraS3Request {
+    getTapePartitionsWithFullDetailsSpectraS3Request.PageLength = &pageLength
+    return getTapePartitionsWithFullDetailsSpectraS3Request
 }
 
-func (GetTapePartitionsWithFullDetailsSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetTapePartitionsWithFullDetailsSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
+func (getTapePartitionsWithFullDetailsSpectraS3Request *GetTapePartitionsWithFullDetailsSpectraS3Request) WithPageOffset(pageOffset int) *GetTapePartitionsWithFullDetailsSpectraS3Request {
+    getTapePartitionsWithFullDetailsSpectraS3Request.PageOffset = &pageOffset
+    return getTapePartitionsWithFullDetailsSpectraS3Request
 }
 
-func (GetTapePartitionsWithFullDetailsSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
+func (getTapePartitionsWithFullDetailsSpectraS3Request *GetTapePartitionsWithFullDetailsSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetTapePartitionsWithFullDetailsSpectraS3Request {
+    getTapePartitionsWithFullDetailsSpectraS3Request.PageStartMarker = &pageStartMarker
+    return getTapePartitionsWithFullDetailsSpectraS3Request
 }
+
+func (getTapePartitionsWithFullDetailsSpectraS3Request *GetTapePartitionsWithFullDetailsSpectraS3Request) WithQuiesced(quiesced Quiesced) *GetTapePartitionsWithFullDetailsSpectraS3Request {
+    getTapePartitionsWithFullDetailsSpectraS3Request.Quiesced = quiesced
+    return getTapePartitionsWithFullDetailsSpectraS3Request
+}
+
+func (getTapePartitionsWithFullDetailsSpectraS3Request *GetTapePartitionsWithFullDetailsSpectraS3Request) WithSerialNumber(serialNumber string) *GetTapePartitionsWithFullDetailsSpectraS3Request {
+    getTapePartitionsWithFullDetailsSpectraS3Request.SerialNumber = &serialNumber
+    return getTapePartitionsWithFullDetailsSpectraS3Request
+}
+
+func (getTapePartitionsWithFullDetailsSpectraS3Request *GetTapePartitionsWithFullDetailsSpectraS3Request) WithState(state TapePartitionState) *GetTapePartitionsWithFullDetailsSpectraS3Request {
+    getTapePartitionsWithFullDetailsSpectraS3Request.State = state
+    return getTapePartitionsWithFullDetailsSpectraS3Request
+}
+

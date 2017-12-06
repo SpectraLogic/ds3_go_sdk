@@ -13,85 +13,37 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-    "strconv"
-)
-
 type GetBucketRequest struct {
-    bucketName string
-    delimiter *string
-    marker *string
-    maxKeys int
-    prefix *string
-    queryParams *url.Values
+    BucketName string
+    Delimiter *string
+    Marker *string
+    MaxKeys *int
+    Prefix *string
 }
 
 func NewGetBucketRequest(bucketName string) *GetBucketRequest {
-    queryParams := &url.Values{}
-
     return &GetBucketRequest{
-        bucketName: bucketName,
-        queryParams: queryParams,
+        BucketName: bucketName,
     }
+}
+
+func (getBucketRequest *GetBucketRequest) WithDelimiter(delimiter string) *GetBucketRequest {
+    getBucketRequest.Delimiter = &delimiter
+    return getBucketRequest
+}
+
+func (getBucketRequest *GetBucketRequest) WithMarker(marker string) *GetBucketRequest {
+    getBucketRequest.Marker = &marker
+    return getBucketRequest
 }
 
 func (getBucketRequest *GetBucketRequest) WithMaxKeys(maxKeys int) *GetBucketRequest {
-    getBucketRequest.maxKeys = maxKeys
-    getBucketRequest.queryParams.Set("max_keys", strconv.Itoa(maxKeys))
+    getBucketRequest.MaxKeys = &maxKeys
     return getBucketRequest
 }
 
-func (getBucketRequest *GetBucketRequest) WithDelimiter(delimiter *string) *GetBucketRequest {
-    getBucketRequest.delimiter = delimiter
-    if delimiter != nil {
-        getBucketRequest.queryParams.Set("delimiter", *delimiter)
-    } else {
-        getBucketRequest.queryParams.Set("delimiter", "")
-    }
-    return getBucketRequest
-}
-func (getBucketRequest *GetBucketRequest) WithMarker(marker *string) *GetBucketRequest {
-    getBucketRequest.marker = marker
-    if marker != nil {
-        getBucketRequest.queryParams.Set("marker", *marker)
-    } else {
-        getBucketRequest.queryParams.Set("marker", "")
-    }
-    return getBucketRequest
-}
-func (getBucketRequest *GetBucketRequest) WithPrefix(prefix *string) *GetBucketRequest {
-    getBucketRequest.prefix = prefix
-    if prefix != nil {
-        getBucketRequest.queryParams.Set("prefix", *prefix)
-    } else {
-        getBucketRequest.queryParams.Set("prefix", "")
-    }
+func (getBucketRequest *GetBucketRequest) WithPrefix(prefix string) *GetBucketRequest {
+    getBucketRequest.Prefix = &prefix
     return getBucketRequest
 }
 
-
-func (GetBucketRequest) Verb() networking.HttpVerb {
-    return networking.GET
-}
-
-func (getBucketRequest *GetBucketRequest) Path() string {
-    return "/" + getBucketRequest.bucketName
-}
-
-func (getBucketRequest *GetBucketRequest) QueryParams() *url.Values {
-    return getBucketRequest.queryParams
-}
-
-func (GetBucketRequest) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetBucketRequest) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (GetBucketRequest) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

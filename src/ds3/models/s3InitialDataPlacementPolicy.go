@@ -55,3 +55,11 @@ func (s3InitialDataPlacementPolicy S3InitialDataPlacementPolicy) String() string
             return ""
     }
 }
+
+func (s3InitialDataPlacementPolicy S3InitialDataPlacementPolicy) StringPtr() *string {
+    if s3InitialDataPlacementPolicy == UNDEFINED {
+        return nil
+    }
+    result := s3InitialDataPlacementPolicy.String()
+    return &result
+}

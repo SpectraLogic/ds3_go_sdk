@@ -13,87 +13,53 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-    "strconv"
-)
-
 type GetDs3TargetReadPreferencesSpectraS3Request struct {
-    bucketId string
-    pageLength int
-    pageOffset int
-    pageStartMarker string
-    readPreference TargetReadPreferenceType
-    targetId string
-    queryParams *url.Values
+    BucketId *string
+    LastPage bool
+    PageLength *int
+    PageOffset *int
+    PageStartMarker *string
+    ReadPreference TargetReadPreferenceType
+    TargetId *string
 }
 
 func NewGetDs3TargetReadPreferencesSpectraS3Request() *GetDs3TargetReadPreferencesSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetDs3TargetReadPreferencesSpectraS3Request{
-        queryParams: queryParams,
     }
 }
 
 func (getDs3TargetReadPreferencesSpectraS3Request *GetDs3TargetReadPreferencesSpectraS3Request) WithBucketId(bucketId string) *GetDs3TargetReadPreferencesSpectraS3Request {
-    getDs3TargetReadPreferencesSpectraS3Request.bucketId = bucketId
-    getDs3TargetReadPreferencesSpectraS3Request.queryParams.Set("bucket_id", bucketId)
+    getDs3TargetReadPreferencesSpectraS3Request.BucketId = &bucketId
     return getDs3TargetReadPreferencesSpectraS3Request
 }
-func (getDs3TargetReadPreferencesSpectraS3Request *GetDs3TargetReadPreferencesSpectraS3Request) WithPageLength(pageLength int) *GetDs3TargetReadPreferencesSpectraS3Request {
-    getDs3TargetReadPreferencesSpectraS3Request.pageLength = pageLength
-    getDs3TargetReadPreferencesSpectraS3Request.queryParams.Set("page_length", strconv.Itoa(pageLength))
-    return getDs3TargetReadPreferencesSpectraS3Request
-}
-func (getDs3TargetReadPreferencesSpectraS3Request *GetDs3TargetReadPreferencesSpectraS3Request) WithPageOffset(pageOffset int) *GetDs3TargetReadPreferencesSpectraS3Request {
-    getDs3TargetReadPreferencesSpectraS3Request.pageOffset = pageOffset
-    getDs3TargetReadPreferencesSpectraS3Request.queryParams.Set("page_offset", strconv.Itoa(pageOffset))
-    return getDs3TargetReadPreferencesSpectraS3Request
-}
-func (getDs3TargetReadPreferencesSpectraS3Request *GetDs3TargetReadPreferencesSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetDs3TargetReadPreferencesSpectraS3Request {
-    getDs3TargetReadPreferencesSpectraS3Request.pageStartMarker = pageStartMarker
-    getDs3TargetReadPreferencesSpectraS3Request.queryParams.Set("page_start_marker", pageStartMarker)
-    return getDs3TargetReadPreferencesSpectraS3Request
-}
-func (getDs3TargetReadPreferencesSpectraS3Request *GetDs3TargetReadPreferencesSpectraS3Request) WithReadPreference(readPreference TargetReadPreferenceType) *GetDs3TargetReadPreferencesSpectraS3Request {
-    getDs3TargetReadPreferencesSpectraS3Request.readPreference = readPreference
-    getDs3TargetReadPreferencesSpectraS3Request.queryParams.Set("read_preference", readPreference.String())
-    return getDs3TargetReadPreferencesSpectraS3Request
-}
-func (getDs3TargetReadPreferencesSpectraS3Request *GetDs3TargetReadPreferencesSpectraS3Request) WithTargetId(targetId string) *GetDs3TargetReadPreferencesSpectraS3Request {
-    getDs3TargetReadPreferencesSpectraS3Request.targetId = targetId
-    getDs3TargetReadPreferencesSpectraS3Request.queryParams.Set("target_id", targetId)
-    return getDs3TargetReadPreferencesSpectraS3Request
-}
-
 
 func (getDs3TargetReadPreferencesSpectraS3Request *GetDs3TargetReadPreferencesSpectraS3Request) WithLastPage() *GetDs3TargetReadPreferencesSpectraS3Request {
-    getDs3TargetReadPreferencesSpectraS3Request.queryParams.Set("last_page", "")
+    getDs3TargetReadPreferencesSpectraS3Request.LastPage = true
     return getDs3TargetReadPreferencesSpectraS3Request
 }
 
-func (GetDs3TargetReadPreferencesSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
+func (getDs3TargetReadPreferencesSpectraS3Request *GetDs3TargetReadPreferencesSpectraS3Request) WithPageLength(pageLength int) *GetDs3TargetReadPreferencesSpectraS3Request {
+    getDs3TargetReadPreferencesSpectraS3Request.PageLength = &pageLength
+    return getDs3TargetReadPreferencesSpectraS3Request
 }
 
-func (getDs3TargetReadPreferencesSpectraS3Request *GetDs3TargetReadPreferencesSpectraS3Request) Path() string {
-    return "/_rest_/ds3_target_read_preference"
+func (getDs3TargetReadPreferencesSpectraS3Request *GetDs3TargetReadPreferencesSpectraS3Request) WithPageOffset(pageOffset int) *GetDs3TargetReadPreferencesSpectraS3Request {
+    getDs3TargetReadPreferencesSpectraS3Request.PageOffset = &pageOffset
+    return getDs3TargetReadPreferencesSpectraS3Request
 }
 
-func (getDs3TargetReadPreferencesSpectraS3Request *GetDs3TargetReadPreferencesSpectraS3Request) QueryParams() *url.Values {
-    return getDs3TargetReadPreferencesSpectraS3Request.queryParams
+func (getDs3TargetReadPreferencesSpectraS3Request *GetDs3TargetReadPreferencesSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetDs3TargetReadPreferencesSpectraS3Request {
+    getDs3TargetReadPreferencesSpectraS3Request.PageStartMarker = &pageStartMarker
+    return getDs3TargetReadPreferencesSpectraS3Request
 }
 
-func (GetDs3TargetReadPreferencesSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetDs3TargetReadPreferencesSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
+func (getDs3TargetReadPreferencesSpectraS3Request *GetDs3TargetReadPreferencesSpectraS3Request) WithReadPreference(readPreference TargetReadPreferenceType) *GetDs3TargetReadPreferencesSpectraS3Request {
+    getDs3TargetReadPreferencesSpectraS3Request.ReadPreference = readPreference
+    return getDs3TargetReadPreferencesSpectraS3Request
 }
 
-func (GetDs3TargetReadPreferencesSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
+func (getDs3TargetReadPreferencesSpectraS3Request *GetDs3TargetReadPreferencesSpectraS3Request) WithTargetId(targetId string) *GetDs3TargetReadPreferencesSpectraS3Request {
+    getDs3TargetReadPreferencesSpectraS3Request.TargetId = &targetId
+    return getDs3TargetReadPreferencesSpectraS3Request
 }
+

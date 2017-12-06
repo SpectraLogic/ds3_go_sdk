@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -23,11 +22,11 @@ type GetDs3TargetReadPreferenceSpectraS3Response struct {
     Headers *http.Header
 }
 
-func (getDs3TargetReadPreferenceSpectraS3Response *GetDs3TargetReadPreferenceSpectraS3Response) parse(webResponse networking.WebResponse) error {
+func (getDs3TargetReadPreferenceSpectraS3Response *GetDs3TargetReadPreferenceSpectraS3Response) parse(webResponse WebResponse) error {
         return parseResponsePayload(webResponse, &getDs3TargetReadPreferenceSpectraS3Response.Ds3TargetReadPreference)
 }
 
-func NewGetDs3TargetReadPreferenceSpectraS3Response(webResponse networking.WebResponse) (*GetDs3TargetReadPreferenceSpectraS3Response, error) {
+func NewGetDs3TargetReadPreferenceSpectraS3Response(webResponse WebResponse) (*GetDs3TargetReadPreferenceSpectraS3Response, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {

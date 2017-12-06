@@ -13,48 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type TruncateActiveJobSpectraS3Request struct {
-    activeJobId string
-    queryParams *url.Values
+    ActiveJobId string
 }
 
 func NewTruncateActiveJobSpectraS3Request(activeJobId string) *TruncateActiveJobSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &TruncateActiveJobSpectraS3Request{
-        activeJobId: activeJobId,
-        queryParams: queryParams,
+        ActiveJobId: activeJobId,
     }
 }
 
-
-
-
-func (TruncateActiveJobSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.DELETE
-}
-
-func (truncateActiveJobSpectraS3Request *TruncateActiveJobSpectraS3Request) Path() string {
-    return "/_rest_/active_job/" + truncateActiveJobSpectraS3Request.activeJobId
-}
-
-func (truncateActiveJobSpectraS3Request *TruncateActiveJobSpectraS3Request) QueryParams() *url.Values {
-    return truncateActiveJobSpectraS3Request.queryParams
-}
-
-func (TruncateActiveJobSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (TruncateActiveJobSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (TruncateActiveJobSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

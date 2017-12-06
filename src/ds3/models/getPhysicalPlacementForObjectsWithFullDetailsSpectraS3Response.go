@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -23,11 +22,11 @@ type GetPhysicalPlacementForObjectsWithFullDetailsSpectraS3Response struct {
     Headers *http.Header
 }
 
-func (getPhysicalPlacementForObjectsWithFullDetailsSpectraS3Response *GetPhysicalPlacementForObjectsWithFullDetailsSpectraS3Response) parse(webResponse networking.WebResponse) error {
+func (getPhysicalPlacementForObjectsWithFullDetailsSpectraS3Response *GetPhysicalPlacementForObjectsWithFullDetailsSpectraS3Response) parse(webResponse WebResponse) error {
         return parseResponsePayload(webResponse, &getPhysicalPlacementForObjectsWithFullDetailsSpectraS3Response.BulkObjectList)
 }
 
-func NewGetPhysicalPlacementForObjectsWithFullDetailsSpectraS3Response(webResponse networking.WebResponse) (*GetPhysicalPlacementForObjectsWithFullDetailsSpectraS3Response, error) {
+func NewGetPhysicalPlacementForObjectsWithFullDetailsSpectraS3Response(webResponse WebResponse) (*GetPhysicalPlacementForObjectsWithFullDetailsSpectraS3Response, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {

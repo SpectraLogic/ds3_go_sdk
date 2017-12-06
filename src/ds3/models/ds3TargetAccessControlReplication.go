@@ -49,3 +49,11 @@ func (ds3TargetAccessControlReplication Ds3TargetAccessControlReplication) Strin
             return ""
     }
 }
+
+func (ds3TargetAccessControlReplication Ds3TargetAccessControlReplication) StringPtr() *string {
+    if ds3TargetAccessControlReplication == UNDEFINED {
+        return nil
+    }
+    result := ds3TargetAccessControlReplication.String()
+    return &result
+}

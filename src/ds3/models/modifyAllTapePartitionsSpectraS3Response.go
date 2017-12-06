@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -25,7 +24,7 @@ type ModifyAllTapePartitionsSpectraS3Response struct {
 
 
 
-func NewModifyAllTapePartitionsSpectraS3Response(webResponse networking.WebResponse) (*ModifyAllTapePartitionsSpectraS3Response, error) {
+func NewModifyAllTapePartitionsSpectraS3Response(webResponse WebResponse) (*ModifyAllTapePartitionsSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {

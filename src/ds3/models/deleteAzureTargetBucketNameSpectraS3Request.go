@@ -13,48 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type DeleteAzureTargetBucketNameSpectraS3Request struct {
-    azureTargetBucketName string
-    queryParams *url.Values
+    AzureTargetBucketName string
 }
 
 func NewDeleteAzureTargetBucketNameSpectraS3Request(azureTargetBucketName string) *DeleteAzureTargetBucketNameSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &DeleteAzureTargetBucketNameSpectraS3Request{
-        azureTargetBucketName: azureTargetBucketName,
-        queryParams: queryParams,
+        AzureTargetBucketName: azureTargetBucketName,
     }
 }
 
-
-
-
-func (DeleteAzureTargetBucketNameSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.DELETE
-}
-
-func (deleteAzureTargetBucketNameSpectraS3Request *DeleteAzureTargetBucketNameSpectraS3Request) Path() string {
-    return "/_rest_/azure_target_bucket_name/" + deleteAzureTargetBucketNameSpectraS3Request.azureTargetBucketName
-}
-
-func (deleteAzureTargetBucketNameSpectraS3Request *DeleteAzureTargetBucketNameSpectraS3Request) QueryParams() *url.Values {
-    return deleteAzureTargetBucketNameSpectraS3Request.queryParams
-}
-
-func (DeleteAzureTargetBucketNameSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (DeleteAzureTargetBucketNameSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (DeleteAzureTargetBucketNameSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

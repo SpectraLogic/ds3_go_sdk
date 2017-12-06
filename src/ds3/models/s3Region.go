@@ -82,3 +82,11 @@ func (s3Region S3Region) String() string {
             return ""
     }
 }
+
+func (s3Region S3Region) StringPtr() *string {
+    if s3Region == UNDEFINED {
+        return nil
+    }
+    result := s3Region.String()
+    return &result
+}

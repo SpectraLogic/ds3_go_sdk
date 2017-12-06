@@ -13,67 +13,31 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type PutJobCreatedNotificationRegistrationSpectraS3Request struct {
-    format HttpResponseFormatType
-    namingConvention NamingConventionType
-    notificationEndPoint *string
-    notificationHttpMethod RequestType
-    queryParams *url.Values
+    Format HttpResponseFormatType
+    NamingConvention NamingConventionType
+    NotificationEndPoint string
+    NotificationHttpMethod RequestType
 }
 
-func NewPutJobCreatedNotificationRegistrationSpectraS3Request(notificationEndPoint *string) *PutJobCreatedNotificationRegistrationSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("notification_end_point", *notificationEndPoint)
-
+func NewPutJobCreatedNotificationRegistrationSpectraS3Request(notificationEndPoint string) *PutJobCreatedNotificationRegistrationSpectraS3Request {
     return &PutJobCreatedNotificationRegistrationSpectraS3Request{
-        notificationEndPoint: notificationEndPoint,
-        queryParams: queryParams,
+        NotificationEndPoint: notificationEndPoint,
     }
 }
 
 func (putJobCreatedNotificationRegistrationSpectraS3Request *PutJobCreatedNotificationRegistrationSpectraS3Request) WithFormat(format HttpResponseFormatType) *PutJobCreatedNotificationRegistrationSpectraS3Request {
-    putJobCreatedNotificationRegistrationSpectraS3Request.format = format
-    putJobCreatedNotificationRegistrationSpectraS3Request.queryParams.Set("format", format.String())
+    putJobCreatedNotificationRegistrationSpectraS3Request.Format = format
     return putJobCreatedNotificationRegistrationSpectraS3Request
 }
+
 func (putJobCreatedNotificationRegistrationSpectraS3Request *PutJobCreatedNotificationRegistrationSpectraS3Request) WithNamingConvention(namingConvention NamingConventionType) *PutJobCreatedNotificationRegistrationSpectraS3Request {
-    putJobCreatedNotificationRegistrationSpectraS3Request.namingConvention = namingConvention
-    putJobCreatedNotificationRegistrationSpectraS3Request.queryParams.Set("naming_convention", namingConvention.String())
+    putJobCreatedNotificationRegistrationSpectraS3Request.NamingConvention = namingConvention
     return putJobCreatedNotificationRegistrationSpectraS3Request
 }
+
 func (putJobCreatedNotificationRegistrationSpectraS3Request *PutJobCreatedNotificationRegistrationSpectraS3Request) WithNotificationHttpMethod(notificationHttpMethod RequestType) *PutJobCreatedNotificationRegistrationSpectraS3Request {
-    putJobCreatedNotificationRegistrationSpectraS3Request.notificationHttpMethod = notificationHttpMethod
-    putJobCreatedNotificationRegistrationSpectraS3Request.queryParams.Set("notification_http_method", notificationHttpMethod.String())
+    putJobCreatedNotificationRegistrationSpectraS3Request.NotificationHttpMethod = notificationHttpMethod
     return putJobCreatedNotificationRegistrationSpectraS3Request
 }
 
-
-
-func (PutJobCreatedNotificationRegistrationSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.POST
-}
-
-func (putJobCreatedNotificationRegistrationSpectraS3Request *PutJobCreatedNotificationRegistrationSpectraS3Request) Path() string {
-    return "/_rest_/job_created_notification_registration"
-}
-
-func (putJobCreatedNotificationRegistrationSpectraS3Request *PutJobCreatedNotificationRegistrationSpectraS3Request) QueryParams() *url.Values {
-    return putJobCreatedNotificationRegistrationSpectraS3Request.queryParams
-}
-
-func (PutJobCreatedNotificationRegistrationSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (PutJobCreatedNotificationRegistrationSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (PutJobCreatedNotificationRegistrationSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

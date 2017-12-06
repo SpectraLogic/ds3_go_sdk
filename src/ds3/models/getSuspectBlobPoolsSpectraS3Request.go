@@ -13,81 +13,47 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-    "strconv"
-)
-
 type GetSuspectBlobPoolsSpectraS3Request struct {
-    blobId string
-    pageLength int
-    pageOffset int
-    pageStartMarker string
-    poolId string
-    queryParams *url.Values
+    BlobId *string
+    LastPage bool
+    PageLength *int
+    PageOffset *int
+    PageStartMarker *string
+    PoolId *string
 }
 
 func NewGetSuspectBlobPoolsSpectraS3Request() *GetSuspectBlobPoolsSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetSuspectBlobPoolsSpectraS3Request{
-        queryParams: queryParams,
     }
 }
 
 func (getSuspectBlobPoolsSpectraS3Request *GetSuspectBlobPoolsSpectraS3Request) WithBlobId(blobId string) *GetSuspectBlobPoolsSpectraS3Request {
-    getSuspectBlobPoolsSpectraS3Request.blobId = blobId
-    getSuspectBlobPoolsSpectraS3Request.queryParams.Set("blob_id", blobId)
+    getSuspectBlobPoolsSpectraS3Request.BlobId = &blobId
     return getSuspectBlobPoolsSpectraS3Request
 }
-func (getSuspectBlobPoolsSpectraS3Request *GetSuspectBlobPoolsSpectraS3Request) WithPageLength(pageLength int) *GetSuspectBlobPoolsSpectraS3Request {
-    getSuspectBlobPoolsSpectraS3Request.pageLength = pageLength
-    getSuspectBlobPoolsSpectraS3Request.queryParams.Set("page_length", strconv.Itoa(pageLength))
-    return getSuspectBlobPoolsSpectraS3Request
-}
-func (getSuspectBlobPoolsSpectraS3Request *GetSuspectBlobPoolsSpectraS3Request) WithPageOffset(pageOffset int) *GetSuspectBlobPoolsSpectraS3Request {
-    getSuspectBlobPoolsSpectraS3Request.pageOffset = pageOffset
-    getSuspectBlobPoolsSpectraS3Request.queryParams.Set("page_offset", strconv.Itoa(pageOffset))
-    return getSuspectBlobPoolsSpectraS3Request
-}
-func (getSuspectBlobPoolsSpectraS3Request *GetSuspectBlobPoolsSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetSuspectBlobPoolsSpectraS3Request {
-    getSuspectBlobPoolsSpectraS3Request.pageStartMarker = pageStartMarker
-    getSuspectBlobPoolsSpectraS3Request.queryParams.Set("page_start_marker", pageStartMarker)
-    return getSuspectBlobPoolsSpectraS3Request
-}
-func (getSuspectBlobPoolsSpectraS3Request *GetSuspectBlobPoolsSpectraS3Request) WithPoolId(poolId string) *GetSuspectBlobPoolsSpectraS3Request {
-    getSuspectBlobPoolsSpectraS3Request.poolId = poolId
-    getSuspectBlobPoolsSpectraS3Request.queryParams.Set("pool_id", poolId)
-    return getSuspectBlobPoolsSpectraS3Request
-}
-
 
 func (getSuspectBlobPoolsSpectraS3Request *GetSuspectBlobPoolsSpectraS3Request) WithLastPage() *GetSuspectBlobPoolsSpectraS3Request {
-    getSuspectBlobPoolsSpectraS3Request.queryParams.Set("last_page", "")
+    getSuspectBlobPoolsSpectraS3Request.LastPage = true
     return getSuspectBlobPoolsSpectraS3Request
 }
 
-func (GetSuspectBlobPoolsSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
+func (getSuspectBlobPoolsSpectraS3Request *GetSuspectBlobPoolsSpectraS3Request) WithPageLength(pageLength int) *GetSuspectBlobPoolsSpectraS3Request {
+    getSuspectBlobPoolsSpectraS3Request.PageLength = &pageLength
+    return getSuspectBlobPoolsSpectraS3Request
 }
 
-func (getSuspectBlobPoolsSpectraS3Request *GetSuspectBlobPoolsSpectraS3Request) Path() string {
-    return "/_rest_/suspect_blob_pool"
+func (getSuspectBlobPoolsSpectraS3Request *GetSuspectBlobPoolsSpectraS3Request) WithPageOffset(pageOffset int) *GetSuspectBlobPoolsSpectraS3Request {
+    getSuspectBlobPoolsSpectraS3Request.PageOffset = &pageOffset
+    return getSuspectBlobPoolsSpectraS3Request
 }
 
-func (getSuspectBlobPoolsSpectraS3Request *GetSuspectBlobPoolsSpectraS3Request) QueryParams() *url.Values {
-    return getSuspectBlobPoolsSpectraS3Request.queryParams
+func (getSuspectBlobPoolsSpectraS3Request *GetSuspectBlobPoolsSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetSuspectBlobPoolsSpectraS3Request {
+    getSuspectBlobPoolsSpectraS3Request.PageStartMarker = &pageStartMarker
+    return getSuspectBlobPoolsSpectraS3Request
 }
 
-func (GetSuspectBlobPoolsSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetSuspectBlobPoolsSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
+func (getSuspectBlobPoolsSpectraS3Request *GetSuspectBlobPoolsSpectraS3Request) WithPoolId(poolId string) *GetSuspectBlobPoolsSpectraS3Request {
+    getSuspectBlobPoolsSpectraS3Request.PoolId = &poolId
+    return getSuspectBlobPoolsSpectraS3Request
 }
 
-func (GetSuspectBlobPoolsSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

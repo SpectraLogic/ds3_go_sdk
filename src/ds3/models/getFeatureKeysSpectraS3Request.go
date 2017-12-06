@@ -13,91 +13,53 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-    "strconv"
-)
-
 type GetFeatureKeysSpectraS3Request struct {
-    errorMessage *string
-    expirationDate string
-    key FeatureKeyType
-    pageLength int
-    pageOffset int
-    pageStartMarker string
-    queryParams *url.Values
+    ErrorMessage *string
+    ExpirationDate *string
+    Key FeatureKeyType
+    LastPage bool
+    PageLength *int
+    PageOffset *int
+    PageStartMarker *string
 }
 
 func NewGetFeatureKeysSpectraS3Request() *GetFeatureKeysSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetFeatureKeysSpectraS3Request{
-        queryParams: queryParams,
     }
+}
+
+func (getFeatureKeysSpectraS3Request *GetFeatureKeysSpectraS3Request) WithErrorMessage(errorMessage string) *GetFeatureKeysSpectraS3Request {
+    getFeatureKeysSpectraS3Request.ErrorMessage = &errorMessage
+    return getFeatureKeysSpectraS3Request
 }
 
 func (getFeatureKeysSpectraS3Request *GetFeatureKeysSpectraS3Request) WithExpirationDate(expirationDate string) *GetFeatureKeysSpectraS3Request {
-    getFeatureKeysSpectraS3Request.expirationDate = expirationDate
-    getFeatureKeysSpectraS3Request.queryParams.Set("expiration_date", expirationDate)
-    return getFeatureKeysSpectraS3Request
-}
-func (getFeatureKeysSpectraS3Request *GetFeatureKeysSpectraS3Request) WithKey(key FeatureKeyType) *GetFeatureKeysSpectraS3Request {
-    getFeatureKeysSpectraS3Request.key = key
-    getFeatureKeysSpectraS3Request.queryParams.Set("key", key.String())
-    return getFeatureKeysSpectraS3Request
-}
-func (getFeatureKeysSpectraS3Request *GetFeatureKeysSpectraS3Request) WithPageLength(pageLength int) *GetFeatureKeysSpectraS3Request {
-    getFeatureKeysSpectraS3Request.pageLength = pageLength
-    getFeatureKeysSpectraS3Request.queryParams.Set("page_length", strconv.Itoa(pageLength))
-    return getFeatureKeysSpectraS3Request
-}
-func (getFeatureKeysSpectraS3Request *GetFeatureKeysSpectraS3Request) WithPageOffset(pageOffset int) *GetFeatureKeysSpectraS3Request {
-    getFeatureKeysSpectraS3Request.pageOffset = pageOffset
-    getFeatureKeysSpectraS3Request.queryParams.Set("page_offset", strconv.Itoa(pageOffset))
-    return getFeatureKeysSpectraS3Request
-}
-func (getFeatureKeysSpectraS3Request *GetFeatureKeysSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetFeatureKeysSpectraS3Request {
-    getFeatureKeysSpectraS3Request.pageStartMarker = pageStartMarker
-    getFeatureKeysSpectraS3Request.queryParams.Set("page_start_marker", pageStartMarker)
+    getFeatureKeysSpectraS3Request.ExpirationDate = &expirationDate
     return getFeatureKeysSpectraS3Request
 }
 
-func (getFeatureKeysSpectraS3Request *GetFeatureKeysSpectraS3Request) WithErrorMessage(errorMessage *string) *GetFeatureKeysSpectraS3Request {
-    getFeatureKeysSpectraS3Request.errorMessage = errorMessage
-    if errorMessage != nil {
-        getFeatureKeysSpectraS3Request.queryParams.Set("error_message", *errorMessage)
-    } else {
-        getFeatureKeysSpectraS3Request.queryParams.Set("error_message", "")
-    }
+func (getFeatureKeysSpectraS3Request *GetFeatureKeysSpectraS3Request) WithKey(key FeatureKeyType) *GetFeatureKeysSpectraS3Request {
+    getFeatureKeysSpectraS3Request.Key = key
     return getFeatureKeysSpectraS3Request
 }
 
 func (getFeatureKeysSpectraS3Request *GetFeatureKeysSpectraS3Request) WithLastPage() *GetFeatureKeysSpectraS3Request {
-    getFeatureKeysSpectraS3Request.queryParams.Set("last_page", "")
+    getFeatureKeysSpectraS3Request.LastPage = true
     return getFeatureKeysSpectraS3Request
 }
 
-func (GetFeatureKeysSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
+func (getFeatureKeysSpectraS3Request *GetFeatureKeysSpectraS3Request) WithPageLength(pageLength int) *GetFeatureKeysSpectraS3Request {
+    getFeatureKeysSpectraS3Request.PageLength = &pageLength
+    return getFeatureKeysSpectraS3Request
 }
 
-func (getFeatureKeysSpectraS3Request *GetFeatureKeysSpectraS3Request) Path() string {
-    return "/_rest_/feature_key"
+func (getFeatureKeysSpectraS3Request *GetFeatureKeysSpectraS3Request) WithPageOffset(pageOffset int) *GetFeatureKeysSpectraS3Request {
+    getFeatureKeysSpectraS3Request.PageOffset = &pageOffset
+    return getFeatureKeysSpectraS3Request
 }
 
-func (getFeatureKeysSpectraS3Request *GetFeatureKeysSpectraS3Request) QueryParams() *url.Values {
-    return getFeatureKeysSpectraS3Request.queryParams
+func (getFeatureKeysSpectraS3Request *GetFeatureKeysSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetFeatureKeysSpectraS3Request {
+    getFeatureKeysSpectraS3Request.PageStartMarker = &pageStartMarker
+    return getFeatureKeysSpectraS3Request
 }
 
-func (GetFeatureKeysSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetFeatureKeysSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (GetFeatureKeysSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

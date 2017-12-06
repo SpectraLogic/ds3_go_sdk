@@ -61,3 +61,11 @@ func (poolState PoolState) String() string {
             return ""
     }
 }
+
+func (poolState PoolState) StringPtr() *string {
+    if poolState == UNDEFINED {
+        return nil
+    }
+    result := poolState.String()
+    return &result
+}

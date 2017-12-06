@@ -13,127 +13,89 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-    "strconv"
-)
-
 type GetActiveJobsSpectraS3Request struct {
-    aggregating bool
-    bucketId string
-    chunkClientProcessingOrderGuarantee JobChunkClientProcessingOrderGuarantee
-    name *string
-    pageLength int
-    pageOffset int
-    pageStartMarker string
-    priority Priority
-    rechunked string
-    requestType JobRequestType
-    truncated bool
-    userId string
-    queryParams *url.Values
+    Aggregating *bool
+    BucketId *string
+    ChunkClientProcessingOrderGuarantee JobChunkClientProcessingOrderGuarantee
+    LastPage bool
+    Name *string
+    PageLength *int
+    PageOffset *int
+    PageStartMarker *string
+    Priority Priority
+    Rechunked *string
+    RequestType JobRequestType
+    Truncated *bool
+    UserId *string
 }
 
 func NewGetActiveJobsSpectraS3Request() *GetActiveJobsSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetActiveJobsSpectraS3Request{
-        queryParams: queryParams,
     }
 }
 
 func (getActiveJobsSpectraS3Request *GetActiveJobsSpectraS3Request) WithAggregating(aggregating bool) *GetActiveJobsSpectraS3Request {
-    getActiveJobsSpectraS3Request.aggregating = aggregating
-    getActiveJobsSpectraS3Request.queryParams.Set("aggregating", strconv.FormatBool(aggregating))
-    return getActiveJobsSpectraS3Request
-}
-func (getActiveJobsSpectraS3Request *GetActiveJobsSpectraS3Request) WithBucketId(bucketId string) *GetActiveJobsSpectraS3Request {
-    getActiveJobsSpectraS3Request.bucketId = bucketId
-    getActiveJobsSpectraS3Request.queryParams.Set("bucket_id", bucketId)
-    return getActiveJobsSpectraS3Request
-}
-func (getActiveJobsSpectraS3Request *GetActiveJobsSpectraS3Request) WithChunkClientProcessingOrderGuarantee(chunkClientProcessingOrderGuarantee JobChunkClientProcessingOrderGuarantee) *GetActiveJobsSpectraS3Request {
-    getActiveJobsSpectraS3Request.chunkClientProcessingOrderGuarantee = chunkClientProcessingOrderGuarantee
-    getActiveJobsSpectraS3Request.queryParams.Set("chunk_client_processing_order_guarantee", chunkClientProcessingOrderGuarantee.String())
-    return getActiveJobsSpectraS3Request
-}
-func (getActiveJobsSpectraS3Request *GetActiveJobsSpectraS3Request) WithPageLength(pageLength int) *GetActiveJobsSpectraS3Request {
-    getActiveJobsSpectraS3Request.pageLength = pageLength
-    getActiveJobsSpectraS3Request.queryParams.Set("page_length", strconv.Itoa(pageLength))
-    return getActiveJobsSpectraS3Request
-}
-func (getActiveJobsSpectraS3Request *GetActiveJobsSpectraS3Request) WithPageOffset(pageOffset int) *GetActiveJobsSpectraS3Request {
-    getActiveJobsSpectraS3Request.pageOffset = pageOffset
-    getActiveJobsSpectraS3Request.queryParams.Set("page_offset", strconv.Itoa(pageOffset))
-    return getActiveJobsSpectraS3Request
-}
-func (getActiveJobsSpectraS3Request *GetActiveJobsSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetActiveJobsSpectraS3Request {
-    getActiveJobsSpectraS3Request.pageStartMarker = pageStartMarker
-    getActiveJobsSpectraS3Request.queryParams.Set("page_start_marker", pageStartMarker)
-    return getActiveJobsSpectraS3Request
-}
-func (getActiveJobsSpectraS3Request *GetActiveJobsSpectraS3Request) WithPriority(priority Priority) *GetActiveJobsSpectraS3Request {
-    getActiveJobsSpectraS3Request.priority = priority
-    getActiveJobsSpectraS3Request.queryParams.Set("priority", priority.String())
-    return getActiveJobsSpectraS3Request
-}
-func (getActiveJobsSpectraS3Request *GetActiveJobsSpectraS3Request) WithRechunked(rechunked string) *GetActiveJobsSpectraS3Request {
-    getActiveJobsSpectraS3Request.rechunked = rechunked
-    getActiveJobsSpectraS3Request.queryParams.Set("rechunked", rechunked)
-    return getActiveJobsSpectraS3Request
-}
-func (getActiveJobsSpectraS3Request *GetActiveJobsSpectraS3Request) WithRequestType(requestType JobRequestType) *GetActiveJobsSpectraS3Request {
-    getActiveJobsSpectraS3Request.requestType = requestType
-    getActiveJobsSpectraS3Request.queryParams.Set("request_type", requestType.String())
-    return getActiveJobsSpectraS3Request
-}
-func (getActiveJobsSpectraS3Request *GetActiveJobsSpectraS3Request) WithTruncated(truncated bool) *GetActiveJobsSpectraS3Request {
-    getActiveJobsSpectraS3Request.truncated = truncated
-    getActiveJobsSpectraS3Request.queryParams.Set("truncated", strconv.FormatBool(truncated))
-    return getActiveJobsSpectraS3Request
-}
-func (getActiveJobsSpectraS3Request *GetActiveJobsSpectraS3Request) WithUserId(userId string) *GetActiveJobsSpectraS3Request {
-    getActiveJobsSpectraS3Request.userId = userId
-    getActiveJobsSpectraS3Request.queryParams.Set("user_id", userId)
+    getActiveJobsSpectraS3Request.Aggregating = &aggregating
     return getActiveJobsSpectraS3Request
 }
 
-func (getActiveJobsSpectraS3Request *GetActiveJobsSpectraS3Request) WithName(name *string) *GetActiveJobsSpectraS3Request {
-    getActiveJobsSpectraS3Request.name = name
-    if name != nil {
-        getActiveJobsSpectraS3Request.queryParams.Set("name", *name)
-    } else {
-        getActiveJobsSpectraS3Request.queryParams.Set("name", "")
-    }
+func (getActiveJobsSpectraS3Request *GetActiveJobsSpectraS3Request) WithBucketId(bucketId string) *GetActiveJobsSpectraS3Request {
+    getActiveJobsSpectraS3Request.BucketId = &bucketId
+    return getActiveJobsSpectraS3Request
+}
+
+func (getActiveJobsSpectraS3Request *GetActiveJobsSpectraS3Request) WithChunkClientProcessingOrderGuarantee(chunkClientProcessingOrderGuarantee JobChunkClientProcessingOrderGuarantee) *GetActiveJobsSpectraS3Request {
+    getActiveJobsSpectraS3Request.ChunkClientProcessingOrderGuarantee = chunkClientProcessingOrderGuarantee
     return getActiveJobsSpectraS3Request
 }
 
 func (getActiveJobsSpectraS3Request *GetActiveJobsSpectraS3Request) WithLastPage() *GetActiveJobsSpectraS3Request {
-    getActiveJobsSpectraS3Request.queryParams.Set("last_page", "")
+    getActiveJobsSpectraS3Request.LastPage = true
     return getActiveJobsSpectraS3Request
 }
 
-func (GetActiveJobsSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
+func (getActiveJobsSpectraS3Request *GetActiveJobsSpectraS3Request) WithName(name string) *GetActiveJobsSpectraS3Request {
+    getActiveJobsSpectraS3Request.Name = &name
+    return getActiveJobsSpectraS3Request
 }
 
-func (getActiveJobsSpectraS3Request *GetActiveJobsSpectraS3Request) Path() string {
-    return "/_rest_/active_job"
+func (getActiveJobsSpectraS3Request *GetActiveJobsSpectraS3Request) WithPageLength(pageLength int) *GetActiveJobsSpectraS3Request {
+    getActiveJobsSpectraS3Request.PageLength = &pageLength
+    return getActiveJobsSpectraS3Request
 }
 
-func (getActiveJobsSpectraS3Request *GetActiveJobsSpectraS3Request) QueryParams() *url.Values {
-    return getActiveJobsSpectraS3Request.queryParams
+func (getActiveJobsSpectraS3Request *GetActiveJobsSpectraS3Request) WithPageOffset(pageOffset int) *GetActiveJobsSpectraS3Request {
+    getActiveJobsSpectraS3Request.PageOffset = &pageOffset
+    return getActiveJobsSpectraS3Request
 }
 
-func (GetActiveJobsSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetActiveJobsSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
+func (getActiveJobsSpectraS3Request *GetActiveJobsSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetActiveJobsSpectraS3Request {
+    getActiveJobsSpectraS3Request.PageStartMarker = &pageStartMarker
+    return getActiveJobsSpectraS3Request
 }
 
-func (GetActiveJobsSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
+func (getActiveJobsSpectraS3Request *GetActiveJobsSpectraS3Request) WithPriority(priority Priority) *GetActiveJobsSpectraS3Request {
+    getActiveJobsSpectraS3Request.Priority = priority
+    return getActiveJobsSpectraS3Request
 }
+
+func (getActiveJobsSpectraS3Request *GetActiveJobsSpectraS3Request) WithRechunked(rechunked string) *GetActiveJobsSpectraS3Request {
+    getActiveJobsSpectraS3Request.Rechunked = &rechunked
+    return getActiveJobsSpectraS3Request
+}
+
+func (getActiveJobsSpectraS3Request *GetActiveJobsSpectraS3Request) WithRequestType(requestType JobRequestType) *GetActiveJobsSpectraS3Request {
+    getActiveJobsSpectraS3Request.RequestType = requestType
+    return getActiveJobsSpectraS3Request
+}
+
+func (getActiveJobsSpectraS3Request *GetActiveJobsSpectraS3Request) WithTruncated(truncated bool) *GetActiveJobsSpectraS3Request {
+    getActiveJobsSpectraS3Request.Truncated = &truncated
+    return getActiveJobsSpectraS3Request
+}
+
+func (getActiveJobsSpectraS3Request *GetActiveJobsSpectraS3Request) WithUserId(userId string) *GetActiveJobsSpectraS3Request {
+    getActiveJobsSpectraS3Request.UserId = &userId
+    return getActiveJobsSpectraS3Request
+}
+

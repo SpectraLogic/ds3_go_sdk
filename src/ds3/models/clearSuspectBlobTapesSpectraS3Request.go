@@ -13,52 +13,19 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type ClearSuspectBlobTapesSpectraS3Request struct {
-    content networking.ReaderWithSizeDecorator
-    queryParams *url.Values
+    Force bool
+    Ids []string
 }
 
 func NewClearSuspectBlobTapesSpectraS3Request(ids []string) *ClearSuspectBlobTapesSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &ClearSuspectBlobTapesSpectraS3Request{
-        content: buildIdListPayload(ids),
-        queryParams: queryParams,
+        Ids: ids,
     }
 }
 
-
-
 func (clearSuspectBlobTapesSpectraS3Request *ClearSuspectBlobTapesSpectraS3Request) WithForce() *ClearSuspectBlobTapesSpectraS3Request {
-    clearSuspectBlobTapesSpectraS3Request.queryParams.Set("force", "")
+    clearSuspectBlobTapesSpectraS3Request.Force = true
     return clearSuspectBlobTapesSpectraS3Request
 }
 
-func (ClearSuspectBlobTapesSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.DELETE
-}
-
-func (clearSuspectBlobTapesSpectraS3Request *ClearSuspectBlobTapesSpectraS3Request) Path() string {
-    return "/_rest_/suspect_blob_tape"
-}
-
-func (clearSuspectBlobTapesSpectraS3Request *ClearSuspectBlobTapesSpectraS3Request) QueryParams() *url.Values {
-    return clearSuspectBlobTapesSpectraS3Request.queryParams
-}
-
-func (ClearSuspectBlobTapesSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (ClearSuspectBlobTapesSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (clearSuspectBlobTapesSpectraS3Request *ClearSuspectBlobTapesSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return clearSuspectBlobTapesSpectraS3Request.content
-}

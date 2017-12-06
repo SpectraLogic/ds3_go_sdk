@@ -13,87 +13,53 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-    "strconv"
-)
-
 type GetGroupMembersSpectraS3Request struct {
-    groupId string
-    memberGroupId string
-    memberUserId string
-    pageLength int
-    pageOffset int
-    pageStartMarker string
-    queryParams *url.Values
+    GroupId *string
+    LastPage bool
+    MemberGroupId *string
+    MemberUserId *string
+    PageLength *int
+    PageOffset *int
+    PageStartMarker *string
 }
 
 func NewGetGroupMembersSpectraS3Request() *GetGroupMembersSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetGroupMembersSpectraS3Request{
-        queryParams: queryParams,
     }
 }
 
 func (getGroupMembersSpectraS3Request *GetGroupMembersSpectraS3Request) WithGroupId(groupId string) *GetGroupMembersSpectraS3Request {
-    getGroupMembersSpectraS3Request.groupId = groupId
-    getGroupMembersSpectraS3Request.queryParams.Set("group_id", groupId)
+    getGroupMembersSpectraS3Request.GroupId = &groupId
     return getGroupMembersSpectraS3Request
 }
-func (getGroupMembersSpectraS3Request *GetGroupMembersSpectraS3Request) WithMemberGroupId(memberGroupId string) *GetGroupMembersSpectraS3Request {
-    getGroupMembersSpectraS3Request.memberGroupId = memberGroupId
-    getGroupMembersSpectraS3Request.queryParams.Set("member_group_id", memberGroupId)
-    return getGroupMembersSpectraS3Request
-}
-func (getGroupMembersSpectraS3Request *GetGroupMembersSpectraS3Request) WithMemberUserId(memberUserId string) *GetGroupMembersSpectraS3Request {
-    getGroupMembersSpectraS3Request.memberUserId = memberUserId
-    getGroupMembersSpectraS3Request.queryParams.Set("member_user_id", memberUserId)
-    return getGroupMembersSpectraS3Request
-}
-func (getGroupMembersSpectraS3Request *GetGroupMembersSpectraS3Request) WithPageLength(pageLength int) *GetGroupMembersSpectraS3Request {
-    getGroupMembersSpectraS3Request.pageLength = pageLength
-    getGroupMembersSpectraS3Request.queryParams.Set("page_length", strconv.Itoa(pageLength))
-    return getGroupMembersSpectraS3Request
-}
-func (getGroupMembersSpectraS3Request *GetGroupMembersSpectraS3Request) WithPageOffset(pageOffset int) *GetGroupMembersSpectraS3Request {
-    getGroupMembersSpectraS3Request.pageOffset = pageOffset
-    getGroupMembersSpectraS3Request.queryParams.Set("page_offset", strconv.Itoa(pageOffset))
-    return getGroupMembersSpectraS3Request
-}
-func (getGroupMembersSpectraS3Request *GetGroupMembersSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetGroupMembersSpectraS3Request {
-    getGroupMembersSpectraS3Request.pageStartMarker = pageStartMarker
-    getGroupMembersSpectraS3Request.queryParams.Set("page_start_marker", pageStartMarker)
-    return getGroupMembersSpectraS3Request
-}
-
 
 func (getGroupMembersSpectraS3Request *GetGroupMembersSpectraS3Request) WithLastPage() *GetGroupMembersSpectraS3Request {
-    getGroupMembersSpectraS3Request.queryParams.Set("last_page", "")
+    getGroupMembersSpectraS3Request.LastPage = true
     return getGroupMembersSpectraS3Request
 }
 
-func (GetGroupMembersSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
+func (getGroupMembersSpectraS3Request *GetGroupMembersSpectraS3Request) WithMemberGroupId(memberGroupId string) *GetGroupMembersSpectraS3Request {
+    getGroupMembersSpectraS3Request.MemberGroupId = &memberGroupId
+    return getGroupMembersSpectraS3Request
 }
 
-func (getGroupMembersSpectraS3Request *GetGroupMembersSpectraS3Request) Path() string {
-    return "/_rest_/group_member"
+func (getGroupMembersSpectraS3Request *GetGroupMembersSpectraS3Request) WithMemberUserId(memberUserId string) *GetGroupMembersSpectraS3Request {
+    getGroupMembersSpectraS3Request.MemberUserId = &memberUserId
+    return getGroupMembersSpectraS3Request
 }
 
-func (getGroupMembersSpectraS3Request *GetGroupMembersSpectraS3Request) QueryParams() *url.Values {
-    return getGroupMembersSpectraS3Request.queryParams
+func (getGroupMembersSpectraS3Request *GetGroupMembersSpectraS3Request) WithPageLength(pageLength int) *GetGroupMembersSpectraS3Request {
+    getGroupMembersSpectraS3Request.PageLength = &pageLength
+    return getGroupMembersSpectraS3Request
 }
 
-func (GetGroupMembersSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetGroupMembersSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
+func (getGroupMembersSpectraS3Request *GetGroupMembersSpectraS3Request) WithPageOffset(pageOffset int) *GetGroupMembersSpectraS3Request {
+    getGroupMembersSpectraS3Request.PageOffset = &pageOffset
+    return getGroupMembersSpectraS3Request
 }
 
-func (GetGroupMembersSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
+func (getGroupMembersSpectraS3Request *GetGroupMembersSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetGroupMembersSpectraS3Request {
+    getGroupMembersSpectraS3Request.PageStartMarker = &pageStartMarker
+    return getGroupMembersSpectraS3Request
 }
+

@@ -13,48 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type DeleteS3TargetFailureNotificationRegistrationSpectraS3Request struct {
-    s3TargetFailureNotificationRegistration string
-    queryParams *url.Values
+    S3TargetFailureNotificationRegistration string
 }
 
 func NewDeleteS3TargetFailureNotificationRegistrationSpectraS3Request(s3TargetFailureNotificationRegistration string) *DeleteS3TargetFailureNotificationRegistrationSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &DeleteS3TargetFailureNotificationRegistrationSpectraS3Request{
-        s3TargetFailureNotificationRegistration: s3TargetFailureNotificationRegistration,
-        queryParams: queryParams,
+        S3TargetFailureNotificationRegistration: s3TargetFailureNotificationRegistration,
     }
 }
 
-
-
-
-func (DeleteS3TargetFailureNotificationRegistrationSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.DELETE
-}
-
-func (deleteS3TargetFailureNotificationRegistrationSpectraS3Request *DeleteS3TargetFailureNotificationRegistrationSpectraS3Request) Path() string {
-    return "/_rest_/s3_target_failure_notification_registration/" + deleteS3TargetFailureNotificationRegistrationSpectraS3Request.s3TargetFailureNotificationRegistration
-}
-
-func (deleteS3TargetFailureNotificationRegistrationSpectraS3Request *DeleteS3TargetFailureNotificationRegistrationSpectraS3Request) QueryParams() *url.Values {
-    return deleteS3TargetFailureNotificationRegistrationSpectraS3Request.queryParams
-}
-
-func (DeleteS3TargetFailureNotificationRegistrationSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (DeleteS3TargetFailureNotificationRegistrationSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (DeleteS3TargetFailureNotificationRegistrationSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

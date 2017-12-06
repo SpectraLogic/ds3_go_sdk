@@ -52,3 +52,11 @@ func (jobRequestType JobRequestType) String() string {
             return ""
     }
 }
+
+func (jobRequestType JobRequestType) StringPtr() *string {
+    if jobRequestType == UNDEFINED {
+        return nil
+    }
+    result := jobRequestType.String()
+    return &result
+}

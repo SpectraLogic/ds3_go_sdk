@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -25,7 +24,7 @@ type FormatAllForeignPoolsSpectraS3Response struct {
 
 
 
-func NewFormatAllForeignPoolsSpectraS3Response(webResponse networking.WebResponse) (*FormatAllForeignPoolsSpectraS3Response, error) {
+func NewFormatAllForeignPoolsSpectraS3Response(webResponse WebResponse) (*FormatAllForeignPoolsSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {

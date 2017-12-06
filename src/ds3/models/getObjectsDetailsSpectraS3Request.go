@@ -13,103 +13,65 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-    "strconv"
-)
-
 type GetObjectsDetailsSpectraS3Request struct {
-    bucketId string
-    latest bool
-    name *string
-    pageLength int
-    pageOffset int
-    pageStartMarker string
-    s3ObjectType S3ObjectType
-    version int64
-    queryParams *url.Values
+    BucketId *string
+    LastPage bool
+    Latest *bool
+    Name *string
+    PageLength *int
+    PageOffset *int
+    PageStartMarker *string
+    S3ObjectType S3ObjectType
+    Version *int64
 }
 
 func NewGetObjectsDetailsSpectraS3Request() *GetObjectsDetailsSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetObjectsDetailsSpectraS3Request{
-        queryParams: queryParams,
     }
 }
 
 func (getObjectsDetailsSpectraS3Request *GetObjectsDetailsSpectraS3Request) WithBucketId(bucketId string) *GetObjectsDetailsSpectraS3Request {
-    getObjectsDetailsSpectraS3Request.bucketId = bucketId
-    getObjectsDetailsSpectraS3Request.queryParams.Set("bucket_id", bucketId)
-    return getObjectsDetailsSpectraS3Request
-}
-func (getObjectsDetailsSpectraS3Request *GetObjectsDetailsSpectraS3Request) WithLatest(latest bool) *GetObjectsDetailsSpectraS3Request {
-    getObjectsDetailsSpectraS3Request.latest = latest
-    getObjectsDetailsSpectraS3Request.queryParams.Set("latest", strconv.FormatBool(latest))
-    return getObjectsDetailsSpectraS3Request
-}
-func (getObjectsDetailsSpectraS3Request *GetObjectsDetailsSpectraS3Request) WithPageLength(pageLength int) *GetObjectsDetailsSpectraS3Request {
-    getObjectsDetailsSpectraS3Request.pageLength = pageLength
-    getObjectsDetailsSpectraS3Request.queryParams.Set("page_length", strconv.Itoa(pageLength))
-    return getObjectsDetailsSpectraS3Request
-}
-func (getObjectsDetailsSpectraS3Request *GetObjectsDetailsSpectraS3Request) WithPageOffset(pageOffset int) *GetObjectsDetailsSpectraS3Request {
-    getObjectsDetailsSpectraS3Request.pageOffset = pageOffset
-    getObjectsDetailsSpectraS3Request.queryParams.Set("page_offset", strconv.Itoa(pageOffset))
-    return getObjectsDetailsSpectraS3Request
-}
-func (getObjectsDetailsSpectraS3Request *GetObjectsDetailsSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetObjectsDetailsSpectraS3Request {
-    getObjectsDetailsSpectraS3Request.pageStartMarker = pageStartMarker
-    getObjectsDetailsSpectraS3Request.queryParams.Set("page_start_marker", pageStartMarker)
-    return getObjectsDetailsSpectraS3Request
-}
-func (getObjectsDetailsSpectraS3Request *GetObjectsDetailsSpectraS3Request) WithS3ObjectType(s3ObjectType S3ObjectType) *GetObjectsDetailsSpectraS3Request {
-    getObjectsDetailsSpectraS3Request.s3ObjectType = s3ObjectType
-    getObjectsDetailsSpectraS3Request.queryParams.Set("type", s3ObjectType.String())
-    return getObjectsDetailsSpectraS3Request
-}
-func (getObjectsDetailsSpectraS3Request *GetObjectsDetailsSpectraS3Request) WithVersion(version int64) *GetObjectsDetailsSpectraS3Request {
-    getObjectsDetailsSpectraS3Request.version = version
-    getObjectsDetailsSpectraS3Request.queryParams.Set("version", strconv.FormatInt(version, 10))
-    return getObjectsDetailsSpectraS3Request
-}
-
-func (getObjectsDetailsSpectraS3Request *GetObjectsDetailsSpectraS3Request) WithName(name *string) *GetObjectsDetailsSpectraS3Request {
-    getObjectsDetailsSpectraS3Request.name = name
-    if name != nil {
-        getObjectsDetailsSpectraS3Request.queryParams.Set("name", *name)
-    } else {
-        getObjectsDetailsSpectraS3Request.queryParams.Set("name", "")
-    }
+    getObjectsDetailsSpectraS3Request.BucketId = &bucketId
     return getObjectsDetailsSpectraS3Request
 }
 
 func (getObjectsDetailsSpectraS3Request *GetObjectsDetailsSpectraS3Request) WithLastPage() *GetObjectsDetailsSpectraS3Request {
-    getObjectsDetailsSpectraS3Request.queryParams.Set("last_page", "")
+    getObjectsDetailsSpectraS3Request.LastPage = true
     return getObjectsDetailsSpectraS3Request
 }
 
-func (GetObjectsDetailsSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
+func (getObjectsDetailsSpectraS3Request *GetObjectsDetailsSpectraS3Request) WithLatest(latest bool) *GetObjectsDetailsSpectraS3Request {
+    getObjectsDetailsSpectraS3Request.Latest = &latest
+    return getObjectsDetailsSpectraS3Request
 }
 
-func (getObjectsDetailsSpectraS3Request *GetObjectsDetailsSpectraS3Request) Path() string {
-    return "/_rest_/object"
+func (getObjectsDetailsSpectraS3Request *GetObjectsDetailsSpectraS3Request) WithName(name string) *GetObjectsDetailsSpectraS3Request {
+    getObjectsDetailsSpectraS3Request.Name = &name
+    return getObjectsDetailsSpectraS3Request
 }
 
-func (getObjectsDetailsSpectraS3Request *GetObjectsDetailsSpectraS3Request) QueryParams() *url.Values {
-    return getObjectsDetailsSpectraS3Request.queryParams
+func (getObjectsDetailsSpectraS3Request *GetObjectsDetailsSpectraS3Request) WithPageLength(pageLength int) *GetObjectsDetailsSpectraS3Request {
+    getObjectsDetailsSpectraS3Request.PageLength = &pageLength
+    return getObjectsDetailsSpectraS3Request
 }
 
-func (GetObjectsDetailsSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetObjectsDetailsSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
+func (getObjectsDetailsSpectraS3Request *GetObjectsDetailsSpectraS3Request) WithPageOffset(pageOffset int) *GetObjectsDetailsSpectraS3Request {
+    getObjectsDetailsSpectraS3Request.PageOffset = &pageOffset
+    return getObjectsDetailsSpectraS3Request
 }
 
-func (GetObjectsDetailsSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
+func (getObjectsDetailsSpectraS3Request *GetObjectsDetailsSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetObjectsDetailsSpectraS3Request {
+    getObjectsDetailsSpectraS3Request.PageStartMarker = &pageStartMarker
+    return getObjectsDetailsSpectraS3Request
 }
+
+func (getObjectsDetailsSpectraS3Request *GetObjectsDetailsSpectraS3Request) WithS3ObjectType(s3ObjectType S3ObjectType) *GetObjectsDetailsSpectraS3Request {
+    getObjectsDetailsSpectraS3Request.S3ObjectType = s3ObjectType
+    return getObjectsDetailsSpectraS3Request
+}
+
+func (getObjectsDetailsSpectraS3Request *GetObjectsDetailsSpectraS3Request) WithVersion(version int64) *GetObjectsDetailsSpectraS3Request {
+    getObjectsDetailsSpectraS3Request.Version = &version
+    return getObjectsDetailsSpectraS3Request
+}
+

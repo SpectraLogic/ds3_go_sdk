@@ -13,67 +13,31 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type PutStorageDomainFailureNotificationRegistrationSpectraS3Request struct {
-    format HttpResponseFormatType
-    namingConvention NamingConventionType
-    notificationEndPoint *string
-    notificationHttpMethod RequestType
-    queryParams *url.Values
+    Format HttpResponseFormatType
+    NamingConvention NamingConventionType
+    NotificationEndPoint string
+    NotificationHttpMethod RequestType
 }
 
-func NewPutStorageDomainFailureNotificationRegistrationSpectraS3Request(notificationEndPoint *string) *PutStorageDomainFailureNotificationRegistrationSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("notification_end_point", *notificationEndPoint)
-
+func NewPutStorageDomainFailureNotificationRegistrationSpectraS3Request(notificationEndPoint string) *PutStorageDomainFailureNotificationRegistrationSpectraS3Request {
     return &PutStorageDomainFailureNotificationRegistrationSpectraS3Request{
-        notificationEndPoint: notificationEndPoint,
-        queryParams: queryParams,
+        NotificationEndPoint: notificationEndPoint,
     }
 }
 
 func (putStorageDomainFailureNotificationRegistrationSpectraS3Request *PutStorageDomainFailureNotificationRegistrationSpectraS3Request) WithFormat(format HttpResponseFormatType) *PutStorageDomainFailureNotificationRegistrationSpectraS3Request {
-    putStorageDomainFailureNotificationRegistrationSpectraS3Request.format = format
-    putStorageDomainFailureNotificationRegistrationSpectraS3Request.queryParams.Set("format", format.String())
+    putStorageDomainFailureNotificationRegistrationSpectraS3Request.Format = format
     return putStorageDomainFailureNotificationRegistrationSpectraS3Request
 }
+
 func (putStorageDomainFailureNotificationRegistrationSpectraS3Request *PutStorageDomainFailureNotificationRegistrationSpectraS3Request) WithNamingConvention(namingConvention NamingConventionType) *PutStorageDomainFailureNotificationRegistrationSpectraS3Request {
-    putStorageDomainFailureNotificationRegistrationSpectraS3Request.namingConvention = namingConvention
-    putStorageDomainFailureNotificationRegistrationSpectraS3Request.queryParams.Set("naming_convention", namingConvention.String())
+    putStorageDomainFailureNotificationRegistrationSpectraS3Request.NamingConvention = namingConvention
     return putStorageDomainFailureNotificationRegistrationSpectraS3Request
 }
+
 func (putStorageDomainFailureNotificationRegistrationSpectraS3Request *PutStorageDomainFailureNotificationRegistrationSpectraS3Request) WithNotificationHttpMethod(notificationHttpMethod RequestType) *PutStorageDomainFailureNotificationRegistrationSpectraS3Request {
-    putStorageDomainFailureNotificationRegistrationSpectraS3Request.notificationHttpMethod = notificationHttpMethod
-    putStorageDomainFailureNotificationRegistrationSpectraS3Request.queryParams.Set("notification_http_method", notificationHttpMethod.String())
+    putStorageDomainFailureNotificationRegistrationSpectraS3Request.NotificationHttpMethod = notificationHttpMethod
     return putStorageDomainFailureNotificationRegistrationSpectraS3Request
 }
 
-
-
-func (PutStorageDomainFailureNotificationRegistrationSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.POST
-}
-
-func (putStorageDomainFailureNotificationRegistrationSpectraS3Request *PutStorageDomainFailureNotificationRegistrationSpectraS3Request) Path() string {
-    return "/_rest_/storage_domain_failure_notification_registration"
-}
-
-func (putStorageDomainFailureNotificationRegistrationSpectraS3Request *PutStorageDomainFailureNotificationRegistrationSpectraS3Request) QueryParams() *url.Values {
-    return putStorageDomainFailureNotificationRegistrationSpectraS3Request.queryParams
-}
-
-func (PutStorageDomainFailureNotificationRegistrationSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (PutStorageDomainFailureNotificationRegistrationSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (PutStorageDomainFailureNotificationRegistrationSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

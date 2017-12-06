@@ -49,3 +49,11 @@ func (dataPlacementRuleState DataPlacementRuleState) String() string {
             return ""
     }
 }
+
+func (dataPlacementRuleState DataPlacementRuleState) StringPtr() *string {
+    if dataPlacementRuleState == UNDEFINED {
+        return nil
+    }
+    result := dataPlacementRuleState.String()
+    return &result
+}

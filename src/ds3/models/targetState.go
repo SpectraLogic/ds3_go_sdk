@@ -49,3 +49,11 @@ func (targetState TargetState) String() string {
             return ""
     }
 }
+
+func (targetState TargetState) StringPtr() *string {
+    if targetState == UNDEFINED {
+        return nil
+    }
+    result := targetState.String()
+    return &result
+}

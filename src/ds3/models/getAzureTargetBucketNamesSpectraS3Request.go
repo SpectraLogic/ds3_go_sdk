@@ -13,91 +13,53 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-    "strconv"
-)
-
 type GetAzureTargetBucketNamesSpectraS3Request struct {
-    bucketId string
-    name *string
-    pageLength int
-    pageOffset int
-    pageStartMarker string
-    targetId string
-    queryParams *url.Values
+    BucketId *string
+    LastPage bool
+    Name *string
+    PageLength *int
+    PageOffset *int
+    PageStartMarker *string
+    TargetId *string
 }
 
 func NewGetAzureTargetBucketNamesSpectraS3Request() *GetAzureTargetBucketNamesSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetAzureTargetBucketNamesSpectraS3Request{
-        queryParams: queryParams,
     }
 }
 
 func (getAzureTargetBucketNamesSpectraS3Request *GetAzureTargetBucketNamesSpectraS3Request) WithBucketId(bucketId string) *GetAzureTargetBucketNamesSpectraS3Request {
-    getAzureTargetBucketNamesSpectraS3Request.bucketId = bucketId
-    getAzureTargetBucketNamesSpectraS3Request.queryParams.Set("bucket_id", bucketId)
-    return getAzureTargetBucketNamesSpectraS3Request
-}
-func (getAzureTargetBucketNamesSpectraS3Request *GetAzureTargetBucketNamesSpectraS3Request) WithPageLength(pageLength int) *GetAzureTargetBucketNamesSpectraS3Request {
-    getAzureTargetBucketNamesSpectraS3Request.pageLength = pageLength
-    getAzureTargetBucketNamesSpectraS3Request.queryParams.Set("page_length", strconv.Itoa(pageLength))
-    return getAzureTargetBucketNamesSpectraS3Request
-}
-func (getAzureTargetBucketNamesSpectraS3Request *GetAzureTargetBucketNamesSpectraS3Request) WithPageOffset(pageOffset int) *GetAzureTargetBucketNamesSpectraS3Request {
-    getAzureTargetBucketNamesSpectraS3Request.pageOffset = pageOffset
-    getAzureTargetBucketNamesSpectraS3Request.queryParams.Set("page_offset", strconv.Itoa(pageOffset))
-    return getAzureTargetBucketNamesSpectraS3Request
-}
-func (getAzureTargetBucketNamesSpectraS3Request *GetAzureTargetBucketNamesSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetAzureTargetBucketNamesSpectraS3Request {
-    getAzureTargetBucketNamesSpectraS3Request.pageStartMarker = pageStartMarker
-    getAzureTargetBucketNamesSpectraS3Request.queryParams.Set("page_start_marker", pageStartMarker)
-    return getAzureTargetBucketNamesSpectraS3Request
-}
-func (getAzureTargetBucketNamesSpectraS3Request *GetAzureTargetBucketNamesSpectraS3Request) WithTargetId(targetId string) *GetAzureTargetBucketNamesSpectraS3Request {
-    getAzureTargetBucketNamesSpectraS3Request.targetId = targetId
-    getAzureTargetBucketNamesSpectraS3Request.queryParams.Set("target_id", targetId)
-    return getAzureTargetBucketNamesSpectraS3Request
-}
-
-func (getAzureTargetBucketNamesSpectraS3Request *GetAzureTargetBucketNamesSpectraS3Request) WithName(name *string) *GetAzureTargetBucketNamesSpectraS3Request {
-    getAzureTargetBucketNamesSpectraS3Request.name = name
-    if name != nil {
-        getAzureTargetBucketNamesSpectraS3Request.queryParams.Set("name", *name)
-    } else {
-        getAzureTargetBucketNamesSpectraS3Request.queryParams.Set("name", "")
-    }
+    getAzureTargetBucketNamesSpectraS3Request.BucketId = &bucketId
     return getAzureTargetBucketNamesSpectraS3Request
 }
 
 func (getAzureTargetBucketNamesSpectraS3Request *GetAzureTargetBucketNamesSpectraS3Request) WithLastPage() *GetAzureTargetBucketNamesSpectraS3Request {
-    getAzureTargetBucketNamesSpectraS3Request.queryParams.Set("last_page", "")
+    getAzureTargetBucketNamesSpectraS3Request.LastPage = true
     return getAzureTargetBucketNamesSpectraS3Request
 }
 
-func (GetAzureTargetBucketNamesSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
+func (getAzureTargetBucketNamesSpectraS3Request *GetAzureTargetBucketNamesSpectraS3Request) WithName(name string) *GetAzureTargetBucketNamesSpectraS3Request {
+    getAzureTargetBucketNamesSpectraS3Request.Name = &name
+    return getAzureTargetBucketNamesSpectraS3Request
 }
 
-func (getAzureTargetBucketNamesSpectraS3Request *GetAzureTargetBucketNamesSpectraS3Request) Path() string {
-    return "/_rest_/azure_target_bucket_name"
+func (getAzureTargetBucketNamesSpectraS3Request *GetAzureTargetBucketNamesSpectraS3Request) WithPageLength(pageLength int) *GetAzureTargetBucketNamesSpectraS3Request {
+    getAzureTargetBucketNamesSpectraS3Request.PageLength = &pageLength
+    return getAzureTargetBucketNamesSpectraS3Request
 }
 
-func (getAzureTargetBucketNamesSpectraS3Request *GetAzureTargetBucketNamesSpectraS3Request) QueryParams() *url.Values {
-    return getAzureTargetBucketNamesSpectraS3Request.queryParams
+func (getAzureTargetBucketNamesSpectraS3Request *GetAzureTargetBucketNamesSpectraS3Request) WithPageOffset(pageOffset int) *GetAzureTargetBucketNamesSpectraS3Request {
+    getAzureTargetBucketNamesSpectraS3Request.PageOffset = &pageOffset
+    return getAzureTargetBucketNamesSpectraS3Request
 }
 
-func (GetAzureTargetBucketNamesSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetAzureTargetBucketNamesSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
+func (getAzureTargetBucketNamesSpectraS3Request *GetAzureTargetBucketNamesSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetAzureTargetBucketNamesSpectraS3Request {
+    getAzureTargetBucketNamesSpectraS3Request.PageStartMarker = &pageStartMarker
+    return getAzureTargetBucketNamesSpectraS3Request
 }
 
-func (GetAzureTargetBucketNamesSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
+func (getAzureTargetBucketNamesSpectraS3Request *GetAzureTargetBucketNamesSpectraS3Request) WithTargetId(targetId string) *GetAzureTargetBucketNamesSpectraS3Request {
+    getAzureTargetBucketNamesSpectraS3Request.TargetId = &targetId
+    return getAzureTargetBucketNamesSpectraS3Request
 }
+

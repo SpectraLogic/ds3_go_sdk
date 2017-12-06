@@ -13,97 +13,59 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-    "strconv"
-)
-
 type GetTapeFailuresSpectraS3Request struct {
-    errorMessage *string
-    pageLength int
-    pageOffset int
-    pageStartMarker string
-    tapeDriveId string
-    tapeFailureType TapeFailureType
-    tapeId string
-    queryParams *url.Values
+    ErrorMessage *string
+    LastPage bool
+    PageLength *int
+    PageOffset *int
+    PageStartMarker *string
+    TapeDriveId *string
+    TapeFailureType TapeFailureType
+    TapeId *string
 }
 
 func NewGetTapeFailuresSpectraS3Request() *GetTapeFailuresSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetTapeFailuresSpectraS3Request{
-        queryParams: queryParams,
     }
 }
 
-func (getTapeFailuresSpectraS3Request *GetTapeFailuresSpectraS3Request) WithPageLength(pageLength int) *GetTapeFailuresSpectraS3Request {
-    getTapeFailuresSpectraS3Request.pageLength = pageLength
-    getTapeFailuresSpectraS3Request.queryParams.Set("page_length", strconv.Itoa(pageLength))
-    return getTapeFailuresSpectraS3Request
-}
-func (getTapeFailuresSpectraS3Request *GetTapeFailuresSpectraS3Request) WithPageOffset(pageOffset int) *GetTapeFailuresSpectraS3Request {
-    getTapeFailuresSpectraS3Request.pageOffset = pageOffset
-    getTapeFailuresSpectraS3Request.queryParams.Set("page_offset", strconv.Itoa(pageOffset))
-    return getTapeFailuresSpectraS3Request
-}
-func (getTapeFailuresSpectraS3Request *GetTapeFailuresSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetTapeFailuresSpectraS3Request {
-    getTapeFailuresSpectraS3Request.pageStartMarker = pageStartMarker
-    getTapeFailuresSpectraS3Request.queryParams.Set("page_start_marker", pageStartMarker)
-    return getTapeFailuresSpectraS3Request
-}
-func (getTapeFailuresSpectraS3Request *GetTapeFailuresSpectraS3Request) WithTapeDriveId(tapeDriveId string) *GetTapeFailuresSpectraS3Request {
-    getTapeFailuresSpectraS3Request.tapeDriveId = tapeDriveId
-    getTapeFailuresSpectraS3Request.queryParams.Set("tape_drive_id", tapeDriveId)
-    return getTapeFailuresSpectraS3Request
-}
-func (getTapeFailuresSpectraS3Request *GetTapeFailuresSpectraS3Request) WithTapeId(tapeId string) *GetTapeFailuresSpectraS3Request {
-    getTapeFailuresSpectraS3Request.tapeId = tapeId
-    getTapeFailuresSpectraS3Request.queryParams.Set("tape_id", tapeId)
-    return getTapeFailuresSpectraS3Request
-}
-func (getTapeFailuresSpectraS3Request *GetTapeFailuresSpectraS3Request) WithTapeFailureType(tapeFailureType TapeFailureType) *GetTapeFailuresSpectraS3Request {
-    getTapeFailuresSpectraS3Request.tapeFailureType = tapeFailureType
-    getTapeFailuresSpectraS3Request.queryParams.Set("type", tapeFailureType.String())
-    return getTapeFailuresSpectraS3Request
-}
-
-func (getTapeFailuresSpectraS3Request *GetTapeFailuresSpectraS3Request) WithErrorMessage(errorMessage *string) *GetTapeFailuresSpectraS3Request {
-    getTapeFailuresSpectraS3Request.errorMessage = errorMessage
-    if errorMessage != nil {
-        getTapeFailuresSpectraS3Request.queryParams.Set("error_message", *errorMessage)
-    } else {
-        getTapeFailuresSpectraS3Request.queryParams.Set("error_message", "")
-    }
+func (getTapeFailuresSpectraS3Request *GetTapeFailuresSpectraS3Request) WithErrorMessage(errorMessage string) *GetTapeFailuresSpectraS3Request {
+    getTapeFailuresSpectraS3Request.ErrorMessage = &errorMessage
     return getTapeFailuresSpectraS3Request
 }
 
 func (getTapeFailuresSpectraS3Request *GetTapeFailuresSpectraS3Request) WithLastPage() *GetTapeFailuresSpectraS3Request {
-    getTapeFailuresSpectraS3Request.queryParams.Set("last_page", "")
+    getTapeFailuresSpectraS3Request.LastPage = true
     return getTapeFailuresSpectraS3Request
 }
 
-func (GetTapeFailuresSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
+func (getTapeFailuresSpectraS3Request *GetTapeFailuresSpectraS3Request) WithPageLength(pageLength int) *GetTapeFailuresSpectraS3Request {
+    getTapeFailuresSpectraS3Request.PageLength = &pageLength
+    return getTapeFailuresSpectraS3Request
 }
 
-func (getTapeFailuresSpectraS3Request *GetTapeFailuresSpectraS3Request) Path() string {
-    return "/_rest_/tape_failure"
+func (getTapeFailuresSpectraS3Request *GetTapeFailuresSpectraS3Request) WithPageOffset(pageOffset int) *GetTapeFailuresSpectraS3Request {
+    getTapeFailuresSpectraS3Request.PageOffset = &pageOffset
+    return getTapeFailuresSpectraS3Request
 }
 
-func (getTapeFailuresSpectraS3Request *GetTapeFailuresSpectraS3Request) QueryParams() *url.Values {
-    return getTapeFailuresSpectraS3Request.queryParams
+func (getTapeFailuresSpectraS3Request *GetTapeFailuresSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetTapeFailuresSpectraS3Request {
+    getTapeFailuresSpectraS3Request.PageStartMarker = &pageStartMarker
+    return getTapeFailuresSpectraS3Request
 }
 
-func (GetTapeFailuresSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetTapeFailuresSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
+func (getTapeFailuresSpectraS3Request *GetTapeFailuresSpectraS3Request) WithTapeDriveId(tapeDriveId string) *GetTapeFailuresSpectraS3Request {
+    getTapeFailuresSpectraS3Request.TapeDriveId = &tapeDriveId
+    return getTapeFailuresSpectraS3Request
 }
 
-func (GetTapeFailuresSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
+func (getTapeFailuresSpectraS3Request *GetTapeFailuresSpectraS3Request) WithTapeId(tapeId string) *GetTapeFailuresSpectraS3Request {
+    getTapeFailuresSpectraS3Request.TapeId = &tapeId
+    return getTapeFailuresSpectraS3Request
 }
+
+func (getTapeFailuresSpectraS3Request *GetTapeFailuresSpectraS3Request) WithTapeFailureType(tapeFailureType TapeFailureType) *GetTapeFailuresSpectraS3Request {
+    getTapeFailuresSpectraS3Request.TapeFailureType = tapeFailureType
+    return getTapeFailuresSpectraS3Request
+}
+

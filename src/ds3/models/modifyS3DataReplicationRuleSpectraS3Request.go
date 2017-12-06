@@ -13,73 +13,37 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-    "strconv"
-)
-
 type ModifyS3DataReplicationRuleSpectraS3Request struct {
-    dataReplicationRuleType DataReplicationRuleType
-    initialDataPlacement S3InitialDataPlacementPolicy
-    maxBlobPartSizeInBytes int64
-    replicateDeletes bool
-    s3DataReplicationRule string
-    queryParams *url.Values
+    DataReplicationRuleType DataReplicationRuleType
+    InitialDataPlacement S3InitialDataPlacementPolicy
+    MaxBlobPartSizeInBytes *int64
+    ReplicateDeletes *bool
+    S3DataReplicationRule string
 }
 
 func NewModifyS3DataReplicationRuleSpectraS3Request(s3DataReplicationRule string) *ModifyS3DataReplicationRuleSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &ModifyS3DataReplicationRuleSpectraS3Request{
-        s3DataReplicationRule: s3DataReplicationRule,
-        queryParams: queryParams,
+        S3DataReplicationRule: s3DataReplicationRule,
     }
 }
 
 func (modifyS3DataReplicationRuleSpectraS3Request *ModifyS3DataReplicationRuleSpectraS3Request) WithInitialDataPlacement(initialDataPlacement S3InitialDataPlacementPolicy) *ModifyS3DataReplicationRuleSpectraS3Request {
-    modifyS3DataReplicationRuleSpectraS3Request.initialDataPlacement = initialDataPlacement
-    modifyS3DataReplicationRuleSpectraS3Request.queryParams.Set("initial_data_placement", initialDataPlacement.String())
+    modifyS3DataReplicationRuleSpectraS3Request.InitialDataPlacement = initialDataPlacement
     return modifyS3DataReplicationRuleSpectraS3Request
 }
+
 func (modifyS3DataReplicationRuleSpectraS3Request *ModifyS3DataReplicationRuleSpectraS3Request) WithMaxBlobPartSizeInBytes(maxBlobPartSizeInBytes int64) *ModifyS3DataReplicationRuleSpectraS3Request {
-    modifyS3DataReplicationRuleSpectraS3Request.maxBlobPartSizeInBytes = maxBlobPartSizeInBytes
-    modifyS3DataReplicationRuleSpectraS3Request.queryParams.Set("max_blob_part_size_in_bytes", strconv.FormatInt(maxBlobPartSizeInBytes, 10))
+    modifyS3DataReplicationRuleSpectraS3Request.MaxBlobPartSizeInBytes = &maxBlobPartSizeInBytes
     return modifyS3DataReplicationRuleSpectraS3Request
 }
+
 func (modifyS3DataReplicationRuleSpectraS3Request *ModifyS3DataReplicationRuleSpectraS3Request) WithReplicateDeletes(replicateDeletes bool) *ModifyS3DataReplicationRuleSpectraS3Request {
-    modifyS3DataReplicationRuleSpectraS3Request.replicateDeletes = replicateDeletes
-    modifyS3DataReplicationRuleSpectraS3Request.queryParams.Set("replicate_deletes", strconv.FormatBool(replicateDeletes))
+    modifyS3DataReplicationRuleSpectraS3Request.ReplicateDeletes = &replicateDeletes
     return modifyS3DataReplicationRuleSpectraS3Request
 }
+
 func (modifyS3DataReplicationRuleSpectraS3Request *ModifyS3DataReplicationRuleSpectraS3Request) WithDataReplicationRuleType(dataReplicationRuleType DataReplicationRuleType) *ModifyS3DataReplicationRuleSpectraS3Request {
-    modifyS3DataReplicationRuleSpectraS3Request.dataReplicationRuleType = dataReplicationRuleType
-    modifyS3DataReplicationRuleSpectraS3Request.queryParams.Set("type", dataReplicationRuleType.String())
+    modifyS3DataReplicationRuleSpectraS3Request.DataReplicationRuleType = dataReplicationRuleType
     return modifyS3DataReplicationRuleSpectraS3Request
 }
 
-
-
-func (ModifyS3DataReplicationRuleSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.PUT
-}
-
-func (modifyS3DataReplicationRuleSpectraS3Request *ModifyS3DataReplicationRuleSpectraS3Request) Path() string {
-    return "/_rest_/s3_data_replication_rule/" + modifyS3DataReplicationRuleSpectraS3Request.s3DataReplicationRule
-}
-
-func (modifyS3DataReplicationRuleSpectraS3Request *ModifyS3DataReplicationRuleSpectraS3Request) QueryParams() *url.Values {
-    return modifyS3DataReplicationRuleSpectraS3Request.queryParams
-}
-
-func (ModifyS3DataReplicationRuleSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (ModifyS3DataReplicationRuleSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (ModifyS3DataReplicationRuleSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

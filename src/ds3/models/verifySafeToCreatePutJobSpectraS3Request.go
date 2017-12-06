@@ -13,49 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type VerifySafeToCreatePutJobSpectraS3Request struct {
-    bucketName string
-    queryParams *url.Values
+    BucketName string
 }
 
 func NewVerifySafeToCreatePutJobSpectraS3Request(bucketName string) *VerifySafeToCreatePutJobSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("operation", "verify_safe_to_start_bulk_put")
-
     return &VerifySafeToCreatePutJobSpectraS3Request{
-        bucketName: bucketName,
-        queryParams: queryParams,
+        BucketName: bucketName,
     }
 }
 
-
-
-
-func (VerifySafeToCreatePutJobSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.PUT
-}
-
-func (verifySafeToCreatePutJobSpectraS3Request *VerifySafeToCreatePutJobSpectraS3Request) Path() string {
-    return "/_rest_/bucket/" + verifySafeToCreatePutJobSpectraS3Request.bucketName
-}
-
-func (verifySafeToCreatePutJobSpectraS3Request *VerifySafeToCreatePutJobSpectraS3Request) QueryParams() *url.Values {
-    return verifySafeToCreatePutJobSpectraS3Request.queryParams
-}
-
-func (VerifySafeToCreatePutJobSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (VerifySafeToCreatePutJobSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (VerifySafeToCreatePutJobSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

@@ -112,3 +112,11 @@ func (restOperationType RestOperationType) String() string {
             return ""
     }
 }
+
+func (restOperationType RestOperationType) StringPtr() *string {
+    if restOperationType == UNDEFINED {
+        return nil
+    }
+    result := restOperationType.String()
+    return &result
+}

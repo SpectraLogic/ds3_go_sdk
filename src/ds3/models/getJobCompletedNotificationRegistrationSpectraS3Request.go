@@ -13,48 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type GetJobCompletedNotificationRegistrationSpectraS3Request struct {
-    notificationId string
-    queryParams *url.Values
+    NotificationId string
 }
 
 func NewGetJobCompletedNotificationRegistrationSpectraS3Request(notificationId string) *GetJobCompletedNotificationRegistrationSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetJobCompletedNotificationRegistrationSpectraS3Request{
-        notificationId: notificationId,
-        queryParams: queryParams,
+        NotificationId: notificationId,
     }
 }
 
-
-
-
-func (GetJobCompletedNotificationRegistrationSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
-}
-
-func (getJobCompletedNotificationRegistrationSpectraS3Request *GetJobCompletedNotificationRegistrationSpectraS3Request) Path() string {
-    return "/_rest_/job_completed_notification_registration/" + getJobCompletedNotificationRegistrationSpectraS3Request.notificationId
-}
-
-func (getJobCompletedNotificationRegistrationSpectraS3Request *GetJobCompletedNotificationRegistrationSpectraS3Request) QueryParams() *url.Values {
-    return getJobCompletedNotificationRegistrationSpectraS3Request.queryParams
-}
-
-func (GetJobCompletedNotificationRegistrationSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetJobCompletedNotificationRegistrationSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (GetJobCompletedNotificationRegistrationSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

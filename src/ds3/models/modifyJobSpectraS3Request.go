@@ -13,70 +13,31 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type ModifyJobSpectraS3Request struct {
-    createdAt string
-    jobId string
-    name *string
-    priority Priority
-    queryParams *url.Values
+    CreatedAt *string
+    JobId string
+    Name *string
+    Priority Priority
 }
 
 func NewModifyJobSpectraS3Request(jobId string) *ModifyJobSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &ModifyJobSpectraS3Request{
-        jobId: jobId,
-        queryParams: queryParams,
+        JobId: jobId,
     }
 }
 
 func (modifyJobSpectraS3Request *ModifyJobSpectraS3Request) WithCreatedAt(createdAt string) *ModifyJobSpectraS3Request {
-    modifyJobSpectraS3Request.createdAt = createdAt
-    modifyJobSpectraS3Request.queryParams.Set("created_at", createdAt)
+    modifyJobSpectraS3Request.CreatedAt = &createdAt
     return modifyJobSpectraS3Request
 }
+
+func (modifyJobSpectraS3Request *ModifyJobSpectraS3Request) WithName(name string) *ModifyJobSpectraS3Request {
+    modifyJobSpectraS3Request.Name = &name
+    return modifyJobSpectraS3Request
+}
+
 func (modifyJobSpectraS3Request *ModifyJobSpectraS3Request) WithPriority(priority Priority) *ModifyJobSpectraS3Request {
-    modifyJobSpectraS3Request.priority = priority
-    modifyJobSpectraS3Request.queryParams.Set("priority", priority.String())
+    modifyJobSpectraS3Request.Priority = priority
     return modifyJobSpectraS3Request
 }
 
-func (modifyJobSpectraS3Request *ModifyJobSpectraS3Request) WithName(name *string) *ModifyJobSpectraS3Request {
-    modifyJobSpectraS3Request.name = name
-    if name != nil {
-        modifyJobSpectraS3Request.queryParams.Set("name", *name)
-    } else {
-        modifyJobSpectraS3Request.queryParams.Set("name", "")
-    }
-    return modifyJobSpectraS3Request
-}
-
-
-func (ModifyJobSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.PUT
-}
-
-func (modifyJobSpectraS3Request *ModifyJobSpectraS3Request) Path() string {
-    return "/_rest_/job/" + modifyJobSpectraS3Request.jobId
-}
-
-func (modifyJobSpectraS3Request *ModifyJobSpectraS3Request) QueryParams() *url.Values {
-    return modifyJobSpectraS3Request.queryParams
-}
-
-func (ModifyJobSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (ModifyJobSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (ModifyJobSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

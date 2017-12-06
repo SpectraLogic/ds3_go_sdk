@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -25,7 +24,7 @@ type EjectStorageDomainBlobsSpectraS3Response struct {
 
 
 
-func NewEjectStorageDomainBlobsSpectraS3Response(webResponse networking.WebResponse) (*EjectStorageDomainBlobsSpectraS3Response, error) {
+func NewEjectStorageDomainBlobsSpectraS3Response(webResponse WebResponse) (*EjectStorageDomainBlobsSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {

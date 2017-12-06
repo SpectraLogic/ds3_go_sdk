@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -23,11 +22,11 @@ type CancelImportOnAllTapesSpectraS3Response struct {
     Headers *http.Header
 }
 
-func (cancelImportOnAllTapesSpectraS3Response *CancelImportOnAllTapesSpectraS3Response) parse(webResponse networking.WebResponse) error {
+func (cancelImportOnAllTapesSpectraS3Response *CancelImportOnAllTapesSpectraS3Response) parse(webResponse WebResponse) error {
         return parseResponsePayload(webResponse, cancelImportOnAllTapesSpectraS3Response.TapeFailureList)
 }
 
-func NewCancelImportOnAllTapesSpectraS3Response(webResponse networking.WebResponse) (*CancelImportOnAllTapesSpectraS3Response, error) {
+func NewCancelImportOnAllTapesSpectraS3Response(webResponse WebResponse) (*CancelImportOnAllTapesSpectraS3Response, error) {
     expectedStatusCodes := []int { 204, 207 }
 
     switch code := webResponse.StatusCode(); code {

@@ -13,48 +13,13 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type GetDataPolicyAclSpectraS3Request struct {
-    dataPolicyAcl string
-    queryParams *url.Values
+    DataPolicyAcl string
 }
 
 func NewGetDataPolicyAclSpectraS3Request(dataPolicyAcl string) *GetDataPolicyAclSpectraS3Request {
-    queryParams := &url.Values{}
-
     return &GetDataPolicyAclSpectraS3Request{
-        dataPolicyAcl: dataPolicyAcl,
-        queryParams: queryParams,
+        DataPolicyAcl: dataPolicyAcl,
     }
 }
 
-
-
-
-func (GetDataPolicyAclSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.GET
-}
-
-func (getDataPolicyAclSpectraS3Request *GetDataPolicyAclSpectraS3Request) Path() string {
-    return "/_rest_/data_policy_acl/" + getDataPolicyAclSpectraS3Request.dataPolicyAcl
-}
-
-func (getDataPolicyAclSpectraS3Request *GetDataPolicyAclSpectraS3Request) QueryParams() *url.Values {
-    return getDataPolicyAclSpectraS3Request.queryParams
-}
-
-func (GetDataPolicyAclSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (GetDataPolicyAclSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (GetDataPolicyAclSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

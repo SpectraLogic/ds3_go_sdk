@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -23,11 +22,11 @@ type GetTapePartitionWithFullDetailsSpectraS3Response struct {
     Headers *http.Header
 }
 
-func (getTapePartitionWithFullDetailsSpectraS3Response *GetTapePartitionWithFullDetailsSpectraS3Response) parse(webResponse networking.WebResponse) error {
+func (getTapePartitionWithFullDetailsSpectraS3Response *GetTapePartitionWithFullDetailsSpectraS3Response) parse(webResponse WebResponse) error {
         return parseResponsePayload(webResponse, &getTapePartitionWithFullDetailsSpectraS3Response.DetailedTapePartition)
 }
 
-func NewGetTapePartitionWithFullDetailsSpectraS3Response(webResponse networking.WebResponse) (*GetTapePartitionWithFullDetailsSpectraS3Response, error) {
+func NewGetTapePartitionWithFullDetailsSpectraS3Response(webResponse WebResponse) (*GetTapePartitionWithFullDetailsSpectraS3Response, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {

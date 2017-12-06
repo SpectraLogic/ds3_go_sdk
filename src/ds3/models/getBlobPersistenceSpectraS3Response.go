@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -25,7 +24,7 @@ type GetBlobPersistenceSpectraS3Response struct {
 
 
 
-func NewGetBlobPersistenceSpectraS3Response(webResponse networking.WebResponse) (*GetBlobPersistenceSpectraS3Response, error) {
+func NewGetBlobPersistenceSpectraS3Response(webResponse WebResponse) (*GetBlobPersistenceSpectraS3Response, error) {
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {

@@ -49,3 +49,11 @@ func (jobChunkClientProcessingOrderGuarantee JobChunkClientProcessingOrderGuaran
             return ""
     }
 }
+
+func (jobChunkClientProcessingOrderGuarantee JobChunkClientProcessingOrderGuarantee) StringPtr() *string {
+    if jobChunkClientProcessingOrderGuarantee == UNDEFINED {
+        return nil
+    }
+    result := jobChunkClientProcessingOrderGuarantee.String()
+    return &result
+}

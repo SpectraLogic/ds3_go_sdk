@@ -13,52 +13,15 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type PutGlobalBucketAclForUserSpectraS3Request struct {
-    permission BucketAclPermission
-    userId string
-    queryParams *url.Values
+    Permission BucketAclPermission
+    UserId string
 }
 
 func NewPutGlobalBucketAclForUserSpectraS3Request(permission BucketAclPermission, userId string) *PutGlobalBucketAclForUserSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("permission", permission.String())
-    queryParams.Set("user_id", userId)
-
     return &PutGlobalBucketAclForUserSpectraS3Request{
-        permission: permission,
-        userId: userId,
-        queryParams: queryParams,
+        Permission: permission,
+        UserId: userId,
     }
 }
 
-
-
-
-func (PutGlobalBucketAclForUserSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.POST
-}
-
-func (putGlobalBucketAclForUserSpectraS3Request *PutGlobalBucketAclForUserSpectraS3Request) Path() string {
-    return "/_rest_/bucket_acl"
-}
-
-func (putGlobalBucketAclForUserSpectraS3Request *PutGlobalBucketAclForUserSpectraS3Request) QueryParams() *url.Values {
-    return putGlobalBucketAclForUserSpectraS3Request.queryParams
-}
-
-func (PutGlobalBucketAclForUserSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (PutGlobalBucketAclForUserSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (PutGlobalBucketAclForUserSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}

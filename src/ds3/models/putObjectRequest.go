@@ -14,87 +14,53 @@
 package models
 
 import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
     "strings"
-    "strconv"
 )
 
 const ( AMZ_META_HEADER = "x-amz-meta-" )
 
 type PutObjectRequest struct {
-    bucketName string
-    objectName string
-    checksum networking.Checksum
-    content networking.ReaderWithSizeDecorator
-    headers *http.Header
-    job string
-    offset int64
-    queryParams *url.Values
+    BucketName string
+    ObjectName string
+    Checksum Checksum
+    Content ReaderWithSizeDecorator
+    Job *string
+    Metadata map[string]string
+    Offset *int64
 }
 
-func NewPutObjectRequest(bucketName string, objectName string, content networking.ReaderWithSizeDecorator) *PutObjectRequest {
-    queryParams := &url.Values{}
-
+func NewPutObjectRequest(bucketName string, objectName string, content ReaderWithSizeDecorator) *PutObjectRequest {
     return &PutObjectRequest{
-        bucketName: bucketName,
-        objectName: objectName,
-        content: content,
-        checksum: networking.NewNoneChecksum(),
-        headers: &http.Header{},
-        queryParams: queryParams,
+        BucketName: bucketName,
+        ObjectName: objectName,
+        Content: content,
+        Checksum: NewNoneChecksum(),
+        Metadata: make(map[string]string),
     }
 }
 
 func (putObjectRequest *PutObjectRequest) WithJob(job string) *PutObjectRequest {
-    putObjectRequest.job = job
-    putObjectRequest.queryParams.Set("job", job)
+    putObjectRequest.Job = &job
     return putObjectRequest
 }
+
 func (putObjectRequest *PutObjectRequest) WithOffset(offset int64) *PutObjectRequest {
-    putObjectRequest.offset = offset
-    putObjectRequest.queryParams.Set("offset", strconv.FormatInt(offset, 10))
+    putObjectRequest.Offset = &offset
     return putObjectRequest
 }
 
 
-
-func (PutObjectRequest) Verb() networking.HttpVerb {
-    return networking.PUT
-}
-
-func (putObjectRequest *PutObjectRequest) Path() string {
-    return "/" + putObjectRequest.bucketName + "/" + putObjectRequest.objectName
-}
-
-func (putObjectRequest *PutObjectRequest) QueryParams() *url.Values {
-    return putObjectRequest.queryParams
-}
-
-func (putObjectRequest *PutObjectRequest) WithChecksum(contentHash string, checksumType networking.ChecksumType) *PutObjectRequest {
-    putObjectRequest.checksum.ContentHash = contentHash
-    putObjectRequest.checksum.Type = checksumType
+func (putObjectRequest *PutObjectRequest) WithChecksum(contentHash string, checksumType ChecksumType) *PutObjectRequest {
+    putObjectRequest.Checksum.ContentHash = contentHash
+    putObjectRequest.Checksum.Type = checksumType
     return putObjectRequest
 }
 
-func (putObjectRequest *PutObjectRequest) GetChecksum() networking.Checksum {
-    return putObjectRequest.checksum
-}
-
-func (putObjectRequest *PutObjectRequest) WithMetaData(key string, value string) *PutObjectRequest {
+func (putObjectRequest *PutObjectRequest) WithMetaData(key string, values ...string) *PutObjectRequest {
     if strings.HasPrefix(strings.ToLower(key), AMZ_META_HEADER) {
-        putObjectRequest.headers.Add(strings.ToLower(key), value)
+        putObjectRequest.Metadata[key] = strings.Join(values, ",")
     } else {
-        putObjectRequest.headers.Add(strings.ToLower(AMZ_META_HEADER + key), value)
+        putObjectRequest.Metadata[strings.ToLower(AMZ_META_HEADER + key)] = strings.Join(values, ",")
     }
     return putObjectRequest
-}
-
-func (putObjectRequest *PutObjectRequest) Header() *http.Header {
-    return putObjectRequest.headers
-}
-
-func (putObjectRequest *PutObjectRequest) GetContentStream() networking.ReaderWithSizeDecorator {
-    return putObjectRequest.content
 }

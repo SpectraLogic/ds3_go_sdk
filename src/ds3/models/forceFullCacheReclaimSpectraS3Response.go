@@ -14,7 +14,6 @@
 package models
 
 import (
-    "ds3/networking"
     "net/http"
 )
 
@@ -25,7 +24,7 @@ type ForceFullCacheReclaimSpectraS3Response struct {
 
 
 
-func NewForceFullCacheReclaimSpectraS3Response(webResponse networking.WebResponse) (*ForceFullCacheReclaimSpectraS3Response, error) {
+func NewForceFullCacheReclaimSpectraS3Response(webResponse WebResponse) (*ForceFullCacheReclaimSpectraS3Response, error) {
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {

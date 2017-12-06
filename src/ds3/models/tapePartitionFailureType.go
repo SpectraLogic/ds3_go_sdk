@@ -88,3 +88,11 @@ func (tapePartitionFailureType TapePartitionFailureType) String() string {
             return ""
     }
 }
+
+func (tapePartitionFailureType TapePartitionFailureType) StringPtr() *string {
+    if tapePartitionFailureType == UNDEFINED {
+        return nil
+    }
+    result := tapePartitionFailureType.String()
+    return &result
+}

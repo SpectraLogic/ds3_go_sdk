@@ -13,76 +13,31 @@
 
 package models
 
-import (
-    "net/url"
-    "net/http"
-    "ds3/networking"
-)
-
 type EjectStorageDomainSpectraS3Request struct {
-    bucketId string
-    ejectLabel *string
-    ejectLocation *string
-    storageDomainId string
-    queryParams *url.Values
+    BucketId *string
+    EjectLabel *string
+    EjectLocation *string
+    StorageDomainId string
 }
 
 func NewEjectStorageDomainSpectraS3Request(storageDomainId string) *EjectStorageDomainSpectraS3Request {
-    queryParams := &url.Values{}
-    queryParams.Set("operation", "eject")
-    queryParams.Set("storage_domain_id", storageDomainId)
-
     return &EjectStorageDomainSpectraS3Request{
-        storageDomainId: storageDomainId,
-        queryParams: queryParams,
+        StorageDomainId: storageDomainId,
     }
 }
 
 func (ejectStorageDomainSpectraS3Request *EjectStorageDomainSpectraS3Request) WithBucketId(bucketId string) *EjectStorageDomainSpectraS3Request {
-    ejectStorageDomainSpectraS3Request.bucketId = bucketId
-    ejectStorageDomainSpectraS3Request.queryParams.Set("bucket_id", bucketId)
+    ejectStorageDomainSpectraS3Request.BucketId = &bucketId
     return ejectStorageDomainSpectraS3Request
 }
 
-func (ejectStorageDomainSpectraS3Request *EjectStorageDomainSpectraS3Request) WithEjectLabel(ejectLabel *string) *EjectStorageDomainSpectraS3Request {
-    ejectStorageDomainSpectraS3Request.ejectLabel = ejectLabel
-    if ejectLabel != nil {
-        ejectStorageDomainSpectraS3Request.queryParams.Set("eject_label", *ejectLabel)
-    } else {
-        ejectStorageDomainSpectraS3Request.queryParams.Set("eject_label", "")
-    }
-    return ejectStorageDomainSpectraS3Request
-}
-func (ejectStorageDomainSpectraS3Request *EjectStorageDomainSpectraS3Request) WithEjectLocation(ejectLocation *string) *EjectStorageDomainSpectraS3Request {
-    ejectStorageDomainSpectraS3Request.ejectLocation = ejectLocation
-    if ejectLocation != nil {
-        ejectStorageDomainSpectraS3Request.queryParams.Set("eject_location", *ejectLocation)
-    } else {
-        ejectStorageDomainSpectraS3Request.queryParams.Set("eject_location", "")
-    }
+func (ejectStorageDomainSpectraS3Request *EjectStorageDomainSpectraS3Request) WithEjectLabel(ejectLabel string) *EjectStorageDomainSpectraS3Request {
+    ejectStorageDomainSpectraS3Request.EjectLabel = &ejectLabel
     return ejectStorageDomainSpectraS3Request
 }
 
-
-func (EjectStorageDomainSpectraS3Request) Verb() networking.HttpVerb {
-    return networking.PUT
+func (ejectStorageDomainSpectraS3Request *EjectStorageDomainSpectraS3Request) WithEjectLocation(ejectLocation string) *EjectStorageDomainSpectraS3Request {
+    ejectStorageDomainSpectraS3Request.EjectLocation = &ejectLocation
+    return ejectStorageDomainSpectraS3Request
 }
 
-func (ejectStorageDomainSpectraS3Request *EjectStorageDomainSpectraS3Request) Path() string {
-    return "/_rest_/tape"
-}
-
-func (ejectStorageDomainSpectraS3Request *EjectStorageDomainSpectraS3Request) QueryParams() *url.Values {
-    return ejectStorageDomainSpectraS3Request.queryParams
-}
-
-func (EjectStorageDomainSpectraS3Request) GetChecksum() networking.Checksum {
-    return networking.NewNoneChecksum()
-}
-func (EjectStorageDomainSpectraS3Request) Header() *http.Header {
-    return &http.Header{}
-}
-
-func (EjectStorageDomainSpectraS3Request) GetContentStream() networking.ReaderWithSizeDecorator {
-    return nil
-}
