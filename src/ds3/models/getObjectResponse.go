@@ -32,7 +32,7 @@ func NewGetObjectResponse(webResponse WebResponse) (*GetObjectResponse, error) {
     case 200:
         return &GetObjectResponse{ Content: webResponse.Body(), Headers: webResponse.Header() }, nil
     case 206:
-        return &GetObjectResponse{Headers: webResponse.Header()}, nil
+        return &GetObjectResponse{ Content: webResponse.Body(), Headers: webResponse.Header() }, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }

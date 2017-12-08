@@ -323,6 +323,34 @@ func TestGetObject(t *testing.T) {
     ds3Testing.AssertString(t, "Response", stringResponse, string(bs))
 }
 
+func TestGetPartialObject(t *testing.T) {
+    stringResponse := "object contents"
+
+    // Create and run the mocked client.
+    requestHeaders := &http.Header{}
+    requestHeaders.Add("Range", "bytes=1-5")
+
+    response, err := mockedClient(t).
+        Expecting(HTTP_VERB_GET, "/bucketName/object", &url.Values{}, requestHeaders, nil).
+        Returning(206, stringResponse, nil).
+        GetObject(models.NewGetObjectRequest("bucketName", "object").WithRange(1, 5))
+
+    // Check the error result.
+    ds3Testing.AssertNilError(t, err)
+
+    // Check the response value.
+    if response == nil {
+        t.Fatal("Response was unexpectedly nil.")
+    }
+    if response.Content == nil {
+        t.Fatal("Response content was unexpectedly nil.")
+    }
+    defer response.Content.Close()
+    bs, readErr := ioutil.ReadAll(response.Content)
+    ds3Testing.AssertNilError(t, readErr)
+    ds3Testing.AssertString(t, "Response", stringResponse, string(bs))
+}
+
 func TestGetObjectRange(t *testing.T) {
     stringResponse := "object contents"
     requestHeaders := &http.Header{"Range": []string{"bytes=20-179"}}
