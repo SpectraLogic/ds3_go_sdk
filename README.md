@@ -25,7 +25,7 @@ Installing with GB
 ------------------
 
 The Go SDK must be installed under `$GOPATH/src/spectra`, where `$GOPATH` denotes the location of the Go workspace, and `src` denotes the location of source files within the workspace.
-For information regarding Go workspace, see [Golang Wrokspaces](https://golang.org/doc/code.html#Workspaces).
+For information regarding Go workspace, see [Golang Workspaces](https://golang.org/doc/code.html#Workspaces).
 
 Install the latest version of the Go SDK in the `src/spectra` folder.  You can clone it with the following command:
 ```bash
