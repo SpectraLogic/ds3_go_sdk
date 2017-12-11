@@ -24,8 +24,12 @@ The latest documentation is located at [Go SDK Documentation](https://spectralog
 Installing with GB
 ------------------
 
-Install the latest version of the Go SDK.  You can clone it with the following command:
+The Go SDK must be installed under `$GOPATH/src/spectra`, where `$GOPATH` denotes the location of the Go workspace, and `src` denotes the location of source files within the workspace.
+For information regarding Go workspace, see [Golang Wrokspaces](https://golang.org/doc/code.html#Workspaces).
+
+Install the latest version of the Go SDK in the `src/spectra` folder.  You can clone it with the following command:
 ```bash
+cd $GOPATH/src/spectra
 git clone https://github.com/SpectraLogic/ds3_go_sdk.git
 ```
 
@@ -48,13 +52,13 @@ In the ds3_go_sdk you create a `Client` instance through the setting of the foll
 
 Examples
 --------
-All examples are listed in the [samples](src/samples/) module.
+All examples are listed in the [samples](samples/) module.
 
-* [How to use get service to list buckets](src/samples/getServiceSample.go)
-* [How to create a bucket](src/samples/getBucketSample.go)
-* [How to get a single object using a naked S3 get](src/samples/getObjectSample.go)
-* [How to use bulk put to send multiple files to the BP efficiently](src/samples/putBulkSample.go)
-* [How to use bulk get to retrieve multiple files from the BP efficiently](src/samples/getBulkSample.go)
+* [How to use get service to list buckets](samples/getServiceSample.go)
+* [How to create a bucket](samples/getBucketSample.go)
+* [How to get a single object using a naked S3 get](samples/getObjectSample.go)
+* [How to use bulk put to send multiple files to the BP efficiently](samples/putBulkSample.go)
+* [How to use bulk get to retrieve multiple files from the BP efficiently](samples/getBulkSample.go)
 
 Running Tests with GB
 ---------------------
