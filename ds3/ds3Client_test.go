@@ -328,12 +328,16 @@ func TestGetPartialObject(t *testing.T) {
 
     // Create and run the mocked client.
     requestHeaders := &http.Header{}
-    requestHeaders.Add("Range", "bytes=1-5")
+    requestHeaders.Add("Range", "bytes=1-5,7-8,20-500")
 
     response, err := mockedClient(t).
         Expecting(HTTP_VERB_GET, "/bucketName/object", &url.Values{}, requestHeaders, nil).
         Returning(206, stringResponse, nil).
-        GetObject(models.NewGetObjectRequest("bucketName", "object").WithRange(1, 5))
+        GetObject(models.NewGetObjectRequest("bucketName", "object").
+            WithRanges(
+                models.Range{Start: 1, End: 5},
+                models.Range{Start: 7, End: 8},
+                models.Range{Start: 20, End: 500}))
 
     // Check the error result.
     ds3Testing.AssertNilError(t, err)
@@ -357,7 +361,7 @@ func TestGetObjectRange(t *testing.T) {
 
     // Create and run the mocked client.
     request := models.NewGetObjectRequest("bucketName", "object").
-            WithRange(20, 179)
+            WithRanges(models.Range{Start: 20, End: 179})
 
     response, err := mockedClient(t).
         Expecting(HTTP_VERB_GET, "/bucketName/object", &url.Values{}, requestHeaders, nil).
