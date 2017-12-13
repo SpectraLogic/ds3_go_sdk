@@ -15,10 +15,12 @@ package models
 
 import (
     "fmt"
+    "strings"
 )
 
-type rangeHeader struct {
-    start, end int
+type Range struct {
+    Start int64
+    End int64
 }
 
 type GetObjectRequest struct {
@@ -56,7 +58,11 @@ func (getObjectRequest *GetObjectRequest) WithChecksum(contentHash string, check
     return getObjectRequest
 }
 
-func (getObjectRequest *GetObjectRequest) WithRange(start, end int) *GetObjectRequest {
-    getObjectRequest.Metadata["Range"] = fmt.Sprintf("bytes=%d-%d", start, end)
+func (getObjectRequest *GetObjectRequest) WithRanges(ranges ...Range) *GetObjectRequest {
+    var rangeElements []string
+    for _, cur := range ranges {
+        rangeElements = append(rangeElements, fmt.Sprintf("%d-%d", cur.Start, cur.End))
+    }
+    getObjectRequest.Metadata["Range"] = fmt.Sprintf("bytes=%s", strings.Join(rangeElements[:], ","))
     return getObjectRequest
 }
