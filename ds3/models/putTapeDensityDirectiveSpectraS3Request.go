@@ -16,10 +16,10 @@ package models
 type PutTapeDensityDirectiveSpectraS3Request struct {
     Density TapeDriveType
     PartitionId string
-    TapeType TapeType
+    TapeType string
 }
 
-func NewPutTapeDensityDirectiveSpectraS3Request(density TapeDriveType, partitionId string, tapeType TapeType) *PutTapeDensityDirectiveSpectraS3Request {
+func NewPutTapeDensityDirectiveSpectraS3Request(density TapeDriveType, partitionId string, tapeType string) *PutTapeDensityDirectiveSpectraS3Request {
     return &PutTapeDensityDirectiveSpectraS3Request{
         Density: density,
         PartitionId: partitionId,

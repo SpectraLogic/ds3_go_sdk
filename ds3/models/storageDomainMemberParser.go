@@ -31,7 +31,7 @@ func (storageDomainMember *StorageDomainMember) parse(xmlNode *XmlNode, aggErr *
         case "TapePartitionId":
             storageDomainMember.TapePartitionId = parseNullableString(child.Content)
         case "TapeType":
-            parseNullableEnum(child.Content, storageDomainMember.TapeType, aggErr)
+            storageDomainMember.TapeType = parseNullableString(child.Content)
         case "WritePreference":
             parseEnum(child.Content, &storageDomainMember.WritePreference, aggErr)
         default:

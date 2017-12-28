@@ -20,7 +20,7 @@ type GetBucketCapacitySummarySpectraS3Request struct {
     PoolType PoolType
     StorageDomainId string
     TapeState TapeState
-    TapeType TapeType
+    TapeType *string
 }
 
 func NewGetBucketCapacitySummarySpectraS3Request(bucketId string, storageDomainId string) *GetBucketCapacitySummarySpectraS3Request {
@@ -50,8 +50,8 @@ func (getBucketCapacitySummarySpectraS3Request *GetBucketCapacitySummarySpectraS
     return getBucketCapacitySummarySpectraS3Request
 }
 
-func (getBucketCapacitySummarySpectraS3Request *GetBucketCapacitySummarySpectraS3Request) WithTapeType(tapeType TapeType) *GetBucketCapacitySummarySpectraS3Request {
-    getBucketCapacitySummarySpectraS3Request.TapeType = tapeType
+func (getBucketCapacitySummarySpectraS3Request *GetBucketCapacitySummarySpectraS3Request) WithTapeType(tapeType string) *GetBucketCapacitySummarySpectraS3Request {
+    getBucketCapacitySummarySpectraS3Request.TapeType = &tapeType
     return getBucketCapacitySummarySpectraS3Request
 }
 

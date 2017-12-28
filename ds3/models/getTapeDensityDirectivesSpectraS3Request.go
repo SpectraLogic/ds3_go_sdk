@@ -20,7 +20,7 @@ type GetTapeDensityDirectivesSpectraS3Request struct {
     PageOffset *int
     PageStartMarker *string
     PartitionId *string
-    TapeType TapeType
+    TapeType *string
 }
 
 func NewGetTapeDensityDirectivesSpectraS3Request() *GetTapeDensityDirectivesSpectraS3Request {
@@ -58,8 +58,8 @@ func (getTapeDensityDirectivesSpectraS3Request *GetTapeDensityDirectivesSpectraS
     return getTapeDensityDirectivesSpectraS3Request
 }
 
-func (getTapeDensityDirectivesSpectraS3Request *GetTapeDensityDirectivesSpectraS3Request) WithTapeType(tapeType TapeType) *GetTapeDensityDirectivesSpectraS3Request {
-    getTapeDensityDirectivesSpectraS3Request.TapeType = tapeType
+func (getTapeDensityDirectivesSpectraS3Request *GetTapeDensityDirectivesSpectraS3Request) WithTapeType(tapeType string) *GetTapeDensityDirectivesSpectraS3Request {
+    getTapeDensityDirectivesSpectraS3Request.TapeType = &tapeType
     return getTapeDensityDirectivesSpectraS3Request
 }
 

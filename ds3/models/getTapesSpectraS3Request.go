@@ -33,7 +33,7 @@ type GetTapesSpectraS3Request struct {
     SortBy *string
     State TapeState
     StorageDomainId *string
-    TapeType TapeType
+    String *string
     VerifyPending Priority
     WriteProtected *bool
 }
@@ -138,8 +138,8 @@ func (getTapesSpectraS3Request *GetTapesSpectraS3Request) WithStorageDomainId(st
     return getTapesSpectraS3Request
 }
 
-func (getTapesSpectraS3Request *GetTapesSpectraS3Request) WithTapeType(tapeType TapeType) *GetTapesSpectraS3Request {
-    getTapesSpectraS3Request.TapeType = tapeType
+func (getTapesSpectraS3Request *GetTapesSpectraS3Request) WithString(string string) *GetTapesSpectraS3Request {
+    getTapesSpectraS3Request.String = &string
     return getTapesSpectraS3Request
 }
 

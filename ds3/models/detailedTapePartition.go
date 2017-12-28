@@ -25,5 +25,5 @@ type DetailedTapePartition struct {
     SerialId *string
     SerialNumber *string
     State TapePartitionState
-    TapeTypes []TapeType
+    TapeTypes []string
 }

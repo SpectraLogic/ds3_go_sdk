@@ -22,7 +22,7 @@ type GetStorageDomainMembersSpectraS3Request struct {
     State StorageDomainMemberState
     StorageDomainId *string
     TapePartitionId *string
-    TapeType TapeType
+    TapeType *string
     WritePreference WritePreferenceLevel
 }
 
@@ -71,8 +71,8 @@ func (getStorageDomainMembersSpectraS3Request *GetStorageDomainMembersSpectraS3R
     return getStorageDomainMembersSpectraS3Request
 }
 
-func (getStorageDomainMembersSpectraS3Request *GetStorageDomainMembersSpectraS3Request) WithTapeType(tapeType TapeType) *GetStorageDomainMembersSpectraS3Request {
-    getStorageDomainMembersSpectraS3Request.TapeType = tapeType
+func (getStorageDomainMembersSpectraS3Request *GetStorageDomainMembersSpectraS3Request) WithTapeType(tapeType string) *GetStorageDomainMembersSpectraS3Request {
+    getStorageDomainMembersSpectraS3Request.TapeType = &tapeType
     return getStorageDomainMembersSpectraS3Request
 }
 

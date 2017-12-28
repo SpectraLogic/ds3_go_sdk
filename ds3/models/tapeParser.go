@@ -67,7 +67,7 @@ func (tape *Tape) parse(xmlNode *XmlNode, aggErr *AggregateError) {
         case "TotalRawCapacity":
             tape.TotalRawCapacity = parseNullableInt64(child.Content, aggErr)
         case "Type":
-            parseEnum(child.Content, &tape.Type, aggErr)
+            tape.Type = parseString(child.Content)
         case "VerifyPending":
             parseNullableEnum(child.Content, tape.VerifyPending, aggErr)
         case "WriteProtected":

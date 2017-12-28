@@ -1398,7 +1398,7 @@ func TestGetTapesSpectraS3(t *testing.T) {
     ds3Testing.AssertNonNilStringPtr(t, "SerialNumber", "HP-W130501213", tape.SerialNumber)
     ds3Testing.AssertString(t, "State", models.TAPE_STATE_NORMAL.String(), tape.State.String())
     ds3Testing.AssertNonNilInt64Ptr(t, "TotalRawCapacity", 2408088338432, tape.TotalRawCapacity)
-    ds3Testing.AssertString(t, "Type", models.TAPE_TYPE_LTO6.String(), tape.Type.String())
+    ds3Testing.AssertString(t, "Type", "LTO6", tape.Type)
     ds3Testing.AssertBool(t, "WriteProtected", false, tape.WriteProtected)
 
     ds3Testing.AssertString(t, "Page-Truncated header", "2", response.Headers.Get("Page-Truncated"))
@@ -1464,7 +1464,7 @@ func TestGetTapeSpectraS3(t *testing.T) {
     ds3Testing.AssertNonNilStringPtr(t, "SerialNumber", "HP-W130501213", tape.SerialNumber)
     ds3Testing.AssertString(t, "State", models.TAPE_STATE_NORMAL.String(), tape.State.String())
     ds3Testing.AssertNonNilInt64Ptr(t, "TotalRawCapacity", 2408088338432, tape.TotalRawCapacity)
-    ds3Testing.AssertString(t, "Type", models.TAPE_TYPE_LTO6.String(), tape.Type.String())
+    ds3Testing.AssertString(t, "Type", "LTO6", tape.Type)
     ds3Testing.AssertBool(t, "WriteProtected", false, tape.WriteProtected)
 }
 
@@ -1905,9 +1905,7 @@ func TestVerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3(t *testing.T)
     ds3Testing.AssertStringPtrIsNil(t, "StorageDomainId", tape.StorageDomainId)
     ds3Testing.AssertBool(t, "TakeOwnershipPending", false, tape.TakeOwnershipPending)
     ds3Testing.AssertNonNilInt64Ptr(t, "TotalRawCapacity", 20000, tape.TotalRawCapacity)
-    if tape.Type != models.TAPE_TYPE_LTO5 {
-        t.Fatalf("Expected type 'TAPE_TYPE_LTO5' but got '%s'.", tape.Type.String())
-    }
+    ds3Testing.AssertString(t, "TapeType", "LTO5", tape.Type)
     if tape.VerifyPending != nil {
         t.Fatalf("Expected Verify Pending to be 'nil' but was '%s'.", tape.VerifyPending.String())
     }
