@@ -45,9 +45,8 @@ func (detailedTapePartition *DetailedTapePartition) parse(xmlNode *XmlNode, aggE
         case "State":
             parseEnum(child.Content, &detailedTapePartition.State, aggErr)
         case "TapeTypes":
-            var model TapeType
-            parseEnum(child.Content, &model, aggErr)
-            detailedTapePartition.TapeTypes = append(detailedTapePartition.TapeTypes, model)
+            var str = parseString(child.Content)
+            detailedTapePartition.TapeTypes = append(detailedTapePartition.TapeTypes, str)
         default:
             log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing DetailedTapePartition.", child.XMLName.Local)
         }

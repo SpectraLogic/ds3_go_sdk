@@ -16,11 +16,11 @@ package models
 type PutTapeStorageDomainMemberSpectraS3Request struct {
     StorageDomainId string
     TapePartitionId string
-    TapeType TapeType
+    TapeType string
     WritePreference WritePreferenceLevel
 }
 
-func NewPutTapeStorageDomainMemberSpectraS3Request(storageDomainId string, tapePartitionId string, tapeType TapeType) *PutTapeStorageDomainMemberSpectraS3Request {
+func NewPutTapeStorageDomainMemberSpectraS3Request(storageDomainId string, tapePartitionId string, tapeType string) *PutTapeStorageDomainMemberSpectraS3Request {
     return &PutTapeStorageDomainMemberSpectraS3Request{
         StorageDomainId: storageDomainId,
         TapePartitionId: tapePartitionId,

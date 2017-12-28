@@ -37,7 +37,7 @@ type Tape struct {
     StorageDomainId *string
     TakeOwnershipPending bool
     TotalRawCapacity *int64
-    Type TapeType
+    Type string
     VerifyPending *Priority
     WriteProtected bool
 }

@@ -19,6 +19,6 @@ type StorageDomainMember struct {
     State StorageDomainMemberState
     StorageDomainId string
     TapePartitionId *string
-    TapeType *TapeType
+    TapeType *string
     WritePreference WritePreferenceLevel
 }

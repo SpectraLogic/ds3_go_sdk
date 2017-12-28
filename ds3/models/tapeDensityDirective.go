@@ -17,5 +17,5 @@ type TapeDensityDirective struct {
     Density TapeDriveType
     Id string
     PartitionId string
-    TapeType TapeType
+    TapeType string
 }

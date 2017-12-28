@@ -1018,7 +1018,7 @@ func (client *Client) PutTapeStorageDomainMemberSpectraS3(request *models.PutTap
         WithPath("/_rest_/storage_domain_member").
         WithQueryParam("storage_domain_id", request.StorageDomainId).
         WithQueryParam("tape_partition_id", request.TapePartitionId).
-        WithQueryParam("tape_type", request.TapeType.String()).
+        WithQueryParam("tape_type", request.TapeType).
         WithOptionalQueryParam("write_preference", networking.InterfaceToStrPtr(request.WritePreference)).
         Build(client.connectionInfo)
 
@@ -1045,7 +1045,7 @@ func (client *Client) PutTapeDensityDirectiveSpectraS3(request *models.PutTapeDe
         WithPath("/_rest_/tape_density_directive").
         WithQueryParam("density", request.Density.String()).
         WithQueryParam("partition_id", request.PartitionId).
-        WithQueryParam("tape_type", request.TapeType.String()).
+        WithQueryParam("tape_type", request.TapeType).
         Build(client.connectionInfo)
 
     if err != nil {

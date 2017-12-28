@@ -409,7 +409,7 @@ func (client *Client) GetBucketCapacitySummarySpectraS3(request *models.GetBucke
         WithOptionalQueryParam("pool_state", networking.InterfaceToStrPtr(request.PoolState)).
         WithOptionalQueryParam("pool_type", networking.InterfaceToStrPtr(request.PoolType)).
         WithOptionalQueryParam("tape_state", networking.InterfaceToStrPtr(request.TapeState)).
-        WithOptionalQueryParam("tape_type", networking.InterfaceToStrPtr(request.TapeType)).
+        WithOptionalQueryParam("tape_type", request.TapeType).
         Build(client.connectionInfo)
 
     if err != nil {
@@ -439,7 +439,7 @@ func (client *Client) GetStorageDomainCapacitySummarySpectraS3(request *models.G
         WithOptionalQueryParam("pool_state", networking.InterfaceToStrPtr(request.PoolState)).
         WithOptionalQueryParam("pool_type", networking.InterfaceToStrPtr(request.PoolType)).
         WithOptionalQueryParam("tape_state", networking.InterfaceToStrPtr(request.TapeState)).
-        WithOptionalQueryParam("tape_type", networking.InterfaceToStrPtr(request.TapeType)).
+        WithOptionalQueryParam("tape_type", request.TapeType).
         Build(client.connectionInfo)
 
     if err != nil {
@@ -468,7 +468,7 @@ func (client *Client) GetSystemCapacitySummarySpectraS3(request *models.GetSyste
         WithOptionalQueryParam("pool_state", networking.InterfaceToStrPtr(request.PoolState)).
         WithOptionalQueryParam("pool_type", networking.InterfaceToStrPtr(request.PoolType)).
         WithOptionalQueryParam("tape_state", networking.InterfaceToStrPtr(request.TapeState)).
-        WithOptionalQueryParam("tape_type", networking.InterfaceToStrPtr(request.TapeType)).
+        WithOptionalQueryParam("tape_type", request.TapeType).
         Build(client.connectionInfo)
 
     if err != nil {
@@ -2901,7 +2901,7 @@ func (client *Client) GetStorageDomainMembersSpectraS3(request *models.GetStorag
         WithOptionalQueryParam("state", networking.InterfaceToStrPtr(request.State)).
         WithOptionalQueryParam("storage_domain_id", request.StorageDomainId).
         WithOptionalQueryParam("tape_partition_id", request.TapePartitionId).
-        WithOptionalQueryParam("tape_type", networking.InterfaceToStrPtr(request.TapeType)).
+        WithOptionalQueryParam("tape_type", request.TapeType).
         WithOptionalQueryParam("write_preference", networking.InterfaceToStrPtr(request.WritePreference)).
         Build(client.connectionInfo)
 
@@ -3151,7 +3151,7 @@ func (client *Client) GetTapeDensityDirectivesSpectraS3(request *models.GetTapeD
         WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
         WithOptionalQueryParam("partition_id", request.PartitionId).
-        WithOptionalQueryParam("tape_type", networking.InterfaceToStrPtr(request.TapeType)).
+        WithOptionalQueryParam("tape_type", request.TapeType).
         Build(client.connectionInfo)
 
     if err != nil {
@@ -3511,7 +3511,7 @@ func (client *Client) GetTapesSpectraS3(request *models.GetTapesSpectraS3Request
         WithOptionalQueryParam("sort_by", request.SortBy).
         WithOptionalQueryParam("state", networking.InterfaceToStrPtr(request.State)).
         WithOptionalQueryParam("storage_domain_id", request.StorageDomainId).
-        WithOptionalQueryParam("type", networking.InterfaceToStrPtr(request.TapeType)).
+        WithOptionalQueryParam("type", request.String).
         WithOptionalQueryParam("verify_pending", networking.InterfaceToStrPtr(request.VerifyPending)).
         WithOptionalQueryParam("write_protected", networking.BoolPtrToStrPtr(request.WriteProtected)).
         Build(client.connectionInfo)
