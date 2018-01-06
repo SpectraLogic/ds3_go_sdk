@@ -25,7 +25,7 @@ func getObject(client *ds3.Client, args *Arguments) error {
     // Build the request.
     request := models.NewGetObjectRequest(args.Bucket, args.Key)
     if args.End > 0 {
-        request.WithRange(args.Start, args.End)
+        request.WithRanges(models.Range{ int64(args.Start), int64(args.End) })
     }
 
     // Perform the request.

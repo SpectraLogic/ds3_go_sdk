@@ -108,14 +108,14 @@ func (builder *HttpRequestBuilder) Build(conn *ConnectionInfo) (*http.Request, e
 
     builder.signatureFields.Date = getCurrentTime()
 
-    authHeaderVal := buildAuthHeaderValue(conn.Credentials, &builder.signatureFields)
+    authHeaderVal := builder.signatureFields.BuildAuthHeaderValue(conn.Credentials)
 
     // Set the http request headers such as authorization and date.
     return builder.addHttpRequestHeaders(httpRequest, authHeaderVal)
 }
 
 func (builder *HttpRequestBuilder) buildUrl(conn *ConnectionInfo) string {
-    httpUrl := conn.Endpoint
+    var httpUrl url.URL = *conn.Endpoint
     httpUrl.Path = builder.signatureFields.Path
     httpUrl.RawQuery = encodeQueryParams(builder.queryParams)
     return httpUrl.String()

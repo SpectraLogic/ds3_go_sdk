@@ -9,10 +9,10 @@ import (
     "os"
 )
 
-const endpointEnv = "DS3_ENDPOINT"
-const accessKeyEnv = "DS3_ACCESS_KEY"
-const secretKeyEnv = "DS3_SECRET_KEY"
-const proxyEnv = "DS3_PROXY"
+const EndpointEnv = "DS3_ENDPOINT"
+const AccessKeyEnv = "DS3_ACCESS_KEY"
+const SecretKeyEnv = "DS3_SECRET_KEY"
+const ProxyEnv = "DS3_PROXY"
 
 // Creates a client from cli arguments
 func FromArgs(args *commands.Arguments) (*ds3.Client, error) {
@@ -22,10 +22,10 @@ func FromArgs(args *commands.Arguments) (*ds3.Client, error) {
 // Creates a client from environment variables
 func FromEnv() (*ds3.Client, error) {
     //Retrieve the environment variables
-    endpoint := os.Getenv(endpointEnv)
-    accessKey := os.Getenv(accessKeyEnv)
-    secretKey := os.Getenv(secretKeyEnv)
-    proxy := os.Getenv(proxyEnv)
+    endpoint := os.Getenv(EndpointEnv)
+    accessKey := os.Getenv(AccessKeyEnv)
+    secretKey := os.Getenv(SecretKeyEnv)
+    proxy := os.Getenv(ProxyEnv)
 
     // Validate required arguments and create client if all required values are present
     switch {
