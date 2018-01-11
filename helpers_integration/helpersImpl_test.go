@@ -40,7 +40,7 @@ func TestPutBulk(t *testing.T) {
     writeObjects, err := getTestBooksAsWriteObjects()
     ds3Testing.AssertNilError(t, err)
 
-    err = helper.WriteObjects(*writeObjects, testBucket, strategy)
+    err = helper.PutObjects(*writeObjects, testBucket, strategy)
     ds3Testing.AssertNilError(t, err)
 
     // verify all books are on BP
@@ -67,12 +67,12 @@ func TestPutBulkBlobSpanningChunksRandomAccess(t *testing.T) {
 
     writeObj, err := getTestWriteObjectRandomAccess(objName, path + objName)
 
-    var writeObjects []helpers.WriteObject
+    var writeObjects []helpers.PutObject
     writeObjects = append(writeObjects, *writeObj)
 
     ds3Testing.AssertNilError(t, err)
 
-    err = helper.WriteObjects(writeObjects, testBucket, strategy)
+    err = helper.PutObjects(writeObjects, testBucket, strategy)
     ds3Testing.AssertNilError(t, err)
 
 
@@ -90,12 +90,12 @@ func TestPutBulkBlobSpanningChunksStreamAccess(t *testing.T) {
 
     writeObj, err := getTestWriteObjectStreamAccess(objName, path + objName)
 
-    var writeObjects []helpers.WriteObject
+    var writeObjects []helpers.PutObject
     writeObjects = append(writeObjects, *writeObj)
 
     ds3Testing.AssertNilError(t, err)
 
-    err = helper.WriteObjects(writeObjects, testBucket, strategy)
+    err = helper.PutObjects(writeObjects, testBucket, strategy)
     ds3Testing.AssertNilError(t, err)
 
     testutils.VerifyFilesOnBP(t, testBucket, []string {objName}, path, client)

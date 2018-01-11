@@ -9,16 +9,16 @@ type Consumer interface {
 }
 
 type putConsumer struct {
-    queue *chan TransferOperation
-    wg *sync.WaitGroup
-    maxPutsPerJob int
+    queue          *chan TransferOperation
+    wg             *sync.WaitGroup
+    maxConcurrency int
 }
 
-func newPutConsumer(queue *chan TransferOperation, wg *sync.WaitGroup, maxPutsPerJob int) *putConsumer {
+func newPutConsumer(queue *chan TransferOperation, wg *sync.WaitGroup, maxConcurrency int) *putConsumer {
     return &putConsumer{
-        queue:queue,
-        wg:wg,
-        maxPutsPerJob:maxPutsPerJob,
+        queue:          queue,
+        wg:             wg,
+        maxConcurrency: maxConcurrency,
     }
 }
 
@@ -29,7 +29,7 @@ func performTransfer(operation *TransferOperation, sem *chan int, wg *sync.WaitG
 }
 
 func (pc *putConsumer) run() {
-    sem := make(chan int, pc.maxPutsPerJob) // semaphore for controlling max number of transfer operations in flight per job
+    sem := make(chan int, pc.maxConcurrency) // semaphore for controlling max number of transfer operations in flight per job
     for {
         nextOp, ok := <- *pc.queue
         if ok {

@@ -6,27 +6,33 @@ import (
     "io"
 )
 
-type WriteObject struct {
+type PutObject struct {
     PutObject      models.Ds3PutObject
-    ChannelBuilder ChannelBuilder
+    ChannelBuilder ReadChannelBuilder
 }
 
-type ReadObject struct {
+type GetObject struct {
     GetObject      models.Ds3GetObject
-    ChannelBuilder ChannelBuilder
+    ChannelBuilder WriteChannelBuilder
 }
 
-type ChannelBuilder interface {
+type ReadChannelBuilder interface {
     IsChannelAvailable(offset int64) bool
     GetChannel(offset int64) (reader io.ReadCloser, err error)
     OnDone() // Determines what a given blob does when it finishes transferring
 }
 
+type WriteChannelBuilder interface {
+    IsChannelAvailable(offset int64) bool
+    GetChannel(offset int64) (reader io.WriteCloser, err error)
+    OnDone() // Determines what a given blob does when it finishes transferring
+}
+
 type HelperInterface interface {
     ListObjectsFromBucket(bucketName string) []models.S3Object
-    ListObjectsFromDirectory(directoryName string) []WriteObject
-    WriteObjects(objects []WriteObject, bucketName string, strategy WriteTransferStrategy) (error) //todo return future
-    ReadObjects(bucketName string, objects[]ReadObject, strategy ReadTransferStrategy) (error)     //todo return future
+    ListObjectsFromDirectory(directoryName string) []PutObject
+    PutObjects(objects []PutObject, bucketName string, strategy WriteTransferStrategy) (error) //todo return future
+    GetObjects(bucketName string, objects []GetObject, strategy ReadTransferStrategy) (error)   //todo return future
 }
 
 type HelperImpl struct {
@@ -42,18 +48,19 @@ func (h *HelperImpl) ListObjectsFromBucket(bucketName string) []models.S3Object 
     panic("not implemented yet")
 }
 
-func (h *HelperImpl) ListObjectsFromDirectory(directoryName string) []WriteObject {
+func (h *HelperImpl) ListObjectsFromDirectory(directoryName string) []PutObject {
     //todo
     panic("not implemented yet")
 }
 
-func (h *HelperImpl) WriteObjects(writeObjects []WriteObject, bucketName string, strategy WriteTransferStrategy) (error) {
-    transfernator := newPutTransfernator(bucketName, &writeObjects, &strategy, h.client)
+func (h *HelperImpl) PutObjects(objects []PutObject, bucketName string, strategy WriteTransferStrategy) (error) {
+    transfernator := newPutTransfernator(bucketName, &objects, &strategy, h.client)
     err := transfernator.transfer()
     return err
 }
 
-func (h *HelperImpl) ReadObjects(bucketName string, objects[]ReadObject, strategy ReadTransferStrategy) (error) {
-    //todo
-    panic("not implemented yet")
+func (h *HelperImpl) GetObjects(bucketName string, objects []GetObject, strategy ReadTransferStrategy) (error) {
+    transfernator := newGetTransfernator(bucketName, &objects, &strategy, h.client)
+    err := transfernator.transfer()
+    return err
 }

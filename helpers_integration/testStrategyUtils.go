@@ -42,7 +42,7 @@ type testStreamAccessChannelBuilder struct {
     channelCounter channelCounter
 }
 
-// Used as a thread safe counter to keep track of the current number of channels in use for a given ChannelBuilder
+// Used as a thread safe counter to keep track of the current number of channels in use for a given ReadChannelBuilder
 type channelCounter struct {
     mux sync.RWMutex
     numChan int
@@ -94,7 +94,7 @@ func (sb *testStreamAccessChannelBuilder) OnDone() {
     sb.channelCounter.decrement() // decrement semaphore
 }
 
-func getTestWriteObjectStreamAccess(objectName string, path string) (*helpers.WriteObject, error) {
+func getTestWriteObjectStreamAccess(objectName string, path string) (*helpers.PutObject, error) {
     fileInfo, err := os.Stat(path)
     if err != nil {
         return nil, err
@@ -104,22 +104,22 @@ func getTestWriteObjectStreamAccess(objectName string, path string) (*helpers.Wr
     if err != nil {
         return nil, err
     }
-    curWriteObj := helpers.WriteObject{
+    curWriteObj := helpers.PutObject{
         PutObject:models.Ds3PutObject{Name:objectName,Size:size},
         ChannelBuilder:&testStreamAccessChannelBuilder{f:f},
     }
     return &curWriteObj, nil
 }
 
-// Retrieves a file with the specified path, and creates a WriteObject using the specified name
-func getTestWriteObjectRandomAccess(objectName string, path string) (*helpers.WriteObject, error) {
+// Retrieves a file with the specified path, and creates a PutObject using the specified name
+func getTestWriteObjectRandomAccess(objectName string, path string) (*helpers.PutObject, error) {
     channelBuilder := testRandomAccessChannelBuilder{name:path}
     fileInfo, err := os.Stat(path)
     if err != nil {
         return nil, err
     }
     size := fileInfo.Size()
-    curWriteObj := helpers.WriteObject{
+    curWriteObj := helpers.PutObject{
         PutObject:models.Ds3PutObject{Name:objectName,Size:size},
         ChannelBuilder:&channelBuilder,
     }
@@ -127,8 +127,8 @@ func getTestWriteObjectRandomAccess(objectName string, path string) (*helpers.Wr
 }
 
 // Retrieves the test books as write objects with random access
-func getTestBooksAsWriteObjects() (*[]helpers.WriteObject, error) {
-    var writeObjects []helpers.WriteObject
+func getTestBooksAsWriteObjects() (*[]helpers.PutObject, error) {
+    var writeObjects []helpers.PutObject
     for _, book := range testutils.BookTitles {
         curWriteObj, err := getTestWriteObjectRandomAccess(book, testutils.BookPath+book)
         if err != nil {
@@ -149,8 +149,8 @@ func newTestTransferStrategy() helpers.WriteTransferStrategy {
 }
 
 // Creates a simple blob strategy for testing
-func newTestBlobStrategy() *helpers.SimpleWriteBlobStrategy {
+func newTestBlobStrategy() *helpers.SimpleBlobStrategy {
     var delay time.Duration = time.Second * 5
     var maxTransferGoroutines = 5
-    return &helpers.SimpleWriteBlobStrategy{Delay:delay, MaxTransferGoroutines:maxTransferGoroutines}
+    return &helpers.SimpleBlobStrategy{Delay:delay, MaxTransferGoroutines:maxTransferGoroutines}
 }

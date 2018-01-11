@@ -8,12 +8,12 @@ import (
 
 type putTransfernator struct {
     BucketName string
-    WriteObjects *[]WriteObject
+    WriteObjects *[]PutObject
     Strategy *WriteTransferStrategy
     Client *ds3.Client
 }
 
-func newPutTransfernator(bucketName string, writeObjects *[]WriteObject, strategy *WriteTransferStrategy, client *ds3.Client) *putTransfernator {
+func newPutTransfernator(bucketName string, writeObjects *[]PutObject, strategy *WriteTransferStrategy, client *ds3.Client) *putTransfernator {
     return &putTransfernator{
         BucketName:bucketName,
         WriteObjects:writeObjects,
@@ -23,7 +23,7 @@ func newPutTransfernator(bucketName string, writeObjects *[]WriteObject, strateg
 }
 
 // Creates the bulk put request from the list of write objects and put bulk job options
-func newBulkPutRequest(bucketName string, writeObjects *[]WriteObject, options WriteBulkJobOptions) *models.PutBulkJobSpectraS3Request {
+func newBulkPutRequest(bucketName string, writeObjects *[]PutObject, options WriteBulkJobOptions) *models.PutBulkJobSpectraS3Request {
     var putObjects []models.Ds3PutObject
     for _, obj := range *writeObjects {
         putObjects = append(putObjects, obj.PutObject)
