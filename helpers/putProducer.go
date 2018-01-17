@@ -2,24 +2,25 @@ package helpers
 
 import (
     "log"
-    "spectra/ds3_go_sdk/ds3/models"
+    ds3Models "spectra/ds3_go_sdk/ds3/models"
+    helperModels "spectra/ds3_go_sdk/helpers/models"
     "spectra/ds3_go_sdk/ds3"
     "sync"
 )
 
 type putProducer struct {
-    JobMasterObjectList *models.MasterObjectList  //MOL from put bulk job creation
-    WriteObjects *[]PutObject
+    JobMasterObjectList *ds3Models.MasterObjectList //MOL from put bulk job creation
+    WriteObjects *[]helperModels.PutObject
     queue *chan TransferOperation
     strategy *WriteTransferStrategy
     client *ds3.Client
     wg *sync.WaitGroup
-    writeObjectMap map[string]PutObject
+    writeObjectMap map[string]helperModels.PutObject
     processedChunksTracker ProcessedChunksTracker
     waitingToBeTransferred BlobDescriptionQueue
 }
 
-func newPutProducer(jobMasterObjectList *models.MasterObjectList, writeObjects *[]PutObject, queue *chan TransferOperation, strategy *WriteTransferStrategy, client *ds3.Client, wg *sync.WaitGroup) *putProducer {
+func newPutProducer(jobMasterObjectList *ds3Models.MasterObjectList, writeObjects *[]helperModels.PutObject, queue *chan TransferOperation, strategy *WriteTransferStrategy, client *ds3.Client, wg *sync.WaitGroup) *putProducer {
     return &putProducer{
         JobMasterObjectList:jobMasterObjectList,
         WriteObjects:writeObjects,
@@ -33,8 +34,8 @@ func newPutProducer(jobMasterObjectList *models.MasterObjectList, writeObjects *
     }
 }
 
-func toWriteObjectMap(writeObjects *[]PutObject) map[string]PutObject {
-    objectMap := make(map[string]PutObject)
+func toWriteObjectMap(writeObjects *[]helperModels.PutObject) map[string]helperModels.PutObject {
+    objectMap := make(map[string]helperModels.PutObject)
 
     if writeObjects == nil {
         return objectMap
@@ -49,28 +50,28 @@ func toWriteObjectMap(writeObjects *[]PutObject) map[string]PutObject {
 
 //TODO clean up struct
 type putObjectInfo struct {
-    objName string
-    objOffset int64
-    objLength int64
-    reader models.ReaderWithSizeDecorator
-    onDone func()
+    objName    string
+    objOffset  int64
+    objLength  int64
+    channelBuilder helperModels.ReadChannelBuilder
     bucketName string
-    jobId string
+    jobId      string
 }
 
 func (pp *putProducer) transferOperationBuilder(info putObjectInfo) TransferOperation {
     return func() {
-        defer info.onDone()
+        reader, err := info.channelBuilder.GetChannel(info.objOffset)
+        if err != nil {
+            log.Printf("ERROR could not get reader for object with name='%s' offset=%d length=%d", info.objName, info.objOffset, info.objLength)
+        }
+        defer info.channelBuilder.OnDone(reader)
 
-        //todo delete size, _ := info.reader.Size()
-        size := info.objLength
-        log.Printf("TRANSFER: name='%s' offset=%d length=%d size=%d", info.objName, info.objOffset, info.objLength, size)
-
-        putObjRequest := models.NewPutObjectRequest(info.bucketName, info.objName, info.reader).
+        sizedReader := NewIoReaderWithSizeDecorator(reader, info.objLength)
+        putObjRequest := ds3Models.NewPutObjectRequest(info.bucketName, info.objName, sizedReader).
             WithJob(info.jobId).
             WithOffset(info.objOffset)
 
-        _, err := pp.client.PutObject(putObjRequest)
+        _, err = pp.client.PutObject(putObjRequest)
         if err != nil {
             log.Printf("Error during transfer of %s: %s\n", info.objName, err.Error()) //todo handle error better
         }
@@ -79,17 +80,13 @@ func (pp *putProducer) transferOperationBuilder(info putObjectInfo) TransferOper
 
 // Processes all the blobs in a chunk and attempts to add them to the transfer queue.
 // If a blob is not ready for transfer, then it is added to the waiting to be transferred queue.
-func (pp *putProducer) processChunk(curChunk *models.Objects, bucketName string, jobId string) {
+func (pp *putProducer) processChunk(curChunk *ds3Models.Objects, bucketName string, jobId string) {
     log.Printf("DEBUG begin chunk processing %s", curChunk.ChunkId) //todo delete
     if !pp.processedChunksTracker.IsProcessed(curChunk.ChunkId) {
         // transfer blobs that are ready, and queue those that are waiting for channel
         for _, curObj := range curChunk.Objects {
             log.Printf("DEBUG queuing object in waiting to be processed %s offset=%d length=%d", *curObj.Name, curObj.Offset, curObj.Length) //todo delete
-            blob := BlobDescription{
-                objectName: *curObj.Name,
-                offset:     curObj.Offset,
-                length:     curObj.Length,
-            }
+            blob := helperModels.NewBlobDescription(*curObj.Name, curObj.Offset, curObj.Length)
             pp.transferBlob(&blob, bucketName, jobId)
         }
 
@@ -119,32 +116,27 @@ func (pp *putProducer) transferWaitingBlobs(bucketName string, jobId string) {
 
 // Attempts to transfer a single blob. If the blob is not ready for transfer,
 // it is added to the waiting to transfer queue.
-func (pp *putProducer) transferBlob(blob *BlobDescription, bucketName string, jobId string) {
+func (pp *putProducer) transferBlob(blob *helperModels.BlobDescription, bucketName string, jobId string) {
     curWriteObj := pp.writeObjectMap[blob.Name()]
     if curWriteObj.ChannelBuilder.IsChannelAvailable(blob.Offset()) {
         log.Printf("DEBUG channel is available for blob %s offset=%d length=%d", curWriteObj.PutObject.Name, blob.Offset(), blob.Length()) //todo delete
         // Blob ready to be transferred
-        reader, err := curWriteObj.ChannelBuilder.GetChannel(blob.Offset())
-        if err != nil {
-            log.Printf("ERROR getting channel for '%s': %s", blob.Name(), err.Error())
-        } else {
-            // Create transfer operation
-            objInfo := putObjectInfo{
-                objName:        blob.Name(),
-                objOffset:      blob.Offset(),
-                objLength:      blob.Length(),
-                reader:         NewIoReaderWithSizeDecorator(reader, blob.Length()),
-                onDone:         curWriteObj.ChannelBuilder.OnDone,
-                bucketName:     bucketName,
-                jobId:          jobId,
-            }
 
-            var transfer TransferOperation = pp.transferOperationBuilder(objInfo)
-
-            // Increment wait group, and enqueue transfer operation
-            pp.wg.Add(1)
-            *pp.queue <- transfer
+        // Create transfer operation
+        objInfo := putObjectInfo{
+            objName:        blob.Name(),
+            objOffset:      blob.Offset(),
+            objLength:      blob.Length(),
+            channelBuilder: curWriteObj.ChannelBuilder,
+            bucketName:     bucketName,
+            jobId:          jobId,
         }
+
+        var transfer TransferOperation = pp.transferOperationBuilder(objInfo)
+
+        // Increment wait group, and enqueue transfer operation
+        pp.wg.Add(1)
+        *pp.queue <- transfer
     } else {
         log.Printf("DEBUG channel is NOT available for blob %s offset=%d length=%d", blob.Name(), blob.Offset(), blob.Length())
         // Not ready to be transferred
@@ -165,7 +157,7 @@ func (pp *putProducer) run() {
         // Get the list of available chunks that the server can receive. The server may
         // not be able to receive everything, so not all chunks will necessarily be
         // returned
-        chunksReady := models.NewGetJobChunksReadyForClientProcessingSpectraS3Request(pp.JobMasterObjectList.JobId)
+        chunksReady := ds3Models.NewGetJobChunksReadyForClientProcessingSpectraS3Request(pp.JobMasterObjectList.JobId)
         chunksReadyResponse, err := pp.client.GetJobChunksReadyForClientProcessingSpectraS3(chunksReady)
         if err != nil {
             log.Fatal(err)

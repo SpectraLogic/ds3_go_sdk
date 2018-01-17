@@ -2,18 +2,19 @@ package helpers
 
 import (
     "spectra/ds3_go_sdk/ds3"
-    "spectra/ds3_go_sdk/ds3/models"
+    ds3Models "spectra/ds3_go_sdk/ds3/models"
+    helperModels "spectra/ds3_go_sdk/helpers/models"
     "sync"
 )
 
 type putTransfernator struct {
     BucketName string
-    WriteObjects *[]PutObject
+    WriteObjects *[]helperModels.PutObject
     Strategy *WriteTransferStrategy
     Client *ds3.Client
 }
 
-func newPutTransfernator(bucketName string, writeObjects *[]PutObject, strategy *WriteTransferStrategy, client *ds3.Client) *putTransfernator {
+func newPutTransfernator(bucketName string, writeObjects *[]helperModels.PutObject, strategy *WriteTransferStrategy, client *ds3.Client) *putTransfernator {
     return &putTransfernator{
         BucketName:bucketName,
         WriteObjects:writeObjects,
@@ -23,13 +24,13 @@ func newPutTransfernator(bucketName string, writeObjects *[]PutObject, strategy 
 }
 
 // Creates the bulk put request from the list of write objects and put bulk job options
-func newBulkPutRequest(bucketName string, writeObjects *[]PutObject, options WriteBulkJobOptions) *models.PutBulkJobSpectraS3Request {
-    var putObjects []models.Ds3PutObject
+func newBulkPutRequest(bucketName string, writeObjects *[]helperModels.PutObject, options WriteBulkJobOptions) *ds3Models.PutBulkJobSpectraS3Request {
+    var putObjects []ds3Models.Ds3PutObject
     for _, obj := range *writeObjects {
         putObjects = append(putObjects, obj.PutObject)
     }
 
-    bulkPut := models.NewPutBulkJobSpectraS3Request(bucketName, putObjects)
+    bulkPut := ds3Models.NewPutBulkJobSpectraS3Request(bucketName, putObjects)
     if options.Aggregating != nil {
         bulkPut = bulkPut.WithAggregating(*options.Aggregating)
     }

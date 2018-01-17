@@ -7,8 +7,11 @@ import (
     "spectra/ds3_go_sdk/ds3"
     "spectra/ds3_go_sdk/ds3_utils/ds3Testing"
     "spectra/ds3_go_sdk/helpers"
-    "spectra/ds3_go_sdk/ds3/models"
+    ds3Models "spectra/ds3_go_sdk/ds3/models"
+    helperModels "spectra/ds3_go_sdk/helpers/models"
     "spectra/ds3_go_sdk/ds3_integration/utils"
+    "io/ioutil"
+    "spectra/ds3_go_sdk/samples/utils"
 )
 
 var client *ds3.Client
@@ -40,11 +43,11 @@ func TestPutBulk(t *testing.T) {
     writeObjects, err := getTestBooksAsWriteObjects()
     ds3Testing.AssertNilError(t, err)
 
-    err = helper.PutObjects(*writeObjects, testBucket, strategy)
+    err = helper.PutObjects(testBucket, *writeObjects, strategy)
     ds3Testing.AssertNilError(t, err)
 
     // verify all books are on BP
-    getBucket, getBucketErr := client.GetBucket(models.NewGetBucketRequest(testBucket))
+    getBucket, getBucketErr := client.GetBucket(ds3Models.NewGetBucketRequest(testBucket))
     ds3Testing.AssertNilError(t, getBucketErr)
     if len(getBucket.ListBucketResult.Objects) != len(*writeObjects) {
         t.Fatalf("Expected '%d' objects in bucket '%s', but found '%d'.", len(*writeObjects), testBucket, len(getBucket.ListBucketResult.Objects))
@@ -57,46 +60,151 @@ func TestPutBulk(t *testing.T) {
 }
 
 func TestPutBulkBlobSpanningChunksRandomAccess(t *testing.T) {
-    objName := "lesmis-copies.txt"
-    path := "./resources/bigfiles/"
     defer testutils.DeleteBucketContents(client, testBucket)
 
     helper := helpers.NewHelpers(client)
 
     strategy := newTestTransferStrategy()
 
-    writeObj, err := getTestWriteObjectRandomAccess(objName, path + objName)
+    writeObj, err := getTestWriteObjectRandomAccess(LargeBookTitle, LargeBookPath + LargeBookTitle)
 
-    var writeObjects []helpers.PutObject
+    var writeObjects []helperModels.PutObject
     writeObjects = append(writeObjects, *writeObj)
 
     ds3Testing.AssertNilError(t, err)
 
-    err = helper.PutObjects(writeObjects, testBucket, strategy)
+    err = helper.PutObjects(testBucket, writeObjects, strategy)
     ds3Testing.AssertNilError(t, err)
 
 
-    testutils.VerifyFilesOnBP(t, testBucket, []string {objName}, path, client)
+    testutils.VerifyFilesOnBP(t, testBucket, []string {LargeBookTitle}, LargeBookPath, client)
 }
 
 func TestPutBulkBlobSpanningChunksStreamAccess(t *testing.T) {
     defer testutils.DeleteBucketContents(client, testBucket)
-    objName := "lesmis-copies.txt"
-    path := "./resources/bigfiles/"
 
     helper := helpers.NewHelpers(client)
 
     strategy := newTestTransferStrategy()
 
-    writeObj, err := getTestWriteObjectStreamAccess(objName, path + objName)
+    writeObj, err := getTestWriteObjectStreamAccess(LargeBookTitle, LargeBookPath + LargeBookTitle)
 
-    var writeObjects []helpers.PutObject
+    var writeObjects []helperModels.PutObject
     writeObjects = append(writeObjects, *writeObj)
 
     ds3Testing.AssertNilError(t, err)
 
-    err = helper.PutObjects(writeObjects, testBucket, strategy)
+    err = helper.PutObjects(testBucket, writeObjects, strategy)
     ds3Testing.AssertNilError(t, err)
 
-    testutils.VerifyFilesOnBP(t, testBucket, []string {objName}, path, client)
+    testutils.VerifyFilesOnBP(t, testBucket, []string {LargeBookTitle}, LargeBookPath, client)
+}
+
+
+func TestGetBulk(t *testing.T) {
+    defer testutils.DeleteBucketContents(client, testBucket)
+    err := testutils.PutTestBooks(client, testBucket)
+    ds3Testing.AssertNilError(t, err)
+
+    helper := helpers.NewHelpers(client)
+
+    strategy := helpers.ReadTransferStrategy{
+        Options: helpers.ReadBulkJobOptions{}, // use default job options
+        BlobStrategy: newTestBlobStrategy(),
+    }
+
+    file0, err := ioutil.TempFile(os.TempDir(), "goTest")
+    ds3Testing.AssertNilError(t, err)
+    defer file0.Close()
+    defer os.Remove(file0.Name())
+
+    file1, err := ioutil.TempFile(os.TempDir(), "goTest")
+    ds3Testing.AssertNilError(t, err)
+    defer file1.Close()
+    defer os.Remove(file1.Name())
+
+    file2, err := ioutil.TempFile(os.TempDir(), "goTest")
+    ds3Testing.AssertNilError(t, err)
+    defer file2.Close()
+    defer os.Remove(file2.Name())
+
+    file3, err := ioutil.TempFile(os.TempDir(), "goTest")
+    ds3Testing.AssertNilError(t, err)
+    defer file3.Close()
+    defer os.Remove(file3.Name())
+
+    readObjects := []helperModels.GetObject {
+        {Name: testutils.BookTitles[0], ChannelBuilder: &testRandomAccessWriteChannelBuilder{name: file0.Name()}},
+        {Name: testutils.BookTitles[1], ChannelBuilder: &testRandomAccessWriteChannelBuilder{name: file1.Name()}},
+        {Name: testutils.BookTitles[2], ChannelBuilder: &testRandomAccessWriteChannelBuilder{name: file2.Name()}},
+        {Name: testutils.BookTitles[3], ChannelBuilder: &testRandomAccessWriteChannelBuilder{name: file3.Name()}},
+    }
+
+    err = helper.GetObjects(testBucket, readObjects, strategy)
+    ds3Testing.AssertNilError(t, err)
+
+    utils.VerifyBookContent(testutils.BookTitles[0], file0)
+    utils.VerifyBookContent(testutils.BookTitles[1], file1)
+    utils.VerifyBookContent(testutils.BookTitles[2], file2)
+    utils.VerifyBookContent(testutils.BookTitles[3], file3)
+}
+
+func TestGetBulkBlobSpanningChunksRandomAccess(t *testing.T) {
+    defer testutils.DeleteBucketContents(client, testBucket)
+
+    LoadLargeFile(testBucket, client)
+
+    helper := helpers.NewHelpers(client)
+
+    strategy := helpers.ReadTransferStrategy{
+        Options: helpers.ReadBulkJobOptions{}, // use default job options
+        BlobStrategy: newTestBlobStrategy(),
+    }
+
+    file, err := ioutil.TempFile(os.TempDir(), "goTest")
+    ds3Testing.AssertNilError(t, err)
+    defer file.Close()
+    defer os.Remove(file.Name())
+
+    readObjects := []helperModels.GetObject{
+        {Name: LargeBookTitle, ChannelBuilder: &testRandomAccessWriteChannelBuilder{name: file.Name()}},
+    }
+
+    err = helper.GetObjects(testBucket, readObjects, strategy)
+    ds3Testing.AssertNilError(t, err)
+
+    err = VerifyLargeBookContent(file)
+    ds3Testing.AssertNilError(t, err)
+}
+
+func TestGetBulkPartialObjectRandomAccess(t *testing.T) {
+    defer testutils.DeleteBucketContents(client, testBucket)
+
+    LoadLargeFile(testBucket, client)
+
+    helper := helpers.NewHelpers(client)
+
+    strategy := helpers.ReadTransferStrategy{
+        Options: helpers.ReadBulkJobOptions{}, // use default job options
+        BlobStrategy: newTestBlobStrategy(),
+    }
+
+    file, err := ioutil.TempFile(os.TempDir(), "goTest")
+    ds3Testing.AssertNilError(t, err)
+    defer file.Close()
+    defer os.Remove(file.Name())
+
+    ranges := []ds3Models.Range {
+
+    }
+
+    readObjects := []helperModels.GetObject{
+        {Name: LargeBookTitle, ChannelBuilder: &testRandomAccessWriteChannelBuilder{name: file.Name()}, Ranges:ranges},
+    }
+
+    err = helper.GetObjects(testBucket, readObjects, strategy)
+    ds3Testing.AssertNilError(t, err)
+
+    err = VerifyLargeBookContent(file)
+    ds3Testing.AssertNilError(t, err)
 }
