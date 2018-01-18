@@ -2,6 +2,7 @@ package helpers
 
 import "sync"
 
+// TODO delete whole file
 // Tracks which chunks have been processed by the producer.
 type ProcessedChunksTracker interface {
     IsProcessed(chunkId string) bool // determines if a chunk has been processed yet

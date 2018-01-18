@@ -38,21 +38,22 @@ func newGetProducer(jobMasterObjectList *ds3Models.MasterObjectList, getObjects 
     }
 }
 
-//todo delete
-func toReadObjectMap(readObjects *[]helperModels.GetObject) map[string]helperModels.GetObject {
+// Creates a map of object name to the GetObject struct
+func toReadObjectMap(getObjects *[]helperModels.GetObject) map[string]helperModels.GetObject {
     objectMap := make(map[string]helperModels.GetObject)
 
-    if readObjects == nil {
+    if getObjects == nil {
         return objectMap
     }
 
-    for _, obj := range *readObjects {
+    for _, obj := range *getObjects {
         objectMap[obj.Name] = obj
     }
 
     return objectMap
 }
 
+// Processes all the blobs in a chunk that are ready for transfer from BP
 func (producer *getProducer) processChunk(curChunk *ds3Models.Objects, bucketName string, jobId string) {
     log.Printf("DEBUG begin chunk processing %s", curChunk.ChunkId) //todo delete
 
@@ -64,17 +65,17 @@ func (producer *getProducer) processChunk(curChunk *ds3Models.Objects, bucketNam
     }
 }
 
-//TODO clean up struct
-type getBlobInfo struct {
+// Information required to perform a get operation of a blob with BP as data source and channelBuilder as destination
+type getObjectInfo struct {
     blob           *helperModels.BlobDescription
     channelBuilder helperModels.WriteChannelBuilder
     bucketName     string
     jobId          string
 }
 
-func (producer *getProducer) transferOperationBuilder(info getBlobInfo) TransferOperation {
+// Creates the transfer operation that will perform the data retrieval of the specified blob from BP
+func (producer *getProducer) transferOperationBuilder(info getObjectInfo) TransferOperation {
     return func() {
-
         blobRanges := producer.rangeFinder.GetRanges(info.blob.Name(), info.blob.Offset(), info.blob.Length())
 
         log.Printf("TRANSFER: objectName='%s' offset=%d ranges=%v", info.blob.Name(), info.blob.Offset(), blobRanges)
@@ -112,18 +113,17 @@ func (producer *getProducer) transferOperationBuilder(info getBlobInfo) Transfer
                 log.Printf("ERROR when writing to destination channel for object '%s' with range '%v': %s", info.blob.Name(), r, err.Error())
             }
         }
-
     }
 }
 
+// Writes a range of a blob to its destination channel
 func writeRangeToDestination(channelBuilder helperModels.WriteChannelBuilder, r ds3Models.Range, content io.Reader) error {
     //todo handle when channel is not available yet
     writer, err := channelBuilder.GetChannel(r.Start)
-    defer channelBuilder.OnDone(writer)
-
     if err != nil {
         return err
     }
+    defer channelBuilder.OnDone(writer)
 
     _, err = io.CopyN(writer, content, r.End - r.Start + 1) // copies the range from response reader into destination writer
 
@@ -152,7 +152,7 @@ func (producer *getProducer) transferBlob(blob *helperModels.BlobDescription, bu
     log.Printf("DEBUG channel is available for getting blob %s offset=%d length=%d", blob.Name(), blob.Offset(), blob.Length())
 
     // Create transfer operation
-    objInfo := getBlobInfo{
+    objInfo := getObjectInfo{
         blob:           blob,
         channelBuilder: curReadObj.ChannelBuilder,
         bucketName:     bucketName,
@@ -169,11 +169,12 @@ func (producer *getProducer) transferBlob(blob *helperModels.BlobDescription, bu
     producer.processedBlobTracker.MarkProcessed(*blob)
 }
 
-//TODO reusable?
+// Attempts to process all blobs whose channels were not available for transfer.
+// Blobs whose channels are still not available are placed back on the queue.
 func (producer *getProducer) transferWaitingBlobs(bucketName string, jobId string) {
     // attempt to process all blobs in waiting to be transferred
-    waitingChunks := producer.waitingToBeTransferred.Size()
-    for i := 0; i < waitingChunks; i++ {
+    waitingBlobs := producer.waitingToBeTransferred.Size()
+    for i := 0; i < waitingBlobs; i++ {
         //attempt transfer
         curBlob, err := producer.waitingToBeTransferred.Pop()
         log.Printf("DEBUG attempting to process %s offset=%d length=%d", curBlob.Name(), curBlob.Offset(), curBlob.Length()) //todo delete
@@ -185,12 +186,14 @@ func (producer *getProducer) transferWaitingBlobs(bucketName string, jobId strin
     }
 }
 
-//TODO can re-arrange to be composable, where run() and transferWaitingBlobs() implementation is shared by producers, and processChunk() and transferBlob() is unique to get/put
+// This initiates the production of the transfer operations which will be consumed by a consumer running in a separate go routine.
+// Each transfer operation will retrieve one blob of content from the BP.
+// Once all blobs have been queued to be transferred, the producer will finish, even if all operations have not been consumed yet.
 func (producer *getProducer) run() {
     defer producer.wg.Done()
     defer close(*producer.queue)
 
-    // determine number of chunks to be processed
+    // determine number of blobs to be processed
     var totalBlobCount int64 = producer.totalBlobCount()
     log.Printf("DEBUG totalBlobs=%d processedBlobs=%d", totalBlobCount, producer.processedBlobTracker.NumberOfProcessedBlobs()) //todo delete
 
