@@ -102,7 +102,11 @@ func (producer *getProducer) transferOperationBuilder(info getObjectInfo) Transf
                 return
             }
             defer info.channelBuilder.OnDone(writer)
-            io.Copy(writer, getObjResponse.Content) //copy all content from response reader to destination writer
+            _, err = io.Copy(writer, getObjResponse.Content) //copy all content from response reader to destination writer
+            if err != nil {
+                //todo handle error
+                log.Printf("ERROR when copying content of object '%s' at offset '%d' from source to destination: %s", info.blob.Name(), info.blob.Offset(), err.Error())
+            }
             return
         }
 

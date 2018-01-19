@@ -62,19 +62,57 @@ func VerifyBookContent(t *testing.T, bookName string, actual io.ReadCloser) {
 
 func VerifyPartialFile(t *testing.T, filePath string, length int64, offset int64, actual io.ReadCloser) {
     f, err := os.Open(filePath)
-    f.Seek(offset, io.SeekStart)
-    expected := make([]byte, length)
-    numRead, err := f.ReadAt(expected, offset)
     ds3Testing.AssertNilError(t, err)
-    ds3Testing.AssertInt64(t, "Number of bytes read", length, int64(numRead))
-    verifyContent(t, expected, actual)
+
+    _, err = f.Seek(offset, io.SeekStart)
+    ds3Testing.AssertNilError(t, err)
+
+    expected, err := getNBytesFromReader(f, length)
+    ds3Testing.AssertNilError(t, err)
+
+    verifyPartialContent(t, *expected, actual, length)
+}
+
+func verifyPartialContent(t *testing.T, expected []byte, actual io.ReadCloser, length int64) {
+    content, err := getNBytesFromReader(actual, length)
+    ds3Testing.AssertNilError(t, err)
+
+    ds3Testing.AssertInt(t, "amount of data read", len(expected), len(*content))
+    if bytes.Compare(*content, expected) != 0 {
+        t.Error("Retrieved book does not match uploaded book.")
+    }
 }
 
 func verifyContent(t *testing.T, expected []byte, actual io.ReadCloser) {
-    bs, readErr := ioutil.ReadAll(actual)
-    ds3Testing.AssertNilError(t, readErr)
-    if bytes.Compare(bs, expected) != 0 {
+    content, err := ioutil.ReadAll(actual)
+    ds3Testing.AssertNilError(t, err)
+
+    ds3Testing.AssertInt(t, "amount of data read", len(expected), len(content))
+    if bytes.Compare(content, expected) != 0 {
         t.Error("Retrieved book does not match uploaded book.")
+    }
+}
+
+// Retrieves N bytes from the provided reader. If N bytes cannot be retrieved, then an error occurs.
+func getNBytesFromReader(reader io.Reader, n int64) (*[]byte, error) {
+    content := make([]byte, 0)
+    toRetrieve := n
+
+    for {
+        buf := make([]byte, toRetrieve)
+        v, _ := reader.Read(buf)
+
+        if v == 0 {
+
+            if curLen := int64(len(content)); curLen != n {
+                return nil, errors.New(fmt.Sprintf("GetNBytesFromReader: Expected content of length %d but got %d", n, curLen))
+            }
+            //done
+            return &content, nil
+        }
+
+        toRetrieve = toRetrieve - int64(v)
+        content = append(content, buf[:v]...)
     }
 }
 

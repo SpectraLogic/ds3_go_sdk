@@ -12,6 +12,8 @@ import (
     "spectra/ds3_go_sdk/ds3_integration/utils"
     "io/ioutil"
     "spectra/ds3_go_sdk/samples/utils"
+    "spectra/ds3_go_sdk/helpers/channels"
+    "io"
 )
 
 var client *ds3.Client
@@ -178,7 +180,6 @@ func TestGetBulkBlobSpanningChunksRandomAccess(t *testing.T) {
 }
 
 func TestGetBulkPartialObjectRandomAccess(t *testing.T) {
-    /* todo implement
     defer testutils.DeleteBucketContents(client, testBucket)
 
     LoadLargeFile(testBucket, client)
@@ -196,17 +197,21 @@ func TestGetBulkPartialObjectRandomAccess(t *testing.T) {
     defer os.Remove(file.Name())
 
     ranges := []ds3Models.Range {
-
+        {0, 100},
+        {200, 300},
+        {301, 400},
+        {500, 600},
     }
 
     readObjects := []helperModels.GetObject{
-        {Name: LargeBookTitle, ChannelBuilder: &testRandomAccessWriteChannelBuilder{name: file.Name()}, Ranges:ranges},
+        {Name: LargeBookTitle, ChannelBuilder: channels.NewPartialObjectChannelBuilder(file.Name(), ranges), Ranges: ranges},
     }
 
     err = helper.GetObjects(testBucket, readObjects, strategy)
     ds3Testing.AssertNilError(t, err)
 
-    err = VerifyLargeBookContent(file)
-    ds3Testing.AssertNilError(t, err)
-    */
+    file.Seek(0, io.SeekStart)
+    testutils.VerifyPartialFile(t, LargeBookPath + LargeBookTitle, 101, 0, file)
+    testutils.VerifyPartialFile(t, LargeBookPath + LargeBookTitle, 201, 200, file)
+    testutils.VerifyPartialFile(t, LargeBookPath + LargeBookTitle, 101, 500, file)
 }

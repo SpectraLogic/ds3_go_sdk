@@ -28,7 +28,7 @@ func VerifyLargeBookContent(content io.ReadCloser) error {
     }
 
     if bytes.Compare(expected, actual) != 0 {
-        errors.New(fmt.Sprintf("Mismatched content for expected and received object. Expected size %d, actual size %d.",
+        return errors.New(fmt.Sprintf("Mismatched content for expected and received object. Expected size %d, actual size %d.",
             len(expected),
             len(actual)))
     }

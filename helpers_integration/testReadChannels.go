@@ -16,7 +16,7 @@ type testRandomAccessReadChannelBuilder struct {
 }
 
 func (builder *testRandomAccessReadChannelBuilder) GetChannel(offset int64) (io.ReadCloser, error) {
-    f, err := os.Open(builder.name)
+    f, err := os.OpenFile(builder.name, os.O_RDONLY, 0)
     if err != nil {
         return nil, err
     }
