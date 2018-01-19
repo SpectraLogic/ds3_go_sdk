@@ -8,30 +8,6 @@ import (
     "errors"
 )
 
-// TODO abstract random access and stream channel and move abstraction to networking layer. Leave test implementation here.
-
-// Channel builder for a test file with random access
-type testRandomAccessReadChannelBuilder struct {
-    name string
-}
-
-func (builder *testRandomAccessReadChannelBuilder) GetChannel(offset int64) (io.ReadCloser, error) {
-    f, err := os.OpenFile(builder.name, os.O_RDONLY, 0)
-    if err != nil {
-        return nil, err
-    }
-    f.Seek(offset, io.SeekStart)
-    return f, nil
-}
-
-func (builder *testRandomAccessReadChannelBuilder) IsChannelAvailable(offset int64) bool {
-    return true
-}
-
-func (testRandomAccessReadChannelBuilder) OnDone(reader io.ReadCloser) {
-    reader.Close()
-}
-
 // Channel builder for a test file simulating stream access
 type testStreamAccessReadChannelBuilder struct {
     f *os.File

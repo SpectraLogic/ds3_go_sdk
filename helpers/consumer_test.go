@@ -42,7 +42,7 @@ func TestProducerConsumerModel(t *testing.T) {
 
     queue := make(chan TransferOperation, 5)
 
-    consumer := newPutConsumer(&queue, &wg, 5)
+    consumer := newConsumer(&queue, &wg, 5)
 
     go producer(&queue)
     go consumer.run()

@@ -78,7 +78,7 @@ func (transfernator *getTransfernator) transfer() error {
 
     queue := newOperationQueue(MaxQueueSize) //todo make composable
     producer := newGetProducer(&bulkGetResponse.MasterObjectList, transfernator.ReadObjects, &queue, transfernator.Strategy, transfernator.Client, &wg)
-    consumer := newPutConsumer(&queue, &wg, transfernator.Strategy.BlobStrategy.maxTransferGoroutines()) //todo rename??
+    consumer := newConsumer(&queue, &wg, transfernator.Strategy.BlobStrategy.maxTransferGoroutines()) //todo rename??
 
     // Wait for completion of producer-consumer goroutines
     wg.Add(2) // adding producer and consumer goroutines to wait group

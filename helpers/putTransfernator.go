@@ -76,7 +76,7 @@ func (pt *putTransfernator) transfer() error {
 
     queue := newOperationQueue(MaxQueueSize) //todo make composable
     producer := newPutProducer(&bulkPutResponse.MasterObjectList, pt.WriteObjects, &queue, pt.Strategy, pt.Client, &wg)
-    consumer := newPutConsumer(&queue, &wg, pt.Strategy.BlobStrategy.maxTransferGoroutines())
+    consumer := newConsumer(&queue, &wg, pt.Strategy.BlobStrategy.maxTransferGoroutines())
 
     // Wait for completion of producer-consumer goroutines
     wg.Add(2) // adding producer and consumer goroutines to wait group

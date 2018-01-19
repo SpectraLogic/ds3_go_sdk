@@ -7,6 +7,7 @@ import (
     ds3Models "spectra/ds3_go_sdk/ds3/models"
     helperModels "spectra/ds3_go_sdk/helpers/models"
     "spectra/ds3_go_sdk/ds3_integration/utils"
+    "spectra/ds3_go_sdk/helpers/channels"
 )
 
 func getTestWriteObjectStreamAccess(objectName string, path string) (*helperModels.PutObject, error) {
@@ -28,7 +29,7 @@ func getTestWriteObjectStreamAccess(objectName string, path string) (*helperMode
 
 // Retrieves a file with the specified path, and creates a PutObject using the specified name
 func getTestWriteObjectRandomAccess(objectName string, path string) (*helperModels.PutObject, error) {
-    channelBuilder := testRandomAccessReadChannelBuilder{name:path}
+    channelBuilder := channels.NewReadChannelBuilder(path)
     fileInfo, err := os.Stat(path)
     if err != nil {
         return nil, err
@@ -36,7 +37,7 @@ func getTestWriteObjectRandomAccess(objectName string, path string) (*helperMode
     size := fileInfo.Size()
     curWriteObj := helperModels.PutObject{
         PutObject:      ds3Models.Ds3PutObject{Name:objectName,Size:size},
-        ChannelBuilder: &channelBuilder,
+        ChannelBuilder: channelBuilder,
     }
     return &curWriteObj, nil
 }

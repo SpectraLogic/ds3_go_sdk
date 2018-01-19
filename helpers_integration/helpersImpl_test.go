@@ -136,10 +136,10 @@ func TestGetBulk(t *testing.T) {
     defer os.Remove(file3.Name())
 
     readObjects := []helperModels.GetObject {
-        {Name: testutils.BookTitles[0], ChannelBuilder: &testRandomAccessWriteChannelBuilder{name: file0.Name()}},
-        {Name: testutils.BookTitles[1], ChannelBuilder: &testRandomAccessWriteChannelBuilder{name: file1.Name()}},
-        {Name: testutils.BookTitles[2], ChannelBuilder: &testRandomAccessWriteChannelBuilder{name: file2.Name()}},
-        {Name: testutils.BookTitles[3], ChannelBuilder: &testRandomAccessWriteChannelBuilder{name: file3.Name()}},
+        {Name: testutils.BookTitles[0], ChannelBuilder: channels.NewWriteChannelBuilder(file0.Name())},
+        {Name: testutils.BookTitles[1], ChannelBuilder: channels.NewWriteChannelBuilder(file1.Name())},
+        {Name: testutils.BookTitles[2], ChannelBuilder: channels.NewWriteChannelBuilder(file2.Name())},
+        {Name: testutils.BookTitles[3], ChannelBuilder: channels.NewWriteChannelBuilder(file3.Name())},
     }
 
     err = helper.GetObjects(testBucket, readObjects, strategy)
@@ -169,7 +169,7 @@ func TestGetBulkBlobSpanningChunksRandomAccess(t *testing.T) {
     defer os.Remove(file.Name())
 
     readObjects := []helperModels.GetObject{
-        {Name: LargeBookTitle, ChannelBuilder: &testRandomAccessWriteChannelBuilder{name: file.Name()}},
+        {Name: LargeBookTitle, ChannelBuilder: channels.NewWriteChannelBuilder(file.Name())},
     }
 
     err = helper.GetObjects(testBucket, readObjects, strategy)

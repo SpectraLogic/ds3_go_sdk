@@ -2,6 +2,7 @@ package channels
 
 import (
     ds3Models "spectra/ds3_go_sdk/ds3/models"
+    helperModels "spectra/ds3_go_sdk/helpers/models"
     "io"
     "os"
 )
@@ -12,7 +13,7 @@ type PartialObjectWriteChannelBuilder struct {
     rangeMap partialObjectRangeMap
 }
 
-func NewPartialObjectChannelBuilder(name string, objRanges []ds3Models.Range) *PartialObjectWriteChannelBuilder {
+func NewPartialObjectChannelBuilder(name string, objRanges []ds3Models.Range) helperModels.WriteChannelBuilder {
 
     return &PartialObjectWriteChannelBuilder{
         name: name,
