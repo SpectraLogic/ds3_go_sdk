@@ -4,19 +4,19 @@ import "time"
 
 // Strategy for how to blob objects, used both in writing and reading blob strategies
 type BlobStrategy interface {
-    delay() // performs delay when no job chunks are available
-    maxTransferGoroutines() int // determines the maximum number of go routines to be created when transferring objects to/from BP
+    delay()                      // performs delay when no job chunks are available
+    maxConcurrentTransfers() int // determines the maximum number of go routines to be created when transferring objects to/from BP
 }
 
 type SimpleBlobStrategy struct {
-    Delay time.Duration
-    MaxTransferGoroutines int
+    Delay                  time.Duration
+    MaxConcurrentTransfers int
 }
 
-func (sbs *SimpleBlobStrategy) delay() {
-    time.Sleep(sbs.Delay)
+func (strategy *SimpleBlobStrategy) delay() {
+    time.Sleep(strategy.Delay)
 }
 
-func (sbs *SimpleBlobStrategy) maxTransferGoroutines() int {
-    return sbs.MaxTransferGoroutines
+func (strategy *SimpleBlobStrategy) maxConcurrentTransfers() int {
+    return strategy.MaxConcurrentTransfers
 }

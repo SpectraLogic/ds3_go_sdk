@@ -9,34 +9,34 @@ type Consumer interface {
 }
 
 type consumerImpl struct {
-    queue          *chan TransferOperation
-    wg             *sync.WaitGroup
-    maxConcurrency int
+    queue                   *chan TransferOperation
+    waitGroup               *sync.WaitGroup
+    maxConcurrentOperations int
 }
 
-func newConsumer(queue *chan TransferOperation, wg *sync.WaitGroup, maxConcurrency int) Consumer {
+func newConsumer(queue *chan TransferOperation, waitGroup *sync.WaitGroup, maxConcurrentOperations int) Consumer {
     return &consumerImpl{
-        queue:          queue,
-        wg:             wg,
-        maxConcurrency: maxConcurrency,
+        queue:                   queue,
+        waitGroup:               waitGroup,
+        maxConcurrentOperations: maxConcurrentOperations,
     }
 }
 
-func performTransfer(operation *TransferOperation, sem *chan int, wg *sync.WaitGroup) {
-    defer wg.Done()
+func performTransfer(operation *TransferOperation, semaphore *chan int, waitGroup *sync.WaitGroup) {
+    defer waitGroup.Done()
     (*operation)()
-    <- *sem
+    <- *semaphore
 }
 
 func (pc *consumerImpl) run() {
-    sem := make(chan int, pc.maxConcurrency) // semaphore for controlling max number of transfer operations in flight per job
+    semaphore := make(chan int, pc.maxConcurrentOperations) // semaphore for controlling max number of transfer operations in flight per job
     for {
         nextOp, ok := <- *pc.queue
         if ok {
-            sem <- 1
-            go performTransfer(&nextOp, &sem, pc.wg)
+            semaphore <- 1
+            go performTransfer(&nextOp, &semaphore, pc.waitGroup)
         } else {
-            pc.wg.Done()
+            pc.waitGroup.Done()
             return
         }
     }

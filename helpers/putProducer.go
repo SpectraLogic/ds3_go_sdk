@@ -14,20 +14,20 @@ type putProducer struct {
     queue                  *chan TransferOperation
     strategy               *WriteTransferStrategy
     client                 *ds3.Client
-    wg                     *sync.WaitGroup
+    waitGroup              *sync.WaitGroup
     writeObjectMap         map[string]helperModels.PutObject
     processedBlobTracker   blobTracker
     waitingToBeTransferred BlobDescriptionQueue
 }
 
-func newPutProducer(jobMasterObjectList *ds3Models.MasterObjectList, putObjects *[]helperModels.PutObject, queue *chan TransferOperation, strategy *WriteTransferStrategy, client *ds3.Client, wg *sync.WaitGroup) *putProducer {
+func newPutProducer(jobMasterObjectList *ds3Models.MasterObjectList, putObjects *[]helperModels.PutObject, queue *chan TransferOperation, strategy *WriteTransferStrategy, client *ds3.Client, waitGroup *sync.WaitGroup) *putProducer {
     return &putProducer{
         JobMasterObjectList:    jobMasterObjectList,
         WriteObjects:           putObjects,
         queue:                  queue,
         strategy:               strategy,
         client:                 client,
-        wg:                     wg,
+        waitGroup:              waitGroup,
         writeObjectMap:         toWriteObjectMap(putObjects),
         waitingToBeTransferred: NewBlobDescriptionQueue(),
         processedBlobTracker:   newProcessedBlobTracker(),
@@ -138,7 +138,7 @@ func (producer *putProducer) transferBlob(blob *helperModels.BlobDescription, bu
     var transfer TransferOperation = producer.transferOperationBuilder(objInfo)
 
     // Increment wait group, and enqueue transfer operation
-    producer.wg.Add(1)
+    producer.waitGroup.Add(1)
     *producer.queue <- transfer
 
     // Mark blob as processed
@@ -149,7 +149,7 @@ func (producer *putProducer) transferBlob(blob *helperModels.BlobDescription, bu
 // Each transfer operation will put one blob of content to the BP.
 // Once all blobs have been queued to be transferred, the producer will finish, even if all operations have not been consumed yet.
 func (producer *putProducer) run() {
-    defer producer.wg.Done()
+    defer producer.waitGroup.Done()
     defer close(*producer.queue)
 
     // determine number of blobs to be processed

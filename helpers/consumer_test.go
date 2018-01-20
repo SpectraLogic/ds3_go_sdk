@@ -7,9 +7,9 @@ import (
     "spectra/ds3_go_sdk/ds3_utils/ds3Testing"
 )
 
-func testTransferBuilder(i int, wg *sync.WaitGroup, resultCount *int, resultMux *sync.Mutex) TransferOperation {
+func testTransferBuilder(i int, waitGroup *sync.WaitGroup, resultCount *int, resultMux *sync.Mutex) TransferOperation {
     return func() {
-        //defer wg.Done()
+        //defer waitGroup.Done()
 
         resultMux.Lock()
         *resultCount++

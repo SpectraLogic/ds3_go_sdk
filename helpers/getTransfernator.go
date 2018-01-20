@@ -74,17 +74,17 @@ func (transfernator *getTransfernator) transfer() error {
     }
 
     // init queue, producer and consumer
-    var wg sync.WaitGroup
+    var waitGroup sync.WaitGroup
 
     queue := newOperationQueue(MaxQueueSize) //todo make composable
-    producer := newGetProducer(&bulkGetResponse.MasterObjectList, transfernator.ReadObjects, &queue, transfernator.Strategy, transfernator.Client, &wg)
-    consumer := newConsumer(&queue, &wg, transfernator.Strategy.BlobStrategy.maxTransferGoroutines())
+    producer := newGetProducer(&bulkGetResponse.MasterObjectList, transfernator.ReadObjects, &queue, transfernator.Strategy, transfernator.Client, &waitGroup)
+    consumer := newConsumer(&queue, &waitGroup, transfernator.Strategy.BlobStrategy.maxConcurrentTransfers())
 
     // Wait for completion of producer-consumer goroutines
-    wg.Add(2) // adding producer and consumer goroutines to wait group
-    go producer.run() // producer will add to wg for every blob retrieval added to queue, and each transfer performed will decrement from wg
+    waitGroup.Add(2)  // adding producer and consumer goroutines to wait group
+    go producer.run() // producer will add to waitGroup for every blob retrieval added to queue, and each transfer performed will decrement from waitGroup
     go consumer.run()
-    wg.Wait()
+    waitGroup.Wait()
 
     return nil
 }

@@ -31,7 +31,7 @@ func (builder *PartialObjectWriteChannelBuilder) GetChannel(objectOffset int64) 
         return nil, err
     }
 
-    f, err := os.OpenFile(builder.name, os.O_WRONLY, 0)
+    f, err := os.OpenFile(builder.name, os.O_WRONLY, defaultPermissions)
     if err != nil {
         return nil, err
     }

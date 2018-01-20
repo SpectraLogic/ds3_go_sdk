@@ -16,21 +16,21 @@ type getProducer struct {
     queue                  *chan TransferOperation
     strategy               *ReadTransferStrategy
     client                 *ds3.Client
-    wg                     *sync.WaitGroup
+    waitGroup              *sync.WaitGroup
     readObjectMap          map[string]helperModels.GetObject
     processedBlobTracker   blobTracker
     waitingToBeTransferred BlobDescriptionQueue
     rangeFinder            ranges.BlobRangeFinder
 }
 
-func newGetProducer(jobMasterObjectList *ds3Models.MasterObjectList, getObjects *[]helperModels.GetObject, queue *chan TransferOperation, strategy *ReadTransferStrategy, client *ds3.Client, wg *sync.WaitGroup) *getProducer {
+func newGetProducer(jobMasterObjectList *ds3Models.MasterObjectList, getObjects *[]helperModels.GetObject, queue *chan TransferOperation, strategy *ReadTransferStrategy, client *ds3.Client, waitGroup *sync.WaitGroup) *getProducer {
     return &getProducer{
         JobMasterObjectList:    jobMasterObjectList,
         GetObjects:             getObjects,
         queue:                  queue,
         strategy:               strategy,
         client:                 client,
-        wg:                     wg,
+        waitGroup:              waitGroup,
         readObjectMap:          toReadObjectMap(getObjects),
         processedBlobTracker:   newProcessedBlobTracker(),
         waitingToBeTransferred: NewBlobDescriptionQueue(),
@@ -121,15 +121,15 @@ func (producer *getProducer) transferOperationBuilder(info getObjectInfo) Transf
 }
 
 // Writes a range of a blob to its destination channel
-func writeRangeToDestination(channelBuilder helperModels.WriteChannelBuilder, r ds3Models.Range, content io.Reader) error {
+func writeRangeToDestination(channelBuilder helperModels.WriteChannelBuilder, blobRange ds3Models.Range, content io.Reader) error {
     //todo handle when channel is not available yet
-    writer, err := channelBuilder.GetChannel(r.Start)
+    writer, err := channelBuilder.GetChannel(blobRange.Start)
     if err != nil {
         return err
     }
     defer channelBuilder.OnDone(writer)
 
-    _, err = io.CopyN(writer, content, r.End - r.Start + 1) // copies the range from response reader into destination writer
+    _, err = io.CopyN(writer, content, blobRange.End - blobRange.Start + 1) // copies the range from response reader into destination writer
 
     if err != nil {
         return err
@@ -166,7 +166,7 @@ func (producer *getProducer) transferBlob(blob *helperModels.BlobDescription, bu
     var transfer TransferOperation = producer.transferOperationBuilder(objInfo)
 
     // Increment wait group, and enqueue transfer operation
-    producer.wg.Add(1)
+    producer.waitGroup.Add(1)
     *producer.queue <- transfer
 
     // Mark blob as processed
@@ -194,7 +194,7 @@ func (producer *getProducer) transferWaitingBlobs(bucketName string, jobId strin
 // Each transfer operation will retrieve one blob of content from the BP.
 // Once all blobs have been queued to be transferred, the producer will finish, even if all operations have not been consumed yet.
 func (producer *getProducer) run() {
-    defer producer.wg.Done()
+    defer producer.waitGroup.Done()
     defer close(*producer.queue)
 
     // determine number of blobs to be processed

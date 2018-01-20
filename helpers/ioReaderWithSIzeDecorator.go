@@ -13,10 +13,10 @@ func NewIoReaderWithSizeDecorator(reader io.Reader, size int64) *IoReaderWithSiz
     return &IoReaderWithSizeDecorator{reader:reader, size:size}
 }
 
-func (ior *IoReaderWithSizeDecorator) Read(b []byte) (int, error) {
-    return ior.reader.Read(b)
+func (sizedReader *IoReaderWithSizeDecorator) Read(bytes []byte) (int, error) {
+    return sizedReader.reader.Read(bytes)
 }
 
-func (ior *IoReaderWithSizeDecorator) Size() (int64, error) {
-    return ior.size, nil
+func (sizedReader *IoReaderWithSizeDecorator) Size() (int64, error) {
+    return sizedReader.size, nil
 }

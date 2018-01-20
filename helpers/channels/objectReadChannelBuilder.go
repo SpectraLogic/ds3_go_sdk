@@ -6,6 +6,8 @@ import (
     helperModels "spectra/ds3_go_sdk/helpers/models"
 )
 
+const defaultPermissions = 0
+
 // Implements the ReadChannelBuilder interface and uses a file as the ReadCloser implementation.
 // This channel functions as a random-access and can be used concurrently.
 type ObjectReadChannelBuilder struct {
@@ -17,7 +19,7 @@ func NewReadChannelBuilder(name string) helperModels.ReadChannelBuilder {
 }
 
 func (builder *ObjectReadChannelBuilder) GetChannel(offset int64) (io.ReadCloser, error) {
-    f, err := os.OpenFile(builder.name, os.O_RDONLY, 0)
+    f, err := os.OpenFile(builder.name, os.O_RDONLY, defaultPermissions)
     if err != nil {
         return nil, err
     }

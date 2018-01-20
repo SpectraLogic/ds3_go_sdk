@@ -61,33 +61,33 @@ func newBulkPutRequest(bucketName string, writeObjects *[]helperModels.PutObject
     return bulkPut
 }
 
-func (pt *putTransfernator) transfer() error {
+func (transfernator *putTransfernator) transfer() error {
     // create bulk put job
-    bulkPut := newBulkPutRequest(pt.BucketName, pt.WriteObjects, pt.Strategy.Options)
+    bulkPut := newBulkPutRequest(transfernator.BucketName, transfernator.WriteObjects, transfernator.Strategy.Options)
 
-    bulkPutResponse, err := pt.Client.PutBulkJobSpectraS3(bulkPut)
+    bulkPutResponse, err := transfernator.Client.PutBulkJobSpectraS3(bulkPut)
     //todo handle what is recoverable
     if err != nil {
         return err
     }
 
     // init queue, producer and consumer
-    var wg sync.WaitGroup
+    var waitGroup sync.WaitGroup
 
     queue := newOperationQueue(MaxQueueSize) //todo make composable
-    producer := newPutProducer(&bulkPutResponse.MasterObjectList, pt.WriteObjects, &queue, pt.Strategy, pt.Client, &wg)
-    consumer := newConsumer(&queue, &wg, pt.Strategy.BlobStrategy.maxTransferGoroutines())
+    producer := newPutProducer(&bulkPutResponse.MasterObjectList, transfernator.WriteObjects, &queue, transfernator.Strategy, transfernator.Client, &waitGroup)
+    consumer := newConsumer(&queue, &waitGroup, transfernator.Strategy.BlobStrategy.maxConcurrentTransfers())
 
     // Wait for completion of producer-consumer goroutines
-    wg.Add(2) // adding producer and consumer goroutines to wait group
-    go producer.run() // producer will add to wg for every blob added to queue, and each transfer performed will decrement from wg
+    waitGroup.Add(2)  // adding producer and consumer goroutines to wait group
+    go producer.run() // producer will add to waitGroup for every blob added to queue, and each transfer performed will decrement from waitGroup
     go consumer.run()
-    wg.Wait()
+    waitGroup.Wait()
 
     return nil
 }
 
-func (pt *putTransfernator) cancel() {
+func (transfernator *putTransfernator) cancel() {
     //todo
     panic("Not yet implemented")
 }

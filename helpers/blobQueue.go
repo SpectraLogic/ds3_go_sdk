@@ -24,19 +24,19 @@ func NewBlobDescriptionQueue() BlobDescriptionQueue {
     return &blobDescriptionQueueImpl{queue:queue}
 }
 
-func (q *blobDescriptionQueueImpl) Push(description *helperModels.BlobDescription) {
-    q.queue = append(q.queue, description)
+func (queue *blobDescriptionQueueImpl) Push(description *helperModels.BlobDescription) {
+    queue.queue = append(queue.queue, description)
 }
 
-func (q *blobDescriptionQueueImpl) Pop() (*helperModels.BlobDescription, error) {
-    if q.Size() == 0 {
+func (queue *blobDescriptionQueueImpl) Pop() (*helperModels.BlobDescription, error) {
+    if queue.Size() == 0 {
         return nil, errors.New("Cannot perform Pop() from blobDescriptionQueueImpl as queue is empty")
     }
-    descriptor := q.queue[0]
-    q.queue = q.queue[1:]
+    descriptor := queue.queue[0]
+    queue.queue = queue.queue[1:]
     return descriptor, nil
 }
 
-func (q *blobDescriptionQueueImpl) Size() int {
-    return len(q.queue)
+func (queue *blobDescriptionQueueImpl) Size() int {
+    return len(queue.queue)
 }

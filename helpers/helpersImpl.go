@@ -21,24 +21,24 @@ func NewHelpers(client *ds3.Client) HelperInterface {
     return &HelperImpl{client:client}
 }
 
-func (h *HelperImpl) ListObjectsFromBucket(bucketName string) []ds3Models.S3Object {
+func (helper *HelperImpl) ListObjectsFromBucket(bucketName string) []ds3Models.S3Object {
     //todo
     panic("not implemented yet")
 }
 
-func (h *HelperImpl) ListObjectsFromDirectory(directoryName string) []helperModels.PutObject {
+func (helper *HelperImpl) ListObjectsFromDirectory(directoryName string) []helperModels.PutObject {
     //todo
     panic("not implemented yet")
 }
 
-func (h *HelperImpl) PutObjects(bucketName string, objects []helperModels.PutObject, strategy WriteTransferStrategy) (error) {
-    transfernator := newPutTransfernator(bucketName, &objects, &strategy, h.client)
+func (helper *HelperImpl) PutObjects(bucketName string, objects []helperModels.PutObject, strategy WriteTransferStrategy) (error) {
+    transfernator := newPutTransfernator(bucketName, &objects, &strategy, helper.client)
     err := transfernator.transfer()
     return err
 }
 
-func (h *HelperImpl) GetObjects(bucketName string, objects []helperModels.GetObject, strategy ReadTransferStrategy) (error) {
-    transfernator := newGetTransfernator(bucketName, &objects, &strategy, h.client)
+func (helper *HelperImpl) GetObjects(bucketName string, objects []helperModels.GetObject, strategy ReadTransferStrategy) (error) {
+    transfernator := newGetTransfernator(bucketName, &objects, &strategy, helper.client)
     err := transfernator.transfer()
     return err
 }
