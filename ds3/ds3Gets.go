@@ -3205,6 +3205,7 @@ func (client *Client) GetTapeDrivesSpectraS3(request *models.GetTapeDrivesSpectr
         WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
         WithOptionalQueryParam("partition_id", request.PartitionId).
+        WithOptionalQueryParam("reserved_task_type", networking.InterfaceToStrPtr(request.ReservedTaskType)).
         WithOptionalQueryParam("serial_number", request.SerialNumber).
         WithOptionalQueryParam("state", networking.InterfaceToStrPtr(request.State)).
         WithOptionalQueryParam("type", networking.InterfaceToStrPtr(request.TapeDriveType)).
