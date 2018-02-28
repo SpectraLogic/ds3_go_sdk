@@ -20,6 +20,8 @@ type NamedDetailedTapePartition struct {
     Id string
     ImportExportConfiguration ImportExportConfiguration
     LibraryId string
+    MinimumReadReservedDrives int
+    MinimumWriteReservedDrives int
     Name *string
     Quiesced Quiesced
     SerialId *string

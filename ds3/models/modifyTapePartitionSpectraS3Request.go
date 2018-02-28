@@ -14,6 +14,8 @@
 package models
 
 type ModifyTapePartitionSpectraS3Request struct {
+    MinimumReadReservedDrives *int
+    MinimumWriteReservedDrives *int
     Quiesced Quiesced
     TapePartition string
 }
@@ -22,6 +24,16 @@ func NewModifyTapePartitionSpectraS3Request(tapePartition string) *ModifyTapePar
     return &ModifyTapePartitionSpectraS3Request{
         TapePartition: tapePartition,
     }
+}
+
+func (modifyTapePartitionSpectraS3Request *ModifyTapePartitionSpectraS3Request) WithMinimumReadReservedDrives(minimumReadReservedDrives int) *ModifyTapePartitionSpectraS3Request {
+    modifyTapePartitionSpectraS3Request.MinimumReadReservedDrives = &minimumReadReservedDrives
+    return modifyTapePartitionSpectraS3Request
+}
+
+func (modifyTapePartitionSpectraS3Request *ModifyTapePartitionSpectraS3Request) WithMinimumWriteReservedDrives(minimumWriteReservedDrives int) *ModifyTapePartitionSpectraS3Request {
+    modifyTapePartitionSpectraS3Request.MinimumWriteReservedDrives = &minimumWriteReservedDrives
+    return modifyTapePartitionSpectraS3Request
 }
 
 func (modifyTapePartitionSpectraS3Request *ModifyTapePartitionSpectraS3Request) WithQuiesced(quiesced Quiesced) *ModifyTapePartitionSpectraS3Request {
