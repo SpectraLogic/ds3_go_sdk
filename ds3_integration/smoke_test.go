@@ -22,6 +22,7 @@ import (
     "bytes"
     "spectra/ds3_go_sdk/ds3_utils/ds3Testing"
     "strconv"
+    "spectra/core/ioutils"
 )
 
 var client *ds3.Client
@@ -470,3 +471,57 @@ func TestDataPersistenceRule(t *testing.T) {
         t.Fatalf("Expected DataIsolationLevel to be '%s' but was '%s'.", dataIsolationLevel.String(), response.DataPersistenceRule.IsolationLevel.String())
     }
 }
+
+func TestPuttingFolder(t *testing.T) {
+    bucketName := "GoTestPuttingFolder"
+    err := testutils.PutBucketLogError(t, client, bucketName)
+    ds3Testing.AssertNilError(t, err)
+
+    defer deleteBucketAndContent(t, bucketName)
+
+    const folderPath = "Gracie/Eskimo/"
+
+    readSizer := ioutils.NewReadSizer(nil, 0)
+    putObjectRequest := models.NewPutObjectRequest(bucketName, folderPath, &readSizer)
+    _, err = client.PutObject(putObjectRequest)
+    ds3Testing.AssertNilError(t, err)
+
+    getBucketRequest := models.NewGetBucketRequest(bucketName)
+    getBucketResponse, err := client.GetBucket(getBucketRequest)
+    ds3Testing.AssertNilError(t, err)
+
+    ds3Testing.AssertInt(t, "Number of objects in bucket", 1, len(getBucketResponse.ListBucketResult.Objects))
+    ds3Testing.AssertString(t, "Folder names equal", folderPath, *getBucketResponse.ListBucketResult.Objects[0].Key)
+}
+
+func deleteBucketAndContent(t *testing.T, bucketName string) {
+    testutils.DeleteBucketContents(client, bucketName)
+    testutils.DeleteBucketLogError(t, client, bucketName)
+}
+
+func TestPuttingZeroLengthObject(t *testing.T) {
+    bucketName := "GoTestPuttingZeroLengthObject"
+    err := testutils.PutBucketLogError(t, client, bucketName)
+    ds3Testing.AssertNilError(t, err)
+
+    defer deleteBucketAndContent(t, bucketName)
+
+    const objectName = "Gracie"
+
+    zeroBytes := make([]byte, 0)
+
+    putObjectRequest := models.NewPutObjectRequest(bucketName, objectName, ds3.BuildByteReaderWithSizeDecorator(zeroBytes))
+
+    _, err = client.PutObject(putObjectRequest)
+
+    ds3Testing.AssertNilError(t, err)
+
+    getBucketRequest := models.NewGetBucketRequest(bucketName)
+    getBucketResponse, err := client.GetBucket(getBucketRequest)
+    ds3Testing.AssertNilError(t, err)
+
+    ds3Testing.AssertInt(t, "Number of objects in bucket", 1, len(getBucketResponse.ListBucketResult.Objects))
+    ds3Testing.AssertString(t, "Object names equal", objectName, *getBucketResponse.ListBucketResult.Objects[0].Key)
+    ds3Testing.AssertInt64(t, "Object size equal", 0, getBucketResponse.ListBucketResult.Objects[0].Size)
+}
+
