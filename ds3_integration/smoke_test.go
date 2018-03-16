@@ -22,7 +22,6 @@ import (
     "bytes"
     "spectra/ds3_go_sdk/ds3_utils/ds3Testing"
     "strconv"
-    "spectra/core/ioutils"
 )
 
 var client *ds3.Client
@@ -481,7 +480,7 @@ func TestPuttingFolder(t *testing.T) {
 
     const folderPath = "Gracie/Eskimo/"
 
-    readSizer := ioutils.NewReadSizer(nil, 0)
+    readSizer := newNilReadSizer(nil, 0)
     putObjectRequest := models.NewPutObjectRequest(bucketName, folderPath, &readSizer)
     _, err = client.PutObject(putObjectRequest)
     ds3Testing.AssertNilError(t, err)
