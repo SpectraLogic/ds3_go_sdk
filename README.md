@@ -52,13 +52,13 @@ In the ds3_go_sdk you create a `Client` instance through the setting of the foll
 
 Examples
 --------
-All examples are listed in the [samples](samples/) module.
+All examples are listed in the [samples](samples/) module. All samples can be run from [samples main](samples/samples.go).
 
-* [How to use get service to list buckets](samples/getServiceSample.go)
-* [How to create a bucket](samples/getBucketSample.go)
-* [How to get a single object using a naked S3 get](samples/getObjectSample.go)
-* [How to use bulk put to send multiple files to the BP efficiently](samples/putBulkSample.go)
-* [How to use bulk get to retrieve multiple files from the BP efficiently](samples/getBulkSample.go)
+* [How to use get service to list buckets](samples/functions/getServiceSample.go)
+* [How to create a bucket](samples/functions/getBucketSample.go)
+* [How to get a single object using a naked S3 get](samples/functions/getObjectSample.go)
+* [How to use bulk put to send multiple files to the BP efficiently](samples/functions/putBulkSample.go)
+* [How to use bulk get to retrieve multiple files from the BP efficiently](samples/functions/getBulkSample.go)
 
 Running Tests with GB
 ---------------------

@@ -9,32 +9,37 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the
 // specific language governing permissions and limitations under the License.
 
-package main
+package functions
 
 import (
     "log"
     "spectra/ds3_go_sdk/ds3/models"
     "spectra/ds3_go_sdk/ds3/buildclient"
+    "fmt"
     "spectra/ds3_go_sdk/samples/utils"
 )
 
-// Demonstrates how to get an object within a bucket. Assumes that the
-// target bucket already exists and has the specified file.
-// i.e. run putBulkSample.go first.
-func main() {
+func GetServiceSample() {
+    fmt.Println("---- Get Service Sample ----")
+
     // Create the client from environment variables.
     client, err := buildclient.FromEnv()
     if err != nil {
         log.Fatal(err)
     }
 
-    // Grab the first book defined in utils.BookNames
-    getObjRequest := models.NewGetObjectRequest(utils.BucketName, utils.BookNames[0])
-    getObjResponse, err := client.GetObject(getObjRequest)
+    // Create the get service request. All requests to a DS3 appliance start this way.
+    request := models.NewGetServiceRequest()
+
+    // Perform the Get Service call by using the client and invoking the desired command.
+    response, err := client.GetService(request)
     if err != nil {
         log.Fatal(err)
     }
 
-    // Verify that the contents of the book were retrieved correctly.
-    utils.VerifyBookContent(utils.BookNames[0], getObjResponse.Content)
+    // Printing contents of get service.
+    fmt.Println("Buckets:")
+    for i, bucket := range response.ListAllMyBucketsResult.Buckets {
+        fmt.Printf("%d) Name: %s; CreationDate: %s\n", i + 1, utils.ToSafeString(bucket.Name), utils.ToSafeString(bucket.CreationDate))
+    }
 }

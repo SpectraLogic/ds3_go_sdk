@@ -9,7 +9,7 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the
 // specific language governing permissions and limitations under the License.
 
-package main
+package functions
 
 import (
     "spectra/ds3_go_sdk/ds3/buildclient"
@@ -17,11 +17,14 @@ import (
     "spectra/ds3_go_sdk/ds3/models"
     "spectra/ds3_go_sdk/samples/utils"
     "time"
+    "fmt"
 )
 
 // Demonstrates how to perform a bulk get. Assumes that the target bucket already exists
 // and has files, i.e. run putBulkSample.go first.
-func main() {
+func GetBulkSample() {
+    fmt.Println("---- Get Bulk Sample ----")
+
     // Create a client from environment variables.
     client, err := buildclient.FromEnv()
     if err != nil {
@@ -87,6 +90,7 @@ func main() {
                     if err != nil {
                         log.Fatal(err)
                     }
+                    fmt.Printf("Retrived: %s offset=%d length%d\n", *curObj.Name, curObj.Offset, curObj.Length)
                 }
                 curChunkCount++
             }

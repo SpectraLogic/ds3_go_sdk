@@ -834,19 +834,19 @@ func TestDeleteObjects(t *testing.T) {
     }
 
     if response.DeleteResult.DeletedObjects == nil {
-        t.Fatalf("Expected '%s' but got 'nil'", expectedDeleted)
+        t.Fatalf("Expected '%v' but got 'nil'", expectedDeleted)
     }
 
     if !reflect.DeepEqual(response.DeleteResult.DeletedObjects, expectedDeleted) {
-        t.Fatalf("Expected '%s' but got '%s'", expectedDeleted, response.DeleteResult.DeletedObjects)
+        t.Fatalf("Expected '%v' but got '%v'", expectedDeleted, response.DeleteResult.DeletedObjects)
     }
 
     if response.DeleteResult.Errors == nil {
-        t.Fatalf("Expected '%s' but got 'nil'", expectedErrors)
+        t.Fatalf("Expected '%v' but got 'nil'", expectedErrors)
     }
 
     if !reflect.DeepEqual(response.DeleteResult.Errors, expectedErrors) {
-        t.Fatalf("Expected '%s' but got '%s'", expectedErrors, response.DeleteResult.Errors)
+        t.Fatalf("Expected '%v' but got '%v'", expectedErrors, response.DeleteResult.Errors)
     }
 }
 
@@ -1393,7 +1393,7 @@ func TestGetTapesSpectraS3(t *testing.T) {
     ds3Testing.AssertStringPtrIsNil(t, "LastVerified", tape.LastVerified)
     ds3Testing.AssertNonNilStringPtr(t, "PartitionId", "4f8a5cbb-9837-41d9-afd1-cebed41f18f7", tape.PartitionId)
     if tape.PreviousState != nil {
-        t.Fatalf("Expected previous state '%d' but was '%d'.", "nil", *tape.PreviousState)
+        t.Fatalf("Expected previous state '%s' but was '%s'.", "nil", tape.PreviousState.String())
     }
     ds3Testing.AssertNonNilStringPtr(t, "SerialNumber", "HP-W130501213", tape.SerialNumber)
     ds3Testing.AssertString(t, "State", models.TAPE_STATE_NORMAL.String(), tape.State.String())
@@ -1459,7 +1459,7 @@ func TestGetTapeSpectraS3(t *testing.T) {
     ds3Testing.AssertStringPtrIsNil(t, "LastVerified", tape.LastVerified)
     ds3Testing.AssertNonNilStringPtr(t, "PartitionId", "4f8a5cbb-9837-41d9-afd1-cebed41f18f7", tape.PartitionId)
     if tape.PreviousState != nil {
-        t.Fatalf("Expected previous state '%d' but was '%d'.", "nil", *tape.PreviousState)
+        t.Fatalf("Expected previous state '%s' but was '%s'.", "nil", tape.PreviousState.String())
     }
     ds3Testing.AssertNonNilStringPtr(t, "SerialNumber", "HP-W130501213", tape.SerialNumber)
     ds3Testing.AssertString(t, "State", models.TAPE_STATE_NORMAL.String(), tape.State.String())
