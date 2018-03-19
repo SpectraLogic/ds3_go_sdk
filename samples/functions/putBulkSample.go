@@ -9,7 +9,7 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the
 // specific language governing permissions and limitations under the License.
 
-package main
+package functions
 
 import (
     "log"
@@ -18,9 +18,12 @@ import (
     "os"
     "time"
     "spectra/ds3_go_sdk/samples/utils"
+    "fmt"
 )
 
-func main() {
+func PutBulkSample() {
+    fmt.Println("---- Put Bulk Sample ----")
+
     // Create a client from environment variables.
     client, err := buildclient.FromEnv()
     if err != nil {
@@ -87,7 +90,7 @@ func main() {
                         log.Fatal(err)
                     }
 
-                    putObjRequest := models.NewPutObjectRequest(utils.BucketName, *curObj.Name, *reader).
+                    putObjRequest := models.NewPutObjectRequest(utils.BucketName, *curObj.Name, reader).
                         WithJob(chunksReadyResponse.MasterObjectList.JobId).
                         WithOffset(curObj.Offset)
 
@@ -95,6 +98,7 @@ func main() {
                     if err != nil {
                         log.Fatal(err)
                     }
+                    fmt.Printf("Sent: %s offset=%d length=%d\n", *curObj.Name, curObj.Offset, curObj.Length)
                 }
                 curChunkCount++
             }

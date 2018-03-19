@@ -22,7 +22,7 @@ import (
 )
 
 const BucketName = "GoPutBulkBucket"
-const ResourceFolder = "./src/samples/resources/"
+const ResourceFolder = "./samples/resources/"
 var BookNames = []string{"beowulf.txt", "sherlock_holmes.txt", "tale_of_two_cities.txt", "ulysses.txt"}
 
 // Loads a book from resources folder.

@@ -9,7 +9,7 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the
 // specific language governing permissions and limitations under the License.
 
-package main
+package functions
 
 import (
     "log"
@@ -21,7 +21,9 @@ import (
 
 // Demonstrates how to get a list of S3 objects in a bucket. Assumes that the target
 // bucket already exists and has files, i.e. run putBulkSample.go first.
-func main() {
+func GetBucketSample() {
+    fmt.Println("---- Get Bucket Sample ----")
+
     // Create the client from environment variables.
     client, err := buildclient.FromEnv()
     if err != nil {
