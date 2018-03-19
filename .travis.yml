@@ -5,7 +5,7 @@ go:
   - 1.9.x
   - master
 
-go_import_path: spectra
+go_import_path: spectra/ds3_go_sdk
 
 script:
   - go test ./ds3
