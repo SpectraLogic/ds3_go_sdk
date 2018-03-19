@@ -15,8 +15,10 @@ package models
 
 type DataPathBackend struct {
     Activated bool
+    AllowNewJobRequests bool
     AutoActivateTimeoutInMins *int
     AutoInspect AutoInspectMode
+    CacheAvailableRetryAfterInSeconds int
     DefaultImportConflictResolutionMode ImportConflictResolutionMode
     DefaultVerifyDataAfterImport *Priority
     DefaultVerifyDataPriorToImport bool

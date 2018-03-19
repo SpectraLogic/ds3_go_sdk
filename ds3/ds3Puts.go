@@ -178,8 +178,10 @@ func (client *Client) ModifyDataPathBackendSpectraS3(request *models.ModifyDataP
         WithHttpVerb(HTTP_VERB_PUT).
         WithPath("/_rest_/data_path_backend").
         WithOptionalQueryParam("activated", networking.BoolPtrToStrPtr(request.Activated)).
+        WithOptionalQueryParam("allow_new_job_requests", networking.BoolPtrToStrPtr(request.AllowNewJobRequests)).
         WithOptionalQueryParam("auto_activate_timeout_in_mins", networking.IntPtrToStrPtr(request.AutoActivateTimeoutInMins)).
         WithOptionalQueryParam("auto_inspect", networking.InterfaceToStrPtr(request.AutoInspect)).
+        WithOptionalQueryParam("cache_available_retry_after_in_seconds", networking.IntPtrToStrPtr(request.CacheAvailableRetryAfterInSeconds)).
         WithOptionalQueryParam("default_import_conflict_resolution_mode", networking.InterfaceToStrPtr(request.DefaultImportConflictResolutionMode)).
         WithOptionalQueryParam("default_verify_data_after_import", networking.InterfaceToStrPtr(request.DefaultVerifyDataAfterImport)).
         WithOptionalQueryParam("default_verify_data_prior_to_import", networking.BoolPtrToStrPtr(request.DefaultVerifyDataPriorToImport)).
@@ -1986,6 +1988,7 @@ func (client *Client) ModifyTapeDriveSpectraS3(request *models.ModifyTapeDriveSp
         WithHttpVerb(HTTP_VERB_PUT).
         WithPath("/_rest_/tape_drive/" + request.TapeDriveId).
         WithOptionalQueryParam("quiesced", networking.InterfaceToStrPtr(request.Quiesced)).
+        WithOptionalQueryParam("reserved_task_type", networking.InterfaceToStrPtr(request.ReservedTaskType)).
         Build(client.connectionInfo)
 
     if err != nil {
@@ -2009,6 +2012,8 @@ func (client *Client) ModifyTapePartitionSpectraS3(request *models.ModifyTapePar
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_PUT).
         WithPath("/_rest_/tape_partition/" + request.TapePartition).
+        WithOptionalQueryParam("minimum_read_reserved_drives", networking.IntPtrToStrPtr(request.MinimumReadReservedDrives)).
+        WithOptionalQueryParam("minimum_write_reserved_drives", networking.IntPtrToStrPtr(request.MinimumWriteReservedDrives)).
         WithOptionalQueryParam("quiesced", networking.InterfaceToStrPtr(request.Quiesced)).
         Build(client.connectionInfo)
 

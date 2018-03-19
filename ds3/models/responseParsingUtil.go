@@ -14,9 +14,52 @@ package models
 import (
     "strconv"
     "log"
+    "strings"
+    "net/http"
 )
 
 // Contains utils used by model parsers to parse response payloads.
+
+const BLOB_CHECKSUM_TYPE_HEADER string = "ds3-blob-checksum-type"
+const BLOB_CHECKSUM_HEADER string = "ds3-blob-checksum-offset-"
+
+// Parses blob checksum header if exists. This is used by HeadObjectResponse.
+func getBlobChecksumType(headers *http.Header) (ChecksumType, error) {
+    checksumStr := headers.Get(BLOB_CHECKSUM_TYPE_HEADER)
+    if len(checksumStr) == 0 {
+        return NONE, nil
+    }
+    var checksumEnum ChecksumType
+    err := checksumEnum.UnmarshalText([]byte(checksumStr))
+    if err != nil {
+        return UNDEFINED, err
+    }
+    return checksumEnum, nil
+}
+
+// Parses response headers and creates a map of blob offset to blob checksum
+// for all occurrences of headers with prefix defined in BLOB_CHECKSUM_HEADER.
+// This is used by HeadObjectResponse.
+func getBlobChecksumMap(headers *http.Header) (map[int64]string, error) {
+    blobChecksumMap := make(map[int64]string)
+
+    if headers == nil || len(*headers) == 0 {
+        return blobChecksumMap, nil
+    }
+
+    for key := range *headers {
+        if strings.HasPrefix(strings.ToLower(key), strings.ToLower(BLOB_CHECKSUM_HEADER)) {
+            offsetStr := strings.TrimPrefix(strings.ToLower(key), strings.ToLower(BLOB_CHECKSUM_HEADER))
+            offset, err := strconv.ParseInt(offsetStr, 10, 64)
+            if err != nil {
+                return blobChecksumMap, err
+            }
+            blobChecksumMap[offset] = headers.Get(key)
+        }
+    }
+
+    return blobChecksumMap, nil
+}
 
 // Interface defined for spectra defined enums.
 // Used for generic parsing of enums.

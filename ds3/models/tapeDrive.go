@@ -22,6 +22,7 @@ type TapeDrive struct {
     MfgSerialNumber *string
     PartitionId string
     Quiesced Quiesced
+    ReservedTaskType ReservedTaskType
     SerialNumber *string
     State TapeDriveState
     TapeId *string

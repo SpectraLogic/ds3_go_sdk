@@ -22,10 +22,14 @@ func (dataPathBackend *DataPathBackend) parse(xmlNode *XmlNode, aggErr *Aggregat
         switch child.XMLName.Local {
         case "Activated":
             dataPathBackend.Activated = parseBool(child.Content, aggErr)
+        case "AllowNewJobRequests":
+            dataPathBackend.AllowNewJobRequests = parseBool(child.Content, aggErr)
         case "AutoActivateTimeoutInMins":
             dataPathBackend.AutoActivateTimeoutInMins = parseNullableInt(child.Content, aggErr)
         case "AutoInspect":
             parseEnum(child.Content, &dataPathBackend.AutoInspect, aggErr)
+        case "CacheAvailableRetryAfterInSeconds":
+            dataPathBackend.CacheAvailableRetryAfterInSeconds = parseInt(child.Content, aggErr)
         case "DefaultImportConflictResolutionMode":
             parseEnum(child.Content, &dataPathBackend.DefaultImportConflictResolutionMode, aggErr)
         case "DefaultVerifyDataAfterImport":

@@ -15,8 +15,10 @@ package models
 
 type ModifyDataPathBackendSpectraS3Request struct {
     Activated *bool
+    AllowNewJobRequests *bool
     AutoActivateTimeoutInMins *int
     AutoInspect AutoInspectMode
+    CacheAvailableRetryAfterInSeconds *int
     DefaultImportConflictResolutionMode ImportConflictResolutionMode
     DefaultVerifyDataAfterImport Priority
     DefaultVerifyDataPriorToImport *bool
@@ -36,6 +38,11 @@ func (modifyDataPathBackendSpectraS3Request *ModifyDataPathBackendSpectraS3Reque
     return modifyDataPathBackendSpectraS3Request
 }
 
+func (modifyDataPathBackendSpectraS3Request *ModifyDataPathBackendSpectraS3Request) WithAllowNewJobRequests(allowNewJobRequests bool) *ModifyDataPathBackendSpectraS3Request {
+    modifyDataPathBackendSpectraS3Request.AllowNewJobRequests = &allowNewJobRequests
+    return modifyDataPathBackendSpectraS3Request
+}
+
 func (modifyDataPathBackendSpectraS3Request *ModifyDataPathBackendSpectraS3Request) WithAutoActivateTimeoutInMins(autoActivateTimeoutInMins int) *ModifyDataPathBackendSpectraS3Request {
     modifyDataPathBackendSpectraS3Request.AutoActivateTimeoutInMins = &autoActivateTimeoutInMins
     return modifyDataPathBackendSpectraS3Request
@@ -43,6 +50,11 @@ func (modifyDataPathBackendSpectraS3Request *ModifyDataPathBackendSpectraS3Reque
 
 func (modifyDataPathBackendSpectraS3Request *ModifyDataPathBackendSpectraS3Request) WithAutoInspect(autoInspect AutoInspectMode) *ModifyDataPathBackendSpectraS3Request {
     modifyDataPathBackendSpectraS3Request.AutoInspect = autoInspect
+    return modifyDataPathBackendSpectraS3Request
+}
+
+func (modifyDataPathBackendSpectraS3Request *ModifyDataPathBackendSpectraS3Request) WithCacheAvailableRetryAfterInSeconds(cacheAvailableRetryAfterInSeconds int) *ModifyDataPathBackendSpectraS3Request {
+    modifyDataPathBackendSpectraS3Request.CacheAvailableRetryAfterInSeconds = &cacheAvailableRetryAfterInSeconds
     return modifyDataPathBackendSpectraS3Request
 }
 

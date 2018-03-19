@@ -34,6 +34,10 @@ func (detailedTapePartition *DetailedTapePartition) parse(xmlNode *XmlNode, aggE
             parseEnum(child.Content, &detailedTapePartition.ImportExportConfiguration, aggErr)
         case "LibraryId":
             detailedTapePartition.LibraryId = parseString(child.Content)
+        case "MinimumReadReservedDrives":
+            detailedTapePartition.MinimumReadReservedDrives = parseInt(child.Content, aggErr)
+        case "MinimumWriteReservedDrives":
+            detailedTapePartition.MinimumWriteReservedDrives = parseInt(child.Content, aggErr)
         case "Name":
             detailedTapePartition.Name = parseNullableString(child.Content)
         case "Quiesced":
