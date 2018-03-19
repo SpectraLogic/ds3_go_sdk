@@ -15,10 +15,12 @@ package models
 
 type ClearSuspectBlobDs3TargetsSpectraS3Request struct {
     Force bool
+    Ids []string
 }
 
-func NewClearSuspectBlobDs3TargetsSpectraS3Request() *ClearSuspectBlobDs3TargetsSpectraS3Request {
+func NewClearSuspectBlobDs3TargetsSpectraS3Request(ids []string) *ClearSuspectBlobDs3TargetsSpectraS3Request {
     return &ClearSuspectBlobDs3TargetsSpectraS3Request{
+        Ids: ids,
     }
 }
 

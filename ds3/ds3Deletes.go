@@ -305,6 +305,7 @@ func (client *Client) ClearSuspectBlobDs3TargetsSpectraS3(request *models.ClearS
         WithHttpVerb(HTTP_VERB_DELETE).
         WithPath("/_rest_/suspect_blob_ds3_target").
         WithOptionalVoidQueryParam("force", request.Force).
+        WithReadCloser(buildIdListPayload(request.Ids)).
         Build(client.connectionInfo)
 
     if err != nil {
