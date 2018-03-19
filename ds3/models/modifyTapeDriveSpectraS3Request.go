@@ -15,6 +15,7 @@ package models
 
 type ModifyTapeDriveSpectraS3Request struct {
     Quiesced Quiesced
+    ReservedTaskType ReservedTaskType
     TapeDriveId string
 }
 
@@ -26,6 +27,11 @@ func NewModifyTapeDriveSpectraS3Request(tapeDriveId string) *ModifyTapeDriveSpec
 
 func (modifyTapeDriveSpectraS3Request *ModifyTapeDriveSpectraS3Request) WithQuiesced(quiesced Quiesced) *ModifyTapeDriveSpectraS3Request {
     modifyTapeDriveSpectraS3Request.Quiesced = quiesced
+    return modifyTapeDriveSpectraS3Request
+}
+
+func (modifyTapeDriveSpectraS3Request *ModifyTapeDriveSpectraS3Request) WithReservedTaskType(reservedTaskType ReservedTaskType) *ModifyTapeDriveSpectraS3Request {
+    modifyTapeDriveSpectraS3Request.ReservedTaskType = reservedTaskType
     return modifyTapeDriveSpectraS3Request
 }
 

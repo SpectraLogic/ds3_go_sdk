@@ -1911,3 +1911,31 @@ func TestVerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3(t *testing.T)
     }
     ds3Testing.AssertBool(t, "WriteProtected", false, tape.WriteProtected)
 }
+
+func TestHeadObject(t *testing.T) {
+    bucketName := "bucket1"
+    objectName := "obj1"
+
+    responseHeaders := &http.Header{}
+    responseHeaders.Add("x-amz-meta-key", "value")
+    responseHeaders.Add("ds3-blob-checksum-type", "MD5")
+    responseHeaders.Add("ds3-blob-checksum-offset-0", "4nQGNX4nyz0pi8Hvap79PQ==")
+    responseHeaders.Add("ds3-blob-checksum-offset-10485760", "965Aa0/n8DlO1IwXYFh4bg==")
+    responseHeaders.Add("ds3-blob-checksum-offset-20971520", "iV2OqJaXJ/jmqgRSb1HmFA==")
+
+    response, err := mockedClient(t).
+        Expecting(HTTP_VERB_HEAD, "/" + bucketName + "/" + objectName, &url.Values{}, &http.Header{}, nil).
+        Returning(200, "", responseHeaders).
+        HeadObject(models.NewHeadObjectRequest(bucketName, objectName))
+
+    ds3Testing.AssertNilError(t, err)
+
+    if response.BlobChecksumType != models.CHECKSUM_TYPE_MD5 {
+        t.Fatalf("Expected checksum type to be 'MD5' but was '%s'.", response.BlobChecksumType.String())
+    }
+
+    ds3Testing.AssertInt(t, "# of blob checksums", 3, len(response.BlobChecksums))
+    ds3Testing.AssertString(t, "checksum at offset '0'", "4nQGNX4nyz0pi8Hvap79PQ==", response.BlobChecksums[0])
+    ds3Testing.AssertString(t, "checksum at offset '10485760'", "965Aa0/n8DlO1IwXYFh4bg==", response.BlobChecksums[10485760])
+    ds3Testing.AssertString(t, "checksum at offset '20971520'", "iV2OqJaXJ/jmqgRSb1HmFA==", response.BlobChecksums[20971520])
+}

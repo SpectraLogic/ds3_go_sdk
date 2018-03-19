@@ -18,7 +18,8 @@ import (
 )
 
 type HeadObjectResponse struct {
-    
+    BlobChecksumType ChecksumType
+    BlobChecksums map[int64]string
     Headers *http.Header
 }
 
@@ -29,7 +30,15 @@ func NewHeadObjectResponse(webResponse WebResponse) (*HeadObjectResponse, error)
 
     switch code := webResponse.StatusCode(); code {
     case 200:
-        return &HeadObjectResponse{Headers: webResponse.Header()}, nil
+        checksumType, err := getBlobChecksumType(webResponse.Header())
+        if err != nil {
+            return nil, err
+        }
+        checksumMap, err := getBlobChecksumMap(webResponse.Header())
+        if err != nil {
+            return nil, err
+        }
+        return &HeadObjectResponse{BlobChecksumType: checksumType, BlobChecksums: checksumMap, Headers: webResponse.Header()}, nil
     default:
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }

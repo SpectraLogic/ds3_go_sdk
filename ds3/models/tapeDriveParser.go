@@ -36,6 +36,8 @@ func (tapeDrive *TapeDrive) parse(xmlNode *XmlNode, aggErr *AggregateError) {
             tapeDrive.PartitionId = parseString(child.Content)
         case "Quiesced":
             parseEnum(child.Content, &tapeDrive.Quiesced, aggErr)
+        case "ReservedTaskType":
+            parseEnum(child.Content, &tapeDrive.ReservedTaskType, aggErr)
         case "SerialNumber":
             tapeDrive.SerialNumber = parseNullableString(child.Content)
         case "State":

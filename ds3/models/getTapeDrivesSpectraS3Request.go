@@ -19,6 +19,7 @@ type GetTapeDrivesSpectraS3Request struct {
     PageOffset *int
     PageStartMarker *string
     PartitionId *string
+    ReservedTaskType ReservedTaskType
     SerialNumber *string
     State TapeDriveState
     TapeDriveType TapeDriveType
@@ -51,6 +52,11 @@ func (getTapeDrivesSpectraS3Request *GetTapeDrivesSpectraS3Request) WithPageStar
 
 func (getTapeDrivesSpectraS3Request *GetTapeDrivesSpectraS3Request) WithPartitionId(partitionId string) *GetTapeDrivesSpectraS3Request {
     getTapeDrivesSpectraS3Request.PartitionId = &partitionId
+    return getTapeDrivesSpectraS3Request
+}
+
+func (getTapeDrivesSpectraS3Request *GetTapeDrivesSpectraS3Request) WithReservedTaskType(reservedTaskType ReservedTaskType) *GetTapeDrivesSpectraS3Request {
+    getTapeDrivesSpectraS3Request.ReservedTaskType = reservedTaskType
     return getTapeDrivesSpectraS3Request
 }
 
