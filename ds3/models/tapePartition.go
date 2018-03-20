@@ -14,6 +14,7 @@
 package models
 
 type TapePartition struct {
+    AutoCompactionEnabled bool
     DriveType *TapeDriveType
     ErrorMessage *string
     Id string

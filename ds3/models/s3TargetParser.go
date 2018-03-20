@@ -57,7 +57,7 @@ func (s3Target *S3Target) parse(xmlNode *XmlNode, aggErr *AggregateError) {
         case "Quiesced":
             parseEnum(child.Content, &s3Target.Quiesced, aggErr)
         case "Region":
-            parseEnum(child.Content, &s3Target.Region, aggErr)
+            parseNullableEnum(child.Content, s3Target.Region, aggErr)
         case "SecretKey":
             s3Target.SecretKey = parseNullableString(child.Content)
         case "StagedDataExpirationInDays":

@@ -17,15 +17,25 @@ type EjectStorageDomainBlobsSpectraS3Request struct {
     BucketId string
     EjectLabel *string
     EjectLocation *string
-    ObjectNames []string
-    StorageDomainId string
+    Objects []Ds3GetObject
+    StorageDomain string
 }
 
-func NewEjectStorageDomainBlobsSpectraS3Request(bucketId string, objectNames []string, storageDomainId string) *EjectStorageDomainBlobsSpectraS3Request {
+func NewEjectStorageDomainBlobsSpectraS3Request(bucketId string, storageDomain string, objectNames []string) *EjectStorageDomainBlobsSpectraS3Request {
+
     return &EjectStorageDomainBlobsSpectraS3Request{
         BucketId: bucketId,
-        StorageDomainId: storageDomainId,
-        ObjectNames: objectNames,
+        StorageDomain: storageDomain,
+        Objects: buildDs3GetObjectSliceFromNames(objectNames),
+    }
+}
+
+func NewEjectStorageDomainBlobsSpectraS3RequestWithPartialObjects(bucketId string, storageDomain string, objects []Ds3GetObject) *EjectStorageDomainBlobsSpectraS3Request {
+
+    return &EjectStorageDomainBlobsSpectraS3Request{
+        BucketId: bucketId,
+        StorageDomain: storageDomain,
+        Objects: objects,
     }
 }
 

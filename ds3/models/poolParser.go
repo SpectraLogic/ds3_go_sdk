@@ -52,8 +52,8 @@ func (pool *Pool) parse(xmlNode *XmlNode, aggErr *AggregateError) {
             pool.ReservedCapacity = parseInt64(child.Content, aggErr)
         case "State":
             parseEnum(child.Content, &pool.State, aggErr)
-        case "StorageDomainId":
-            pool.StorageDomainId = parseNullableString(child.Content)
+        case "StorageDomainMemberId":
+            pool.StorageDomainMemberId = parseNullableString(child.Content)
         case "TotalCapacity":
             pool.TotalCapacity = parseInt64(child.Content, aggErr)
         case "Type":

@@ -30,6 +30,7 @@ type GetObjectRequest struct {
     Job *string
     Metadata map[string]string
     Offset *int64
+    VersionId *string
 }
 
 func NewGetObjectRequest(bucketName string, objectName string) *GetObjectRequest {
@@ -48,6 +49,11 @@ func (getObjectRequest *GetObjectRequest) WithJob(job string) *GetObjectRequest 
 
 func (getObjectRequest *GetObjectRequest) WithOffset(offset int64) *GetObjectRequest {
     getObjectRequest.Offset = &offset
+    return getObjectRequest
+}
+
+func (getObjectRequest *GetObjectRequest) WithVersionId(versionId string) *GetObjectRequest {
+    getObjectRequest.VersionId = &versionId
     return getObjectRequest
 }
 

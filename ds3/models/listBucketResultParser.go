@@ -44,6 +44,10 @@ func (listBucketResult *ListBucketResult) parse(xmlNode *XmlNode, aggErr *Aggreg
             listBucketResult.Prefix = parseNullableString(child.Content)
         case "IsTruncated":
             listBucketResult.Truncated = parseBool(child.Content, aggErr)
+        case "Version":
+            var model Contents
+            model.parse(&child, aggErr)
+            listBucketResult.VersionedObjects = append(listBucketResult.VersionedObjects, model)
         default:
             log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing ListBucketResult.", child.XMLName.Local)
         }

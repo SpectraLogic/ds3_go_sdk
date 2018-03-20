@@ -19,6 +19,7 @@ type GetBucketRequest struct {
     Marker *string
     MaxKeys *int
     Prefix *string
+    Versions bool
 }
 
 func NewGetBucketRequest(bucketName string) *GetBucketRequest {
@@ -44,6 +45,11 @@ func (getBucketRequest *GetBucketRequest) WithMaxKeys(maxKeys int) *GetBucketReq
 
 func (getBucketRequest *GetBucketRequest) WithPrefix(prefix string) *GetBucketRequest {
     getBucketRequest.Prefix = &prefix
+    return getBucketRequest
+}
+
+func (getBucketRequest *GetBucketRequest) WithVersions() *GetBucketRequest {
+    getBucketRequest.Versions = true
     return getBucketRequest
 }
 

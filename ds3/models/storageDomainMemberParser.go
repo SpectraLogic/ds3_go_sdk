@@ -20,6 +20,8 @@ func (storageDomainMember *StorageDomainMember) parse(xmlNode *XmlNode, aggErr *
     // Parse Child Nodes
     for _, child := range xmlNode.Children {
         switch child.XMLName.Local {
+        case "AutoCompactionThreshold":
+            storageDomainMember.AutoCompactionThreshold = parseNullableInt(child.Content, aggErr)
         case "Id":
             storageDomainMember.Id = parseString(child.Content)
         case "PoolPartitionId":

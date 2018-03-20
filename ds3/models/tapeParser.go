@@ -60,8 +60,8 @@ func (tape *Tape) parse(xmlNode *XmlNode, aggErr *AggregateError) {
             tape.SerialNumber = parseNullableString(child.Content)
         case "State":
             parseEnum(child.Content, &tape.State, aggErr)
-        case "StorageDomainId":
-            tape.StorageDomainId = parseNullableString(child.Content)
+        case "StorageDomainMemberId":
+            tape.StorageDomainMemberId = parseNullableString(child.Content)
         case "TakeOwnershipPending":
             tape.TakeOwnershipPending = parseBool(child.Content, aggErr)
         case "TotalRawCapacity":

@@ -14,7 +14,6 @@
 package models
 
 type ImportPoolSpectraS3Request struct {
-    ConflictResolutionMode ImportConflictResolutionMode
     DataPolicyId *string
     Pool string
     Priority Priority
@@ -28,11 +27,6 @@ func NewImportPoolSpectraS3Request(pool string) *ImportPoolSpectraS3Request {
     return &ImportPoolSpectraS3Request{
         Pool: pool,
     }
-}
-
-func (importPoolSpectraS3Request *ImportPoolSpectraS3Request) WithConflictResolutionMode(conflictResolutionMode ImportConflictResolutionMode) *ImportPoolSpectraS3Request {
-    importPoolSpectraS3Request.ConflictResolutionMode = conflictResolutionMode
-    return importPoolSpectraS3Request
 }
 
 func (importPoolSpectraS3Request *ImportPoolSpectraS3Request) WithDataPolicyId(dataPolicyId string) *ImportPoolSpectraS3Request {

@@ -22,6 +22,8 @@ func (contents *Contents) parse(xmlNode *XmlNode, aggErr *AggregateError) {
         switch child.XMLName.Local {
         case "ETag":
             contents.ETag = parseNullableString(child.Content)
+        case "IsLatest":
+            contents.IsLatest = parseNullableBool(child.Content, aggErr)
         case "Key":
             contents.Key = parseNullableString(child.Content)
         case "LastModified":
@@ -32,6 +34,8 @@ func (contents *Contents) parse(xmlNode *XmlNode, aggErr *AggregateError) {
             contents.Size = parseInt64(child.Content, aggErr)
         case "StorageClass":
             contents.StorageClass = parseNullableString(child.Content)
+        case "VersionId":
+            contents.VersionId = parseNullableString(child.Content)
         default:
             log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing Contents.", child.XMLName.Local)
         }

@@ -25,6 +25,7 @@ type ModifyDataPolicySpectraS3Request struct {
     DefaultVerifyAfterWrite *bool
     DefaultVerifyJobPriority Priority
     EndToEndCrcRequired *bool
+    MaxVersionsToKeep *int
     Name *string
     RebuildPriority Priority
     Versioning VersioningLevel
@@ -83,6 +84,11 @@ func (modifyDataPolicySpectraS3Request *ModifyDataPolicySpectraS3Request) WithDe
 
 func (modifyDataPolicySpectraS3Request *ModifyDataPolicySpectraS3Request) WithEndToEndCrcRequired(endToEndCrcRequired bool) *ModifyDataPolicySpectraS3Request {
     modifyDataPolicySpectraS3Request.EndToEndCrcRequired = &endToEndCrcRequired
+    return modifyDataPolicySpectraS3Request
+}
+
+func (modifyDataPolicySpectraS3Request *ModifyDataPolicySpectraS3Request) WithMaxVersionsToKeep(maxVersionsToKeep int) *ModifyDataPolicySpectraS3Request {
+    modifyDataPolicySpectraS3Request.MaxVersionsToKeep = &maxVersionsToKeep
     return modifyDataPolicySpectraS3Request
 }
 

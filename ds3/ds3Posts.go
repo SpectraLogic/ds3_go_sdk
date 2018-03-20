@@ -49,7 +49,6 @@ func (client *Client) DeleteObjects(request *models.DeleteObjectsRequest) (*mode
         WithHttpVerb(HTTP_VERB_POST).
         WithPath("/" + request.BucketName).
         WithQueryParam("delete", "").
-        WithOptionalVoidQueryParam("roll_back", request.RollBack).
         WithReadCloser(buildDeleteObjectsPayload(request.ObjectNames)).
         Build(client.connectionInfo)
 
@@ -392,6 +391,7 @@ func (client *Client) PutDataPolicySpectraS3(request *models.PutDataPolicySpectr
         WithOptionalQueryParam("default_verify_after_write", networking.BoolPtrToStrPtr(request.DefaultVerifyAfterWrite)).
         WithOptionalQueryParam("default_verify_job_priority", networking.InterfaceToStrPtr(request.DefaultVerifyJobPriority)).
         WithOptionalQueryParam("end_to_end_crc_required", networking.BoolPtrToStrPtr(request.EndToEndCrcRequired)).
+        WithOptionalQueryParam("max_versions_to_keep", networking.IntPtrToStrPtr(request.MaxVersionsToKeep)).
         WithOptionalQueryParam("rebuild_priority", networking.InterfaceToStrPtr(request.RebuildPriority)).
         WithOptionalQueryParam("versioning", networking.InterfaceToStrPtr(request.Versioning)).
         Build(client.connectionInfo)
@@ -1019,6 +1019,7 @@ func (client *Client) PutTapeStorageDomainMemberSpectraS3(request *models.PutTap
         WithQueryParam("storage_domain_id", request.StorageDomainId).
         WithQueryParam("tape_partition_id", request.TapePartitionId).
         WithQueryParam("tape_type", request.TapeType).
+        WithOptionalQueryParam("auto_compaction_threshold", networking.IntPtrToStrPtr(request.AutoCompactionThreshold)).
         WithOptionalQueryParam("write_preference", networking.InterfaceToStrPtr(request.WritePreference)).
         Build(client.connectionInfo)
 

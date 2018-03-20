@@ -56,6 +56,8 @@ func (activeJob *ActiveJob) parse(xmlNode *XmlNode, aggErr *AggregateError) {
             activeJob.Replicating = parseBool(child.Content, aggErr)
         case "RequestType":
             parseEnum(child.Content, &activeJob.RequestType, aggErr)
+        case "Restore":
+            parseEnum(child.Content, &activeJob.Restore, aggErr)
         case "Truncated":
             activeJob.Truncated = parseBool(child.Content, aggErr)
         case "TruncatedDueToTimeout":

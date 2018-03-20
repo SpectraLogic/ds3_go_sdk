@@ -16,6 +16,7 @@ package models
 type SuspectBlobTape struct {
     BlobId string
     Id string
+    ObsoletionId *string
     OrderIndex int
     TapeId string
 }

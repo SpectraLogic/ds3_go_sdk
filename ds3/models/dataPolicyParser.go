@@ -24,8 +24,6 @@ func (dataPolicy *DataPolicy) parse(xmlNode *XmlNode, aggErr *AggregateError) {
             dataPolicy.AlwaysForcePutJobCreation = parseBool(child.Content, aggErr)
         case "AlwaysMinimizeSpanningAcrossMedia":
             dataPolicy.AlwaysMinimizeSpanningAcrossMedia = parseBool(child.Content, aggErr)
-        case "AlwaysReplicateDeletes":
-            dataPolicy.AlwaysReplicateDeletes = parseBool(child.Content, aggErr)
         case "BlobbingEnabled":
             dataPolicy.BlobbingEnabled = parseBool(child.Content, aggErr)
         case "ChecksumType":
@@ -46,8 +44,8 @@ func (dataPolicy *DataPolicy) parse(xmlNode *XmlNode, aggErr *AggregateError) {
             dataPolicy.EndToEndCrcRequired = parseBool(child.Content, aggErr)
         case "Id":
             dataPolicy.Id = parseString(child.Content)
-        case "LtfsObjectNamingAllowed":
-            dataPolicy.LtfsObjectNamingAllowed = parseBool(child.Content, aggErr)
+        case "MaxVersionsToKeep":
+            dataPolicy.MaxVersionsToKeep = parseInt(child.Content, aggErr)
         case "Name":
             dataPolicy.Name = parseNullableString(child.Content)
         case "RebuildPriority":

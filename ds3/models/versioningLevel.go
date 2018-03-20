@@ -25,6 +25,7 @@ type VersioningLevel Enum
 const (
     VERSIONING_LEVEL_NONE VersioningLevel = 1 + iota
     VERSIONING_LEVEL_KEEP_LATEST VersioningLevel = 1 + iota
+    VERSIONING_LEVEL_KEEP_MULTIPLE_VERSIONS VersioningLevel = 1 + iota
 )
 
 func (versioningLevel *VersioningLevel) UnmarshalText(text []byte) error {
@@ -33,6 +34,7 @@ func (versioningLevel *VersioningLevel) UnmarshalText(text []byte) error {
         case "": *versioningLevel = UNDEFINED
         case "NONE": *versioningLevel = VERSIONING_LEVEL_NONE
         case "KEEP_LATEST": *versioningLevel = VERSIONING_LEVEL_KEEP_LATEST
+        case "KEEP_MULTIPLE_VERSIONS": *versioningLevel = VERSIONING_LEVEL_KEEP_MULTIPLE_VERSIONS
         default:
             *versioningLevel = UNDEFINED
             return errors.New(fmt.Sprintf("Cannot marshal '%s' into VersioningLevel", str))
@@ -44,6 +46,7 @@ func (versioningLevel VersioningLevel) String() string {
     switch versioningLevel {
         case VERSIONING_LEVEL_NONE: return "NONE"
         case VERSIONING_LEVEL_KEEP_LATEST: return "KEEP_LATEST"
+        case VERSIONING_LEVEL_KEEP_MULTIPLE_VERSIONS: return "KEEP_MULTIPLE_VERSIONS"
         default:
             log.Printf("Error: invalid VersioningLevel represented by '%d'", versioningLevel)
             return ""

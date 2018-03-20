@@ -15,6 +15,7 @@ package models
 
 type ModifyUserSpectraS3Request struct {
     DefaultDataPolicyId *string
+    MaxBuckets *int
     Name *string
     SecretKey *string
     UserId string
@@ -28,6 +29,11 @@ func NewModifyUserSpectraS3Request(userId string) *ModifyUserSpectraS3Request {
 
 func (modifyUserSpectraS3Request *ModifyUserSpectraS3Request) WithDefaultDataPolicyId(defaultDataPolicyId string) *ModifyUserSpectraS3Request {
     modifyUserSpectraS3Request.DefaultDataPolicyId = &defaultDataPolicyId
+    return modifyUserSpectraS3Request
+}
+
+func (modifyUserSpectraS3Request *ModifyUserSpectraS3Request) WithMaxBuckets(maxBuckets int) *ModifyUserSpectraS3Request {
+    modifyUserSpectraS3Request.MaxBuckets = &maxBuckets
     return modifyUserSpectraS3Request
 }
 

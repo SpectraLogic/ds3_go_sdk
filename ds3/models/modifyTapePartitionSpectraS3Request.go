@@ -14,6 +14,7 @@
 package models
 
 type ModifyTapePartitionSpectraS3Request struct {
+    AutoCompactionEnabled *bool
     MinimumReadReservedDrives *int
     MinimumWriteReservedDrives *int
     Quiesced Quiesced
@@ -24,6 +25,11 @@ func NewModifyTapePartitionSpectraS3Request(tapePartition string) *ModifyTapePar
     return &ModifyTapePartitionSpectraS3Request{
         TapePartition: tapePartition,
     }
+}
+
+func (modifyTapePartitionSpectraS3Request *ModifyTapePartitionSpectraS3Request) WithAutoCompactionEnabled(autoCompactionEnabled bool) *ModifyTapePartitionSpectraS3Request {
+    modifyTapePartitionSpectraS3Request.AutoCompactionEnabled = &autoCompactionEnabled
+    return modifyTapePartitionSpectraS3Request
 }
 
 func (modifyTapePartitionSpectraS3Request *ModifyTapePartitionSpectraS3Request) WithMinimumReadReservedDrives(minimumReadReservedDrives int) *ModifyTapePartitionSpectraS3Request {

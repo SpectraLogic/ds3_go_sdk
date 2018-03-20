@@ -32,8 +32,6 @@ func (s3Object *S3Object) parse(xmlNode *XmlNode, aggErr *AggregateError) {
             s3Object.Name = parseNullableString(child.Content)
         case "Type":
             parseEnum(child.Content, &s3Object.Type, aggErr)
-        case "Version":
-            s3Object.Version = parseInt64(child.Content, aggErr)
         default:
             log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing S3Object.", child.XMLName.Local)
         }
