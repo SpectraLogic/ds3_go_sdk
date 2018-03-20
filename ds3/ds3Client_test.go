@@ -386,7 +386,7 @@ func TestGetObjectRange(t *testing.T) {
 
 func TestGetObjectsDetailsSpectraS3(t *testing.T) {
     bucketId := "a24d14f3-e2f0-4bfb-ab71-f99d5ef43745"
-    stringResponse := "<Data><S3Object><BucketId>a24d14f3-e2f0-4bfb-ab71-f99d5ef43745</BucketId><CreationDate>2015-09-21T20:06:47.694Z</CreationDate><Id>e37c3ce0-12aa-4f54-87e3-42532aca0e5e</Id><Name>beowulf.txt</Name><Type>DATA</Type><Version>1</Version></S3Object>" +
+    stringResponse := "<Data><S3Object><BucketId>a24d14f3-e2f0-4bfb-ab71-f99d5ef43745</BucketId><CreationDate>2015-09-21T20:06:47.694Z</CreationDate><Id>e37c3ce0-12aa-4f54-87e3-42532aca0e5e</Id><Name>beowulf.txt</Name><Type>DATA</Type></S3Object>" +
             "<S3Object><BucketId>a24d14f3-e2f0-4bfb-ab71-f99d5ef43745</BucketId><CreationDate>2015-09-21T20:06:47.779Z</CreationDate><Id>dc628815-c723-4c4e-b68b-5f5d10f38af5</Id><Name>sherlock_holmes.txt</Name><Type>DATA</Type></S3Object>" +
             "<S3Object><BucketId>a24d14f3-e2f0-4bfb-ab71-f99d5ef43745</BucketId><CreationDate>2015-09-21T20:06:47.772Z</CreationDate><Id>4f6985fd-fbae-4421-ba27-66fdb96187c5</Id><Name>tale_of_two_cities.txt</Name><Type>DATA</Type></S3Object>" +
             "<S3Object><BucketId>a24d14f3-e2f0-4bfb-ab71-f99d5ef43745</BucketId><CreationDate>2015-09-21T20:06:47.696Z</CreationDate><Id>82c18910-fadb-4461-a152-bf714ae91b55</Id><Name>ulysses.txt</Name><Type>DATA</Type></S3Object></Data>"
@@ -1725,7 +1725,7 @@ func TestGetPhysicalPlacementForObjectsSpectraS3(t *testing.T) {
 
 func TestGetPhysicalPlacementForObjectsWithFullDetailsSpectraS3(t *testing.T) {
     expectedRequest := "<Objects><Object Name=\"obj1\"></Object><Object Name=\"obj2\"></Object><Object Name=\"obj3\"></Object></Objects>"
-    responsePayload := "<Data><Object Bucket=\"b1\" Id=\"a2897bbd-3e0b-4c0f-83d7-29e1e7669bdd\" InCache=\"false\" Latest=\"true\" Length=\"10\" Name=\"o4\" Offset=\"0\" Version=\"1\"><PhysicalPlacement><AzureTargets/><Ds3Targets/><Pools/><S3Targets/><Tapes/></PhysicalPlacement></Object></Data>"
+    responsePayload := "<Data><Object Bucket=\"b1\" Id=\"a2897bbd-3e0b-4c0f-83d7-29e1e7669bdd\" InCache=\"false\" Latest=\"true\" Length=\"10\" Name=\"o4\" Offset=\"0\" ><PhysicalPlacement><AzureTargets/><Ds3Targets/><Pools/><S3Targets/><Tapes/></PhysicalPlacement></Object></Data>"
 
     // Create and run the mocked client.
     bucketName := "BucketName"
@@ -1825,7 +1825,7 @@ func runMarkSuspectBlobTest(t *testing.T, path string, callToTest markSuspectBlo
 
 func TestVerifyPhysicalPlacementForObjectsSpectraS3(t *testing.T) {
     expectedRequest := "<Objects><Object Name=\"o1\"></Object></Objects>"
-    responsePayload := "<Data><AzureTargets/><Ds3Targets/><Pools/><S3Targets/><Tapes><Tape><AssignedToStorageDomain>false</AssignedToStorageDomain><AvailableRawCapacity>10000</AvailableRawCapacity><BarCode>t1</BarCode><BucketId/><DescriptionForIdentification/><EjectDate/><EjectLabel/><EjectLocation/><EjectPending/><FullOfData>false</FullOfData><Id>48d30ecb-84f1-4721-9832-7aa165a1dd77</Id><LastAccessed/><LastCheckpoint/><LastModified/><LastVerified/><PartiallyVerifiedEndOfTape/><PartitionId>76343269-c32a-4cb0-aec4-57a9dccce6ea</PartitionId><PreviousState/><SerialNumber/><State>PENDING_INSPECTION</State><StorageDomainId/><TakeOwnershipPending>false</TakeOwnershipPending><TotalRawCapacity>20000</TotalRawCapacity><Type>LTO5</Type><VerifyPending/><WriteProtected>false</WriteProtected></Tape></Tapes></Data>"
+    responsePayload := "<Data><AzureTargets/><Ds3Targets/><Pools/><S3Targets/><Tapes><Tape><AssignedToStorageDomain>false</AssignedToStorageDomain><AvailableRawCapacity>10000</AvailableRawCapacity><BarCode>t1</BarCode><BucketId/><DescriptionForIdentification/><EjectDate/><EjectLabel/><EjectLocation/><EjectPending/><FullOfData>false</FullOfData><Id>48d30ecb-84f1-4721-9832-7aa165a1dd77</Id><LastAccessed/><LastCheckpoint/><LastModified/><LastVerified/><PartiallyVerifiedEndOfTape/><PartitionId>76343269-c32a-4cb0-aec4-57a9dccce6ea</PartitionId><PreviousState/><SerialNumber/><State>PENDING_INSPECTION</State><TakeOwnershipPending>false</TakeOwnershipPending><TotalRawCapacity>20000</TotalRawCapacity><Type>LTO5</Type><VerifyPending/><WriteProtected>false</WriteProtected></Tape></Tapes></Data>"
 
     // Create and run the mocked client.
     bucketName := "b1"
@@ -1850,7 +1850,7 @@ func TestVerifyPhysicalPlacementForObjectsSpectraS3(t *testing.T) {
 
 func TestVerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3(t *testing.T) {
     expectedRequest := "<Objects><Object Name=\"o1\"></Object></Objects>"
-    responsePayload := "<Data><Object Bucket=\"b1\" Id=\"ad5bfa96-8356-42e5-97c7-091780f9d2a7\" InCache=\"false\" Latest=\"true\" Length=\"10\" Name=\"o1\" Offset=\"0\" Version=\"1\"><PhysicalPlacement><AzureTargets/><Ds3Targets/><Pools/><S3Targets/><Tapes><Tape><AssignedToStorageDomain>false</AssignedToStorageDomain><AvailableRawCapacity>10000</AvailableRawCapacity><BarCode>t1</BarCode><BucketId/><DescriptionForIdentification/><EjectDate/><EjectLabel/><EjectLocation/><EjectPending/><FullOfData>false</FullOfData><Id>3514700d-4d4f-4e64-8ccd-20750b5514fd</Id><LastAccessed/><LastCheckpoint/><LastModified/><LastVerified/><PartiallyVerifiedEndOfTape/><PartitionId>dc681797-927a-4eb0-9652-d19d06534e50</PartitionId><PreviousState/><SerialNumber/><State>PENDING_INSPECTION</State><StorageDomainId/><TakeOwnershipPending>false</TakeOwnershipPending><TotalRawCapacity>20000</TotalRawCapacity><Type>LTO5</Type><VerifyPending/><WriteProtected>false</WriteProtected></Tape></Tapes></PhysicalPlacement></Object></Data>"
+    responsePayload := "<Data><Object Bucket=\"b1\" Id=\"ad5bfa96-8356-42e5-97c7-091780f9d2a7\" InCache=\"false\" Latest=\"true\" Length=\"10\" Name=\"o1\" Offset=\"0\" ><PhysicalPlacement><AzureTargets/><Ds3Targets/><Pools/><S3Targets/><Tapes><Tape><AssignedToStorageDomain>false</AssignedToStorageDomain><AvailableRawCapacity>10000</AvailableRawCapacity><BarCode>t1</BarCode><BucketId/><DescriptionForIdentification/><EjectDate/><EjectLabel/><EjectLocation/><EjectPending/><FullOfData>false</FullOfData><Id>3514700d-4d4f-4e64-8ccd-20750b5514fd</Id><LastAccessed/><LastCheckpoint/><LastModified/><LastVerified/><PartiallyVerifiedEndOfTape/><PartitionId>dc681797-927a-4eb0-9652-d19d06534e50</PartitionId><PreviousState/><SerialNumber/><State>PENDING_INSPECTION</State><TakeOwnershipPending>false</TakeOwnershipPending><TotalRawCapacity>20000</TotalRawCapacity><Type>LTO5</Type><VerifyPending/><WriteProtected>false</WriteProtected></Tape></Tapes></PhysicalPlacement></Object></Data>"
 
     // Create and run the mocked client.
     bucketName := "b1"
@@ -1958,12 +1958,16 @@ func TestHeadObject(t *testing.T) {
 }
 
 func TestStageObjectsJob(t *testing.T) {
-    expectedRequest := "<Objects><Object Name=\"o1\"></Object><Object Name=\"o2\" Length=\"10\" Offset=\"20\"></Object></Objects>"
+    expectedRequest := "<Objects><Object Name=\"o1\"></Object><Object Name=\"o2\" VersionId=\"v2\"></Object><Object Name=\"o3\" Length=\"10\" Offset=\"20\" VersionId=\"v3\"></Object></Objects>"
     responsePayload := "<MasterObjectList><Objects><Object Name='file2' Length='1202'/><Object Name='file1' Length='256'/><Object Name='file3' Length='2523'/></Objects></MasterObjectList>"
 
     // Create and run the mocked client.
     bucketName := "b1"
-    objects := []models.Ds3GetObject { models.NewDs3GetObject("o1"), models.NewPartialDs3GetObject("o2", 10, 20) }
+    objects := []models.Ds3GetObject {
+        models.NewDs3GetObject("o1"),
+        models.NewDs3GetObjectVersion("o2", "v2"),
+        models.NewPartialDs3GetObjectVersion("o3", 10, 20, "v3"),
+    }
 
     qp := &url.Values{ "operation": []string{"start_bulk_stage"} }
 
