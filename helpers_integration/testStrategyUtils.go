@@ -60,7 +60,7 @@ func getTestBooksAsWriteObjects() (*[]helperModels.PutObject, error) {
 func newTestTransferStrategy() helpers.WriteTransferStrategy {
     return helpers.WriteTransferStrategy{
         BlobStrategy: newTestBlobStrategy(),
-        Options:      helpers.WriteBulkJobOptions{MaxUploadSize:&helpers.MinUploadSize},
+        Options:      helpers.WriteBulkJobOptions{MaxUploadSize: &helpers.MinUploadSize},
     }
 }
 

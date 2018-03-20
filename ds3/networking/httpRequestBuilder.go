@@ -104,6 +104,14 @@ func (builder *HttpRequestBuilder) Build(conn *ConnectionInfo) (*http.Request, e
 
     if builder.contentLength != nil {
         httpRequest.ContentLength = *builder.contentLength
+
+        // Special casing for content length == 0.  Go won't include the content length header
+        // if the length is 0, but BlackPearl needs the content length header to be there and be 0
+        // to create a folder.
+        // See https://github.com/golang/go/issues/20257
+        if *builder.contentLength == 0 {
+            httpRequest.Body = http.NoBody
+        }
     }
 
     builder.signatureFields.Date = getCurrentTime()
