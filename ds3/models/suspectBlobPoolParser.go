@@ -30,6 +30,8 @@ func (suspectBlobPool *SuspectBlobPool) parse(xmlNode *XmlNode, aggErr *Aggregat
             suspectBlobPool.Id = parseString(child.Content)
         case "LastAccessed":
             suspectBlobPool.LastAccessed = parseString(child.Content)
+        case "ObsoletionId":
+            suspectBlobPool.ObsoletionId = parseNullableString(child.Content)
         case "PoolId":
             suspectBlobPool.PoolId = parseString(child.Content)
         default:

@@ -16,7 +16,6 @@ package models
 type DeleteFolderRecursivelySpectraS3Request struct {
     BucketId string
     Folder string
-    RollBack bool
 }
 
 func NewDeleteFolderRecursivelySpectraS3Request(bucketId string, folder string) *DeleteFolderRecursivelySpectraS3Request {
@@ -24,10 +23,5 @@ func NewDeleteFolderRecursivelySpectraS3Request(bucketId string, folder string) 
         Folder: folder,
         BucketId: bucketId,
     }
-}
-
-func (deleteFolderRecursivelySpectraS3Request *DeleteFolderRecursivelySpectraS3Request) WithRollBack() *DeleteFolderRecursivelySpectraS3Request {
-    deleteFolderRecursivelySpectraS3Request.RollBack = true
-    return deleteFolderRecursivelySpectraS3Request
 }
 

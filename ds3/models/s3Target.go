@@ -32,7 +32,7 @@ type S3Target struct {
     ProxyPort *int
     ProxyUsername *string
     Quiesced Quiesced
-    Region S3Region
+    Region *S3Region
     SecretKey *string
     StagedDataExpirationInDays int
     State TargetState

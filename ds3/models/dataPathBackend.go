@@ -19,11 +19,11 @@ type DataPathBackend struct {
     AutoActivateTimeoutInMins *int
     AutoInspect AutoInspectMode
     CacheAvailableRetryAfterInSeconds int
-    DefaultImportConflictResolutionMode ImportConflictResolutionMode
     DefaultVerifyDataAfterImport *Priority
     DefaultVerifyDataPriorToImport bool
     Id string
     InstanceId string
+    IomEnabled bool
     LastHeartbeat string
     PartiallyVerifyLastPercentOfTapes *int
     UnavailableMediaPolicy UnavailableMediaUsagePolicy

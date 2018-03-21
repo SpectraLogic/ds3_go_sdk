@@ -42,6 +42,7 @@ const (
     REST_OPERATION_TYPE_REGENERATE_SECRET_KEY RestOperationType = 1 + iota
     REST_OPERATION_TYPE_START_BULK_GET RestOperationType = 1 + iota
     REST_OPERATION_TYPE_START_BULK_PUT RestOperationType = 1 + iota
+    REST_OPERATION_TYPE_START_BULK_STAGE RestOperationType = 1 + iota
     REST_OPERATION_TYPE_START_BULK_VERIFY RestOperationType = 1 + iota
     REST_OPERATION_TYPE_VERIFY RestOperationType = 1 + iota
     REST_OPERATION_TYPE_VERIFY_SAFE_TO_START_BULK_PUT RestOperationType = 1 + iota
@@ -71,6 +72,7 @@ func (restOperationType *RestOperationType) UnmarshalText(text []byte) error {
         case "REGENERATE_SECRET_KEY": *restOperationType = REST_OPERATION_TYPE_REGENERATE_SECRET_KEY
         case "START_BULK_GET": *restOperationType = REST_OPERATION_TYPE_START_BULK_GET
         case "START_BULK_PUT": *restOperationType = REST_OPERATION_TYPE_START_BULK_PUT
+        case "START_BULK_STAGE": *restOperationType = REST_OPERATION_TYPE_START_BULK_STAGE
         case "START_BULK_VERIFY": *restOperationType = REST_OPERATION_TYPE_START_BULK_VERIFY
         case "VERIFY": *restOperationType = REST_OPERATION_TYPE_VERIFY
         case "VERIFY_SAFE_TO_START_BULK_PUT": *restOperationType = REST_OPERATION_TYPE_VERIFY_SAFE_TO_START_BULK_PUT
@@ -103,6 +105,7 @@ func (restOperationType RestOperationType) String() string {
         case REST_OPERATION_TYPE_REGENERATE_SECRET_KEY: return "REGENERATE_SECRET_KEY"
         case REST_OPERATION_TYPE_START_BULK_GET: return "START_BULK_GET"
         case REST_OPERATION_TYPE_START_BULK_PUT: return "START_BULK_PUT"
+        case REST_OPERATION_TYPE_START_BULK_STAGE: return "START_BULK_STAGE"
         case REST_OPERATION_TYPE_START_BULK_VERIFY: return "START_BULK_VERIFY"
         case REST_OPERATION_TYPE_VERIFY: return "VERIFY"
         case REST_OPERATION_TYPE_VERIFY_SAFE_TO_START_BULK_PUT: return "VERIFY_SAFE_TO_START_BULK_PUT"

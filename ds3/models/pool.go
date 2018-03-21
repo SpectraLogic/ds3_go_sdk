@@ -30,7 +30,7 @@ type Pool struct {
     Quiesced Quiesced
     ReservedCapacity int64
     State PoolState
-    StorageDomainId *string
+    StorageDomainMemberId *string
     TotalCapacity int64
     Type PoolType
     UsedCapacity int64

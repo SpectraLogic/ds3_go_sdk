@@ -25,6 +25,7 @@ func (client *Client) GetObject(request *models.GetObjectRequest) (*models.GetOb
         WithPath("/" + request.BucketName + "/" + request.ObjectName).
         WithOptionalQueryParam("job", request.Job).
         WithOptionalQueryParam("offset", networking.Int64PtrToStrPtr(request.Offset)).
+        WithOptionalQueryParam("version_id", request.VersionId).
         WithChecksum(request.Checksum).
         WithHeaders(request.Metadata).
         Build(client.connectionInfo)
@@ -55,6 +56,7 @@ func (client *Client) GetBucket(request *models.GetBucketRequest) (*models.GetBu
         WithOptionalQueryParam("marker", request.Marker).
         WithOptionalQueryParam("max_keys", networking.IntPtrToStrPtr(request.MaxKeys)).
         WithOptionalQueryParam("prefix", request.Prefix).
+        WithOptionalVoidQueryParam("versions", request.Versions).
         Build(client.connectionInfo)
 
     if err != nil {
@@ -1232,7 +1234,7 @@ func (client *Client) GetSuspectObjectsWithFullDetailsSpectraS3(request *models.
         WithPath("/_rest_/suspect_object").
         WithQueryParam("full_details", "").
         WithOptionalQueryParam("bucket_id", request.BucketId).
-        WithOptionalQueryParam("storage_domain_id", request.StorageDomainId).
+        WithOptionalQueryParam("storage_domain", request.StorageDomain).
         Build(client.connectionInfo)
 
     if err != nil {
@@ -2543,14 +2545,15 @@ func (client *Client) GetObjectsDetailsSpectraS3(request *models.GetObjectsDetai
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/object").
         WithOptionalQueryParam("bucket_id", request.BucketId).
+        WithOptionalQueryParam("end_date", networking.Int64PtrToStrPtr(request.EndDate)).
         WithOptionalVoidQueryParam("last_page", request.LastPage).
         WithOptionalQueryParam("latest", networking.BoolPtrToStrPtr(request.Latest)).
         WithOptionalQueryParam("name", request.Name).
         WithOptionalQueryParam("page_length", networking.IntPtrToStrPtr(request.PageLength)).
         WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
+        WithOptionalQueryParam("start_date", networking.Int64PtrToStrPtr(request.StartDate)).
         WithOptionalQueryParam("type", networking.InterfaceToStrPtr(request.S3ObjectType)).
-        WithOptionalQueryParam("version", networking.Int64PtrToStrPtr(request.Version)).
         Build(client.connectionInfo)
 
     if err != nil {
@@ -2577,6 +2580,7 @@ func (client *Client) GetObjectsWithFullDetailsSpectraS3(request *models.GetObje
         WithPath("/_rest_/object").
         WithQueryParam("full_details", "").
         WithOptionalQueryParam("bucket_id", request.BucketId).
+        WithOptionalQueryParam("end_date", networking.Int64PtrToStrPtr(request.EndDate)).
         WithOptionalVoidQueryParam("include_physical_placement", request.IncludePhysicalPlacement).
         WithOptionalVoidQueryParam("last_page", request.LastPage).
         WithOptionalQueryParam("latest", networking.BoolPtrToStrPtr(request.Latest)).
@@ -2584,8 +2588,8 @@ func (client *Client) GetObjectsWithFullDetailsSpectraS3(request *models.GetObje
         WithOptionalQueryParam("page_length", networking.IntPtrToStrPtr(request.PageLength)).
         WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
+        WithOptionalQueryParam("start_date", networking.Int64PtrToStrPtr(request.StartDate)).
         WithOptionalQueryParam("type", networking.InterfaceToStrPtr(request.S3ObjectType)).
-        WithOptionalQueryParam("version", networking.Int64PtrToStrPtr(request.Version)).
         Build(client.connectionInfo)
 
     if err != nil {
@@ -2610,9 +2614,9 @@ func (client *Client) VerifyPhysicalPlacementForObjectsSpectraS3(request *models
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/bucket/" + request.BucketName).
-        WithOptionalQueryParam("storage_domain_id", request.StorageDomainId).
+        WithOptionalQueryParam("storage_domain", request.StorageDomain).
         WithQueryParam("operation", "verify_physical_placement").
-        WithReadCloser(buildDs3ObjectStreamFromNames(request.ObjectNames)).
+        WithReadCloser(buildDs3GetObjectListStream(request.Objects)).
         Build(client.connectionInfo)
 
     if err != nil {
@@ -2638,9 +2642,9 @@ func (client *Client) VerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3(
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/bucket/" + request.BucketName).
         WithQueryParam("full_details", "").
-        WithOptionalQueryParam("storage_domain_id", request.StorageDomainId).
+        WithOptionalQueryParam("storage_domain", request.StorageDomain).
         WithQueryParam("operation", "verify_physical_placement").
-        WithReadCloser(buildDs3ObjectStreamFromNames(request.ObjectNames)).
+        WithReadCloser(buildDs3GetObjectListStream(request.Objects)).
         Build(client.connectionInfo)
 
     if err != nil {
@@ -2812,7 +2816,7 @@ func (client *Client) GetPoolsSpectraS3(request *models.GetPoolsSpectraS3Request
         WithOptionalQueryParam("partition_id", request.PartitionId).
         WithOptionalQueryParam("powered_on", networking.BoolPtrToStrPtr(request.PoweredOn)).
         WithOptionalQueryParam("state", networking.InterfaceToStrPtr(request.State)).
-        WithOptionalQueryParam("storage_domain_id", request.StorageDomainId).
+        WithOptionalQueryParam("storage_domain_member_id", request.StorageDomainMemberId).
         WithOptionalQueryParam("type", networking.InterfaceToStrPtr(request.PoolType)).
         Build(client.connectionInfo)
 
@@ -3096,6 +3100,10 @@ func (client *Client) GetBlobsOnTapeSpectraS3(request *models.GetBlobsOnTapeSpec
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/tape/" + request.TapeId).
+        WithOptionalVoidQueryParam("last_page", request.LastPage).
+        WithOptionalQueryParam("page_length", networking.IntPtrToStrPtr(request.PageLength)).
+        WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
+        WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
         WithQueryParam("operation", "get_physical_placement").
         Build(client.connectionInfo)
 
@@ -3511,7 +3519,7 @@ func (client *Client) GetTapesSpectraS3(request *models.GetTapesSpectraS3Request
         WithOptionalQueryParam("serial_number", request.SerialNumber).
         WithOptionalQueryParam("sort_by", request.SortBy).
         WithOptionalQueryParam("state", networking.InterfaceToStrPtr(request.State)).
-        WithOptionalQueryParam("storage_domain_id", request.StorageDomainId).
+        WithOptionalQueryParam("storage_domain_member_id", request.StorageDomainMemberId).
         WithOptionalQueryParam("type", request.String).
         WithOptionalQueryParam("verify_pending", networking.InterfaceToStrPtr(request.VerifyPending)).
         WithOptionalQueryParam("write_protected", networking.BoolPtrToStrPtr(request.WriteProtected)).

@@ -32,7 +32,7 @@ type GetTapesSpectraS3Request struct {
     SerialNumber *string
     SortBy *string
     State TapeState
-    StorageDomainId *string
+    StorageDomainMemberId *string
     String *string
     VerifyPending Priority
     WriteProtected *bool
@@ -133,8 +133,8 @@ func (getTapesSpectraS3Request *GetTapesSpectraS3Request) WithState(state TapeSt
     return getTapesSpectraS3Request
 }
 
-func (getTapesSpectraS3Request *GetTapesSpectraS3Request) WithStorageDomainId(storageDomainId string) *GetTapesSpectraS3Request {
-    getTapesSpectraS3Request.StorageDomainId = &storageDomainId
+func (getTapesSpectraS3Request *GetTapesSpectraS3Request) WithStorageDomainMemberId(storageDomainMemberId string) *GetTapesSpectraS3Request {
+    getTapesSpectraS3Request.StorageDomainMemberId = &storageDomainMemberId
     return getTapesSpectraS3Request
 }
 

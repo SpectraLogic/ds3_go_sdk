@@ -15,7 +15,7 @@ package models
 
 type GetSuspectObjectsWithFullDetailsSpectraS3Request struct {
     BucketId *string
-    StorageDomainId *string
+    StorageDomain *string
 }
 
 func NewGetSuspectObjectsWithFullDetailsSpectraS3Request() *GetSuspectObjectsWithFullDetailsSpectraS3Request {
@@ -28,8 +28,8 @@ func (getSuspectObjectsWithFullDetailsSpectraS3Request *GetSuspectObjectsWithFul
     return getSuspectObjectsWithFullDetailsSpectraS3Request
 }
 
-func (getSuspectObjectsWithFullDetailsSpectraS3Request *GetSuspectObjectsWithFullDetailsSpectraS3Request) WithStorageDomainId(storageDomainId string) *GetSuspectObjectsWithFullDetailsSpectraS3Request {
-    getSuspectObjectsWithFullDetailsSpectraS3Request.StorageDomainId = &storageDomainId
+func (getSuspectObjectsWithFullDetailsSpectraS3Request *GetSuspectObjectsWithFullDetailsSpectraS3Request) WithStorageDomain(storageDomain string) *GetSuspectObjectsWithFullDetailsSpectraS3Request {
+    getSuspectObjectsWithFullDetailsSpectraS3Request.StorageDomain = &storageDomain
     return getSuspectObjectsWithFullDetailsSpectraS3Request
 }
 

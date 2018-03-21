@@ -38,6 +38,7 @@ const (
     TAPE_PARTITION_FAILURE_TYPE_TAPE_EJECTION_BY_OPERATOR_REQUIRED TapePartitionFailureType = 1 + iota
     TAPE_PARTITION_FAILURE_TYPE_TAPE_MEDIA_TYPE_INCOMPATIBLE TapePartitionFailureType = 1 + iota
     TAPE_PARTITION_FAILURE_TYPE_TAPE_REMOVAL_UNEXPECTED TapePartitionFailureType = 1 + iota
+    TAPE_PARTITION_FAILURE_TYPE_TAPE_IN_INVALID_PARTITION TapePartitionFailureType = 1 + iota
 )
 
 func (tapePartitionFailureType *TapePartitionFailureType) UnmarshalText(text []byte) error {
@@ -59,6 +60,7 @@ func (tapePartitionFailureType *TapePartitionFailureType) UnmarshalText(text []b
         case "TAPE_EJECTION_BY_OPERATOR_REQUIRED": *tapePartitionFailureType = TAPE_PARTITION_FAILURE_TYPE_TAPE_EJECTION_BY_OPERATOR_REQUIRED
         case "TAPE_MEDIA_TYPE_INCOMPATIBLE": *tapePartitionFailureType = TAPE_PARTITION_FAILURE_TYPE_TAPE_MEDIA_TYPE_INCOMPATIBLE
         case "TAPE_REMOVAL_UNEXPECTED": *tapePartitionFailureType = TAPE_PARTITION_FAILURE_TYPE_TAPE_REMOVAL_UNEXPECTED
+        case "TAPE_IN_INVALID_PARTITION": *tapePartitionFailureType = TAPE_PARTITION_FAILURE_TYPE_TAPE_IN_INVALID_PARTITION
         default:
             *tapePartitionFailureType = UNDEFINED
             return errors.New(fmt.Sprintf("Cannot marshal '%s' into TapePartitionFailureType", str))
@@ -83,6 +85,7 @@ func (tapePartitionFailureType TapePartitionFailureType) String() string {
         case TAPE_PARTITION_FAILURE_TYPE_TAPE_EJECTION_BY_OPERATOR_REQUIRED: return "TAPE_EJECTION_BY_OPERATOR_REQUIRED"
         case TAPE_PARTITION_FAILURE_TYPE_TAPE_MEDIA_TYPE_INCOMPATIBLE: return "TAPE_MEDIA_TYPE_INCOMPATIBLE"
         case TAPE_PARTITION_FAILURE_TYPE_TAPE_REMOVAL_UNEXPECTED: return "TAPE_REMOVAL_UNEXPECTED"
+        case TAPE_PARTITION_FAILURE_TYPE_TAPE_IN_INVALID_PARTITION: return "TAPE_IN_INVALID_PARTITION"
         default:
             log.Printf("Error: invalid TapePartitionFailureType represented by '%d'", tapePartitionFailureType)
             return ""

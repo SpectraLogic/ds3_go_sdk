@@ -17,12 +17,12 @@ type EjectStorageDomainSpectraS3Request struct {
     BucketId *string
     EjectLabel *string
     EjectLocation *string
-    StorageDomainId string
+    StorageDomain string
 }
 
-func NewEjectStorageDomainSpectraS3Request(storageDomainId string) *EjectStorageDomainSpectraS3Request {
+func NewEjectStorageDomainSpectraS3Request(storageDomain string) *EjectStorageDomainSpectraS3Request {
     return &EjectStorageDomainSpectraS3Request{
-        StorageDomainId: storageDomainId,
+        StorageDomain: storageDomain,
     }
 }
 
