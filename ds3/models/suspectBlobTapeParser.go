@@ -24,8 +24,6 @@ func (suspectBlobTape *SuspectBlobTape) parse(xmlNode *XmlNode, aggErr *Aggregat
             suspectBlobTape.BlobId = parseString(child.Content)
         case "Id":
             suspectBlobTape.Id = parseString(child.Content)
-        case "ObsoletionId":
-            suspectBlobTape.ObsoletionId = parseNullableString(child.Content)
         case "OrderIndex":
             suspectBlobTape.OrderIndex = parseInt(child.Content, aggErr)
         case "TapeId":

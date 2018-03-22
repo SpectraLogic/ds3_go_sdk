@@ -19,6 +19,5 @@ type SuspectBlobPool struct {
     DateWritten string
     Id string
     LastAccessed string
-    ObsoletionId *string
     PoolId string
 }
