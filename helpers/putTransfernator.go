@@ -88,6 +88,6 @@ func (transfernator *putTransfernator) transfer() error {
 }
 
 func (transfernator *putTransfernator) cancel() {
-    //todo
+    //todo implement
     panic("Not yet implemented")
 }

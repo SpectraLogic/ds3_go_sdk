@@ -22,12 +22,12 @@ func NewHelpers(client *ds3.Client) HelperInterface {
 }
 
 func (helper *HelperImpl) ListObjectsFromBucket(bucketName string) []ds3Models.S3Object {
-    //todo
+    //todo implement
     panic("not implemented yet")
 }
 
 func (helper *HelperImpl) ListObjectsFromDirectory(directoryName string) []helperModels.PutObject {
-    //todo
+    //todo implement
     panic("not implemented yet")
 }
 

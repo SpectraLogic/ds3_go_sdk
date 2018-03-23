@@ -55,11 +55,11 @@ func toReadObjectMap(getObjects *[]helperModels.GetObject) map[string]helperMode
 
 // Processes all the blobs in a chunk that are ready for transfer from BP
 func (producer *getProducer) processChunk(curChunk *ds3Models.Objects, bucketName string, jobId string) {
-    log.Printf("DEBUG begin chunk processing %s", curChunk.ChunkId) //todo delete
+    log.Printf("DEBUG begin chunk processing %s", curChunk.ChunkId)
 
     // transfer blobs that are ready, and queue those that are waiting for channel
     for _, curObj := range curChunk.Objects {
-        log.Printf("DEBUG queuing object in waiting to be processed %s offset=%d length=%d", *curObj.Name, curObj.Offset, curObj.Length) //todo delete
+        log.Printf("DEBUG queuing object in waiting to be processed %s offset=%d length=%d", *curObj.Name, curObj.Offset, curObj.Length)
         blob := helperModels.NewBlobDescription(*curObj.Name, curObj.Offset, curObj.Length)
         producer.transferBlob(&blob, bucketName, jobId)
     }
@@ -181,9 +181,9 @@ func (producer *getProducer) transferWaitingBlobs(bucketName string, jobId strin
     for i := 0; i < waitingBlobs; i++ {
         //attempt transfer
         curBlob, err := producer.waitingToBeTransferred.Pop()
-        log.Printf("DEBUG attempting to process %s offset=%d length=%d", curBlob.Name(), curBlob.Offset(), curBlob.Length()) //todo delete
+        log.Printf("DEBUG attempting to process %s offset=%d length=%d", curBlob.Name(), curBlob.Offset(), curBlob.Length())
         if err != nil {
-            //todo should not be possible to get here
+            //should not be possible to get here
             log.Printf("ERROR when attempting blob transfer: %s", err.Error())
         }
         producer.transferBlob(curBlob, bucketName, jobId)
@@ -199,7 +199,7 @@ func (producer *getProducer) run() {
 
     // determine number of blobs to be processed
     var totalBlobCount int64 = producer.totalBlobCount()
-    log.Printf("DEBUG totalBlobs=%d processedBlobs=%d", totalBlobCount, producer.processedBlobTracker.NumberOfProcessedBlobs()) //todo delete
+    log.Printf("DEBUG totalBlobs=%d processedBlobs=%d", totalBlobCount, producer.processedBlobTracker.NumberOfProcessedBlobs())
 
     // process all chunks and make sure all blobs are queued for transfer
     for producer.processedBlobTracker.NumberOfProcessedBlobs() < totalBlobCount || producer.waitingToBeTransferred.Size() > 0 {

@@ -4,7 +4,7 @@ import (
     "spectra/ds3_go_sdk/ds3/models"
 )
 
-var MinUploadSize int64 = 10485760 //todo move to bulk put??
+var MinUploadSize int64 = 10485760
 
 // Defines strategy for how to perform write transfers
 type WriteTransferStrategy struct {
