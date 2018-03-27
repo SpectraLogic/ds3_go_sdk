@@ -2068,6 +2068,7 @@ func (client *Client) ModifyTapePartitionSpectraS3(request *models.ModifyTapePar
         WithOptionalQueryParam("minimum_read_reserved_drives", networking.IntPtrToStrPtr(request.MinimumReadReservedDrives)).
         WithOptionalQueryParam("minimum_write_reserved_drives", networking.IntPtrToStrPtr(request.MinimumWriteReservedDrives)).
         WithOptionalQueryParam("quiesced", networking.InterfaceToStrPtr(request.Quiesced)).
+        WithOptionalQueryParam("serial_number", request.SerialNumber).
         Build(client.connectionInfo)
 
     if err != nil {

@@ -24,7 +24,6 @@ type TapePartition struct {
     MinimumWriteReservedDrives int
     Name *string
     Quiesced Quiesced
-    SerialId *string
     SerialNumber *string
     State TapePartitionState
 }
