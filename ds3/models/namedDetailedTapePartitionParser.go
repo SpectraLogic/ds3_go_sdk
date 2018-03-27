@@ -44,8 +44,6 @@ func (namedDetailedTapePartition *NamedDetailedTapePartition) parse(xmlNode *Xml
             namedDetailedTapePartition.Name = parseNullableString(child.Content)
         case "Quiesced":
             parseEnum(child.Content, &namedDetailedTapePartition.Quiesced, aggErr)
-        case "SerialId":
-            namedDetailedTapePartition.SerialId = parseNullableString(child.Content)
         case "SerialNumber":
             namedDetailedTapePartition.SerialNumber = parseNullableString(child.Content)
         case "State":
