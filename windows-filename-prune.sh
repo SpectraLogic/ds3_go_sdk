@@ -3,19 +3,11 @@
 # exceed 59 characters (because Go is apparently using an old system call
 # to open files.
 #
-find . -name *.go |
+COUNT=0
+find . -name *.go | grep ds3/models/ |
     while read F ; do
-       LEN=`basename $F | wc -c`
-        if test $LEN -gt 59 ; then
-           NEWF=`echo $F | sed -e 's/NotificationRegistration/NR/' -e 's/SpectraS3/SS3/' -e 's/Target/Tg/' -e 's/Object/Ob/'`
-          LEN=`basename $NEWF | wc -c`
-           if test $LEN -gt 59 ; then
-             echo $F will still be too long, update this script.
-          else
-              if [ "$NEWF" != "$F" ] ; then
-                 mv $F $NEWF
-              fi
-          fi
-       fi
+       NEWF=`dirname $F`/ds3l.${COUNT}.go
+       mv $F $NEWF
+       COUNT=`expr ${COUNT} + 1`
     done
 
