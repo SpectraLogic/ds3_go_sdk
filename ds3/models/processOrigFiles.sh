@@ -1,6 +1,6 @@
 #!/bin/bash
 
-rm consolidated.go
+mv consolidated.go consolidated.txt
 
 for origFile in $(ls *.orig) ; do
     origFileBase=$(echo "$origFile" | cut -d "." -f 1)
