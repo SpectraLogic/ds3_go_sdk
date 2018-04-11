@@ -1,8 +1,7 @@
 language: go
 
 go:
-  - 1.8.x
-  - 1.9.x
+  - 1.10.x
   - master
 
 go_import_path: spectra/ds3_go_sdk
