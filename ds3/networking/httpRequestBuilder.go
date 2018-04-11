@@ -118,7 +118,7 @@ func (builder *HttpRequestBuilder) Build(conn *ConnectionInfo) (*http.Request, e
 
     builder.signatureFields.Date = getCurrentTime()
 
-	builder.maybeAddAmazonCanonicalHeaders()
+    builder.maybeAddAmazonCanonicalHeaders()
 
     authHeaderVal := builder.signatureFields.BuildAuthHeaderValue(conn.Credentials)
 
