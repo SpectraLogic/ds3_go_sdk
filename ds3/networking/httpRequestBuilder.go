@@ -6,7 +6,10 @@ import (
     "net/url"
     "strings"
     "spectra/ds3_go_sdk/ds3/models"
+    "sort"
 )
+
+const AmazonMetadataPrefix = "x-amz-meta-"
 
 type HttpRequestBuilder struct {
     reader io.Reader
@@ -116,6 +119,8 @@ func (builder *HttpRequestBuilder) Build(conn *ConnectionInfo) (*http.Request, e
 
     builder.signatureFields.Date = getCurrentTime()
 
+    builder.maybeAddAmazonCanonicalHeaders()
+
     authHeaderVal := builder.signatureFields.BuildAuthHeaderValue(conn.Credentials)
 
     // Set the http request headers such as authorization and date.
@@ -123,10 +128,49 @@ func (builder *HttpRequestBuilder) Build(conn *ConnectionInfo) (*http.Request, e
 }
 
 func (builder *HttpRequestBuilder) buildUrl(conn *ConnectionInfo) string {
-    var httpUrl url.URL = *conn.Endpoint
+    var httpUrl = *conn.Endpoint
     httpUrl.Path = builder.signatureFields.Path
     httpUrl.RawQuery = encodeQueryParams(builder.queryParams)
     return httpUrl.String()
+}
+
+func (builder *HttpRequestBuilder) maybeAddAmazonCanonicalHeaders() {
+	headerKeys := make([]string, 0)
+
+	for key, value := range *builder.headers {
+		lowerCaseKey := strings.ToLower(key)
+		if strings.HasPrefix(lowerCaseKey, models.AMZ_META_HEADER) && len(value) > 0 {
+			headerKeys = append(headerKeys, key)
+		}
+	}
+
+	if len(headerKeys) == 0 {
+		return
+	}
+
+	sort.Strings(headerKeys)
+
+	var stringBuilder strings.Builder
+
+	var httpHeaders map[string][]string = *builder.headers
+
+	for _, headerKey := range headerKeys {
+		lowerCaseKey := strings.ToLower(headerKey)
+		headerValue := httpHeaders[headerKey]
+
+		if len(headerValue) > 0 {
+			stringBuilder.WriteString(lowerCaseKey)
+			stringBuilder.WriteString(":")
+			stringBuilder.WriteString(strings.Join(headerValue, ","))
+			stringBuilder.WriteString("\n")
+		}
+	}
+
+	canonicalAmazonHeaders := stringBuilder.String()
+
+	if len(canonicalAmazonHeaders) > 0 {
+		builder.signatureFields.CanonicalizedAmzHeaders = stringBuilder.String()
+	}
 }
 
 func (builder *HttpRequestBuilder) addHttpRequestHeaders(httpRequest *http.Request, authHeader string) (*http.Request, error) {
@@ -155,3 +199,4 @@ func encodeQueryParams(queryParams *url.Values) string {
     // with percent encoding for spaces (%20)
     return strings.Replace(queryParams.Encode(), "+", "%20", -1)
 }
+
