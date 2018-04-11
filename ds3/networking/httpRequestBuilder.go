@@ -199,3 +199,4 @@ func encodeQueryParams(queryParams *url.Values) string {
     // with percent encoding for spaces (%20)
     return strings.Replace(queryParams.Encode(), "+", "%20", -1)
 }
+
