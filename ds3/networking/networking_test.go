@@ -15,6 +15,7 @@ import (
     "testing"
     "net/url"
     "spectra/ds3_go_sdk/ds3_utils/ds3Testing"
+	"strings"
 )
 
 func TestEncodeQueryParams(t *testing.T) {
@@ -28,4 +29,29 @@ func TestEncodeQueryParams(t *testing.T) {
     result := encodeQueryParams(queryParams)
 
     ds3Testing.AssertString(t, "Encoded Query Params", expected, result)
+}
+
+func TestBuildingAuthorizationDigestWithMetadata(t *testing.T) {
+	httpRequestBuilder := NewHttpRequestBuilder()
+
+	endpointUrl, err := url.Parse("https://google.com")
+	ds3Testing.AssertNilError(t, err)
+
+	const gracie = "Gracie"
+	const eskimo = "Eskimo"
+
+	connectionInfo := ConnectionInfo{
+		Endpoint:    endpointUrl,
+		Credentials: &Credentials{AccessId: gracie, Key: eskimo},
+		Proxy:       nil}
+
+	httpRequestBuilder.WithHeader(AmazonMetadataPrefix + gracie, eskimo).
+		Build(&connectionInfo)
+
+	amazonHeaders := httpRequestBuilder.signatureFields.CanonicalizedAmzHeaders
+
+	ds3Testing.AssertBool(t, "expected amazonHeader to have something in it", true, len(amazonHeaders) > 0)
+
+	expected := AmazonMetadataPrefix + strings.ToLower(gracie) + ":" + eskimo + "\n"
+	ds3Testing.AssertBool(t, "amazonHeader string isn't what we expected", true, strings.Compare(amazonHeaders, expected) == 0)
 }
