@@ -3,7 +3,7 @@ Spectra S3 Go SDK
 
 [![Apache V2 License](http://img.shields.io/badge/license-Apache%20V2-blue.svg)](https://github.com/SpectraLogic/ds3_go_sdk/blob/master/LICENSE.md)
 
-An SDK conforming to Spectra S3 for Golang 1.8
+An SDK conforming to Spectra S3 for Golang 1.10
 
 Contact Us
 ----------
