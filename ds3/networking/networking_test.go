@@ -39,19 +39,23 @@ func TestBuildingAuthorizationDigestWithMetadata(t *testing.T) {
 
 	const gracie = "Gracie"
 	const eskimo = "Eskimo"
+	const shasta = "Shasta"
+	const samoyed = "Samoyed"
 
 	connectionInfo := ConnectionInfo{
 		Endpoint:    endpointUrl,
 		Credentials: &Credentials{AccessId: gracie, Key: eskimo},
 		Proxy:       nil}
 
-	httpRequestBuilder.WithHeader(AmazonMetadataPrefix + gracie, eskimo).
+	httpRequestBuilder.
+		WithHeader(AmazonMetadataPrefix + shasta, samoyed).
+		WithHeader(AmazonMetadataPrefix + gracie, eskimo).
 		Build(&connectionInfo)
 
 	amazonHeaders := httpRequestBuilder.signatureFields.CanonicalizedAmzHeaders
 
 	ds3Testing.AssertBool(t, "expected amazonHeader to have something in it", true, len(amazonHeaders) > 0)
 
-	expected := AmazonMetadataPrefix + strings.ToLower(gracie) + ":" + eskimo + "\n"
+	expected := AmazonMetadataPrefix + strings.ToLower(gracie) + ":" + eskimo + "\n" + AmazonMetadataPrefix + strings.ToLower(shasta) + ":" + samoyed + "\n"
 	ds3Testing.AssertBool(t, "amazonHeader string isn't what we expected", true, strings.Compare(amazonHeaders, expected) == 0)
 }

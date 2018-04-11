@@ -6,6 +6,7 @@ import (
     "net/url"
     "strings"
     "spectra/ds3_go_sdk/ds3/models"
+    "sort"
 )
 
 const AmazonMetadataPrefix = "x-amz-meta-"
@@ -134,14 +135,33 @@ func (builder *HttpRequestBuilder) buildUrl(conn *ConnectionInfo) string {
 }
 
 func (builder *HttpRequestBuilder) maybeAddAmazonCanonicalHeaders() {
-	var stringBuilder strings.Builder
+	headerKeys := make([]string, 0)
 
 	for key, value := range *builder.headers {
 		lowerCaseKey := strings.ToLower(key)
-		if strings.HasPrefix(lowerCaseKey, AmazonMetadataPrefix) && len(value) > 0 {
+		if strings.HasPrefix(lowerCaseKey, models.AMZ_META_HEADER) && len(value) > 0 {
+			headerKeys = append(headerKeys, key)
+		}
+	}
+
+	if len(headerKeys) == 0 {
+		return
+	}
+
+	sort.Strings(headerKeys)
+
+	var stringBuilder strings.Builder
+
+	var httpHeaders map[string][]string = *builder.headers
+
+	for _, headerKey := range headerKeys {
+		lowerCaseKey := strings.ToLower(headerKey)
+		headerValue := httpHeaders[headerKey]
+
+		if len(headerValue) > 0 {
 			stringBuilder.WriteString(lowerCaseKey)
 			stringBuilder.WriteString(":")
-			stringBuilder.WriteString(strings.Join(value, ","))
+			stringBuilder.WriteString(strings.Join(headerValue, ","))
 			stringBuilder.WriteString("\n")
 		}
 	}
