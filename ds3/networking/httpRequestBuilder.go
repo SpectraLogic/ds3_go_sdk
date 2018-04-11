@@ -8,6 +8,8 @@ import (
     "spectra/ds3_go_sdk/ds3/models"
 )
 
+const AmazonMetadataPrefix = "x-amz-meta-"
+
 type HttpRequestBuilder struct {
     reader io.Reader
     contentLength *int64
@@ -116,6 +118,8 @@ func (builder *HttpRequestBuilder) Build(conn *ConnectionInfo) (*http.Request, e
 
     builder.signatureFields.Date = getCurrentTime()
 
+	builder.maybeAddAmazonCanonicalHeaders()
+
     authHeaderVal := builder.signatureFields.BuildAuthHeaderValue(conn.Credentials)
 
     // Set the http request headers such as authorization and date.
@@ -123,10 +127,30 @@ func (builder *HttpRequestBuilder) Build(conn *ConnectionInfo) (*http.Request, e
 }
 
 func (builder *HttpRequestBuilder) buildUrl(conn *ConnectionInfo) string {
-    var httpUrl url.URL = *conn.Endpoint
+    var httpUrl = *conn.Endpoint
     httpUrl.Path = builder.signatureFields.Path
     httpUrl.RawQuery = encodeQueryParams(builder.queryParams)
     return httpUrl.String()
+}
+
+func (builder *HttpRequestBuilder) maybeAddAmazonCanonicalHeaders() {
+	var stringBuilder strings.Builder
+
+	for key, value := range *builder.headers {
+		lowerCaseKey := strings.ToLower(key)
+		if strings.HasPrefix(lowerCaseKey, AmazonMetadataPrefix) && len(value) > 0 {
+			stringBuilder.WriteString(lowerCaseKey)
+			stringBuilder.WriteString(":")
+			stringBuilder.WriteString(strings.Join(value, ","))
+			stringBuilder.WriteString("\n")
+		}
+	}
+
+	canonicalAmazonHeaders := stringBuilder.String()
+
+	if len(canonicalAmazonHeaders) > 0 {
+		builder.signatureFields.CanonicalizedAmzHeaders = stringBuilder.String()
+	}
 }
 
 func (builder *HttpRequestBuilder) addHttpRequestHeaders(httpRequest *http.Request, authHeader string) (*http.Request, error) {
