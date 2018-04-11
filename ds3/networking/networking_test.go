@@ -15,7 +15,7 @@ import (
     "testing"
     "net/url"
     "spectra/ds3_go_sdk/ds3_utils/ds3Testing"
-	"strings"
+    "strings"
 )
 
 func TestEncodeQueryParams(t *testing.T) {
@@ -59,3 +59,4 @@ func TestBuildingAuthorizationDigestWithMetadata(t *testing.T) {
 	expected := AmazonMetadataPrefix + strings.ToLower(gracie) + ":" + eskimo + "\n" + AmazonMetadataPrefix + strings.ToLower(shasta) + ":" + samoyed + "\n"
 	ds3Testing.AssertBool(t, "amazonHeader string isn't what we expected", true, strings.Compare(amazonHeaders, expected) == 0)
 }
+
