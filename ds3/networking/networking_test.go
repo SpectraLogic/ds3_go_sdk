@@ -15,7 +15,6 @@ import (
     "testing"
     "net/url"
     "spectra/ds3_go_sdk/ds3_utils/ds3Testing"
-	"fmt"
 	"strings"
 )
 
@@ -50,8 +49,6 @@ func TestBuildingAuthorizationDigestWithMetadata(t *testing.T) {
 		Build(&connectionInfo)
 
 	amazonHeaders := httpRequestBuilder.signatureFields.CanonicalizedAmzHeaders
-
-	fmt.Println(amazonHeaders)
 
 	ds3Testing.AssertBool(t, "expected amazonHeader to have something in it", true, len(amazonHeaders) > 0)
 
