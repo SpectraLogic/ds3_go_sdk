@@ -71,11 +71,38 @@ func (producer *putProducer) transferOperationBuilder(info putObjectInfo) Transf
             WithJob(info.jobId).
             WithOffset(info.blob.Offset())
 
+		producer.maybeAddMetadata(info, putObjRequest)
+
         _, err = producer.client.PutObject(putObjRequest)
         if err != nil {
             log.Printf("Error during transfer of %s: %s\n", info.blob.Name(), err.Error()) //todo handle error better
         }
     }
+}
+
+func (producer *putProducer) maybeAddMetadata(info putObjectInfo, putObjRequest *ds3Models.PutObjectRequest) {
+	metadataMap := producer.metadataFrom(info)
+
+	if len(metadataMap) == 0 {
+		return
+	}
+
+	for key, value := range metadataMap {
+		putObjRequest.WithMetaData(key, value)
+	}
+}
+
+func (producer *putProducer) metadataFrom(info putObjectInfo) map[string]string {
+	result := map[string]string{}
+
+	for _, objectToPut := range *producer.WriteObjects {
+		if objectToPut.PutObject.Name == info.blob.Name() {
+			result = objectToPut.Metadata
+			break
+		}
+	}
+
+	return result
 }
 
 // Processes all the blobs in a chunk and attempts to add them to the transfer queue.

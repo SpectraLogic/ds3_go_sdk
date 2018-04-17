@@ -17,8 +17,6 @@ import (
     "strings"
 )
 
-const ( AMZ_META_HEADER = "x-amz-meta-" )
-
 type PutObjectRequest struct {
     BucketName string
     ObjectName string
@@ -56,7 +54,7 @@ func (putObjectRequest *PutObjectRequest) WithChecksum(contentHash string, check
     return putObjectRequest
 }
 
-func (putObjectRequest *PutObjectRequest) WithMetaData(key string, values ...string) *PutObjectRequest {
+func (putObjectRequest *PutObjectRequest) WithMetaData(key string, values ...string) interface{} {
     if strings.HasPrefix(strings.ToLower(key), AMZ_META_HEADER) {
         putObjectRequest.Metadata[key] = strings.Join(values, ",")
     } else {

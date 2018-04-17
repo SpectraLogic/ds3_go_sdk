@@ -9,8 +9,6 @@ import (
     "sort"
 )
 
-const AmazonMetadataPrefix = "x-amz-meta-"
-
 type HttpRequestBuilder struct {
     reader io.Reader
     contentLength *int64
