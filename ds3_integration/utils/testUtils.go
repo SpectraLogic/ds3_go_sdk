@@ -12,20 +12,107 @@ import (
     "spectra/ds3_go_sdk/ds3_utils/ds3Testing"
     "bytes"
     "fmt"
+    "time"
+    "os"
 )
 
-var bookPath = "./resources/books/"
+var BookPath = "./resources/books/"
 var nilResponse error = errors.New("Received an unexpected nil response.")
 var BookTitles = []string{ "beowulf.txt", "sherlock_holmes.txt", "tale_of_two_cities.txt", "ulysses.txt"}
 
-func VerifyBookContent(t *testing.T, bookName string, content io.ReadCloser) {
-    actual, loadErr := LoadBook(bookName)
-    ds3Testing.AssertNilError(t, loadErr)
+// Retrieves the specified objects from the BP bucket and compares the content to
+// to local files. Assumes that local file names and BP object names are the same.
+func VerifyFilesOnBP(t *testing.T, bucketName string, objectNames []string, filePath string, client *ds3.Client) {
+    bulkGet, err := client.GetBulkJobSpectraS3(models.NewGetBulkJobSpectraS3Request(bucketName, objectNames))
+    ds3Testing.AssertNilError(t, err)
+    totalChunkCount := len(bulkGet.MasterObjectList.Objects)
+    curChunkCount := 0
+    for curChunkCount < totalChunkCount {
+        chunksReady, err := client.GetJobChunksReadyForClientProcessingSpectraS3(
+            models.NewGetJobChunksReadyForClientProcessingSpectraS3Request(bulkGet.MasterObjectList.JobId))
 
-    bs, readErr := ioutil.ReadAll(content)
-    ds3Testing.AssertNilError(t, readErr)
-    if bytes.Compare(bs, actual) != 0 {
+        ds3Testing.AssertNilError(t, err)
+
+        numberOfChunks := len(chunksReady.MasterObjectList.Objects)
+        if numberOfChunks > 0 {
+            for _, curChunk := range chunksReady.MasterObjectList.Objects {
+                for _, curObj := range curChunk.Objects {
+
+                    getObj, _ := client.GetObject(models.NewGetObjectRequest(bucketName, *curObj.Name).
+                        WithJob(bulkGet.MasterObjectList.JobId).
+                        WithOffset(curObj.Offset))
+                    ds3Testing.AssertNilError(t, err)
+
+                    VerifyPartialFile(t, filePath + *curObj.Name, curObj.Length, curObj.Offset, getObj.Content)
+                    getObj.Content.Close()
+                }
+                curChunkCount++
+            }
+        } else {
+            time.Sleep(time.Second * 5)
+        }
+    }
+}
+
+func VerifyBookContent(t *testing.T, bookName string, actual io.ReadCloser) {
+    expected, loadErr := LoadBook(bookName)
+    ds3Testing.AssertNilError(t, loadErr)
+    verifyContent(t, expected, actual)
+}
+
+func VerifyPartialFile(t *testing.T, filePath string, length int64, offset int64, actual io.ReadCloser) {
+    f, err := os.Open(filePath)
+    ds3Testing.AssertNilError(t, err)
+
+    _, err = f.Seek(offset, io.SeekStart)
+    ds3Testing.AssertNilError(t, err)
+
+    expected, err := getNBytesFromReader(f, length)
+    ds3Testing.AssertNilError(t, err)
+
+    verifyPartialContent(t, *expected, actual, length)
+}
+
+func verifyPartialContent(t *testing.T, expected []byte, actual io.ReadCloser, length int64) {
+    content, err := getNBytesFromReader(actual, length)
+    ds3Testing.AssertNilError(t, err)
+
+    ds3Testing.AssertInt(t, "amount of data read", len(expected), len(*content))
+    if bytes.Compare(*content, expected) != 0 {
         t.Error("Retrieved book does not match uploaded book.")
+    }
+}
+
+func verifyContent(t *testing.T, expected []byte, actual io.ReadCloser) {
+    content, err := ioutil.ReadAll(actual)
+    ds3Testing.AssertNilError(t, err)
+
+    ds3Testing.AssertInt(t, "amount of data read", len(expected), len(content))
+    if bytes.Compare(content, expected) != 0 {
+        t.Error("Retrieved book does not match uploaded book.")
+    }
+}
+
+// Retrieves N bytes from the provided reader. If N bytes cannot be retrieved, then an error occurs.
+func getNBytesFromReader(reader io.Reader, n int64) (*[]byte, error) {
+    content := make([]byte, 0)
+    toRetrieve := n
+
+    for {
+        buf := make([]byte, toRetrieve)
+        v, _ := reader.Read(buf)
+
+        if v == 0 {
+
+            if curLen := int64(len(content)); curLen != n {
+                return nil, errors.New(fmt.Sprintf("GetNBytesFromReader: Expected content of length %d but got %d", n, curLen))
+            }
+            //done
+            return &content, nil
+        }
+
+        toRetrieve = toRetrieve - int64(v)
+        content = append(content, buf[:v]...)
     }
 }
 
@@ -139,7 +226,7 @@ func LoadBookLogError(t *testing.T, book string) ([]byte, error) {
 
 // Loads the specified book. Assumes that the book is located in the /resources/books/ folder.
 func LoadBook(book string) ([]byte, error) {
-    return ioutil.ReadFile(bookPath + book)
+    return ioutil.ReadFile(BookPath + book)
 }
 
 // Puts the specified object. If an error occurs, it is logged, and the calling
