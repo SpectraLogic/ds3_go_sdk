@@ -7,15 +7,15 @@ import (
     "sync"
 )
 
-type putTransfernator struct {
+type putTransceiver struct {
     BucketName string
     WriteObjects *[]helperModels.PutObject
     Strategy *WriteTransferStrategy
     Client *ds3.Client
 }
 
-func newPutTransfernator(bucketName string, writeObjects *[]helperModels.PutObject, strategy *WriteTransferStrategy, client *ds3.Client) *putTransfernator {
-    return &putTransfernator{
+func newPutTransceiver(bucketName string, writeObjects *[]helperModels.PutObject, strategy *WriteTransferStrategy, client *ds3.Client) *putTransceiver {
+    return &putTransceiver{
         BucketName:bucketName,
         WriteObjects:writeObjects,
         Strategy:strategy,
@@ -61,11 +61,11 @@ func newBulkPutRequest(bucketName string, writeObjects *[]helperModels.PutObject
     return bulkPut
 }
 
-func (transfernator *putTransfernator) transfer() error {
+func (transceiver *putTransceiver) transfer() error {
     // create bulk put job
-    bulkPut := newBulkPutRequest(transfernator.BucketName, transfernator.WriteObjects, transfernator.Strategy.Options)
+    bulkPut := newBulkPutRequest(transceiver.BucketName, transceiver.WriteObjects, transceiver.Strategy.Options)
 
-    bulkPutResponse, err := transfernator.Client.PutBulkJobSpectraS3(bulkPut)
+    bulkPutResponse, err := transceiver.Client.PutBulkJobSpectraS3(bulkPut)
     if err != nil {
         return err
     }
@@ -73,9 +73,9 @@ func (transfernator *putTransfernator) transfer() error {
     // init queue, producer and consumer
     var waitGroup sync.WaitGroup
 
-    queue := newOperationQueue(transfernator.Strategy.BlobStrategy.maxWaitingTransfers())
-    producer := newPutProducer(&bulkPutResponse.MasterObjectList, transfernator.WriteObjects, &queue, transfernator.Strategy, transfernator.Client, &waitGroup)
-    consumer := newConsumer(&queue, &waitGroup, transfernator.Strategy.BlobStrategy.maxConcurrentTransfers())
+    queue := newOperationQueue(transceiver.Strategy.BlobStrategy.maxWaitingTransfers())
+    producer := newPutProducer(&bulkPutResponse.MasterObjectList, transceiver.WriteObjects, &queue, transceiver.Strategy, transceiver.Client, &waitGroup)
+    consumer := newConsumer(&queue, &waitGroup, transceiver.Strategy.BlobStrategy.maxConcurrentTransfers())
 
     // Wait for completion of producer-consumer goroutines
     waitGroup.Add(2)  // adding producer and consumer goroutines to wait group
@@ -88,7 +88,8 @@ func (transfernator *putTransfernator) transfer() error {
     return aggErr.GetErrors()
 }
 
-func (transfernator *putTransfernator) cancel() {
-    //todo
+/*
+func (transfernator *putTransceiver) cancel() {
     panic("Not yet implemented")
 }
+*/

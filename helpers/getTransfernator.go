@@ -7,15 +7,15 @@ import (
     "sync"
 )
 
-type getTransfernator struct {
+type getTransceiver struct {
     BucketName string
     ReadObjects *[]helperModels.GetObject
     Strategy *ReadTransferStrategy
     Client *ds3.Client
 }
 
-func newGetTransfernator(bucketName string, readObjects *[]helperModels.GetObject, strategy *ReadTransferStrategy, client *ds3.Client) *getTransfernator {
-    return &getTransfernator{
+func newGetTransceiver(bucketName string, readObjects *[]helperModels.GetObject, strategy *ReadTransferStrategy, client *ds3.Client) *getTransceiver {
+    return &getTransceiver{
         BucketName:bucketName,
         ReadObjects:readObjects,
         Strategy:strategy,
@@ -63,11 +63,11 @@ func createPartialGetObjects(getObject helperModels.GetObject) []ds3Models.Ds3Ge
     return partialObjects
 }
 
-func (transfernator *getTransfernator) transfer() error {
+func (transceiver *getTransceiver) transfer() error {
     // create bulk get job
-    bulkGet := newBulkGetRequest(transfernator.BucketName, transfernator.ReadObjects, transfernator.Strategy.Options)
+    bulkGet := newBulkGetRequest(transceiver.BucketName, transceiver.ReadObjects, transceiver.Strategy.Options)
 
-    bulkGetResponse, err := transfernator.Client.GetBulkJobSpectraS3(bulkGet)
+    bulkGetResponse, err := transceiver.Client.GetBulkJobSpectraS3(bulkGet)
     if err != nil {
         return err
     }
@@ -75,9 +75,9 @@ func (transfernator *getTransfernator) transfer() error {
     // init queue, producer and consumer
     var waitGroup sync.WaitGroup
 
-    queue := newOperationQueue(transfernator.Strategy.BlobStrategy.maxWaitingTransfers())
-    producer := newGetProducer(&bulkGetResponse.MasterObjectList, transfernator.ReadObjects, &queue, transfernator.Strategy, transfernator.Client, &waitGroup)
-    consumer := newConsumer(&queue, &waitGroup, transfernator.Strategy.BlobStrategy.maxConcurrentTransfers())
+    queue := newOperationQueue(transceiver.Strategy.BlobStrategy.maxWaitingTransfers())
+    producer := newGetProducer(&bulkGetResponse.MasterObjectList, transceiver.ReadObjects, &queue, transceiver.Strategy, transceiver.Client, &waitGroup)
+    consumer := newConsumer(&queue, &waitGroup, transceiver.Strategy.BlobStrategy.maxConcurrentTransfers())
 
     // Wait for completion of producer-consumer goroutines
     var aggErr ds3Models.AggregateError
