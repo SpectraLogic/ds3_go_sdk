@@ -15,6 +15,7 @@ import (
     "testing"
     "net/url"
     "spectra/ds3_go_sdk/ds3_utils/ds3Testing"
+    "spectra/ds3_go_sdk/ds3/models"
     "strings"
 )
 
@@ -48,15 +49,14 @@ func TestBuildingAuthorizationDigestWithMetadata(t *testing.T) {
 		Proxy:       nil}
 
 	httpRequestBuilder.
-		WithHeader(AmazonMetadataPrefix + shasta, samoyed).
-		WithHeader(AmazonMetadataPrefix + gracie, eskimo).
+		WithHeader(models.AMZ_META_HEADER + shasta, samoyed).
+		WithHeader(models.AMZ_META_HEADER + gracie, eskimo).
 		Build(&connectionInfo)
 
 	amazonHeaders := httpRequestBuilder.signatureFields.CanonicalizedAmzHeaders
 
 	ds3Testing.AssertBool(t, "expected amazonHeader to have something in it", true, len(amazonHeaders) > 0)
 
-	expected := AmazonMetadataPrefix + strings.ToLower(gracie) + ":" + eskimo + "\n" + AmazonMetadataPrefix + strings.ToLower(shasta) + ":" + samoyed + "\n"
+	expected := models.AMZ_META_HEADER + strings.ToLower(gracie) + ":" + eskimo + "\n" + models.AMZ_META_HEADER + strings.ToLower(shasta) + ":" + samoyed + "\n"
 	ds3Testing.AssertBool(t, "amazonHeader string isn't what we expected", true, strings.Compare(amazonHeaders, expected) == 0)
 }
-
