@@ -66,7 +66,6 @@ func (transfernator *putTransfernator) transfer() error {
     bulkPut := newBulkPutRequest(transfernator.BucketName, transfernator.WriteObjects, transfernator.Strategy.Options)
 
     bulkPutResponse, err := transfernator.Client.PutBulkJobSpectraS3(bulkPut)
-    //todo handle what is recoverable
     if err != nil {
         return err
     }
@@ -74,17 +73,19 @@ func (transfernator *putTransfernator) transfer() error {
     // init queue, producer and consumer
     var waitGroup sync.WaitGroup
 
-    queue := newOperationQueue(MaxQueueSize) //todo make composable
+    queue := newOperationQueue(transfernator.Strategy.BlobStrategy.maxWaitingTransfers())
     producer := newPutProducer(&bulkPutResponse.MasterObjectList, transfernator.WriteObjects, &queue, transfernator.Strategy, transfernator.Client, &waitGroup)
     consumer := newConsumer(&queue, &waitGroup, transfernator.Strategy.BlobStrategy.maxConcurrentTransfers())
 
     // Wait for completion of producer-consumer goroutines
     waitGroup.Add(2)  // adding producer and consumer goroutines to wait group
-    go producer.run() // producer will add to waitGroup for every blob added to queue, and each transfer performed will decrement from waitGroup
+
+    var aggErr ds3Models.AggregateError
+    go producer.run(&aggErr) // producer will add to waitGroup for every blob added to queue, and each transfer performed will decrement from waitGroup
     go consumer.run()
     waitGroup.Wait()
 
-    return nil
+    return aggErr.GetErrors()
 }
 
 func (transfernator *putTransfernator) cancel() {
