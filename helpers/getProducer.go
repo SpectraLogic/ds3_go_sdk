@@ -54,14 +54,14 @@ func toReadObjectMap(getObjects *[]helperModels.GetObject) map[string]helperMode
 }
 
 // Processes all the blobs in a chunk that are ready for transfer from BP
-func (producer *getProducer) processChunk(curChunk *ds3Models.Objects, bucketName string, jobId string) {
-    log.Printf("DEBUG begin chunk processing %s", curChunk.ChunkId) //todo delete
+func (producer *getProducer) processChunk(curChunk *ds3Models.Objects, bucketName string, jobId string, aggErr *ds3Models.AggregateError) {
+    log.Printf("DEBUG begin chunk processing %s", curChunk.ChunkId)
 
     // transfer blobs that are ready, and queue those that are waiting for channel
     for _, curObj := range curChunk.Objects {
-        log.Printf("DEBUG queuing object in waiting to be processed %s offset=%d length=%d", *curObj.Name, curObj.Offset, curObj.Length) //todo delete
+        log.Printf("DEBUG queuing object in waiting to be processed %s offset=%d length=%d", *curObj.Name, curObj.Offset, curObj.Length)
         blob := helperModels.NewBlobDescription(*curObj.Name, curObj.Offset, curObj.Length)
-        producer.transferBlob(&blob, bucketName, jobId)
+        producer.transferBlob(&blob, bucketName, jobId, aggErr)
     }
 }
 
@@ -74,7 +74,7 @@ type getObjectInfo struct {
 }
 
 // Creates the transfer operation that will perform the data retrieval of the specified blob from BP
-func (producer *getProducer) transferOperationBuilder(info getObjectInfo) TransferOperation {
+func (producer *getProducer) transferOperationBuilder(info getObjectInfo, aggErr *ds3Models.AggregateError) TransferOperation {
     return func() {
         blobRanges := producer.rangeFinder.GetRanges(info.blob.Name(), info.blob.Offset(), info.blob.Length())
 
@@ -90,6 +90,7 @@ func (producer *getProducer) transferOperationBuilder(info getObjectInfo) Transf
 
         getObjResponse, err := producer.client.GetObject(getObjRequest)
         if err != nil {
+            aggErr.Append(err)
             log.Printf("ERROR during retrieval of %s: %s", info.blob.Name(), err.Error())
             return
         }
@@ -97,14 +98,14 @@ func (producer *getProducer) transferOperationBuilder(info getObjectInfo) Transf
         if len(blobRanges) == 0 {
             writer, err := info.channelBuilder.GetChannel(info.blob.Offset())
             if err != nil {
-                //todo handle error
+                aggErr.Append(err)
                 log.Printf("ERROR when copying content for object '%s' at offset '%d': %s", info.blob.Name(), info.blob.Offset(), err.Error())
                 return
             }
             defer info.channelBuilder.OnDone(writer)
             _, err = io.Copy(writer, getObjResponse.Content) //copy all content from response reader to destination writer
             if err != nil {
-                //todo handle error
+                aggErr.Append(err)
                 log.Printf("ERROR when copying content of object '%s' at offset '%d' from source to destination: %s", info.blob.Name(), info.blob.Offset(), err.Error())
             }
             return
@@ -114,6 +115,7 @@ func (producer *getProducer) transferOperationBuilder(info getObjectInfo) Transf
         for _, r := range blobRanges {
             err := writeRangeToDestination(info.channelBuilder, r, getObjResponse.Content)
             if err != nil {
+                aggErr.Append(err)
                 log.Printf("ERROR when writing to destination channel for object '%s' with range '%v': %s", info.blob.Name(), r, err.Error())
             }
         }
@@ -122,7 +124,6 @@ func (producer *getProducer) transferOperationBuilder(info getObjectInfo) Transf
 
 // Writes a range of a blob to its destination channel
 func writeRangeToDestination(channelBuilder helperModels.WriteChannelBuilder, blobRange ds3Models.Range, content io.Reader) error {
-    //todo handle when channel is not available yet
     writer, err := channelBuilder.GetChannel(blobRange.Start)
     if err != nil {
         return err
@@ -131,16 +132,12 @@ func writeRangeToDestination(channelBuilder helperModels.WriteChannelBuilder, bl
 
     _, err = io.CopyN(writer, content, blobRange.End - blobRange.Start + 1) // copies the range from response reader into destination writer
 
-    if err != nil {
-        return err
-    }
-
-    return nil
+    return err
 }
 
 // Attempts to transfer a single blob from the BP to the client. If the blob is not ready for transfer,
 // then it is added to the waiting to transfer queue
-func (producer *getProducer) transferBlob(blob *helperModels.BlobDescription, bucketName string, jobId string) {
+func (producer *getProducer) transferBlob(blob *helperModels.BlobDescription, bucketName string, jobId string, aggErr *ds3Models.AggregateError) {
     if producer.processedBlobTracker.IsProcessed(*blob) {
         return
     }
@@ -163,7 +160,7 @@ func (producer *getProducer) transferBlob(blob *helperModels.BlobDescription, bu
         jobId:          jobId,
     }
 
-    var transfer TransferOperation = producer.transferOperationBuilder(objInfo)
+    var transfer TransferOperation = producer.transferOperationBuilder(objInfo, aggErr)
 
     // Increment wait group, and enqueue transfer operation
     producer.waitGroup.Add(1)
@@ -175,31 +172,32 @@ func (producer *getProducer) transferBlob(blob *helperModels.BlobDescription, bu
 
 // Attempts to process all blobs whose channels were not available for transfer.
 // Blobs whose channels are still not available are placed back on the queue.
-func (producer *getProducer) transferWaitingBlobs(bucketName string, jobId string) {
+func (producer *getProducer) transferWaitingBlobs(bucketName string, jobId string, aggErr *ds3Models.AggregateError) {
     // attempt to process all blobs in waiting to be transferred
     waitingBlobs := producer.waitingToBeTransferred.Size()
     for i := 0; i < waitingBlobs; i++ {
         //attempt transfer
         curBlob, err := producer.waitingToBeTransferred.Pop()
-        log.Printf("DEBUG attempting to process %s offset=%d length=%d", curBlob.Name(), curBlob.Offset(), curBlob.Length()) //todo delete
+        log.Printf("DEBUG attempting to process %s offset=%d length=%d", curBlob.Name(), curBlob.Offset(), curBlob.Length())
         if err != nil {
-            //todo should not be possible to get here
+            //should not be possible to get here
+            aggErr.Append(err)
             log.Printf("ERROR when attempting blob transfer: %s", err.Error())
         }
-        producer.transferBlob(curBlob, bucketName, jobId)
+        producer.transferBlob(curBlob, bucketName, jobId, aggErr)
     }
 }
 
 // This initiates the production of the transfer operations which will be consumed by a consumer running in a separate go routine.
 // Each transfer operation will retrieve one blob of content from the BP.
 // Once all blobs have been queued to be transferred, the producer will finish, even if all operations have not been consumed yet.
-func (producer *getProducer) run() {
+func (producer *getProducer) run(aggErr *ds3Models.AggregateError) {
     defer producer.waitGroup.Done()
     defer close(*producer.queue)
 
     // determine number of blobs to be processed
     var totalBlobCount int64 = producer.totalBlobCount()
-    log.Printf("DEBUG totalBlobs=%d processedBlobs=%d", totalBlobCount, producer.processedBlobTracker.NumberOfProcessedBlobs()) //todo delete
+    log.Printf("DEBUG totalBlobs=%d processedBlobs=%d", totalBlobCount, producer.processedBlobTracker.NumberOfProcessedBlobs())
 
     // process all chunks and make sure all blobs are queued for transfer
     for producer.processedBlobTracker.NumberOfProcessedBlobs() < totalBlobCount || producer.waitingToBeTransferred.Size() > 0 {
@@ -209,6 +207,7 @@ func (producer *getProducer) run() {
         chunksReady := ds3Models.NewGetJobChunksReadyForClientProcessingSpectraS3Request(producer.JobMasterObjectList.JobId)
         chunksReadyResponse, err := producer.client.GetJobChunksReadyForClientProcessingSpectraS3(chunksReady)
         if err != nil {
+            aggErr.Append(err)
             log.Fatal(err)
         }
 
@@ -218,11 +217,11 @@ func (producer *getProducer) run() {
             // Loop through all the chunks that are available for processing, and send
             // the files that are contained within them.
             for _, curChunk := range chunksReadyResponse.MasterObjectList.Objects {
-                producer.processChunk(&curChunk, *chunksReadyResponse.MasterObjectList.BucketName, chunksReadyResponse.MasterObjectList.JobId)
+                producer.processChunk(&curChunk, *chunksReadyResponse.MasterObjectList.BucketName, chunksReadyResponse.MasterObjectList.JobId, aggErr)
             }
 
             // Attempt to transfer waiting blobs
-            producer.transferWaitingBlobs(*chunksReadyResponse.MasterObjectList.BucketName, chunksReadyResponse.MasterObjectList.JobId)
+            producer.transferWaitingBlobs(*chunksReadyResponse.MasterObjectList.BucketName, chunksReadyResponse.MasterObjectList.JobId, aggErr)
         } else {
             // When no chunks are returned we need to sleep to allow for cache space to
             // be freed.

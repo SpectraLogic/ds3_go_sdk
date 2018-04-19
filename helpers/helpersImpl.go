@@ -9,8 +9,8 @@ import (
 type HelperInterface interface {
     ListObjectsFromBucket(bucketName string) []ds3Models.S3Object
     ListObjectsFromDirectory(directoryName string) []helperModels.PutObject
-    PutObjects(bucketName string, objects []helperModels.PutObject, strategy WriteTransferStrategy) (error) //todo return future
-    GetObjects(bucketName string, objects []helperModels.GetObject, strategy ReadTransferStrategy) (error)   //todo return future
+    PutObjects(bucketName string, objects []helperModels.PutObject, strategy WriteTransferStrategy) (error)
+    GetObjects(bucketName string, objects []helperModels.GetObject, strategy ReadTransferStrategy) (error)
 }
 
 type HelperImpl struct {
@@ -33,12 +33,10 @@ func (helper *HelperImpl) ListObjectsFromDirectory(directoryName string) []helpe
 
 func (helper *HelperImpl) PutObjects(bucketName string, objects []helperModels.PutObject, strategy WriteTransferStrategy) (error) {
     transfernator := newPutTransfernator(bucketName, &objects, &strategy, helper.client)
-    err := transfernator.transfer()
-    return err
+    return transfernator.transfer()
 }
 
 func (helper *HelperImpl) GetObjects(bucketName string, objects []helperModels.GetObject, strategy ReadTransferStrategy) (error) {
     transfernator := newGetTransfernator(bucketName, &objects, &strategy, helper.client)
-    err := transfernator.transfer()
-    return err
+    return transfernator.transfer()
 }
