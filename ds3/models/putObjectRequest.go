@@ -54,7 +54,7 @@ func (putObjectRequest *PutObjectRequest) WithChecksum(contentHash string, check
     return putObjectRequest
 }
 
-func (putObjectRequest *PutObjectRequest) WithMetaData(key string, values ...string) interface{} {
+func (putObjectRequest *PutObjectRequest) WithMetaData(key string, values ...string) *PutObjectRequest {
     if strings.HasPrefix(strings.ToLower(key), AMZ_META_HEADER) {
         putObjectRequest.Metadata[key] = strings.Join(values, ",")
     } else {
