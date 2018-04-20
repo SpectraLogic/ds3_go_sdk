@@ -15,6 +15,7 @@ package models
 
 type GetObjectsDetailsSpectraS3Request struct {
     BucketId *string
+    EndDate *int64
     LastPage bool
     Latest *bool
     Name *string
@@ -22,7 +23,7 @@ type GetObjectsDetailsSpectraS3Request struct {
     PageOffset *int
     PageStartMarker *string
     S3ObjectType S3ObjectType
-    Version *int64
+    StartDate *int64
 }
 
 func NewGetObjectsDetailsSpectraS3Request() *GetObjectsDetailsSpectraS3Request {
@@ -32,6 +33,11 @@ func NewGetObjectsDetailsSpectraS3Request() *GetObjectsDetailsSpectraS3Request {
 
 func (getObjectsDetailsSpectraS3Request *GetObjectsDetailsSpectraS3Request) WithBucketId(bucketId string) *GetObjectsDetailsSpectraS3Request {
     getObjectsDetailsSpectraS3Request.BucketId = &bucketId
+    return getObjectsDetailsSpectraS3Request
+}
+
+func (getObjectsDetailsSpectraS3Request *GetObjectsDetailsSpectraS3Request) WithEndDate(endDate int64) *GetObjectsDetailsSpectraS3Request {
+    getObjectsDetailsSpectraS3Request.EndDate = &endDate
     return getObjectsDetailsSpectraS3Request
 }
 
@@ -65,13 +71,13 @@ func (getObjectsDetailsSpectraS3Request *GetObjectsDetailsSpectraS3Request) With
     return getObjectsDetailsSpectraS3Request
 }
 
-func (getObjectsDetailsSpectraS3Request *GetObjectsDetailsSpectraS3Request) WithS3ObjectType(s3ObjectType S3ObjectType) *GetObjectsDetailsSpectraS3Request {
-    getObjectsDetailsSpectraS3Request.S3ObjectType = s3ObjectType
+func (getObjectsDetailsSpectraS3Request *GetObjectsDetailsSpectraS3Request) WithStartDate(startDate int64) *GetObjectsDetailsSpectraS3Request {
+    getObjectsDetailsSpectraS3Request.StartDate = &startDate
     return getObjectsDetailsSpectraS3Request
 }
 
-func (getObjectsDetailsSpectraS3Request *GetObjectsDetailsSpectraS3Request) WithVersion(version int64) *GetObjectsDetailsSpectraS3Request {
-    getObjectsDetailsSpectraS3Request.Version = &version
+func (getObjectsDetailsSpectraS3Request *GetObjectsDetailsSpectraS3Request) WithS3ObjectType(s3ObjectType S3ObjectType) *GetObjectsDetailsSpectraS3Request {
+    getObjectsDetailsSpectraS3Request.S3ObjectType = s3ObjectType
     return getObjectsDetailsSpectraS3Request
 }
 

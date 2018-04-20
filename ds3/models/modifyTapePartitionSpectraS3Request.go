@@ -14,9 +14,11 @@
 package models
 
 type ModifyTapePartitionSpectraS3Request struct {
+    AutoCompactionEnabled *bool
     MinimumReadReservedDrives *int
     MinimumWriteReservedDrives *int
     Quiesced Quiesced
+    SerialNumber *string
     TapePartition string
 }
 
@@ -24,6 +26,11 @@ func NewModifyTapePartitionSpectraS3Request(tapePartition string) *ModifyTapePar
     return &ModifyTapePartitionSpectraS3Request{
         TapePartition: tapePartition,
     }
+}
+
+func (modifyTapePartitionSpectraS3Request *ModifyTapePartitionSpectraS3Request) WithAutoCompactionEnabled(autoCompactionEnabled bool) *ModifyTapePartitionSpectraS3Request {
+    modifyTapePartitionSpectraS3Request.AutoCompactionEnabled = &autoCompactionEnabled
+    return modifyTapePartitionSpectraS3Request
 }
 
 func (modifyTapePartitionSpectraS3Request *ModifyTapePartitionSpectraS3Request) WithMinimumReadReservedDrives(minimumReadReservedDrives int) *ModifyTapePartitionSpectraS3Request {
@@ -38,6 +45,11 @@ func (modifyTapePartitionSpectraS3Request *ModifyTapePartitionSpectraS3Request) 
 
 func (modifyTapePartitionSpectraS3Request *ModifyTapePartitionSpectraS3Request) WithQuiesced(quiesced Quiesced) *ModifyTapePartitionSpectraS3Request {
     modifyTapePartitionSpectraS3Request.Quiesced = quiesced
+    return modifyTapePartitionSpectraS3Request
+}
+
+func (modifyTapePartitionSpectraS3Request *ModifyTapePartitionSpectraS3Request) WithSerialNumber(serialNumber string) *ModifyTapePartitionSpectraS3Request {
+    modifyTapePartitionSpectraS3Request.SerialNumber = &serialNumber
     return modifyTapePartitionSpectraS3Request
 }
 

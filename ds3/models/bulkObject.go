@@ -22,5 +22,5 @@ type BulkObject struct {
     Name *string
     Offset int64
     PhysicalPlacement *PhysicalPlacement
-    Version int64
+    VersionId string
 }

@@ -24,4 +24,5 @@ type ListBucketResult struct {
     Objects []Contents
     Prefix *string
     Truncated bool
+    VersionedObjects []Contents
 }

@@ -70,7 +70,7 @@ func (client *Client) DeleteObject(request *models.DeleteObjectRequest) (*models
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_DELETE).
         WithPath("/" + request.BucketName + "/" + request.ObjectName).
-        WithOptionalVoidQueryParam("roll_back", request.RollBack).
+        WithOptionalQueryParam("version_id", request.VersionId).
         Build(client.connectionInfo)
 
     if err != nil {
@@ -1016,7 +1016,6 @@ func (client *Client) DeleteFolderRecursivelySpectraS3(request *models.DeleteFol
         WithPath("/_rest_/folder/" + request.Folder).
         WithQueryParam("bucket_id", request.BucketId).
         WithQueryParam("recursive", "").
-        WithOptionalVoidQueryParam("roll_back", request.RollBack).
         Build(client.connectionInfo)
 
     if err != nil {

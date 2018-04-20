@@ -34,7 +34,7 @@ type Tape struct {
     PreviousState *TapeState
     SerialNumber *string
     State TapeState
-    StorageDomainId *string
+    StorageDomainMemberId *string
     TakeOwnershipPending bool
     TotalRawCapacity *int64
     Type string

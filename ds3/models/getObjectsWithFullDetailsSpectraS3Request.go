@@ -15,6 +15,7 @@ package models
 
 type GetObjectsWithFullDetailsSpectraS3Request struct {
     BucketId *string
+    EndDate *int64
     IncludePhysicalPlacement bool
     LastPage bool
     Latest *bool
@@ -23,7 +24,7 @@ type GetObjectsWithFullDetailsSpectraS3Request struct {
     PageOffset *int
     PageStartMarker *string
     S3ObjectType S3ObjectType
-    Version *int64
+    StartDate *int64
 }
 
 func NewGetObjectsWithFullDetailsSpectraS3Request() *GetObjectsWithFullDetailsSpectraS3Request {
@@ -33,6 +34,11 @@ func NewGetObjectsWithFullDetailsSpectraS3Request() *GetObjectsWithFullDetailsSp
 
 func (getObjectsWithFullDetailsSpectraS3Request *GetObjectsWithFullDetailsSpectraS3Request) WithBucketId(bucketId string) *GetObjectsWithFullDetailsSpectraS3Request {
     getObjectsWithFullDetailsSpectraS3Request.BucketId = &bucketId
+    return getObjectsWithFullDetailsSpectraS3Request
+}
+
+func (getObjectsWithFullDetailsSpectraS3Request *GetObjectsWithFullDetailsSpectraS3Request) WithEndDate(endDate int64) *GetObjectsWithFullDetailsSpectraS3Request {
+    getObjectsWithFullDetailsSpectraS3Request.EndDate = &endDate
     return getObjectsWithFullDetailsSpectraS3Request
 }
 
@@ -71,13 +77,13 @@ func (getObjectsWithFullDetailsSpectraS3Request *GetObjectsWithFullDetailsSpectr
     return getObjectsWithFullDetailsSpectraS3Request
 }
 
-func (getObjectsWithFullDetailsSpectraS3Request *GetObjectsWithFullDetailsSpectraS3Request) WithS3ObjectType(s3ObjectType S3ObjectType) *GetObjectsWithFullDetailsSpectraS3Request {
-    getObjectsWithFullDetailsSpectraS3Request.S3ObjectType = s3ObjectType
+func (getObjectsWithFullDetailsSpectraS3Request *GetObjectsWithFullDetailsSpectraS3Request) WithStartDate(startDate int64) *GetObjectsWithFullDetailsSpectraS3Request {
+    getObjectsWithFullDetailsSpectraS3Request.StartDate = &startDate
     return getObjectsWithFullDetailsSpectraS3Request
 }
 
-func (getObjectsWithFullDetailsSpectraS3Request *GetObjectsWithFullDetailsSpectraS3Request) WithVersion(version int64) *GetObjectsWithFullDetailsSpectraS3Request {
-    getObjectsWithFullDetailsSpectraS3Request.Version = &version
+func (getObjectsWithFullDetailsSpectraS3Request *GetObjectsWithFullDetailsSpectraS3Request) WithS3ObjectType(s3ObjectType S3ObjectType) *GetObjectsWithFullDetailsSpectraS3Request {
+    getObjectsWithFullDetailsSpectraS3Request.S3ObjectType = s3ObjectType
     return getObjectsWithFullDetailsSpectraS3Request
 }
 

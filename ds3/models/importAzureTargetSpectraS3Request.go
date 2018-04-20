@@ -16,7 +16,6 @@ package models
 type ImportAzureTargetSpectraS3Request struct {
     AzureTarget string
     CloudBucketName string
-    ConflictResolutionMode ImportConflictResolutionMode
     DataPolicyId *string
     Priority Priority
     UserId *string
@@ -27,11 +26,6 @@ func NewImportAzureTargetSpectraS3Request(azureTarget string, cloudBucketName st
         AzureTarget: azureTarget,
         CloudBucketName: cloudBucketName,
     }
-}
-
-func (importAzureTargetSpectraS3Request *ImportAzureTargetSpectraS3Request) WithConflictResolutionMode(conflictResolutionMode ImportConflictResolutionMode) *ImportAzureTargetSpectraS3Request {
-    importAzureTargetSpectraS3Request.ConflictResolutionMode = conflictResolutionMode
-    return importAzureTargetSpectraS3Request
 }
 
 func (importAzureTargetSpectraS3Request *ImportAzureTargetSpectraS3Request) WithDataPolicyId(dataPolicyId string) *ImportAzureTargetSpectraS3Request {

@@ -14,6 +14,7 @@
 package models
 
 type NamedDetailedTapePartition struct {
+    AutoCompactionEnabled bool
     DriveType *TapeDriveType
     DriveTypes []TapeDriveType
     ErrorMessage *string
@@ -24,7 +25,6 @@ type NamedDetailedTapePartition struct {
     MinimumWriteReservedDrives int
     Name *string
     Quiesced Quiesced
-    SerialId *string
     SerialNumber *string
     State TapePartitionState
     TapeTypes []string

@@ -74,11 +74,27 @@ func PutTestBooks(client *ds3.Client, bucketName string) error {
     return nil
 }
 
+func CancelAllJobsForBucket(client *ds3.Client, bucketName string) {
+    //Cancel all jobs on bucket
+    getJobs, err := client.GetJobsSpectraS3(models.NewGetJobsSpectraS3Request())
+    if err != nil {
+        log.Printf("WARNING: Cleanup error when attempting to get all jobs for bucket '%s': '%s.", bucketName, err.Error())
+        return
+    }
+    for _, job := range getJobs.JobList.Jobs {
+        if _, err = client.CancelJobSpectraS3(models.NewCancelJobSpectraS3Request(job.JobId)); err != nil {
+            log.Printf("WARNING: Unable to cancel job: %s", job.JobId)
+        }
+    }
+}
+
 func DeleteBucketContents(client *ds3.Client, bucketName string) {
+    CancelAllJobsForBucket(client, bucketName)
+
     //Get the contents of bucket
-    getBucket, getBucketErr := client.GetBucket(models.NewGetBucketRequest(bucketName))
-    if getBucketErr != nil {
-        log.Printf("WARNING: Cleanup error when attempting to get contents of bucket '%s': '%s'.", bucketName, getBucketErr.Error())
+    getBucket, err := client.GetBucket(models.NewGetBucketRequest(bucketName))
+    if err != nil {
+        log.Printf("WARNING: Cleanup error when attempting to get contents of bucket '%s': '%s'.", bucketName, err.Error())
         return
     }
     for _, obj := range getBucket.ListBucketResult.Objects {
@@ -154,12 +170,42 @@ func PutObjectLogError(t *testing.T, client *ds3.Client, bucketName string, obje
 
 // Puts the specified object. Returns an error if not successful.
 func PutObject(client *ds3.Client, bucketName string, objectName string, data []byte) (error) {
-    putObjectResponse, putErr := client.PutObject(models.NewPutObjectRequest(bucketName, objectName, ds3.BuildByteReaderWithSizeDecorator(data)))
+    return PutObjectWithJobId(client, bucketName, objectName, "", data)
+}
+
+// Puts the specified object. Returns an error if not successful.
+func PutObjectWithJobId(client *ds3.Client, bucketName string, objectName string, jobId string, data []byte) (error) {
+    putObjRequest := models.NewPutObjectRequest(bucketName, objectName, ds3.BuildByteReaderWithSizeDecorator(data))
+    if jobId != "" {
+        putObjRequest = putObjRequest.WithJob(jobId)
+    }
+    putObjectResponse, putErr := client.PutObject(putObjRequest)
     if putErr != nil {
         return putErr
     }
     if putObjectResponse == nil {
         return nilResponse
+    }
+    return nil
+}
+
+func PutEmptyObjects(client *ds3.Client, bucketName string, objects []models.Ds3PutObject) (error) {
+    putBulk, err := client.PutBulkJobSpectraS3(models.NewPutBulkJobSpectraS3Request(bucketName, objects))
+    if err != nil {
+        return err
+    }
+    for _, chunk := range putBulk.MasterObjectList.Objects {
+        allocateChunk, err := client.AllocateJobChunkSpectraS3(models.NewAllocateJobChunkSpectraS3Request(chunk.ChunkId))
+        if err != nil {
+            client.CancelJobSpectraS3(models.NewCancelJobSpectraS3Request(putBulk.MasterObjectList.JobId))
+            return err
+        }
+        for _, obj := range allocateChunk.Objects.Objects {
+            if err = PutObjectWithJobId(client, bucketName, *obj.Name, putBulk.MasterObjectList.JobId, []byte{}); err != nil {
+                client.CancelJobSpectraS3(models.NewCancelJobSpectraS3Request(putBulk.MasterObjectList.JobId))
+                return err
+            }
+        }
     }
     return nil
 }

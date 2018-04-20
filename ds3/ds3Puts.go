@@ -182,9 +182,9 @@ func (client *Client) ModifyDataPathBackendSpectraS3(request *models.ModifyDataP
         WithOptionalQueryParam("auto_activate_timeout_in_mins", networking.IntPtrToStrPtr(request.AutoActivateTimeoutInMins)).
         WithOptionalQueryParam("auto_inspect", networking.InterfaceToStrPtr(request.AutoInspect)).
         WithOptionalQueryParam("cache_available_retry_after_in_seconds", networking.IntPtrToStrPtr(request.CacheAvailableRetryAfterInSeconds)).
-        WithOptionalQueryParam("default_import_conflict_resolution_mode", networking.InterfaceToStrPtr(request.DefaultImportConflictResolutionMode)).
         WithOptionalQueryParam("default_verify_data_after_import", networking.InterfaceToStrPtr(request.DefaultVerifyDataAfterImport)).
         WithOptionalQueryParam("default_verify_data_prior_to_import", networking.BoolPtrToStrPtr(request.DefaultVerifyDataPriorToImport)).
+        WithOptionalQueryParam("iom_enabled", networking.BoolPtrToStrPtr(request.IomEnabled)).
         WithOptionalQueryParam("partially_verify_last_percent_of_tapes", networking.IntPtrToStrPtr(request.PartiallyVerifyLastPercentOfTapes)).
         WithOptionalQueryParam("unavailable_media_policy", networking.InterfaceToStrPtr(request.UnavailableMediaPolicy)).
         WithOptionalQueryParam("unavailable_pool_max_job_retry_in_mins", networking.IntPtrToStrPtr(request.UnavailablePoolMaxJobRetryInMins)).
@@ -274,6 +274,7 @@ func (client *Client) ModifyDataPolicySpectraS3(request *models.ModifyDataPolicy
         WithOptionalQueryParam("default_verify_after_write", networking.BoolPtrToStrPtr(request.DefaultVerifyAfterWrite)).
         WithOptionalQueryParam("default_verify_job_priority", networking.InterfaceToStrPtr(request.DefaultVerifyJobPriority)).
         WithOptionalQueryParam("end_to_end_crc_required", networking.BoolPtrToStrPtr(request.EndToEndCrcRequired)).
+        WithOptionalQueryParam("max_versions_to_keep", networking.IntPtrToStrPtr(request.MaxVersionsToKeep)).
         WithOptionalQueryParam("name", request.Name).
         WithOptionalQueryParam("rebuild_priority", networking.InterfaceToStrPtr(request.RebuildPriority)).
         WithOptionalQueryParam("versioning", networking.InterfaceToStrPtr(request.Versioning)).
@@ -741,6 +742,33 @@ func (client *Client) ReplicatePutJobSpectraS3(request *models.ReplicatePutJobSp
     return models.NewReplicatePutJobSpectraS3Response(response)
 }
 
+func (client *Client) StageObjectsJobSpectraS3(request *models.StageObjectsJobSpectraS3Request) (*models.StageObjectsJobSpectraS3Response, error) {
+    // Build the http request
+    httpRequest, err := networking.NewHttpRequestBuilder().
+        WithHttpVerb(HTTP_VERB_PUT).
+        WithPath("/_rest_/bucket/" + request.BucketName).
+        WithOptionalQueryParam("name", request.Name).
+        WithOptionalQueryParam("priority", networking.InterfaceToStrPtr(request.Priority)).
+        WithQueryParam("operation", "start_bulk_stage").
+        WithReadCloser(buildDs3GetObjectListStream(request.Objects)).
+        Build(client.connectionInfo)
+
+    if err != nil {
+        return nil, err
+    }
+
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
+
+    // Invoke the HTTP request.
+    response, requestErr := networkRetryDecorator.Invoke(httpRequest)
+    if requestErr != nil {
+        return nil, requestErr
+    }
+
+    // Create a response object based on the result.
+    return models.NewStageObjectsJobSpectraS3Response(response)
+}
+
 func (client *Client) VerifySafeToCreatePutJobSpectraS3(request *models.VerifySafeToCreatePutJobSpectraS3Request) (*models.VerifySafeToCreatePutJobSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
@@ -795,9 +823,9 @@ func (client *Client) GetPhysicalPlacementForObjectsSpectraS3(request *models.Ge
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_PUT).
         WithPath("/_rest_/bucket/" + request.BucketName).
-        WithOptionalQueryParam("storage_domain_id", request.StorageDomainId).
+        WithOptionalQueryParam("storage_domain", request.StorageDomain).
         WithQueryParam("operation", "get_physical_placement").
-        WithReadCloser(buildDs3ObjectStreamFromNames(request.ObjectNames)).
+        WithReadCloser(buildDs3GetObjectListStream(request.Objects)).
         Build(client.connectionInfo)
 
     if err != nil {
@@ -822,9 +850,9 @@ func (client *Client) GetPhysicalPlacementForObjectsWithFullDetailsSpectraS3(req
         WithHttpVerb(HTTP_VERB_PUT).
         WithPath("/_rest_/bucket/" + request.BucketName).
         WithQueryParam("full_details", "").
-        WithOptionalQueryParam("storage_domain_id", request.StorageDomainId).
+        WithOptionalQueryParam("storage_domain", request.StorageDomain).
         WithQueryParam("operation", "get_physical_placement").
-        WithReadCloser(buildDs3ObjectStreamFromNames(request.ObjectNames)).
+        WithReadCloser(buildDs3GetObjectListStream(request.Objects)).
         Build(client.connectionInfo)
 
     if err != nil {
@@ -841,6 +869,32 @@ func (client *Client) GetPhysicalPlacementForObjectsWithFullDetailsSpectraS3(req
 
     // Create a response object based on the result.
     return models.NewGetPhysicalPlacementForObjectsWithFullDetailsSpectraS3Response(response)
+}
+
+func (client *Client) UndeleteObjectSpectraS3(request *models.UndeleteObjectSpectraS3Request) (*models.UndeleteObjectSpectraS3Response, error) {
+    // Build the http request
+    httpRequest, err := networking.NewHttpRequestBuilder().
+        WithHttpVerb(HTTP_VERB_PUT).
+        WithPath("/_rest_/object").
+        WithQueryParam("bucket_id", request.BucketId).
+        WithQueryParam("name", request.Name).
+        WithOptionalQueryParam("version_id", request.VersionId).
+        Build(client.connectionInfo)
+
+    if err != nil {
+        return nil, err
+    }
+
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
+
+    // Invoke the HTTP request.
+    response, requestErr := networkRetryDecorator.Invoke(httpRequest)
+    if requestErr != nil {
+        return nil, requestErr
+    }
+
+    // Create a response object based on the result.
+    return models.NewUndeleteObjectSpectraS3Response(response)
 }
 
 func (client *Client) CancelImportOnAllPoolsSpectraS3(request *models.CancelImportOnAllPoolsSpectraS3Request) (*models.CancelImportOnAllPoolsSpectraS3Response, error) {
@@ -1089,7 +1143,6 @@ func (client *Client) ImportAllPoolsSpectraS3(request *models.ImportAllPoolsSpec
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_PUT).
         WithPath("/_rest_/pool").
-        WithOptionalQueryParam("conflict_resolution_mode", networking.InterfaceToStrPtr(request.ConflictResolutionMode)).
         WithOptionalQueryParam("data_policy_id", request.DataPolicyId).
         WithOptionalQueryParam("priority", networking.InterfaceToStrPtr(request.Priority)).
         WithOptionalQueryParam("storage_domain_id", request.StorageDomainId).
@@ -1120,7 +1173,6 @@ func (client *Client) ImportPoolSpectraS3(request *models.ImportPoolSpectraS3Req
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_PUT).
         WithPath("/_rest_/pool/" + request.Pool).
-        WithOptionalQueryParam("conflict_resolution_mode", networking.InterfaceToStrPtr(request.ConflictResolutionMode)).
         WithOptionalQueryParam("data_policy_id", request.DataPolicyId).
         WithOptionalQueryParam("priority", networking.InterfaceToStrPtr(request.Priority)).
         WithOptionalQueryParam("storage_domain_id", request.StorageDomainId).
@@ -1298,6 +1350,8 @@ func (client *Client) ModifyStorageDomainMemberSpectraS3(request *models.ModifyS
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_PUT).
         WithPath("/_rest_/storage_domain_member/" + request.StorageDomainMember).
+        WithOptionalQueryParam("auto_compaction_threshold", networking.IntPtrToStrPtr(request.AutoCompactionThreshold)).
+        WithOptionalQueryParam("state", networking.InterfaceToStrPtr(request.State)).
         WithOptionalQueryParam("write_preference", networking.InterfaceToStrPtr(request.WritePreference)).
         Build(client.connectionInfo)
 
@@ -1696,11 +1750,11 @@ func (client *Client) EjectStorageDomainBlobsSpectraS3(request *models.EjectStor
         WithPath("/_rest_/tape").
         WithQueryParam("blobs", "").
         WithQueryParam("bucket_id", request.BucketId).
-        WithQueryParam("storage_domain_id", request.StorageDomainId).
+        WithQueryParam("storage_domain", request.StorageDomain).
         WithOptionalQueryParam("eject_label", request.EjectLabel).
         WithOptionalQueryParam("eject_location", request.EjectLocation).
         WithQueryParam("operation", "eject").
-        WithReadCloser(buildDs3ObjectStreamFromNames(request.ObjectNames)).
+        WithReadCloser(buildDs3GetObjectListStream(request.Objects)).
         Build(client.connectionInfo)
 
     if err != nil {
@@ -1724,7 +1778,7 @@ func (client *Client) EjectStorageDomainSpectraS3(request *models.EjectStorageDo
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_PUT).
         WithPath("/_rest_/tape").
-        WithQueryParam("storage_domain_id", request.StorageDomainId).
+        WithQueryParam("storage_domain", request.StorageDomain).
         WithOptionalQueryParam("bucket_id", request.BucketId).
         WithOptionalQueryParam("eject_label", request.EjectLabel).
         WithOptionalQueryParam("eject_location", request.EjectLocation).
@@ -1851,7 +1905,6 @@ func (client *Client) ImportAllTapesSpectraS3(request *models.ImportAllTapesSpec
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_PUT).
         WithPath("/_rest_/tape").
-        WithOptionalQueryParam("conflict_resolution_mode", networking.InterfaceToStrPtr(request.ConflictResolutionMode)).
         WithOptionalQueryParam("data_policy_id", request.DataPolicyId).
         WithOptionalQueryParam("priority", networking.InterfaceToStrPtr(request.Priority)).
         WithOptionalQueryParam("storage_domain_id", request.StorageDomainId).
@@ -1882,7 +1935,6 @@ func (client *Client) ImportTapeSpectraS3(request *models.ImportTapeSpectraS3Req
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_PUT).
         WithPath("/_rest_/tape/" + request.TapeId).
-        WithOptionalQueryParam("conflict_resolution_mode", networking.InterfaceToStrPtr(request.ConflictResolutionMode)).
         WithOptionalQueryParam("data_policy_id", request.DataPolicyId).
         WithOptionalQueryParam("priority", networking.InterfaceToStrPtr(request.Priority)).
         WithOptionalQueryParam("storage_domain_id", request.StorageDomainId).
@@ -2012,9 +2064,11 @@ func (client *Client) ModifyTapePartitionSpectraS3(request *models.ModifyTapePar
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_PUT).
         WithPath("/_rest_/tape_partition/" + request.TapePartition).
+        WithOptionalQueryParam("auto_compaction_enabled", networking.BoolPtrToStrPtr(request.AutoCompactionEnabled)).
         WithOptionalQueryParam("minimum_read_reserved_drives", networking.IntPtrToStrPtr(request.MinimumReadReservedDrives)).
         WithOptionalQueryParam("minimum_write_reserved_drives", networking.IntPtrToStrPtr(request.MinimumWriteReservedDrives)).
         WithOptionalQueryParam("quiesced", networking.InterfaceToStrPtr(request.Quiesced)).
+        WithOptionalQueryParam("serial_number", request.SerialNumber).
         Build(client.connectionInfo)
 
     if err != nil {
@@ -2240,7 +2294,6 @@ func (client *Client) ImportAzureTargetSpectraS3(request *models.ImportAzureTarg
         WithHttpVerb(HTTP_VERB_PUT).
         WithPath("/_rest_/azure_target/" + request.AzureTarget).
         WithQueryParam("cloud_bucket_name", request.CloudBucketName).
-        WithOptionalQueryParam("conflict_resolution_mode", networking.InterfaceToStrPtr(request.ConflictResolutionMode)).
         WithOptionalQueryParam("data_policy_id", request.DataPolicyId).
         WithOptionalQueryParam("priority", networking.InterfaceToStrPtr(request.Priority)).
         WithOptionalQueryParam("user_id", request.UserId).
@@ -2472,7 +2525,6 @@ func (client *Client) ImportS3TargetSpectraS3(request *models.ImportS3TargetSpec
         WithHttpVerb(HTTP_VERB_PUT).
         WithPath("/_rest_/s3_target/" + request.S3Target).
         WithQueryParam("cloud_bucket_name", request.CloudBucketName).
-        WithOptionalQueryParam("conflict_resolution_mode", networking.InterfaceToStrPtr(request.ConflictResolutionMode)).
         WithOptionalQueryParam("data_policy_id", request.DataPolicyId).
         WithOptionalQueryParam("priority", networking.InterfaceToStrPtr(request.Priority)).
         WithOptionalQueryParam("user_id", request.UserId).
@@ -2592,6 +2644,7 @@ func (client *Client) ModifyUserSpectraS3(request *models.ModifyUserSpectraS3Req
         WithHttpVerb(HTTP_VERB_PUT).
         WithPath("/_rest_/user/" + request.UserId).
         WithOptionalQueryParam("default_data_policy_id", request.DefaultDataPolicyId).
+        WithOptionalQueryParam("max_buckets", networking.IntPtrToStrPtr(request.MaxBuckets)).
         WithOptionalQueryParam("name", request.Name).
         WithOptionalQueryParam("secret_key", request.SecretKey).
         Build(client.connectionInfo)

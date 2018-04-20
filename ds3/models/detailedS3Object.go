@@ -28,5 +28,4 @@ type DetailedS3Object struct {
     Owner *string
     Size int64
     Type S3ObjectType
-    Version int64
 }

@@ -28,7 +28,7 @@ type GetPoolsSpectraS3Request struct {
     PoolType PoolType
     PoweredOn *bool
     State PoolState
-    StorageDomainId *string
+    StorageDomainMemberId *string
 }
 
 func NewGetPoolsSpectraS3Request() *GetPoolsSpectraS3Request {
@@ -101,8 +101,8 @@ func (getPoolsSpectraS3Request *GetPoolsSpectraS3Request) WithState(state PoolSt
     return getPoolsSpectraS3Request
 }
 
-func (getPoolsSpectraS3Request *GetPoolsSpectraS3Request) WithStorageDomainId(storageDomainId string) *GetPoolsSpectraS3Request {
-    getPoolsSpectraS3Request.StorageDomainId = &storageDomainId
+func (getPoolsSpectraS3Request *GetPoolsSpectraS3Request) WithStorageDomainMemberId(storageDomainMemberId string) *GetPoolsSpectraS3Request {
+    getPoolsSpectraS3Request.StorageDomainMemberId = &storageDomainMemberId
     return getPoolsSpectraS3Request
 }
 

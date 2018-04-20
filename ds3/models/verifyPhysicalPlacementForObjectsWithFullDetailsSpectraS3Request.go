@@ -15,19 +15,28 @@ package models
 
 type VerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request struct {
     BucketName string
-    ObjectNames []string
-    StorageDomainId *string
+    Objects []Ds3GetObject
+    StorageDomain *string
 }
 
 func NewVerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request(bucketName string, objectNames []string) *VerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request {
+
     return &VerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request{
         BucketName: bucketName,
-        ObjectNames: objectNames,
+        Objects: buildDs3GetObjectSliceFromNames(objectNames),
     }
 }
 
-func (verifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request *VerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request) WithStorageDomainId(storageDomainId string) *VerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request {
-    verifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request.StorageDomainId = &storageDomainId
+func NewVerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3RequestWithPartialObjects(bucketName string, objects []Ds3GetObject) *VerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request {
+
+    return &VerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request{
+        BucketName: bucketName,
+        Objects: objects,
+    }
+}
+
+func (verifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request *VerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request) WithStorageDomain(storageDomain string) *VerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request {
+    verifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request.StorageDomain = &storageDomain
     return verifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request
 }
 

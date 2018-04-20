@@ -20,5 +20,4 @@ type S3Object struct {
     Latest bool
     Name *string
     Type S3ObjectType
-    Version int64
 }

@@ -386,10 +386,10 @@ func TestGetObjectRange(t *testing.T) {
 
 func TestGetObjectsDetailsSpectraS3(t *testing.T) {
     bucketId := "a24d14f3-e2f0-4bfb-ab71-f99d5ef43745"
-    stringResponse := "<Data><S3Object><BucketId>a24d14f3-e2f0-4bfb-ab71-f99d5ef43745</BucketId><CreationDate>2015-09-21T20:06:47.694Z</CreationDate><Id>e37c3ce0-12aa-4f54-87e3-42532aca0e5e</Id><Name>beowulf.txt</Name><Type>DATA</Type><Version>1</Version></S3Object>" +
-            "<S3Object><BucketId>a24d14f3-e2f0-4bfb-ab71-f99d5ef43745</BucketId><CreationDate>2015-09-21T20:06:47.779Z</CreationDate><Id>dc628815-c723-4c4e-b68b-5f5d10f38af5</Id><Name>sherlock_holmes.txt</Name><Type>DATA</Type><Version>1</Version></S3Object>" +
-            "<S3Object><BucketId>a24d14f3-e2f0-4bfb-ab71-f99d5ef43745</BucketId><CreationDate>2015-09-21T20:06:47.772Z</CreationDate><Id>4f6985fd-fbae-4421-ba27-66fdb96187c5</Id><Name>tale_of_two_cities.txt</Name><Type>DATA</Type><Version>1</Version></S3Object>" +
-            "<S3Object><BucketId>a24d14f3-e2f0-4bfb-ab71-f99d5ef43745</BucketId><CreationDate>2015-09-21T20:06:47.696Z</CreationDate><Id>82c18910-fadb-4461-a152-bf714ae91b55</Id><Name>ulysses.txt</Name><Type>DATA</Type><Version>1</Version></S3Object></Data>"
+    stringResponse := "<Data><S3Object><BucketId>a24d14f3-e2f0-4bfb-ab71-f99d5ef43745</BucketId><CreationDate>2015-09-21T20:06:47.694Z</CreationDate><Id>e37c3ce0-12aa-4f54-87e3-42532aca0e5e</Id><Name>beowulf.txt</Name><Type>DATA</Type></S3Object>" +
+            "<S3Object><BucketId>a24d14f3-e2f0-4bfb-ab71-f99d5ef43745</BucketId><CreationDate>2015-09-21T20:06:47.779Z</CreationDate><Id>dc628815-c723-4c4e-b68b-5f5d10f38af5</Id><Name>sherlock_holmes.txt</Name><Type>DATA</Type></S3Object>" +
+            "<S3Object><BucketId>a24d14f3-e2f0-4bfb-ab71-f99d5ef43745</BucketId><CreationDate>2015-09-21T20:06:47.772Z</CreationDate><Id>4f6985fd-fbae-4421-ba27-66fdb96187c5</Id><Name>tale_of_two_cities.txt</Name><Type>DATA</Type></S3Object>" +
+            "<S3Object><BucketId>a24d14f3-e2f0-4bfb-ab71-f99d5ef43745</BucketId><CreationDate>2015-09-21T20:06:47.696Z</CreationDate><Id>82c18910-fadb-4461-a152-bf714ae91b55</Id><Name>ulysses.txt</Name><Type>DATA</Type></S3Object></Data>"
 
     request := models.NewGetObjectsDetailsSpectraS3Request().WithBucketId(bucketId)
 
@@ -428,7 +428,6 @@ func TestGetObjectsDetailsSpectraS3(t *testing.T) {
         if object.Type != models.S3_OBJECT_TYPE_DATA {
             t.Fatalf("Expected type of '%d' but was '%d'.", models.S3_OBJECT_TYPE_DATA, object.Type)
         }
-        ds3Testing.AssertInt64(t, "Version", 1, object.Version)
     }
 }
 
@@ -1528,6 +1527,27 @@ func TestClearSuspectBlobS3TargetsSpectraS3(t *testing.T) {
     }
 }
 
+
+func TestClearSuspectBlobDs3TargetsSpectraS3(t *testing.T) {
+    expectedRequest := "<Ids><Id>id1</Id><Id>id2</Id><Id>id3</Id></Ids>"
+
+    // Create and run the mocked client.
+    ids := []string {"id1", "id2", "id3"}
+
+    response, err := mockedClient(t).
+        Expecting(HTTP_VERB_DELETE, "/_rest_/suspect_blob_ds3_target", &url.Values{}, &http.Header{}, &expectedRequest).
+        Returning(204, "", nil).
+        ClearSuspectBlobDs3TargetsSpectraS3(models.NewClearSuspectBlobDs3TargetsSpectraS3Request(ids))
+
+    // Check the error result.
+    ds3Testing.AssertNilError(t, err)
+
+    // Check the response value.
+    if response == nil {
+        t.Fatalf("Response was unexpectedly nil.")
+    }
+}
+
 func TestClearSuspectBlobTapesSpectraS3(t *testing.T) {
     expectedRequest := "<Ids><Id>id1</Id><Id>id2</Id><Id>id3</Id></Ids>"
 
@@ -1560,13 +1580,13 @@ func TestEjectStorageDomainBlobsSpectraS3(t *testing.T) {
         "operation": []string{"eject"},
         "blobs": []string{""},
         "bucket_id": []string{bucketId},
-        "storage_domain_id": []string{storageDomainId},
+        "storage_domain": []string{storageDomainId},
     }
 
     response, err := mockedClient(t).
         Expecting(HTTP_VERB_PUT, "/_rest_/tape", qp, &http.Header{}, &expectedRequest).
         Returning(204, "", nil).
-        EjectStorageDomainBlobsSpectraS3(models.NewEjectStorageDomainBlobsSpectraS3Request(bucketId, objectNames, storageDomainId))
+        EjectStorageDomainBlobsSpectraS3(models.NewEjectStorageDomainBlobsSpectraS3Request(bucketId, storageDomainId, objectNames))
 
     // Check the error result.
     ds3Testing.AssertNilError(t, err)
@@ -1640,7 +1660,7 @@ func TestGetBlobsOnTapeSpectraS3(t *testing.T) {
 type getBlobsTest func(*Client) (models.BulkObjectList, error)
 
 func runGetBlobsTest(t *testing.T, path string, callToTest getBlobsTest) {
-    expectedResponse := "<Data><Object Bucket=\"default_bucket_name\" Id=\"1bd77dbf-500a-45a1-86ac-d065f026882c\" Latest=\"true\" Length=\"10\" Name=\"obj1\" Offset=\"0\" Version=\"1\"/><Object Bucket=\"default_bucket_name\" Id=\"9afa66e7-3f5a-4913-bae2-ba7c86e4c4f7\" Latest=\"true\" Length=\"10\" Name=\"obj2\" Offset=\"0\" Version=\"1\"/></Data>"
+    expectedResponse := "<Data><Object Bucket=\"default_bucket_name\" Id=\"1bd77dbf-500a-45a1-86ac-d065f026882c\" Latest=\"true\" Length=\"10\" Name=\"obj1\" Offset=\"0\" /><Object Bucket=\"default_bucket_name\" Id=\"9afa66e7-3f5a-4913-bae2-ba7c86e4c4f7\" Latest=\"true\" Length=\"10\" Name=\"obj2\" Offset=\"0\" /></Data>"
 
     // Create and run the mocked client.
     qp := &url.Values{ "operation": []string{"get_physical_placement"} }
@@ -1662,7 +1682,6 @@ func runGetBlobsTest(t *testing.T, path string, callToTest getBlobsTest) {
     ds3Testing.AssertInt64(t, "Length", 10, obj1.Length)
     ds3Testing.AssertNonNilStringPtr(t, "Name", "obj1", obj1.Name)
     ds3Testing.AssertInt64(t, "Offset", 0, obj1.Offset)
-    ds3Testing.AssertInt64(t, "Version", 1, obj1.Version)
     if obj1.PhysicalPlacement != nil {
         t.Fatalf("Expected nil Physical Placement, but was '%v'.", obj1.PhysicalPlacement)
     }
@@ -1675,7 +1694,6 @@ func runGetBlobsTest(t *testing.T, path string, callToTest getBlobsTest) {
     ds3Testing.AssertInt64(t, "Length", 10, obj2.Length)
     ds3Testing.AssertNonNilStringPtr(t, "Name", "obj2", obj2.Name)
     ds3Testing.AssertInt64(t, "Offset", 0, obj2.Offset)
-    ds3Testing.AssertInt64(t, "Version", 1, obj2.Version)
     if obj2.PhysicalPlacement != nil {
         t.Fatalf("Expected nil Physical Placement, but was '%v'.", obj2.PhysicalPlacement)
     }
@@ -1707,7 +1725,7 @@ func TestGetPhysicalPlacementForObjectsSpectraS3(t *testing.T) {
 
 func TestGetPhysicalPlacementForObjectsWithFullDetailsSpectraS3(t *testing.T) {
     expectedRequest := "<Objects><Object Name=\"obj1\"></Object><Object Name=\"obj2\"></Object><Object Name=\"obj3\"></Object></Objects>"
-    responsePayload := "<Data><Object Bucket=\"b1\" Id=\"a2897bbd-3e0b-4c0f-83d7-29e1e7669bdd\" InCache=\"false\" Latest=\"true\" Length=\"10\" Name=\"o4\" Offset=\"0\" Version=\"1\"><PhysicalPlacement><AzureTargets/><Ds3Targets/><Pools/><S3Targets/><Tapes/></PhysicalPlacement></Object></Data>"
+    responsePayload := "<Data><Object Bucket=\"b1\" Id=\"a2897bbd-3e0b-4c0f-83d7-29e1e7669bdd\" InCache=\"false\" Latest=\"true\" Length=\"10\" Name=\"o4\" Offset=\"0\" ><PhysicalPlacement><AzureTargets/><Ds3Targets/><Pools/><S3Targets/><Tapes/></PhysicalPlacement></Object></Data>"
 
     // Create and run the mocked client.
     bucketName := "BucketName"
@@ -1807,7 +1825,7 @@ func runMarkSuspectBlobTest(t *testing.T, path string, callToTest markSuspectBlo
 
 func TestVerifyPhysicalPlacementForObjectsSpectraS3(t *testing.T) {
     expectedRequest := "<Objects><Object Name=\"o1\"></Object></Objects>"
-    responsePayload := "<Data><AzureTargets/><Ds3Targets/><Pools/><S3Targets/><Tapes><Tape><AssignedToStorageDomain>false</AssignedToStorageDomain><AvailableRawCapacity>10000</AvailableRawCapacity><BarCode>t1</BarCode><BucketId/><DescriptionForIdentification/><EjectDate/><EjectLabel/><EjectLocation/><EjectPending/><FullOfData>false</FullOfData><Id>48d30ecb-84f1-4721-9832-7aa165a1dd77</Id><LastAccessed/><LastCheckpoint/><LastModified/><LastVerified/><PartiallyVerifiedEndOfTape/><PartitionId>76343269-c32a-4cb0-aec4-57a9dccce6ea</PartitionId><PreviousState/><SerialNumber/><State>PENDING_INSPECTION</State><StorageDomainId/><TakeOwnershipPending>false</TakeOwnershipPending><TotalRawCapacity>20000</TotalRawCapacity><Type>LTO5</Type><VerifyPending/><WriteProtected>false</WriteProtected></Tape></Tapes></Data>"
+    responsePayload := "<Data><AzureTargets/><Ds3Targets/><Pools/><S3Targets/><Tapes><Tape><AssignedToStorageDomain>false</AssignedToStorageDomain><AvailableRawCapacity>10000</AvailableRawCapacity><BarCode>t1</BarCode><BucketId/><DescriptionForIdentification/><EjectDate/><EjectLabel/><EjectLocation/><EjectPending/><FullOfData>false</FullOfData><Id>48d30ecb-84f1-4721-9832-7aa165a1dd77</Id><LastAccessed/><LastCheckpoint/><LastModified/><LastVerified/><PartiallyVerifiedEndOfTape/><PartitionId>76343269-c32a-4cb0-aec4-57a9dccce6ea</PartitionId><PreviousState/><SerialNumber/><State>PENDING_INSPECTION</State><TakeOwnershipPending>false</TakeOwnershipPending><TotalRawCapacity>20000</TotalRawCapacity><Type>LTO5</Type><VerifyPending/><WriteProtected>false</WriteProtected></Tape></Tapes></Data>"
 
     // Create and run the mocked client.
     bucketName := "b1"
@@ -1832,7 +1850,7 @@ func TestVerifyPhysicalPlacementForObjectsSpectraS3(t *testing.T) {
 
 func TestVerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3(t *testing.T) {
     expectedRequest := "<Objects><Object Name=\"o1\"></Object></Objects>"
-    responsePayload := "<Data><Object Bucket=\"b1\" Id=\"ad5bfa96-8356-42e5-97c7-091780f9d2a7\" InCache=\"false\" Latest=\"true\" Length=\"10\" Name=\"o1\" Offset=\"0\" Version=\"1\"><PhysicalPlacement><AzureTargets/><Ds3Targets/><Pools/><S3Targets/><Tapes><Tape><AssignedToStorageDomain>false</AssignedToStorageDomain><AvailableRawCapacity>10000</AvailableRawCapacity><BarCode>t1</BarCode><BucketId/><DescriptionForIdentification/><EjectDate/><EjectLabel/><EjectLocation/><EjectPending/><FullOfData>false</FullOfData><Id>3514700d-4d4f-4e64-8ccd-20750b5514fd</Id><LastAccessed/><LastCheckpoint/><LastModified/><LastVerified/><PartiallyVerifiedEndOfTape/><PartitionId>dc681797-927a-4eb0-9652-d19d06534e50</PartitionId><PreviousState/><SerialNumber/><State>PENDING_INSPECTION</State><StorageDomainId/><TakeOwnershipPending>false</TakeOwnershipPending><TotalRawCapacity>20000</TotalRawCapacity><Type>LTO5</Type><VerifyPending/><WriteProtected>false</WriteProtected></Tape></Tapes></PhysicalPlacement></Object></Data>"
+    responsePayload := "<Data><Object Bucket=\"b1\" Id=\"ad5bfa96-8356-42e5-97c7-091780f9d2a7\" InCache=\"false\" Latest=\"true\" Length=\"10\" Name=\"o1\" Offset=\"0\" ><PhysicalPlacement><AzureTargets/><Ds3Targets/><Pools/><S3Targets/><Tapes><Tape><AssignedToStorageDomain>false</AssignedToStorageDomain><AvailableRawCapacity>10000</AvailableRawCapacity><BarCode>t1</BarCode><BucketId/><DescriptionForIdentification/><EjectDate/><EjectLabel/><EjectLocation/><EjectPending/><FullOfData>false</FullOfData><Id>3514700d-4d4f-4e64-8ccd-20750b5514fd</Id><LastAccessed/><LastCheckpoint/><LastModified/><LastVerified/><PartiallyVerifiedEndOfTape/><PartitionId>dc681797-927a-4eb0-9652-d19d06534e50</PartitionId><PreviousState/><SerialNumber/><State>PENDING_INSPECTION</State><TakeOwnershipPending>false</TakeOwnershipPending><TotalRawCapacity>20000</TotalRawCapacity><Type>LTO5</Type><VerifyPending/><WriteProtected>false</WriteProtected></Tape></Tapes></PhysicalPlacement></Object></Data>"
 
     // Create and run the mocked client.
     bucketName := "b1"
@@ -1865,7 +1883,6 @@ func TestVerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3(t *testing.T)
     ds3Testing.AssertInt64(t, "Length", 10, object.Length)
     ds3Testing.AssertNonNilStringPtr(t, "Name", "o1", object.Name)
     ds3Testing.AssertInt64(t, "Offset", 0, object.Offset)
-    ds3Testing.AssertInt64(t, "Version", 1, object.Version)
     if object.PhysicalPlacement == nil {
         t.Fatal("Expected PhysicalPlacement to not be nil")
     }
@@ -1902,7 +1919,7 @@ func TestVerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3(t *testing.T)
     if tape.State != models.TAPE_STATE_PENDING_INSPECTION {
         t.Fatalf("Expected tape state 'TAPE_STATE_PENDING_INSPECTION' but got '%s'.", tape.State.String())
     }
-    ds3Testing.AssertStringPtrIsNil(t, "StorageDomainId", tape.StorageDomainId)
+    ds3Testing.AssertStringPtrIsNil(t, "StorageDomainId", tape.StorageDomainMemberId)
     ds3Testing.AssertBool(t, "TakeOwnershipPending", false, tape.TakeOwnershipPending)
     ds3Testing.AssertNonNilInt64Ptr(t, "TotalRawCapacity", 20000, tape.TotalRawCapacity)
     ds3Testing.AssertString(t, "TapeType", "LTO5", tape.Type)
@@ -1938,4 +1955,34 @@ func TestHeadObject(t *testing.T) {
     ds3Testing.AssertString(t, "checksum at offset '0'", "4nQGNX4nyz0pi8Hvap79PQ==", response.BlobChecksums[0])
     ds3Testing.AssertString(t, "checksum at offset '10485760'", "965Aa0/n8DlO1IwXYFh4bg==", response.BlobChecksums[10485760])
     ds3Testing.AssertString(t, "checksum at offset '20971520'", "iV2OqJaXJ/jmqgRSb1HmFA==", response.BlobChecksums[20971520])
+}
+
+func TestStageObjectsJob(t *testing.T) {
+    expectedRequest := "<Objects><Object Name=\"o1\"></Object><Object Name=\"o2\" VersionId=\"v2\"></Object><Object Name=\"o3\" Length=\"10\" Offset=\"20\" VersionId=\"v3\"></Object></Objects>"
+    responsePayload := "<MasterObjectList><Objects><Object Name='file2' Length='1202'/><Object Name='file1' Length='256'/><Object Name='file3' Length='2523'/></Objects></MasterObjectList>"
+
+    // Create and run the mocked client.
+    bucketName := "b1"
+    objects := []models.Ds3GetObject {
+        models.NewDs3GetObject("o1"),
+        models.NewDs3GetObjectVersion("o2", "v2"),
+        models.NewPartialDs3GetObjectVersion("o3", 10, 20, "v3"),
+    }
+
+    qp := &url.Values{ "operation": []string{"start_bulk_stage"} }
+
+    response, err := mockedClient(t).
+        Expecting(HTTP_VERB_PUT, "/_rest_/bucket/" + bucketName, qp, &http.Header{}, &expectedRequest).
+        Returning(200, responsePayload, nil).
+        StageObjectsJobSpectraS3(models.NewStageObjectsJobSpectraS3RequestWithPartialObjects(bucketName, objects))
+
+    // Check the error result.
+    ds3Testing.AssertNilError(t, err)
+
+    // Check the response value.
+    if response == nil {
+        t.Fatalf("Response was unexpectedly nil.")
+    }
+    ds3Testing.AssertInt(t, "Number of objects", 1, len(response.MasterObjectList.Objects))
+    ds3Testing.AssertInt(t, "Number of blobs", 3, len(response.MasterObjectList.Objects[0].Objects))
 }

@@ -20,6 +20,8 @@ func (namedDetailedTapePartition *NamedDetailedTapePartition) parse(xmlNode *Xml
     // Parse Child Nodes
     for _, child := range xmlNode.Children {
         switch child.XMLName.Local {
+        case "AutoCompactionEnabled":
+            namedDetailedTapePartition.AutoCompactionEnabled = parseBool(child.Content, aggErr)
         case "DriveType":
             parseNullableEnum(child.Content, namedDetailedTapePartition.DriveType, aggErr)
         case "DriveTypes":
@@ -42,8 +44,6 @@ func (namedDetailedTapePartition *NamedDetailedTapePartition) parse(xmlNode *Xml
             namedDetailedTapePartition.Name = parseNullableString(child.Content)
         case "Quiesced":
             parseEnum(child.Content, &namedDetailedTapePartition.Quiesced, aggErr)
-        case "SerialId":
-            namedDetailedTapePartition.SerialId = parseNullableString(child.Content)
         case "SerialNumber":
             namedDetailedTapePartition.SerialNumber = parseNullableString(child.Content)
         case "State":

@@ -16,7 +16,6 @@ package models
 type DataPolicy struct {
     AlwaysForcePutJobCreation bool
     AlwaysMinimizeSpanningAcrossMedia bool
-    AlwaysReplicateDeletes bool
     BlobbingEnabled bool
     ChecksumType ChecksumType
     CreationDate string
@@ -27,7 +26,7 @@ type DataPolicy struct {
     DefaultVerifyJobPriority Priority
     EndToEndCrcRequired bool
     Id string
-    LtfsObjectNamingAllowed bool
+    MaxVersionsToKeep int
     Name *string
     RebuildPriority Priority
     Versioning VersioningLevel
