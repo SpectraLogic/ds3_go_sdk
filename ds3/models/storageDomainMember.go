@@ -14,6 +14,7 @@
 package models
 
 type StorageDomainMember struct {
+    AutoCompactionThreshold *int
     Id string
     PoolPartitionId *string
     State StorageDomainMemberState

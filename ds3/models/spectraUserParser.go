@@ -26,6 +26,8 @@ func (spectraUser *SpectraUser) parse(xmlNode *XmlNode, aggErr *AggregateError) 
             spectraUser.DefaultDataPolicyId = parseNullableString(child.Content)
         case "Id":
             spectraUser.Id = parseString(child.Content)
+        case "MaxBuckets":
+            spectraUser.MaxBuckets = parseInt(child.Content, aggErr)
         case "Name":
             spectraUser.Name = parseNullableString(child.Content)
         case "SecretKey":

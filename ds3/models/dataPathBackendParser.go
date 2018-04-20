@@ -30,8 +30,6 @@ func (dataPathBackend *DataPathBackend) parse(xmlNode *XmlNode, aggErr *Aggregat
             parseEnum(child.Content, &dataPathBackend.AutoInspect, aggErr)
         case "CacheAvailableRetryAfterInSeconds":
             dataPathBackend.CacheAvailableRetryAfterInSeconds = parseInt(child.Content, aggErr)
-        case "DefaultImportConflictResolutionMode":
-            parseEnum(child.Content, &dataPathBackend.DefaultImportConflictResolutionMode, aggErr)
         case "DefaultVerifyDataAfterImport":
             parseNullableEnum(child.Content, dataPathBackend.DefaultVerifyDataAfterImport, aggErr)
         case "DefaultVerifyDataPriorToImport":
@@ -40,6 +38,8 @@ func (dataPathBackend *DataPathBackend) parse(xmlNode *XmlNode, aggErr *Aggregat
             dataPathBackend.Id = parseString(child.Content)
         case "InstanceId":
             dataPathBackend.InstanceId = parseString(child.Content)
+        case "IomEnabled":
+            dataPathBackend.IomEnabled = parseBool(child.Content, aggErr)
         case "LastHeartbeat":
             dataPathBackend.LastHeartbeat = parseString(child.Content)
         case "PartiallyVerifyLastPercentOfTapes":

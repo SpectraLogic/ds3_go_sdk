@@ -14,6 +14,10 @@
 package models
 
 type GetBlobsOnTapeSpectraS3Request struct {
+    LastPage bool
+    PageLength *int
+    PageOffset *int
+    PageStartMarker *string
     TapeId string
 }
 
@@ -21,5 +25,25 @@ func NewGetBlobsOnTapeSpectraS3Request(tapeId string) *GetBlobsOnTapeSpectraS3Re
     return &GetBlobsOnTapeSpectraS3Request{
         TapeId: tapeId,
     }
+}
+
+func (getBlobsOnTapeSpectraS3Request *GetBlobsOnTapeSpectraS3Request) WithLastPage() *GetBlobsOnTapeSpectraS3Request {
+    getBlobsOnTapeSpectraS3Request.LastPage = true
+    return getBlobsOnTapeSpectraS3Request
+}
+
+func (getBlobsOnTapeSpectraS3Request *GetBlobsOnTapeSpectraS3Request) WithPageLength(pageLength int) *GetBlobsOnTapeSpectraS3Request {
+    getBlobsOnTapeSpectraS3Request.PageLength = &pageLength
+    return getBlobsOnTapeSpectraS3Request
+}
+
+func (getBlobsOnTapeSpectraS3Request *GetBlobsOnTapeSpectraS3Request) WithPageOffset(pageOffset int) *GetBlobsOnTapeSpectraS3Request {
+    getBlobsOnTapeSpectraS3Request.PageOffset = &pageOffset
+    return getBlobsOnTapeSpectraS3Request
+}
+
+func (getBlobsOnTapeSpectraS3Request *GetBlobsOnTapeSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetBlobsOnTapeSpectraS3Request {
+    getBlobsOnTapeSpectraS3Request.PageStartMarker = &pageStartMarker
+    return getBlobsOnTapeSpectraS3Request
 }
 

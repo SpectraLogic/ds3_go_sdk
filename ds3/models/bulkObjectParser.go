@@ -33,8 +33,8 @@ func (bulkObject *BulkObject) parse(xmlNode *XmlNode, aggErr *AggregateError) {
             bulkObject.Name = parseNullableStringFromString(attr.Value)
         case "Offset":
             bulkObject.Offset = parseInt64FromString(attr.Value, aggErr)
-        case "Version":
-            bulkObject.Version = parseInt64FromString(attr.Value, aggErr)
+        case "VersionId":
+            bulkObject.VersionId = attr.Value
         default:
             log.Printf("WARNING: unable to parse unknown attribute '%s' while parsing BulkObject.", attr.Name.Local)
         }

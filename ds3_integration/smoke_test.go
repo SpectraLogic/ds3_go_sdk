@@ -181,8 +181,8 @@ func TestGetBucketPagination(t *testing.T) {
         ds3PutObjects = append(ds3PutObjects, curObj)
     }
 
-    _, putBulkErr := client.PutBulkJobSpectraS3(models.NewPutBulkJobSpectraS3Request(testBucket, ds3PutObjects))
-    ds3Testing.AssertNilError(t, putBulkErr)
+    err := testutils.PutEmptyObjects(client, testBucket, ds3PutObjects)
+    ds3Testing.AssertNilError(t, err)
 
     //Test files indexed 0-4
     result1, err := client.GetBucket(models.NewGetBucketRequest(testBucket).WithMaxKeys(5))
@@ -241,8 +241,8 @@ func TestGetBucketDelimiter(t *testing.T) {
         ds3PutObjects = append(ds3PutObjects, curObj)
     }
 
-    _, putBulkErr := client.PutBulkJobSpectraS3(models.NewPutBulkJobSpectraS3Request(testBucket, ds3PutObjects))
-    ds3Testing.AssertNilError(t, putBulkErr)
+    err := testutils.PutEmptyObjects(client, testBucket, ds3PutObjects)
+    ds3Testing.AssertNilError(t, err)
 
     //Test files indexed 0-4
     result, err := client.GetBucket(models.NewGetBucketRequest(testBucket).WithDelimiter("/"))

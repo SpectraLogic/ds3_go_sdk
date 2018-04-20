@@ -32,6 +32,7 @@ type ActiveJob struct {
     Rechunked *string
     Replicating bool
     RequestType JobRequestType
+    Restore JobRestore
     Truncated bool
     TruncatedDueToTimeout bool
     UserId string

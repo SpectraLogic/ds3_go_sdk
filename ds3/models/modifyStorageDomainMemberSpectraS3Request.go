@@ -14,6 +14,8 @@
 package models
 
 type ModifyStorageDomainMemberSpectraS3Request struct {
+    AutoCompactionThreshold *int
+    State StorageDomainMemberState
     StorageDomainMember string
     WritePreference WritePreferenceLevel
 }
@@ -22,6 +24,16 @@ func NewModifyStorageDomainMemberSpectraS3Request(storageDomainMember string) *M
     return &ModifyStorageDomainMemberSpectraS3Request{
         StorageDomainMember: storageDomainMember,
     }
+}
+
+func (modifyStorageDomainMemberSpectraS3Request *ModifyStorageDomainMemberSpectraS3Request) WithAutoCompactionThreshold(autoCompactionThreshold int) *ModifyStorageDomainMemberSpectraS3Request {
+    modifyStorageDomainMemberSpectraS3Request.AutoCompactionThreshold = &autoCompactionThreshold
+    return modifyStorageDomainMemberSpectraS3Request
+}
+
+func (modifyStorageDomainMemberSpectraS3Request *ModifyStorageDomainMemberSpectraS3Request) WithState(state StorageDomainMemberState) *ModifyStorageDomainMemberSpectraS3Request {
+    modifyStorageDomainMemberSpectraS3Request.State = state
+    return modifyStorageDomainMemberSpectraS3Request
 }
 
 func (modifyStorageDomainMemberSpectraS3Request *ModifyStorageDomainMemberSpectraS3Request) WithWritePreference(writePreference WritePreferenceLevel) *ModifyStorageDomainMemberSpectraS3Request {

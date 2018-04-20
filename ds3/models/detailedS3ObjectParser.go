@@ -50,8 +50,6 @@ func (detailedS3Object *DetailedS3Object) parse(xmlNode *XmlNode, aggErr *Aggreg
             detailedS3Object.Size = parseInt64(child.Content, aggErr)
         case "Type":
             parseEnum(child.Content, &detailedS3Object.Type, aggErr)
-        case "Version":
-            detailedS3Object.Version = parseInt64(child.Content, aggErr)
         default:
             log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing DetailedS3Object.", child.XMLName.Local)
         }

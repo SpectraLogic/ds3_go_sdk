@@ -18,6 +18,7 @@ type Ds3GetObject struct {
     Name string `xml:"Name,attr"`
     Length *int64 `xml:"Length,attr,omitempty"`
     Offset *int64 `xml:"Offset,attr,omitempty"`
+    VersionId *string `xml:"VersionId,attr,omitempty"`
 }
 
 func NewDs3GetObject(name string) Ds3GetObject {
@@ -30,6 +31,22 @@ func NewPartialDs3GetObject(name string, length int64, offset int64) Ds3GetObjec
         Name:name,
         Length:&length,
         Offset:&offset,
+    }
+}
+
+func NewDs3GetObjectVersion(name string, versionId string) Ds3GetObject {
+    return Ds3GetObject{
+        Name:name,
+        VersionId:&versionId,
+    }
+}
+
+func NewPartialDs3GetObjectVersion(name string, length int64, offset int64, versionId string) Ds3GetObject {
+    return Ds3GetObject{
+        Name:name,
+        Length:&length,
+        Offset:&offset,
+        VersionId:&versionId,
     }
 }
 

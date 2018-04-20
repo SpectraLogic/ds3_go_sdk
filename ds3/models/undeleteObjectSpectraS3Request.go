@@ -13,11 +13,21 @@
 
 package models
 
-type SpectraUser struct {
-    AuthId *string
-    DefaultDataPolicyId *string
-    Id string
-    MaxBuckets int
-    Name *string
-    SecretKey *string
+type UndeleteObjectSpectraS3Request struct {
+    BucketId string
+    Name string
+    VersionId *string
 }
+
+func NewUndeleteObjectSpectraS3Request(bucketId string, name string) *UndeleteObjectSpectraS3Request {
+    return &UndeleteObjectSpectraS3Request{
+        BucketId: bucketId,
+        Name: name,
+    }
+}
+
+func (undeleteObjectSpectraS3Request *UndeleteObjectSpectraS3Request) WithVersionId(versionId string) *UndeleteObjectSpectraS3Request {
+    undeleteObjectSpectraS3Request.VersionId = &versionId
+    return undeleteObjectSpectraS3Request
+}
+

@@ -15,9 +15,11 @@ package models
 
 type Contents struct {
     ETag *string
+    IsLatest *bool
     Key *string
     LastModified *string
     Owner User
     Size int64
     StorageClass *string
+    VersionId *string
 }

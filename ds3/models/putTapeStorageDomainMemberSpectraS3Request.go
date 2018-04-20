@@ -14,6 +14,7 @@
 package models
 
 type PutTapeStorageDomainMemberSpectraS3Request struct {
+    AutoCompactionThreshold *int
     StorageDomainId string
     TapePartitionId string
     TapeType string
@@ -26,6 +27,11 @@ func NewPutTapeStorageDomainMemberSpectraS3Request(storageDomainId string, tapeP
         TapePartitionId: tapePartitionId,
         TapeType: tapeType,
     }
+}
+
+func (putTapeStorageDomainMemberSpectraS3Request *PutTapeStorageDomainMemberSpectraS3Request) WithAutoCompactionThreshold(autoCompactionThreshold int) *PutTapeStorageDomainMemberSpectraS3Request {
+    putTapeStorageDomainMemberSpectraS3Request.AutoCompactionThreshold = &autoCompactionThreshold
+    return putTapeStorageDomainMemberSpectraS3Request
 }
 
 func (putTapeStorageDomainMemberSpectraS3Request *PutTapeStorageDomainMemberSpectraS3Request) WithWritePreference(writePreference WritePreferenceLevel) *PutTapeStorageDomainMemberSpectraS3Request {

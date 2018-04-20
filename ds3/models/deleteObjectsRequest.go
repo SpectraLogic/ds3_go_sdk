@@ -16,7 +16,6 @@ package models
 type DeleteObjectsRequest struct {
     BucketName string
     ObjectNames []string
-    RollBack bool
 }
 
 func NewDeleteObjectsRequest(bucketName string, objectNames []string) *DeleteObjectsRequest {
@@ -24,10 +23,5 @@ func NewDeleteObjectsRequest(bucketName string, objectNames []string) *DeleteObj
         BucketName: bucketName,
         ObjectNames: objectNames,
     }
-}
-
-func (deleteObjectsRequest *DeleteObjectsRequest) WithRollBack() *DeleteObjectsRequest {
-    deleteObjectsRequest.RollBack = true
-    return deleteObjectsRequest
 }
 

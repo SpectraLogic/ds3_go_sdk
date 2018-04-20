@@ -19,9 +19,9 @@ type ModifyDataPathBackendSpectraS3Request struct {
     AutoActivateTimeoutInMins *int
     AutoInspect AutoInspectMode
     CacheAvailableRetryAfterInSeconds *int
-    DefaultImportConflictResolutionMode ImportConflictResolutionMode
     DefaultVerifyDataAfterImport Priority
     DefaultVerifyDataPriorToImport *bool
+    IomEnabled *bool
     PartiallyVerifyLastPercentOfTapes *int
     UnavailableMediaPolicy UnavailableMediaUsagePolicy
     UnavailablePoolMaxJobRetryInMins *int
@@ -58,11 +58,6 @@ func (modifyDataPathBackendSpectraS3Request *ModifyDataPathBackendSpectraS3Reque
     return modifyDataPathBackendSpectraS3Request
 }
 
-func (modifyDataPathBackendSpectraS3Request *ModifyDataPathBackendSpectraS3Request) WithDefaultImportConflictResolutionMode(defaultImportConflictResolutionMode ImportConflictResolutionMode) *ModifyDataPathBackendSpectraS3Request {
-    modifyDataPathBackendSpectraS3Request.DefaultImportConflictResolutionMode = defaultImportConflictResolutionMode
-    return modifyDataPathBackendSpectraS3Request
-}
-
 func (modifyDataPathBackendSpectraS3Request *ModifyDataPathBackendSpectraS3Request) WithDefaultVerifyDataAfterImport(defaultVerifyDataAfterImport Priority) *ModifyDataPathBackendSpectraS3Request {
     modifyDataPathBackendSpectraS3Request.DefaultVerifyDataAfterImport = defaultVerifyDataAfterImport
     return modifyDataPathBackendSpectraS3Request
@@ -70,6 +65,11 @@ func (modifyDataPathBackendSpectraS3Request *ModifyDataPathBackendSpectraS3Reque
 
 func (modifyDataPathBackendSpectraS3Request *ModifyDataPathBackendSpectraS3Request) WithDefaultVerifyDataPriorToImport(defaultVerifyDataPriorToImport bool) *ModifyDataPathBackendSpectraS3Request {
     modifyDataPathBackendSpectraS3Request.DefaultVerifyDataPriorToImport = &defaultVerifyDataPriorToImport
+    return modifyDataPathBackendSpectraS3Request
+}
+
+func (modifyDataPathBackendSpectraS3Request *ModifyDataPathBackendSpectraS3Request) WithIomEnabled(iomEnabled bool) *ModifyDataPathBackendSpectraS3Request {
+    modifyDataPathBackendSpectraS3Request.IomEnabled = &iomEnabled
     return modifyDataPathBackendSpectraS3Request
 }
 
