@@ -9,28 +9,28 @@ import (
 )
 
 type putProducer struct {
-    JobMasterObjectList    *ds3Models.MasterObjectList //MOL from put bulk job creation
-    WriteObjects           *[]helperModels.PutObject
-    queue                  *chan TransferOperation
-    strategy               *WriteTransferStrategy
-    client                 *ds3.Client
-    waitGroup              *sync.WaitGroup
-    writeObjectMap         map[string]helperModels.PutObject
-    processedBlobTracker   blobTracker
-    waitingToBeTransferred BlobDescriptionQueue
+    JobMasterObjectList  *ds3Models.MasterObjectList //MOL from put bulk job creation
+    WriteObjects         *[]helperModels.PutObject
+    queue                *chan TransferOperation
+    strategy             *WriteTransferStrategy
+    client               *ds3.Client
+    waitGroup            *sync.WaitGroup
+    writeObjectMap       map[string]helperModels.PutObject
+    processedBlobTracker blobTracker
+    deferredBlobQueue    BlobDescriptionQueue // queue of blobs whose channels are not yet ready for transfer
 }
 
 func newPutProducer(jobMasterObjectList *ds3Models.MasterObjectList, putObjects *[]helperModels.PutObject, queue *chan TransferOperation, strategy *WriteTransferStrategy, client *ds3.Client, waitGroup *sync.WaitGroup) *putProducer {
     return &putProducer{
-        JobMasterObjectList:    jobMasterObjectList,
-        WriteObjects:           putObjects,
-        queue:                  queue,
-        strategy:               strategy,
-        client:                 client,
-        waitGroup:              waitGroup,
-        writeObjectMap:         toWriteObjectMap(putObjects),
-        waitingToBeTransferred: NewBlobDescriptionQueue(),
-        processedBlobTracker:   newProcessedBlobTracker(),
+        JobMasterObjectList:  jobMasterObjectList,
+        WriteObjects:         putObjects,
+        queue:                queue,
+        strategy:             strategy,
+        client:               client,
+        waitGroup:            waitGroup,
+        writeObjectMap:       toWriteObjectMap(putObjects),
+        deferredBlobQueue:    NewBlobDescriptionQueue(),
+        processedBlobTracker: newProcessedBlobTracker(),
     }
 }
 
@@ -116,30 +116,30 @@ func (producer *putProducer) processChunk(curChunk *ds3Models.Objects, bucketNam
     for _, curObj := range curChunk.Objects {
         log.Printf("DEBUG queuing object in waiting to be processed %s offset=%d length=%d", *curObj.Name, curObj.Offset, curObj.Length)
         blob := helperModels.NewBlobDescription(*curObj.Name, curObj.Offset, curObj.Length)
-        producer.transferBlob(&blob, bucketName, jobId, aggErr)
+        producer.queueBlobForTransfer(&blob, bucketName, jobId, aggErr)
     }
 }
 
 // Iterates through blobs that are waiting to be transferred and attempts to transfer.
 // If successful, blob is removed from queue. Else, it is re-queued.
-func (producer *putProducer) transferWaitingBlobs(bucketName string, jobId string, aggErr *ds3Models.AggregateError) {
+func (producer *putProducer) processWaitingBlobs(bucketName string, jobId string, aggErr *ds3Models.AggregateError) {
     // attempt to process all blobs in waiting to be transferred
-    waitingBlobs := producer.waitingToBeTransferred.Size()
+    waitingBlobs := producer.deferredBlobQueue.Size()
     for i := 0; i < waitingBlobs; i++ {
         //attempt transfer
-        curBlob, err := producer.waitingToBeTransferred.Pop()
+        curBlob, err := producer.deferredBlobQueue.Pop()
         log.Printf("DEBUG attempting to process %s offset=%d length=%d", curBlob.Name(), curBlob.Offset(), curBlob.Length())
         if err != nil {
             aggErr.Append(err)
             log.Printf("ERROR when attempting blob transfer: %s", err.Error())
         }
-        producer.transferBlob(curBlob, bucketName, jobId, aggErr)
+        producer.queueBlobForTransfer(curBlob, bucketName, jobId, aggErr)
     }
 }
 
 // Attempts to transfer a single blob. If the blob is not ready for transfer,
 // it is added to the waiting to transfer queue.
-func (producer *putProducer) transferBlob(blob *helperModels.BlobDescription, bucketName string, jobId string, aggErr *ds3Models.AggregateError) {
+func (producer *putProducer) queueBlobForTransfer(blob *helperModels.BlobDescription, bucketName string, jobId string, aggErr *ds3Models.AggregateError) {
     if producer.processedBlobTracker.IsProcessed(*blob) {
         return
     }
@@ -149,7 +149,7 @@ func (producer *putProducer) transferBlob(blob *helperModels.BlobDescription, bu
     if !curWriteObj.ChannelBuilder.IsChannelAvailable(blob.Offset()) {
         log.Printf("DEBUG channel is NOT available for blob %s offset=%d length=%d", blob.Name(), blob.Offset(), blob.Length())
         // Not ready to be transferred
-        producer.waitingToBeTransferred.Push(blob)
+        producer.deferredBlobQueue.Push(blob)
         return
     }
 
@@ -186,7 +186,7 @@ func (producer *putProducer) run(aggErr *ds3Models.AggregateError) {
     log.Printf("DEBUG totalBlobs=%d processedBlobs=%d", totalBlobCount, producer.processedBlobTracker.NumberOfProcessedBlobs())
 
     // process all chunks and make sure all blobs are queued for transfer
-    for producer.processedBlobTracker.NumberOfProcessedBlobs() < totalBlobCount || producer.waitingToBeTransferred.Size() > 0 {
+    for producer.processedBlobTracker.NumberOfProcessedBlobs() < totalBlobCount || producer.deferredBlobQueue.Size() > 0 {
         // Get the list of available chunks that the server can receive. The server may
         // not be able to receive everything, so not all chunks will necessarily be
         // returned
@@ -206,7 +206,7 @@ func (producer *putProducer) run(aggErr *ds3Models.AggregateError) {
             }
 
             // Attempt to transfer waiting blobs
-            producer.transferWaitingBlobs(*chunksReadyResponse.MasterObjectList.BucketName, chunksReadyResponse.MasterObjectList.JobId, aggErr)
+            producer.processWaitingBlobs(*chunksReadyResponse.MasterObjectList.BucketName, chunksReadyResponse.MasterObjectList.JobId, aggErr)
         } else {
             // When no chunks are returned we need to sleep to allow for cache space to
             // be freed.
