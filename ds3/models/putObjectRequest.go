@@ -17,8 +17,6 @@ import (
     "strings"
 )
 
-const ( AMZ_META_HEADER = "x-amz-meta-" )
-
 type PutObjectRequest struct {
     BucketName string
     ObjectName string
