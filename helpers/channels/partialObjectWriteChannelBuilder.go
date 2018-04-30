@@ -1,8 +1,8 @@
 package channels
 
 import (
-    ds3Models "spectra/ds3_go_sdk/ds3/models"
-    helperModels "spectra/ds3_go_sdk/helpers/models"
+    ds3Models "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
+    helperModels "github.com/SpectraLogic/ds3_go_sdk/helpers/models"
     "io"
     "os"
 )

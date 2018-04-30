@@ -14,8 +14,8 @@
 package ds3
 
 import (
-    "spectra/ds3_go_sdk/ds3/models"
-    "spectra/ds3_go_sdk/ds3/networking"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3/networking"
 )
 
 func (client *Client) HeadBucket(request *models.HeadBucketRequest) (*models.HeadBucketResponse, error) {

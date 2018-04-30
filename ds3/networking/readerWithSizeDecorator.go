@@ -2,7 +2,7 @@ package networking
 
 import (
     "io"
-    "spectra/ds3_go_sdk/ds3/models"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
 )
 
 // Defines a limited reader that also supports closing

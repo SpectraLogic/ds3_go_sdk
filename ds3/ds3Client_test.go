@@ -17,9 +17,9 @@ import (
     "net/url"
     "net/http"
     "io/ioutil"
-    "spectra/ds3_go_sdk/ds3/models"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
     "reflect"
-    "spectra/ds3_go_sdk/ds3_utils/ds3Testing"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3_utils/ds3Testing"
 )
 
 func TestGetService(t *testing.T) {

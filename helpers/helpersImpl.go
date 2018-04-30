@@ -1,8 +1,8 @@
 package helpers
 
 import (
-    "spectra/ds3_go_sdk/ds3"
-    helperModels "spectra/ds3_go_sdk/helpers/models"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3"
+    helperModels "github.com/SpectraLogic/ds3_go_sdk/helpers/models"
 )
 
 type HelperInterface interface {

@@ -2,14 +2,14 @@ package testutils
 
 import (
     "testing"
-    "spectra/ds3_go_sdk/ds3/models"
-    "spectra/ds3_go_sdk/ds3"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3"
     "io/ioutil"
     "errors"
-    "spectra/ds3_go_sdk/ds3/buildclient"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3/buildclient"
     "log"
     "io"
-    "spectra/ds3_go_sdk/ds3_utils/ds3Testing"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3_utils/ds3Testing"
     "bytes"
     "fmt"
     "time"

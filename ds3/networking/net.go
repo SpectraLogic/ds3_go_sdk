@@ -3,7 +3,7 @@ package networking
 import (
     "net/http"
     "net/url"
-    "spectra/ds3_go_sdk/ds3/models"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
 )
 
 type ConnectionInfo struct {

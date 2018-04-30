@@ -14,8 +14,8 @@ package networking
 import (
     "testing"
     "net/url"
-    "spectra/ds3_go_sdk/ds3_utils/ds3Testing"
-    "spectra/ds3_go_sdk/ds3/models"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3_utils/ds3Testing"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
     "strings"
 )
 

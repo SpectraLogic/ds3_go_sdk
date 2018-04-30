@@ -4,7 +4,7 @@ go:
   - 1.10.x
   - master
 
-go_import_path: spectra/ds3_go_sdk
+go_import_path: github.com/SpectraLogic/ds3_go_sdk
 
 script:
   - go test ./ds3

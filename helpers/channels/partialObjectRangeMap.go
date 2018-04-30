@@ -1,8 +1,8 @@
 package channels
 
 import (
-    ds3Models "spectra/ds3_go_sdk/ds3/models"
-    "spectra/ds3_go_sdk/helpers/ranges"
+    ds3Models "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
+    "github.com/SpectraLogic/ds3_go_sdk/helpers/ranges"
     "reflect"
     "fmt"
     "errors"

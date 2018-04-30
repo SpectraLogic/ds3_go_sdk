@@ -7,8 +7,8 @@ import (
     "net/url"
     "net/http"
     "reflect"
-    "spectra/ds3_go_sdk/ds3/models"
-    "spectra/ds3_go_sdk/ds3/networking"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3/networking"
 )
 
 func mockedClient(t *testing.T) mockedClientWithTest {

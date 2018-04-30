@@ -14,7 +14,7 @@ package ds3
 import (
     "testing"
     "io/ioutil"
-    "spectra/ds3_go_sdk/ds3/models"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
 )
 
 func verifyStreamContent(t *testing.T, contentStream models.ReaderWithSizeDecorator, expected string) {

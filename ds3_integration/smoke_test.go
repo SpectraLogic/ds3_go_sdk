@@ -15,12 +15,12 @@ import (
     "testing"
     "log"
     "os"
-    "spectra/ds3_go_sdk/ds3"
-    "spectra/ds3_go_sdk/ds3/models"
-    "spectra/ds3_go_sdk/ds3_integration/utils"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3_integration/utils"
     "io/ioutil"
     "bytes"
-    "spectra/ds3_go_sdk/ds3_utils/ds3Testing"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3_utils/ds3Testing"
     "strconv"
 )
 

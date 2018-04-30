@@ -13,9 +13,9 @@ package functions
 
 import (
     "log"
-    "spectra/ds3_go_sdk/ds3/models"
-    "spectra/ds3_go_sdk/ds3/buildclient"
-    "spectra/ds3_go_sdk/samples/utils"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3/buildclient"
+    "github.com/SpectraLogic/ds3_go_sdk/samples/utils"
     "fmt"
 )
 

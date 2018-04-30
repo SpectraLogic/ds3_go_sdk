@@ -2,7 +2,7 @@ package channels
 
 import (
 	"io"
-	"spectra/ds3_go_sdk/helpers/models"
+	"github.com/SpectraLogic/ds3_go_sdk/helpers/models"
 )
 
 type ObjectReadChannelDecorator struct {

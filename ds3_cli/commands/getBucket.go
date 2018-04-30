@@ -2,7 +2,7 @@ package commands
 
 import (
     "fmt"
-    "spectra/ds3_go_sdk/ds3"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3"
 )
 
 const maxInt = int(^uint(0) >> 1)

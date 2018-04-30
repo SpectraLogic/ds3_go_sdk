@@ -1,7 +1,7 @@
 package helpers
 
 import (
-    helperModels"spectra/ds3_go_sdk/helpers/models"
+    helperModels"github.com/SpectraLogic/ds3_go_sdk/helpers/models"
 )
 
 type blobTracker struct {

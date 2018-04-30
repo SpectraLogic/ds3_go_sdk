@@ -2,8 +2,8 @@ package commands
 
 import (
     "errors"
-    "spectra/ds3_go_sdk/ds3"
-    "spectra/ds3_go_sdk/ds3/models"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
 )
 
 func deleteBucket(client *ds3.Client, args *Arguments) error {

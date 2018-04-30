@@ -2,7 +2,7 @@ package helpers
 
 import (
     "errors"
-    helperModels "spectra/ds3_go_sdk/helpers/models"
+    helperModels "github.com/SpectraLogic/ds3_go_sdk/helpers/models"
 )
 
 // A queue that manages descriptions of blobs

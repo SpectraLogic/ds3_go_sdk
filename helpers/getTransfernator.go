@@ -1,9 +1,9 @@
 package helpers
 
 import (
-    "spectra/ds3_go_sdk/ds3"
-    ds3Models "spectra/ds3_go_sdk/ds3/models"
-    helperModels "spectra/ds3_go_sdk/helpers/models"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3"
+    ds3Models "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
+    helperModels "github.com/SpectraLogic/ds3_go_sdk/helpers/models"
     "sync"
 )
 
