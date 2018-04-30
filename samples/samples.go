@@ -11,7 +11,7 @@
 
 package main
 
-import "spectra/ds3_go_sdk/samples/functions"
+import "github.com/SpectraLogic/ds3_go_sdk/samples/functions"
 
 // Runs the various sample code. Each sample is self contained and can be run separately.
 func main() {

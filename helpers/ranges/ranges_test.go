@@ -2,9 +2,9 @@ package ranges
 
 import (
     "testing"
-    "spectra/ds3_go_sdk/ds3/models"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
     "sort"
-    "spectra/ds3_go_sdk/ds3_utils/ds3Testing"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3_utils/ds3Testing"
     "fmt"
 )
 

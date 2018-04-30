@@ -1,11 +1,11 @@
 package buildclient
 
 import (
-    "spectra/ds3_go_sdk/ds3_cli/commands"
-    "spectra/ds3_go_sdk/ds3"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3_cli/commands"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3"
     "net/url"
     "errors"
-    "spectra/ds3_go_sdk/ds3/networking"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3/networking"
     "os"
 )
 

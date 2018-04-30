@@ -3,7 +3,7 @@ package channels
 import (
     "io"
     "os"
-    helperModels "spectra/ds3_go_sdk/helpers/models"
+    helperModels "github.com/SpectraLogic/ds3_go_sdk/helpers/models"
 )
 
 const defaultPermissions = 0

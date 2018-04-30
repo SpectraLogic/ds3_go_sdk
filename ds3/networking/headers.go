@@ -7,7 +7,7 @@ import (
     "crypto/sha1"
     "encoding/base64"
     "errors"
-    "spectra/ds3_go_sdk/ds3/models"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
 )
 
 // Http Headers

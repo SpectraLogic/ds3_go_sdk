@@ -1,6 +1,6 @@
 package helpers
 
-import "spectra/ds3_go_sdk/ds3/models"
+import "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
 
 type ReadTransferStrategy struct {
     BlobStrategy ReadBlobStrategy

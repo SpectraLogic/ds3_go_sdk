@@ -13,7 +13,7 @@ package ds3Testing
 
 import (
     "testing"
-    "spectra/ds3_go_sdk/ds3/models"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
     "reflect"
 )
 

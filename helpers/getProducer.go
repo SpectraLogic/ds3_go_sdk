@@ -1,13 +1,13 @@
 package helpers
 
 import (
-    ds3Models "spectra/ds3_go_sdk/ds3/models"
-    "spectra/ds3_go_sdk/ds3"
+    ds3Models "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3"
     "sync"
     "log"
     "io"
-    "spectra/ds3_go_sdk/helpers/ranges"
-    helperModels "spectra/ds3_go_sdk/helpers/models"
+    "github.com/SpectraLogic/ds3_go_sdk/helpers/ranges"
+    helperModels "github.com/SpectraLogic/ds3_go_sdk/helpers/models"
 )
 
 type getProducer struct {

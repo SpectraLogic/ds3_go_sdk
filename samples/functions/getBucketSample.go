@@ -13,10 +13,10 @@ package functions
 
 import (
     "log"
-    "spectra/ds3_go_sdk/ds3/models"
-    "spectra/ds3_go_sdk/ds3/buildclient"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3/buildclient"
     "fmt"
-    "spectra/ds3_go_sdk/samples/utils"
+    "github.com/SpectraLogic/ds3_go_sdk/samples/utils"
 )
 
 // Demonstrates how to get a list of S3 objects in a bucket. Assumes that the target

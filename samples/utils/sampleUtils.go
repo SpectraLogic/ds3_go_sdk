@@ -17,8 +17,8 @@ import (
     "bytes"
     "errors"
     "fmt"
-    "spectra/ds3_go_sdk/ds3/models"
-    "spectra/ds3_go_sdk/ds3"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3"
 )
 
 const BucketName = "GoPutBulkBucket"

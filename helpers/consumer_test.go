@@ -4,7 +4,7 @@ import (
     "testing"
     "sync"
     "fmt"
-    "spectra/ds3_go_sdk/ds3_utils/ds3Testing"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3_utils/ds3Testing"
 )
 
 func testTransferBuilder(i int, waitGroup *sync.WaitGroup, resultCount *int, resultMux *sync.Mutex) TransferOperation {

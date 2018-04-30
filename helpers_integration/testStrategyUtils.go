@@ -3,11 +3,11 @@ package helpers_integration
 import (
     "os"
     "time"
-    "spectra/ds3_go_sdk/helpers"
-    ds3Models "spectra/ds3_go_sdk/ds3/models"
-    helperModels "spectra/ds3_go_sdk/helpers/models"
-    "spectra/ds3_go_sdk/ds3_integration/utils"
-    "spectra/ds3_go_sdk/helpers/channels"
+    "github.com/SpectraLogic/ds3_go_sdk/helpers"
+    ds3Models "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
+    helperModels "github.com/SpectraLogic/ds3_go_sdk/helpers/models"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3_integration/utils"
+    "github.com/SpectraLogic/ds3_go_sdk/helpers/channels"
 )
 
 func getTestWriteObjectStreamAccess(objectName string, path string) (*helperModels.PutObject, error) {

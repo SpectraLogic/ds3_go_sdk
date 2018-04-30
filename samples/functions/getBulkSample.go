@@ -12,10 +12,10 @@
 package functions
 
 import (
-    "spectra/ds3_go_sdk/ds3/buildclient"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3/buildclient"
     "log"
-    "spectra/ds3_go_sdk/ds3/models"
-    "spectra/ds3_go_sdk/samples/utils"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
+    "github.com/SpectraLogic/ds3_go_sdk/samples/utils"
     "time"
     "fmt"
 )

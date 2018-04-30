@@ -4,7 +4,7 @@ import (
     "errors"
     "fmt"
     "net/http"
-    "spectra/ds3_go_sdk/ds3/models"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
 )
 
 type httpRedirectPolicy struct {

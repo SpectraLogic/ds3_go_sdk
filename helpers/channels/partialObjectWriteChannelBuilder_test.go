@@ -4,8 +4,8 @@ import (
     "testing"
     "io/ioutil"
     "os"
-    "spectra/ds3_go_sdk/ds3_utils/ds3Testing"
-    ds3Models "spectra/ds3_go_sdk/ds3/models"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3_utils/ds3Testing"
+    ds3Models "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
     "reflect"
 )
 

@@ -14,7 +14,7 @@ package ds3
 import (
     "encoding/xml"
     "bytes"
-    "spectra/ds3_go_sdk/ds3/models"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
 )
 
 // Converts the parts list into a request payload stream of format:

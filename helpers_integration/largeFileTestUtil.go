@@ -6,9 +6,9 @@ import (
     "fmt"
     "io/ioutil"
     "errors"
-    "spectra/ds3_go_sdk/ds3"
-    "spectra/ds3_go_sdk/helpers"
-    helperModels "spectra/ds3_go_sdk/helpers/models"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3"
+    "github.com/SpectraLogic/ds3_go_sdk/helpers"
+    helperModels "github.com/SpectraLogic/ds3_go_sdk/helpers/models"
 )
 
 const LargeBookPath = "./resources/bigfiles/"

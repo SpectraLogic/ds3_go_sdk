@@ -2,8 +2,8 @@ package main
 
 import (
     "log"
-    "spectra/ds3_go_sdk/ds3/buildclient"
-    "spectra/ds3_go_sdk/ds3_cli/commands"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3/buildclient"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3_cli/commands"
 )
 
 func main() {

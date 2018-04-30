@@ -2,9 +2,9 @@ package channels
 
 import (
     "testing"
-    ds3Models "spectra/ds3_go_sdk/ds3/models"
+    ds3Models "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
     "reflect"
-    "spectra/ds3_go_sdk/ds3_utils/ds3Testing"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3_utils/ds3Testing"
     "fmt"
 )
 
