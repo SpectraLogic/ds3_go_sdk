@@ -24,12 +24,12 @@ The latest documentation is located at [Go SDK Documentation](https://spectralog
 Installing with GB
 ------------------
 
-The Go SDK must be installed under `$GOPATH/src/spectra`, where `$GOPATH` denotes the location of the Go workspace, and `src` denotes the location of source files within the workspace.
+The Go SDK must be installed under `$GOPATH/src/github.com/SpectraLogic`, where `$GOPATH` denotes the location of the Go workspace, and `src` denotes the location of source files within the workspace.
 For information regarding Go workspace, see [Golang Workspaces](https://golang.org/doc/code.html#Workspaces).
 
-Install the latest version of the Go SDK in the `src/spectra` folder.  You can clone it with the following command:
+Install the latest version of the Go SDK in the `src/github.com/SpectraLogic` folder.  You can clone it with the following command:
 ```bash
-cd $GOPATH/src/spectra
+cd $GOPATH/src/github.com/SpectraLogic
 git clone https://github.com/SpectraLogic/ds3_go_sdk.git
 ```
 
