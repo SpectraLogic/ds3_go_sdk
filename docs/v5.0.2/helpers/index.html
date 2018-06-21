@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#375EAB">
+
+  <title>helpers - The Go Programming Language</title>
+
+<link type="text/css" rel="stylesheet" href="../style.css">
+
+<link rel="stylesheet" href="../jquery.treeview.css">
+<script type="text/javascript">window.initFuncs = [];</script>
+</head>
+<body>
+
+<div id='lowframe' style="position: fixed; bottom: 0; left: 0; height: 0; width: 100%; border-top: thin solid grey; background-color: white; overflow: auto;">
+...
+</div><!-- #lowframe -->
+
+<div id="topbar" class="wide"><div class="container">
+<div class="top-heading" id="heading-wide"><a href="http://localhost:8080/">The Go Programming Language</a></div>
+<div class="top-heading" id="heading-narrow"><a href="http://localhost:8080/">Go</a></div>
+<a href="index.html#" id="menu-button"><span id="menu-button-arrow">&#9661;</span></a>
+<form method="GET" action="http://localhost:8080/search">
+<div id="menu">
+<a href="http://localhost:8080/doc/">Documents</a>
+<a href="http://localhost:8080/pkg/">Packages</a>
+<a href="http://localhost:8080/project/">The Project</a>
+<a href="http://localhost:8080/help/">Help</a>
+<a href="http://localhost:8080/blog/">Blog</a>
+
+<input type="text" id="search" name="q" class="inactive" value="Search" placeholder="Search">
+</div>
+</form>
+
+</div></div>
+
+
+
+<div id="page" class="wide">
+<div class="container">
+
+
+  <h1>
+    Package helpers
+    <span class="text-muted"></span>
+  </h1>
+
+
+
+
+
+
+
+<div id="nav"></div>
+
+
+<!--
+	Copyright 2009 The Go Authors. All rights reserved.
+	Use of this source code is governed by a BSD-style
+	license that can be found in the LICENSE file.
+-->
+<!--
+	Note: Static (i.e., not template-generated) href and id
+	attributes start with "pkg-" to make it impossible for
+	them to conflict with generated attributes (some of which
+	correspond to Go identifiers).
+-->
+
+	<script type='text/javascript'>
+	document.ANALYSIS_DATA = null;
+	document.CALLGRAPH = null;
+	</script>
+
+	
+		
+		<div id="short-nav">
+			<dl>
+			<dd><code>import "github.com/SpectraLogic/ds3_go_sdk/helpers"</code></dd>
+			</dl>
+			<dl>
+			<dd><a href="index.html#pkg-overview" class="overviewLink">Overview</a></dd>
+			<dd><a href="index.html#pkg-index" class="indexLink">Index</a></dd>
+			
+			
+				<dd><a href="index.html#pkg-subdirectories">Subdirectories</a></dd>
+			
+			</dl>
+		</div>
+		<!-- The package's Name is printed as title by the top-level template -->
+		<div id="pkg-overview" class="toggleVisible">
+			<div class="collapsed">
+				<h2 class="toggleButton" title="Click to show Overview section">Overview ▹</h2>
+			</div>
+			<div class="expanded">
+				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
+				
+			</div>
+		</div>
+		
+
+		<div id="pkg-index" class="toggleVisible">
+		<div class="collapsed">
+			<h2 class="toggleButton" title="Click to show Index section">Index ▹</h2>
+		</div>
+		<div class="expanded">
+			<h2 class="toggleButton" title="Click to hide Index section">Index ▾</h2>
+
+		<!-- Table of contents for API; must be named manual-nav to turn off auto nav. -->
+			<div id="manual-nav">
+			<dl>
+			
+				<dd><a href="index.html#pkg-constants">Constants</a></dd>
+			
+			
+				<dd><a href="index.html#pkg-variables">Variables</a></dd>
+			
+			
+			
+				
+				<dd><a href="index.html#BlobDescriptionQueue">type BlobDescriptionQueue</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#NewBlobDescriptionQueue">func NewBlobDescriptionQueue() BlobDescriptionQueue</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#BlobStrategy">type BlobStrategy</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#Consumer">type Consumer</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#HelperImpl">type HelperImpl</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#HelperImpl.GetObjects">func (helper *HelperImpl) GetObjects(bucketName string, objects []helperModels.GetObject, strategy ReadTransferStrategy) error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#HelperImpl.PutObjects">func (helper *HelperImpl) PutObjects(bucketName string, objects []helperModels.PutObject, strategy WriteTransferStrategy) error</a></dd>
+				
+			
+				
+				<dd><a href="index.html#HelperInterface">type HelperInterface</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#NewHelpers">func NewHelpers(client *ds3.Client) HelperInterface</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#IoReaderWithSizeDecorator">type IoReaderWithSizeDecorator</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#NewIoReaderWithSizeDecorator">func NewIoReaderWithSizeDecorator(reader io.Reader, size int64) *IoReaderWithSizeDecorator</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#IoReaderWithSizeDecorator.Read">func (sizedReader *IoReaderWithSizeDecorator) Read(bytes []byte) (int, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#IoReaderWithSizeDecorator.Size">func (sizedReader *IoReaderWithSizeDecorator) Size() (int64, error)</a></dd>
+				
+			
+				
+				<dd><a href="index.html#Producer">type Producer</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#ReadBlobStrategy">type ReadBlobStrategy</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#ReadBulkJobOptions">type ReadBulkJobOptions</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#ReadTransferStrategy">type ReadTransferStrategy</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#SimpleBlobStrategy">type SimpleBlobStrategy</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#Transceiver">type Transceiver</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#TransferOperation">type TransferOperation</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#WriteBlobStrategy">type WriteBlobStrategy</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#WriteBulkJobOptions">type WriteBulkJobOptions</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#WriteTransferStrategy">type WriteTransferStrategy</a></dd>
+				
+				
+			
+			
+			</dl>
+			</div><!-- #manual-nav -->
+
+		
+
+		
+			<h4>Package files</h4>
+			<p>
+			<span style="font-size:90%">
+			
+				<a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/blobQueue.go">blobQueue.go</a>
+			
+				<a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/blobStrategy.go">blobStrategy.go</a>
+			
+				<a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/blobTracker.go">blobTracker.go</a>
+			
+				<a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/consumer.go">consumer.go</a>
+			
+				<a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/getProducer.go">getProducer.go</a>
+			
+				<a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/getTransfernator.go">getTransfernator.go</a>
+			
+				<a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/helpersImpl.go">helpersImpl.go</a>
+			
+				<a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/ioReaderWithSIzeDecorator.go">ioReaderWithSIzeDecorator.go</a>
+			
+				<a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/operationQueue.go">operationQueue.go</a>
+			
+				<a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/producer.go">producer.go</a>
+			
+				<a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/putProducer.go">putProducer.go</a>
+			
+				<a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/putTransceiver.go">putTransceiver.go</a>
+			
+				<a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/readTransferStrategy.go">readTransferStrategy.go</a>
+			
+				<a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/transceiver.go">transceiver.go</a>
+			
+				<a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/writeTransferStrategy.go">writeTransferStrategy.go</a>
+			
+			</span>
+			</p>
+		
+		</div><!-- .expanded -->
+		</div><!-- #pkg-index -->
+
+		<div id="pkg-callgraph" class="toggle" style="display: none">
+		<div class="collapsed">
+			<h2 class="toggleButton" title="Click to show Internal Call Graph section">Internal call graph ▹</h2>
+		</div> <!-- .expanded -->
+		<div class="expanded">
+			<h2 class="toggleButton" title="Click to hide Internal Call Graph section">Internal call graph ▾</h2>
+			<p>
+			  In the call graph viewer below, each node
+			  is a function belonging to this package
+			  and its children are the functions it
+			  calls&mdash;perhaps dynamically.
+			</p>
+			<p>
+			  The root nodes are the entry points of the
+			  package: functions that may be called from
+			  outside the package.
+			  There may be non-exported or anonymous
+			  functions among them if they are called
+			  dynamically from another package.
+			</p>
+			<p>
+			  Click a node to visit that function's source code.
+			  From there you can visit its callers by
+			  clicking its declaring <code>func</code>
+			  token.
+			</p>
+			<p>
+			  Functions may be omitted if they were
+			  determined to be unreachable in the
+			  particular programs or tests that were
+			  analyzed.
+			</p>
+			<!-- Zero means show all package entry points. -->
+			<ul style="margin-left: 0.5in" id="callgraph-0" class="treeview"></ul>
+		</div>
+		</div> <!-- #pkg-callgraph -->
+
+		
+			<h2 id="pkg-constants">Constants</h2>
+			
+				
+				<pre>const <span id="MaxQueueSize">MaxQueueSize</span> <a href="http://localhost:8080/pkg/builtin/#uint">uint</a> = 100</pre>
+			
+				
+				<pre>const <span id="MinQueueSize">MinQueueSize</span> <a href="http://localhost:8080/pkg/builtin/#uint">uint</a> = 1</pre>
+			
+		
+		
+			<h2 id="pkg-variables">Variables</h2>
+			
+				
+				<pre>var <span id="MinUploadSize">MinUploadSize</span> <a href="http://localhost:8080/pkg/builtin/#int64">int64</a> = 10485760</pre>
+			
+		
+		
+		
+			
+			
+			<h2 id="BlobDescriptionQueue">type <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/blobQueue.go?s=215:370#L1">BlobDescriptionQueue</a>
+				<a class="permalink" href="index.html#BlobDescriptionQueue">&#xb6;</a>
+			</h2>
+			<p>
+A queue that manages descriptions of blobs
+Used to track blobs that are waiting to be transferred
+</p>
+
+			<pre>type BlobDescriptionQueue interface {
+    Push(description *<a href="models/index.html">helperModels</a>.<a href="models/index.html#BlobDescription">BlobDescription</a>)
+    Pop() (*<a href="models/index.html">helperModels</a>.<a href="models/index.html#BlobDescription">BlobDescription</a>, <a href="http://localhost:8080/pkg/builtin/#error">error</a>)
+    Size() <a href="http://localhost:8080/pkg/builtin/#int">int</a>
+}</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+				
+				<h3 id="NewBlobDescriptionQueue">func <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/blobQueue.go?s=524:575#L12">NewBlobDescriptionQueue</a>
+					<a class="permalink" href="index.html#NewBlobDescriptionQueue">&#xb6;</a>
+				</h3>
+				<pre>func NewBlobDescriptionQueue() <a href="index.html#BlobDescriptionQueue">BlobDescriptionQueue</a></pre>
+				
+				
+				
+			
+
+			
+		
+			
+			
+			<h2 id="BlobStrategy">type <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/blobStrategy.go?s=118:535#L1">BlobStrategy</a>
+				<a class="permalink" href="index.html#BlobStrategy">&#xb6;</a>
+			</h2>
+			<p>
+Strategy for how to blob objects, used both in writing and reading blob strategies
+</p>
+
+			<pre>type BlobStrategy interface {
+    <span class="comment">// contains filtered or unexported methods</span>
+}</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="Consumer">type <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/consumer.go?s=40:77#L1">Consumer</a>
+				<a class="permalink" href="index.html#Consumer">&#xb6;</a>
+			</h2>
+			
+			<pre>type Consumer interface {
+    <span class="comment">// contains filtered or unexported methods</span>
+}</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="HelperImpl">type <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/helpersImpl.go?s=540:590#L5">HelperImpl</a>
+				<a class="permalink" href="index.html#HelperImpl">&#xb6;</a>
+			</h2>
+			
+			<pre>type HelperImpl struct {
+    <span class="comment">// contains filtered or unexported fields</span>
+}</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="HelperImpl.GetObjects">func (*HelperImpl) <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/helpersImpl.go?s=1209:1337#L28">GetObjects</a>
+					<a class="permalink" href="index.html#HelperImpl.GetObjects">&#xb6;</a>
+				</h3>
+				<pre>func (helper *<a href="index.html#HelperImpl">HelperImpl</a>) GetObjects(bucketName <a href="http://localhost:8080/pkg/builtin/#string">string</a>, objects []<a href="models/index.html">helperModels</a>.<a href="models/index.html#GetObject">GetObject</a>, strategy <a href="index.html#ReadTransferStrategy">ReadTransferStrategy</a>) <a href="http://localhost:8080/pkg/builtin/#error">error</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="HelperImpl.PutObjects">func (*HelperImpl) <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/helpersImpl.go?s=955:1084#L23">PutObjects</a>
+					<a class="permalink" href="index.html#HelperImpl.PutObjects">&#xb6;</a>
+				</h3>
+				<pre>func (helper *<a href="index.html#HelperImpl">HelperImpl</a>) PutObjects(bucketName <a href="http://localhost:8080/pkg/builtin/#string">string</a>, objects []<a href="models/index.html">helperModels</a>.<a href="models/index.html#PutObject">PutObject</a>, strategy <a href="index.html#WriteTransferStrategy">WriteTransferStrategy</a>) <a href="http://localhost:8080/pkg/builtin/#error">error</a></pre>
+				
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="HelperInterface">type <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/helpersImpl.go?s=143:538#L1">HelperInterface</a>
+				<a class="permalink" href="index.html#HelperInterface">&#xb6;</a>
+			</h2>
+			
+			<pre>type HelperInterface interface {
+    <span class="comment">//ListObjectsFromBucket(bucketName string) []ds3Models.S3Object</span>
+    <span class="comment">//ListObjectsFromDirectory(directoryName string) []helperModels.PutObject</span>
+    PutObjects(bucketName <a href="http://localhost:8080/pkg/builtin/#string">string</a>, objects []<a href="models/index.html">helperModels</a>.<a href="models/index.html#PutObject">PutObject</a>, strategy <a href="index.html#WriteTransferStrategy">WriteTransferStrategy</a>) <a href="http://localhost:8080/pkg/builtin/#error">error</a>
+    GetObjects(bucketName <a href="http://localhost:8080/pkg/builtin/#string">string</a>, objects []<a href="models/index.html">helperModels</a>.<a href="models/index.html#GetObject">GetObject</a>, strategy <a href="index.html#ReadTransferStrategy">ReadTransferStrategy</a>) <a href="http://localhost:8080/pkg/builtin/#error">error</a>
+}</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+				
+				<h3 id="NewHelpers">func <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/helpersImpl.go?s=592:643#L9">NewHelpers</a>
+					<a class="permalink" href="index.html#NewHelpers">&#xb6;</a>
+				</h3>
+				<pre>func NewHelpers(client *<a href="../ds3/index.html">ds3</a>.<a href="../ds3/index.html#Client">Client</a>) <a href="index.html#HelperInterface">HelperInterface</a></pre>
+				
+				
+				
+			
+
+			
+		
+			
+			
+			<h2 id="IoReaderWithSizeDecorator">type <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/ioReaderWithSIzeDecorator.go?s=149:226#L1">IoReaderWithSizeDecorator</a>
+				<a class="permalink" href="index.html#IoReaderWithSizeDecorator">&#xb6;</a>
+			</h2>
+			<p>
+Defines a simple wrapper for an io.Reader and io.Closer which specifies size
+Implements ReaderWithSizeDecorator.
+</p>
+
+			<pre>type IoReaderWithSizeDecorator struct {
+    <span class="comment">// contains filtered or unexported fields</span>
+}</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+				
+				<h3 id="NewIoReaderWithSizeDecorator">func <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/ioReaderWithSIzeDecorator.go?s=228:318#L2">NewIoReaderWithSizeDecorator</a>
+					<a class="permalink" href="index.html#NewIoReaderWithSizeDecorator">&#xb6;</a>
+				</h3>
+				<pre>func NewIoReaderWithSizeDecorator(reader <a href="http://localhost:8080/pkg/io/">io</a>.<a href="http://localhost:8080/pkg/io/#Reader">Reader</a>, size <a href="http://localhost:8080/pkg/builtin/#int64">int64</a>) *<a href="index.html#IoReaderWithSizeDecorator">IoReaderWithSizeDecorator</a></pre>
+				
+				
+				
+			
+
+			
+				
+				<h3 id="IoReaderWithSizeDecorator.Read">func (*IoReaderWithSizeDecorator) <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/ioReaderWithSIzeDecorator.go?s=388:465#L6">Read</a>
+					<a class="permalink" href="index.html#IoReaderWithSizeDecorator.Read">&#xb6;</a>
+				</h3>
+				<pre>func (sizedReader *<a href="index.html#IoReaderWithSizeDecorator">IoReaderWithSizeDecorator</a>) Read(bytes []<a href="http://localhost:8080/pkg/builtin/#byte">byte</a>) (<a href="http://localhost:8080/pkg/builtin/#int">int</a>, <a href="http://localhost:8080/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="IoReaderWithSizeDecorator.Size">func (*IoReaderWithSizeDecorator) <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/ioReaderWithSIzeDecorator.go?s=513:580#L10">Size</a>
+					<a class="permalink" href="index.html#IoReaderWithSizeDecorator.Size">&#xb6;</a>
+				</h3>
+				<pre>func (sizedReader *<a href="index.html#IoReaderWithSizeDecorator">IoReaderWithSizeDecorator</a>) Size() (<a href="http://localhost:8080/pkg/builtin/#int64">int64</a>, <a href="http://localhost:8080/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="Producer">type <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/producer.go?s=73:138#L1">Producer</a>
+				<a class="permalink" href="index.html#Producer">&#xb6;</a>
+			</h2>
+			
+			<pre>type Producer interface {
+    <span class="comment">// contains filtered or unexported methods</span>
+}</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="ReadBlobStrategy">type <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/readTransferStrategy.go?s=503:555#L10">ReadBlobStrategy</a>
+				<a class="permalink" href="index.html#ReadBlobStrategy">&#xb6;</a>
+			</h2>
+			<p>
+Strategy for how to blob objects for writing
+</p>
+
+			<pre>type ReadBlobStrategy interface {
+    <a href="index.html#BlobStrategy">BlobStrategy</a>
+}</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="ReadBulkJobOptions">type <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/readTransferStrategy.go?s=231:453#L1">ReadBulkJobOptions</a>
+				<a class="permalink" href="index.html#ReadBulkJobOptions">&#xb6;</a>
+			</h2>
+			<p>
+Defines the options to use on the get bulk job
+</p>
+
+			<pre>type ReadBulkJobOptions struct {
+<span id="ReadBulkJobOptions.Aggregating"></span>    Aggregating                         *<a href="http://localhost:8080/pkg/builtin/#bool">bool</a>
+<span id="ReadBulkJobOptions.ChunkClientProcessingOrderGuarantee"></span>    ChunkClientProcessingOrderGuarantee <a href="../ds3/models/index.html">models</a>.<a href="../ds3/models/index.html#JobChunkClientProcessingOrderGuarantee">JobChunkClientProcessingOrderGuarantee</a>
+<span id="ReadBulkJobOptions.ImplicitJobIdResolution"></span>    ImplicitJobIdResolution             *<a href="http://localhost:8080/pkg/builtin/#bool">bool</a>
+    <span class="comment">// contains filtered or unexported fields</span>
+}</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="ReadTransferStrategy">type <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/readTransferStrategy.go?s=73:179#L1">ReadTransferStrategy</a>
+				<a class="permalink" href="index.html#ReadTransferStrategy">&#xb6;</a>
+			</h2>
+			
+			<pre>type ReadTransferStrategy struct {
+<span id="ReadTransferStrategy.BlobStrategy"></span>    BlobStrategy <a href="index.html#ReadBlobStrategy">ReadBlobStrategy</a>
+<span id="ReadTransferStrategy.Options"></span>    Options      <a href="index.html#ReadBulkJobOptions">ReadBulkJobOptions</a>
+}</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="SimpleBlobStrategy">type <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/blobStrategy.go?s=537:676#L8">SimpleBlobStrategy</a>
+				<a class="permalink" href="index.html#SimpleBlobStrategy">&#xb6;</a>
+			</h2>
+			
+			<pre>type SimpleBlobStrategy struct {
+<span id="SimpleBlobStrategy.Delay"></span>    Delay                  <a href="http://localhost:8080/pkg/time/">time</a>.<a href="http://localhost:8080/pkg/time/#Duration">Duration</a>
+<span id="SimpleBlobStrategy.MaxConcurrentTransfers"></span>    MaxConcurrentTransfers <a href="http://localhost:8080/pkg/builtin/#uint">uint</a>
+<span id="SimpleBlobStrategy.MaxWaitingTransfers"></span>    MaxWaitingTransfers    <a href="http://localhost:8080/pkg/builtin/#uint">uint</a>
+}</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="Transceiver">type <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/transceiver.go?s=17:83#L1">Transceiver</a>
+				<a class="permalink" href="index.html#Transceiver">&#xb6;</a>
+			</h2>
+			
+			<pre>type Transceiver interface {
+    <span class="comment">// contains filtered or unexported methods</span>
+}</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="TransferOperation">type <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/operationQueue.go?s=31:60#L1">TransferOperation</a>
+				<a class="permalink" href="index.html#TransferOperation">&#xb6;</a>
+			</h2>
+			
+			<pre>type TransferOperation func() <span class="comment">// transfer operation that sends/gets stuff from BP</span>
+</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="WriteBlobStrategy">type <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/writeTransferStrategy.go?s=659:712#L19">WriteBlobStrategy</a>
+				<a class="permalink" href="index.html#WriteBlobStrategy">&#xb6;</a>
+			</h2>
+			<p>
+Strategy for how to blob objects for writing
+</p>
+
+			<pre>type WriteBlobStrategy interface {
+    <a href="index.html#BlobStrategy">BlobStrategy</a>
+}</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="WriteBulkJobOptions">type <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/writeTransferStrategy.go?s=333:609#L6">WriteBulkJobOptions</a>
+				<a class="permalink" href="index.html#WriteBulkJobOptions">&#xb6;</a>
+			</h2>
+			<p>
+Defines the options to use on the put bulk job
+</p>
+
+			<pre>type WriteBulkJobOptions struct {
+<span id="WriteBulkJobOptions.Aggregating"></span>    Aggregating                 *<a href="http://localhost:8080/pkg/builtin/#bool">bool</a>
+<span id="WriteBulkJobOptions.ImplicitJobIdResolution"></span>    ImplicitJobIdResolution     *<a href="http://localhost:8080/pkg/builtin/#bool">bool</a>
+<span id="WriteBulkJobOptions.MaxUploadSize"></span>    MaxUploadSize               *<a href="http://localhost:8080/pkg/builtin/#int64">int64</a>
+<span id="WriteBulkJobOptions.MinimizeSpanningAcrossMedia"></span>    MinimizeSpanningAcrossMedia *<a href="http://localhost:8080/pkg/builtin/#bool">bool</a>
+<span id="WriteBulkJobOptions.Priority"></span>    Priority                    *<a href="../ds3/models/index.html">models</a>.<a href="../ds3/models/index.html#Priority">Priority</a>
+<span id="WriteBulkJobOptions.VerifyAfterWrite"></span>    VerifyAfterWrite            *<a href="http://localhost:8080/pkg/builtin/#bool">bool</a>
+<span id="WriteBulkJobOptions.Name"></span>    Name                        *<a href="http://localhost:8080/pkg/builtin/#string">string</a>
+<span id="WriteBulkJobOptions.Force"></span>    Force                       *<a href="http://localhost:8080/pkg/builtin/#bool">bool</a>
+<span id="WriteBulkJobOptions.IgnoreNamingConflicts"></span>    IgnoreNamingConflicts       *<a href="http://localhost:8080/pkg/builtin/#bool">bool</a>
+}</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="WriteTransferStrategy">type <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/writeTransferStrategy.go?s=172:281#L1">WriteTransferStrategy</a>
+				<a class="permalink" href="index.html#WriteTransferStrategy">&#xb6;</a>
+			</h2>
+			<p>
+Defines strategy for how to perform write transfers
+</p>
+
+			<pre>type WriteTransferStrategy struct {
+<span id="WriteTransferStrategy.BlobStrategy"></span>    BlobStrategy <a href="index.html#WriteBlobStrategy">WriteBlobStrategy</a>
+<span id="WriteTransferStrategy.Options"></span>    Options      <a href="index.html#WriteBulkJobOptions">WriteBulkJobOptions</a>
+}</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+	
+
+	
+
+
+
+
+
+	
+	
+		<h2 id="pkg-subdirectories">Subdirectories</h2>
+	
+	
+
+
+	<div class="pkg-dir">
+		<table>
+			<tr>
+				<th class="pkg-name">Name</th>
+				<th class="pkg-synopsis">Synopsis</th>
+			</tr>
+
+			
+			<tr>
+				<td colspan="2"><a href="../ds3_go_sdk.html">..</a></td>
+			</tr>
+			
+
+			
+				
+					<tr>
+						<td class="pkg-name" style="padding-left: 0px;">
+							<a href="channels/index.html">channels</a>
+						</td>
+						<td class="pkg-synopsis">
+							
+						</td>
+					</tr>
+				
+			
+				
+					<tr>
+						<td class="pkg-name" style="padding-left: 0px;">
+							<a href="models/index.html">models</a>
+						</td>
+						<td class="pkg-synopsis">
+							
+						</td>
+					</tr>
+				
+			
+				
+					<tr>
+						<td class="pkg-name" style="padding-left: 0px;">
+							<a href="ranges/index.html">ranges</a>
+						</td>
+						<td class="pkg-synopsis">
+							
+						</td>
+					</tr>
+				
+			
+		</table>
+	</div>
+
+
+	
+
+
+
+<div id="footer">
+Build version go1.9.2.<br>
+Except as <a href="https://developers.google.com/site-policies#restrictions">noted</a>,
+the content of this page is licensed under the
+Creative Commons Attribution 3.0 License,
+and code is licensed under a <a href="http://localhost:8080/LICENSE">BSD license</a>.<br>
+<a href="http://localhost:8080/doc/tos.html">Terms of Service</a> | 
+<a href="http://www.google.com/intl/en/policies/privacy/">Privacy Policy</a>
+</div>
+
+</div><!-- .container -->
+</div><!-- #page -->
+
+<!-- TODO(adonovan): load these from <head> using "defer" attribute? -->
+<script type="text/javascript" src="../jquery.js"></script>
+<script type="text/javascript" src="../jquery.treeview.js"></script>
+<script type="text/javascript" src="../jquery.treeview.edit.js"></script>
+
+
+<script>var goVersion = "go1.9.2";</script>
+<script type="text/javascript" src="../godocs.js"></script>
+
+</body>
+</html>
+

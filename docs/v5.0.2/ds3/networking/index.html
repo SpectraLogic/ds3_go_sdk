@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#375EAB">
+
+  <title>networking - The Go Programming Language</title>
+
+<link type="text/css" rel="stylesheet" href="../../style.css">
+
+<link rel="stylesheet" href="../../jquery.treeview.css">
+<script type="text/javascript">window.initFuncs = [];</script>
+</head>
+<body>
+
+<div id='lowframe' style="position: fixed; bottom: 0; left: 0; height: 0; width: 100%; border-top: thin solid grey; background-color: white; overflow: auto;">
+...
+</div><!-- #lowframe -->
+
+<div id="topbar" class="wide"><div class="container">
+<div class="top-heading" id="heading-wide"><a href="http://localhost:8080/">The Go Programming Language</a></div>
+<div class="top-heading" id="heading-narrow"><a href="http://localhost:8080/">Go</a></div>
+<a href="index.html#" id="menu-button"><span id="menu-button-arrow">&#9661;</span></a>
+<form method="GET" action="http://localhost:8080/search">
+<div id="menu">
+<a href="http://localhost:8080/doc/">Documents</a>
+<a href="http://localhost:8080/pkg/">Packages</a>
+<a href="http://localhost:8080/project/">The Project</a>
+<a href="http://localhost:8080/help/">Help</a>
+<a href="http://localhost:8080/blog/">Blog</a>
+
+<input type="text" id="search" name="q" class="inactive" value="Search" placeholder="Search">
+</div>
+</form>
+
+</div></div>
+
+
+
+<div id="page" class="wide">
+<div class="container">
+
+
+  <h1>
+    Package networking
+    <span class="text-muted"></span>
+  </h1>
+
+
+
+
+
+
+
+<div id="nav"></div>
+
+
+<!--
+	Copyright 2009 The Go Authors. All rights reserved.
+	Use of this source code is governed by a BSD-style
+	license that can be found in the LICENSE file.
+-->
+<!--
+	Note: Static (i.e., not template-generated) href and id
+	attributes start with "pkg-" to make it impossible for
+	them to conflict with generated attributes (some of which
+	correspond to Go identifiers).
+-->
+
+	<script type='text/javascript'>
+	document.ANALYSIS_DATA = null;
+	document.CALLGRAPH = null;
+	</script>
+
+	
+		
+		<div id="short-nav">
+			<dl>
+			<dd><code>import "github.com/SpectraLogic/ds3_go_sdk/ds3/networking"</code></dd>
+			</dl>
+			<dl>
+			<dd><a href="index.html#pkg-overview" class="overviewLink">Overview</a></dd>
+			<dd><a href="index.html#pkg-index" class="indexLink">Index</a></dd>
+			
+			
+			</dl>
+		</div>
+		<!-- The package's Name is printed as title by the top-level template -->
+		<div id="pkg-overview" class="toggleVisible">
+			<div class="collapsed">
+				<h2 class="toggleButton" title="Click to show Overview section">Overview ▹</h2>
+			</div>
+			<div class="expanded">
+				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
+				
+			</div>
+		</div>
+		
+
+		<div id="pkg-index" class="toggleVisible">
+		<div class="collapsed">
+			<h2 class="toggleButton" title="Click to show Index section">Index ▹</h2>
+		</div>
+		<div class="expanded">
+			<h2 class="toggleButton" title="Click to hide Index section">Index ▾</h2>
+
+		<!-- Table of contents for API; must be named manual-nav to turn off auto nav. -->
+			<div id="manual-nav">
+			<dl>
+			
+				<dd><a href="index.html#pkg-constants">Constants</a></dd>
+			
+			
+			
+				
+				<dd><a href="index.html#BoolPtrToStrPtr">func BoolPtrToStrPtr(bool *bool) *string</a></dd>
+			
+				
+				<dd><a href="index.html#Float64PtrToStrPtr">func Float64PtrToStrPtr(float *float64) *string</a></dd>
+			
+				
+				<dd><a href="index.html#Int64PtrToStrPtr">func Int64PtrToStrPtr(int *int64) *string</a></dd>
+			
+				
+				<dd><a href="index.html#IntPtrToStrPtr">func IntPtrToStrPtr(int *int) *string</a></dd>
+			
+				
+				<dd><a href="index.html#InterfaceToStrPtr">func InterfaceToStrPtr(item ToStringPtrInterface) *string</a></dd>
+			
+				
+				<dd><a href="index.html#NewLimitReadCloser">func NewLimitReadCloser(readCloser models.ReadCloserWithSizeDecorator) io.ReadCloser</a></dd>
+			
+			
+				
+				<dd><a href="index.html#ConnectionInfo">type ConnectionInfo</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#Credentials">type Credentials</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#HttpRequestBuilder">type HttpRequestBuilder</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#NewHttpRequestBuilder">func NewHttpRequestBuilder() *HttpRequestBuilder</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#HttpRequestBuilder.Build">func (builder *HttpRequestBuilder) Build(conn *ConnectionInfo) (*http.Request, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#HttpRequestBuilder.WithChecksum">func (builder *HttpRequestBuilder) WithChecksum(checksum models.Checksum) *HttpRequestBuilder</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#HttpRequestBuilder.WithContentType">func (builder *HttpRequestBuilder) WithContentType(contentType string) *HttpRequestBuilder</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#HttpRequestBuilder.WithHeader">func (builder *HttpRequestBuilder) WithHeader(key string, value string) *HttpRequestBuilder</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#HttpRequestBuilder.WithHeaders">func (builder *HttpRequestBuilder) WithHeaders(headers map[string]string) *HttpRequestBuilder</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#HttpRequestBuilder.WithHttpVerb">func (builder *HttpRequestBuilder) WithHttpVerb(verb string) *HttpRequestBuilder</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#HttpRequestBuilder.WithOptionalQueryParam">func (builder *HttpRequestBuilder) WithOptionalQueryParam(key string, value *string) *HttpRequestBuilder</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#HttpRequestBuilder.WithOptionalVoidQueryParam">func (builder *HttpRequestBuilder) WithOptionalVoidQueryParam(key string, value bool) *HttpRequestBuilder</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#HttpRequestBuilder.WithPath">func (builder *HttpRequestBuilder) WithPath(path string) *HttpRequestBuilder</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#HttpRequestBuilder.WithQueryParam">func (builder *HttpRequestBuilder) WithQueryParam(key string, value string) *HttpRequestBuilder</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#HttpRequestBuilder.WithReadCloser">func (builder *HttpRequestBuilder) WithReadCloser(stream models.ReadCloserWithSizeDecorator) *HttpRequestBuilder</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#HttpRequestBuilder.WithReader">func (builder *HttpRequestBuilder) WithReader(stream models.ReaderWithSizeDecorator) *HttpRequestBuilder</a></dd>
+				
+			
+				
+				<dd><a href="index.html#HttpTempRedirectDecorator">type HttpTempRedirectDecorator</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#HttpTempRedirectDecorator.Invoke">func (tempRedirectDecorator *HttpTempRedirectDecorator) Invoke(httpRequest *http.Request) (models.WebResponse, error)</a></dd>
+				
+			
+				
+				<dd><a href="index.html#LimitReadCloser">type LimitReadCloser</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#LimitReadCloser.Close">func (limitedReadCloser *LimitReadCloser) Close() error</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#LimitReadCloser.Read">func (limitedReadCloser *LimitReadCloser) Read(p []byte) (n int, err error)</a></dd>
+				
+			
+				
+				<dd><a href="index.html#Network">type Network</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#NewHttpTempRedirectDecorator">func NewHttpTempRedirectDecorator(network Network, maxRedirect int) Network</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#NewNetworkRetryDecorator">func NewNetworkRetryDecorator(network Network, maxRetires int) Network</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#NewSendNetwork">func NewSendNetwork(connectionInfo *ConnectionInfo) Network</a></dd>
+				
+				
+			
+				
+				<dd><a href="index.html#NetworkRetryDecorator">type NetworkRetryDecorator</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#NetworkRetryDecorator.Invoke">func (networkRetryDecorator *NetworkRetryDecorator) Invoke(httpRequest *http.Request) (models.WebResponse, error)</a></dd>
+				
+			
+				
+				<dd><a href="index.html#SendNetwork">type SendNetwork</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#SendNetwork.Invoke">func (sendNetwork *SendNetwork) Invoke(httpRequest *http.Request) (models.WebResponse, error)</a></dd>
+				
+			
+				
+				<dd><a href="index.html#ToStringPtrInterface">type ToStringPtrInterface</a></dd>
+				
+				
+			
+			
+			</dl>
+			</div><!-- #manual-nav -->
+
+		
+
+		
+			<h4>Package files</h4>
+			<p>
+			<span style="font-size:90%">
+			
+				<a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/ds3/networking/headers.go">headers.go</a>
+			
+				<a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/ds3/networking/httpRedirect.go">httpRedirect.go</a>
+			
+				<a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/ds3/networking/httpRequestBuilder.go">httpRequestBuilder.go</a>
+			
+				<a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/ds3/networking/net.go">net.go</a>
+			
+				<a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/ds3/networking/networkRetry.go">networkRetry.go</a>
+			
+				<a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/ds3/networking/readerWithSizeDecorator.go">readerWithSizeDecorator.go</a>
+			
+				<a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/ds3/networking/typeConverterUtils.go">typeConverterUtils.go</a>
+			
+			</span>
+			</p>
+		
+		</div><!-- .expanded -->
+		</div><!-- #pkg-index -->
+
+		<div id="pkg-callgraph" class="toggle" style="display: none">
+		<div class="collapsed">
+			<h2 class="toggleButton" title="Click to show Internal Call Graph section">Internal call graph ▹</h2>
+		</div> <!-- .expanded -->
+		<div class="expanded">
+			<h2 class="toggleButton" title="Click to hide Internal Call Graph section">Internal call graph ▾</h2>
+			<p>
+			  In the call graph viewer below, each node
+			  is a function belonging to this package
+			  and its children are the functions it
+			  calls&mdash;perhaps dynamically.
+			</p>
+			<p>
+			  The root nodes are the entry points of the
+			  package: functions that may be called from
+			  outside the package.
+			  There may be non-exported or anonymous
+			  functions among them if they are called
+			  dynamically from another package.
+			</p>
+			<p>
+			  Click a node to visit that function's source code.
+			  From there you can visit its callers by
+			  clicking its declaring <code>func</code>
+			  token.
+			</p>
+			<p>
+			  Functions may be omitted if they were
+			  determined to be unreachable in the
+			  particular programs or tests that were
+			  analyzed.
+			</p>
+			<!-- Zero means show all package entry points. -->
+			<ul style="margin-left: 0.5in" id="callgraph-0" class="treeview"></ul>
+		</div>
+		</div> <!-- #pkg-callgraph -->
+
+		
+			<h2 id="pkg-constants">Constants</h2>
+			
+				
+				<pre>const <span id="AmazonMetadataPrefix">AmazonMetadataPrefix</span> = &#34;x-amz-meta-&#34;</pre>
+			
+				<p>
+Http Headers
+</p>
+
+				<pre>const <span id="ContentCRC32">ContentCRC32</span> <a href="http://localhost:8080/pkg/builtin/#string">string</a> = &#34;Content-CRC32&#34;</pre>
+			
+				
+				<pre>const <span id="ContentCRC32C">ContentCRC32C</span> <a href="http://localhost:8080/pkg/builtin/#string">string</a> = &#34;Content-CRC32C&#34;</pre>
+			
+				
+				<pre>const <span id="ContentMd5">ContentMd5</span> <a href="http://localhost:8080/pkg/builtin/#string">string</a> = &#34;Content-MD5&#34;</pre>
+			
+				
+				<pre>const <span id="ContentSha256">ContentSha256</span> <a href="http://localhost:8080/pkg/builtin/#string">string</a> = &#34;Content-SHA256&#34;</pre>
+			
+				
+				<pre>const <span id="ContentSha512">ContentSha512</span> <a href="http://localhost:8080/pkg/builtin/#string">string</a> = &#34;Content-SHA512&#34;</pre>
+			
+				
+				<pre>const <span id="ContentTypeKey">ContentTypeKey</span> <a href="http://localhost:8080/pkg/builtin/#string">string</a> = &#34;Content-Type&#34; <span class="comment">// This header describes the format of the contents</span>
+</pre>
+			
+		
+		
+		
+			
+			
+			<h2 id="BoolPtrToStrPtr">func <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/ds3/networking/typeConverterUtils.go?s=623:663#L20">BoolPtrToStrPtr</a>
+				<a class="permalink" href="index.html#BoolPtrToStrPtr">&#xb6;</a>
+			</h2>
+			<pre>func BoolPtrToStrPtr(bool *<a href="http://localhost:8080/pkg/builtin/#bool">bool</a>) *<a href="http://localhost:8080/pkg/builtin/#string">string</a></pre>
+			<p>
+Converts a *bool into a *string
+</p>
+
+			
+			
+
+		
+			
+			
+			<h2 id="Float64PtrToStrPtr">func <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/ds3/networking/typeConverterUtils.go?s=806:853#L29">Float64PtrToStrPtr</a>
+				<a class="permalink" href="index.html#Float64PtrToStrPtr">&#xb6;</a>
+			</h2>
+			<pre>func Float64PtrToStrPtr(float *<a href="http://localhost:8080/pkg/builtin/#float64">float64</a>) *<a href="http://localhost:8080/pkg/builtin/#string">string</a></pre>
+			<p>
+Converts a *float64 into a *string
+</p>
+
+			
+			
+
+		
+			
+			
+			<h2 id="Int64PtrToStrPtr">func <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/ds3/networking/typeConverterUtils.go?s=272:313#L2">Int64PtrToStrPtr</a>
+				<a class="permalink" href="index.html#Int64PtrToStrPtr">&#xb6;</a>
+			</h2>
+			<pre>func Int64PtrToStrPtr(int *<a href="http://localhost:8080/pkg/builtin/#int64">int64</a>) *<a href="http://localhost:8080/pkg/builtin/#string">string</a></pre>
+			<p>
+Converts an *int64 into a *string
+</p>
+
+			
+			
+
+		
+			
+			
+			<h2 id="IntPtrToStrPtr">func <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/ds3/networking/typeConverterUtils.go?s=454:491#L11">IntPtrToStrPtr</a>
+				<a class="permalink" href="index.html#IntPtrToStrPtr">&#xb6;</a>
+			</h2>
+			<pre>func IntPtrToStrPtr(int *<a href="http://localhost:8080/pkg/builtin/#int">int</a>) *<a href="http://localhost:8080/pkg/builtin/#string">string</a></pre>
+			<p>
+Converts an *int into a *string
+</p>
+
+			
+			
+
+		
+			
+			
+			<h2 id="InterfaceToStrPtr">func <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/ds3/networking/typeConverterUtils.go?s=1143:1200#L43">InterfaceToStrPtr</a>
+				<a class="permalink" href="index.html#InterfaceToStrPtr">&#xb6;</a>
+			</h2>
+			<pre>func InterfaceToStrPtr(item <a href="index.html#ToStringPtrInterface">ToStringPtrInterface</a>) *<a href="http://localhost:8080/pkg/builtin/#string">string</a></pre>
+			<p>
+Converts an item that meets the ToStringInterface into a *string
+</p>
+
+			
+			
+
+		
+			
+			
+			<h2 id="NewLimitReadCloser">func <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/ds3/networking/readerWithSizeDecorator.go?s=352:436#L6">NewLimitReadCloser</a>
+				<a class="permalink" href="index.html#NewLimitReadCloser">&#xb6;</a>
+			</h2>
+			<pre>func NewLimitReadCloser(readCloser <a href="../models/index.html">models</a>.<a href="../models/index.html#ReadCloserWithSizeDecorator">ReadCloserWithSizeDecorator</a>) <a href="http://localhost:8080/pkg/io/">io</a>.<a href="http://localhost:8080/pkg/io/#ReadCloser">ReadCloser</a></pre>
+			<p>
+Creates a ReadCloser that wraps the reader in a LimitedReader, and preserves
+the closability of the original reader
+</p>
+
+			
+			
+
+		
+		
+			
+			
+			<h2 id="ConnectionInfo">type <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/ds3/networking/net.go?s=113:222#L1">ConnectionInfo</a>
+				<a class="permalink" href="index.html#ConnectionInfo">&#xb6;</a>
+			</h2>
+			
+			<pre>type ConnectionInfo struct {
+<span id="ConnectionInfo.Endpoint"></span>    Endpoint    *<a href="http://localhost:8080/pkg/net/url/">url</a>.<a href="http://localhost:8080/pkg/net/url/#URL">URL</a>
+<span id="ConnectionInfo.Credentials"></span>    Credentials *<a href="index.html#Credentials">Credentials</a>
+<span id="ConnectionInfo.Proxy"></span>    Proxy       *<a href="http://localhost:8080/pkg/net/url/">url</a>.<a href="http://localhost:8080/pkg/net/url/#URL">URL</a>
+}</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="Credentials">type <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/ds3/networking/net.go?s=224:286#L5">Credentials</a>
+				<a class="permalink" href="index.html#Credentials">&#xb6;</a>
+			</h2>
+			
+			<pre>type Credentials struct {
+<span id="Credentials.AccessId"></span>    AccessId <a href="http://localhost:8080/pkg/builtin/#string">string</a>
+<span id="Credentials.Key"></span>    Key      <a href="http://localhost:8080/pkg/builtin/#string">string</a>
+}</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+			
+			
+			<h2 id="HttpRequestBuilder">type <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/ds3/networking/httpRequestBuilder.go?s=191:397#L4">HttpRequestBuilder</a>
+				<a class="permalink" href="index.html#HttpRequestBuilder">&#xb6;</a>
+			</h2>
+			
+			<pre>type HttpRequestBuilder struct {
+    <span class="comment">// contains filtered or unexported fields</span>
+}</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+				
+				<h3 id="NewHttpRequestBuilder">func <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/ds3/networking/httpRequestBuilder.go?s=399:447#L13">NewHttpRequestBuilder</a>
+					<a class="permalink" href="index.html#NewHttpRequestBuilder">&#xb6;</a>
+				</h3>
+				<pre>func NewHttpRequestBuilder() *<a href="index.html#HttpRequestBuilder">HttpRequestBuilder</a></pre>
+				
+				
+				
+			
+
+			
+				
+				<h3 id="HttpRequestBuilder.Build">func (*HttpRequestBuilder) <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/ds3/networking/httpRequestBuilder.go?s=3032:3117#L92">Build</a>
+					<a class="permalink" href="index.html#HttpRequestBuilder.Build">&#xb6;</a>
+				</h3>
+				<pre>func (builder *<a href="index.html#HttpRequestBuilder">HttpRequestBuilder</a>) Build(conn *<a href="index.html#ConnectionInfo">ConnectionInfo</a>) (*<a href="http://localhost:8080/pkg/net/http/">http</a>.<a href="http://localhost:8080/pkg/net/http/#Request">Request</a>, <a href="http://localhost:8080/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="HttpRequestBuilder.WithChecksum">func (*HttpRequestBuilder) <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/ds3/networking/httpRequestBuilder.go?s=2641:2734#L81">WithChecksum</a>
+					<a class="permalink" href="index.html#HttpRequestBuilder.WithChecksum">&#xb6;</a>
+				</h3>
+				<pre>func (builder *<a href="index.html#HttpRequestBuilder">HttpRequestBuilder</a>) WithChecksum(checksum <a href="../models/index.html">models</a>.<a href="../models/index.html#Checksum">Checksum</a>) *<a href="index.html#HttpRequestBuilder">HttpRequestBuilder</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="HttpRequestBuilder.WithContentType">func (*HttpRequestBuilder) <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/ds3/networking/httpRequestBuilder.go?s=2863:2953#L87">WithContentType</a>
+					<a class="permalink" href="index.html#HttpRequestBuilder.WithContentType">&#xb6;</a>
+				</h3>
+				<pre>func (builder *<a href="index.html#HttpRequestBuilder">HttpRequestBuilder</a>) WithContentType(contentType <a href="http://localhost:8080/pkg/builtin/#string">string</a>) *<a href="index.html#HttpRequestBuilder">HttpRequestBuilder</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="HttpRequestBuilder.WithHeader">func (*HttpRequestBuilder) <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/ds3/networking/httpRequestBuilder.go?s=1715:1806#L49">WithHeader</a>
+					<a class="permalink" href="index.html#HttpRequestBuilder.WithHeader">&#xb6;</a>
+				</h3>
+				<pre>func (builder *<a href="index.html#HttpRequestBuilder">HttpRequestBuilder</a>) WithHeader(key <a href="http://localhost:8080/pkg/builtin/#string">string</a>, value <a href="http://localhost:8080/pkg/builtin/#string">string</a>) *<a href="index.html#HttpRequestBuilder">HttpRequestBuilder</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="HttpRequestBuilder.WithHeaders">func (*HttpRequestBuilder) <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/ds3/networking/httpRequestBuilder.go?s=1867:1960#L54">WithHeaders</a>
+					<a class="permalink" href="index.html#HttpRequestBuilder.WithHeaders">&#xb6;</a>
+				</h3>
+				<pre>func (builder *<a href="index.html#HttpRequestBuilder">HttpRequestBuilder</a>) WithHeaders(headers map[<a href="http://localhost:8080/pkg/builtin/#string">string</a>]<a href="http://localhost:8080/pkg/builtin/#string">string</a>) *<a href="index.html#HttpRequestBuilder">HttpRequestBuilder</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="HttpRequestBuilder.WithHttpVerb">func (*HttpRequestBuilder) <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/ds3/networking/httpRequestBuilder.go?s=1429:1509#L39">WithHttpVerb</a>
+					<a class="permalink" href="index.html#HttpRequestBuilder.WithHttpVerb">&#xb6;</a>
+				</h3>
+				<pre>func (builder *<a href="index.html#HttpRequestBuilder">HttpRequestBuilder</a>) WithHttpVerb(verb <a href="http://localhost:8080/pkg/builtin/#string">string</a>) *<a href="index.html#HttpRequestBuilder">HttpRequestBuilder</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="HttpRequestBuilder.WithOptionalQueryParam">func (*HttpRequestBuilder) <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/ds3/networking/httpRequestBuilder.go?s=2228:2332#L66">WithOptionalQueryParam</a>
+					<a class="permalink" href="index.html#HttpRequestBuilder.WithOptionalQueryParam">&#xb6;</a>
+				</h3>
+				<pre>func (builder *<a href="index.html#HttpRequestBuilder">HttpRequestBuilder</a>) WithOptionalQueryParam(key <a href="http://localhost:8080/pkg/builtin/#string">string</a>, value *<a href="http://localhost:8080/pkg/builtin/#string">string</a>) *<a href="index.html#HttpRequestBuilder">HttpRequestBuilder</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="HttpRequestBuilder.WithOptionalVoidQueryParam">func (*HttpRequestBuilder) <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/ds3/networking/httpRequestBuilder.go?s=2449:2554#L74">WithOptionalVoidQueryParam</a>
+					<a class="permalink" href="index.html#HttpRequestBuilder.WithOptionalVoidQueryParam">&#xb6;</a>
+				</h3>
+				<pre>func (builder *<a href="index.html#HttpRequestBuilder">HttpRequestBuilder</a>) WithOptionalVoidQueryParam(key <a href="http://localhost:8080/pkg/builtin/#string">string</a>, value <a href="http://localhost:8080/pkg/builtin/#bool">bool</a>) *<a href="index.html#HttpRequestBuilder">HttpRequestBuilder</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="HttpRequestBuilder.WithPath">func (*HttpRequestBuilder) <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/ds3/networking/httpRequestBuilder.go?s=1574:1650#L44">WithPath</a>
+					<a class="permalink" href="index.html#HttpRequestBuilder.WithPath">&#xb6;</a>
+				</h3>
+				<pre>func (builder *<a href="index.html#HttpRequestBuilder">HttpRequestBuilder</a>) WithPath(path <a href="http://localhost:8080/pkg/builtin/#string">string</a>) *<a href="index.html#HttpRequestBuilder">HttpRequestBuilder</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="HttpRequestBuilder.WithQueryParam">func (*HttpRequestBuilder) <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/ds3/networking/httpRequestBuilder.go?s=2068:2163#L61">WithQueryParam</a>
+					<a class="permalink" href="index.html#HttpRequestBuilder.WithQueryParam">&#xb6;</a>
+				</h3>
+				<pre>func (builder *<a href="index.html#HttpRequestBuilder">HttpRequestBuilder</a>) WithQueryParam(key <a href="http://localhost:8080/pkg/builtin/#string">string</a>, value <a href="http://localhost:8080/pkg/builtin/#string">string</a>) *<a href="index.html#HttpRequestBuilder">HttpRequestBuilder</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="HttpRequestBuilder.WithReadCloser">func (*HttpRequestBuilder) <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/ds3/networking/httpRequestBuilder.go?s=1169:1281#L32">WithReadCloser</a>
+					<a class="permalink" href="index.html#HttpRequestBuilder.WithReadCloser">&#xb6;</a>
+				</h3>
+				<pre>func (builder *<a href="index.html#HttpRequestBuilder">HttpRequestBuilder</a>) WithReadCloser(stream <a href="../models/index.html">models</a>.<a href="../models/index.html#ReadCloserWithSizeDecorator">ReadCloserWithSizeDecorator</a>) *<a href="index.html#HttpRequestBuilder">HttpRequestBuilder</a></pre>
+				<p>
+Internally converts reader with size decorator to limit reader to ensure size is respected
+and adds the closer functionality to the limit reader. The send network will automatically
+close the reader when finished.
+</p>
+
+				
+				
+				
+			
+				
+				<h3 id="HttpRequestBuilder.WithReader">func (*HttpRequestBuilder) <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/ds3/networking/httpRequestBuilder.go?s=686:790#L22">WithReader</a>
+					<a class="permalink" href="index.html#HttpRequestBuilder.WithReader">&#xb6;</a>
+				</h3>
+				<pre>func (builder *<a href="index.html#HttpRequestBuilder">HttpRequestBuilder</a>) WithReader(stream <a href="../models/index.html">models</a>.<a href="../models/index.html#ReaderWithSizeDecorator">ReaderWithSizeDecorator</a>) *<a href="index.html#HttpRequestBuilder">HttpRequestBuilder</a></pre>
+				<p>
+Internally converts reader with size decorator to limit reader to ensure size is respected
+</p>
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="HttpTempRedirectDecorator">type <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/ds3/networking/httpRedirect.go?s=248:340#L5">HttpTempRedirectDecorator</a>
+				<a class="permalink" href="index.html#HttpTempRedirectDecorator">&#xb6;</a>
+			</h2>
+			<p>
+Decorator for Network which handles 307 temporary redirect retries
+</p>
+
+			<pre>type HttpTempRedirectDecorator struct {
+    <span class="comment">// contains filtered or unexported fields</span>
+}</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="HttpTempRedirectDecorator.Invoke">func (*HttpTempRedirectDecorator) <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/ds3/networking/httpRedirect.go?s=559:676#L17">Invoke</a>
+					<a class="permalink" href="index.html#HttpTempRedirectDecorator.Invoke">&#xb6;</a>
+				</h3>
+				<pre>func (tempRedirectDecorator *<a href="index.html#HttpTempRedirectDecorator">HttpTempRedirectDecorator</a>) Invoke(httpRequest *<a href="http://localhost:8080/pkg/net/http/">http</a>.<a href="http://localhost:8080/pkg/net/http/#Request">Request</a>) (<a href="../models/index.html">models</a>.<a href="../models/index.html#WebResponse">WebResponse</a>, <a href="http://localhost:8080/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="LimitReadCloser">type <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/ds3/networking/readerWithSizeDecorator.go?s=148:228#L1">LimitReadCloser</a>
+				<a class="permalink" href="index.html#LimitReadCloser">&#xb6;</a>
+			</h2>
+			<p>
+Defines a limited reader that also supports closing
+</p>
+
+			<pre>type LimitReadCloser struct {
+    <span class="comment">// contains filtered or unexported fields</span>
+}</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="LimitReadCloser.Close">func (*LimitReadCloser) <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/ds3/networking/readerWithSizeDecorator.go?s=813:868#L21">Close</a>
+					<a class="permalink" href="index.html#LimitReadCloser.Close">&#xb6;</a>
+				</h3>
+				<pre>func (limitedReadCloser *<a href="index.html#LimitReadCloser">LimitReadCloser</a>) Close() <a href="http://localhost:8080/pkg/builtin/#error">error</a></pre>
+				<p>
+Closes the original reader
+</p>
+
+				
+				
+				
+			
+				
+				<h3 id="LimitReadCloser.Read">func (*LimitReadCloser) <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/ds3/networking/readerWithSizeDecorator.go?s=658:733#L16">Read</a>
+					<a class="permalink" href="index.html#LimitReadCloser.Read">&#xb6;</a>
+				</h3>
+				<pre>func (limitedReadCloser *<a href="index.html#LimitReadCloser">LimitReadCloser</a>) Read(p []<a href="http://localhost:8080/pkg/builtin/#byte">byte</a>) (n <a href="http://localhost:8080/pkg/builtin/#int">int</a>, err <a href="http://localhost:8080/pkg/builtin/#error">error</a>)</pre>
+				<p>
+Reads from the limited reader
+</p>
+
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="Network">type <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/ds3/networking/net.go?s=288:380#L10">Network</a>
+				<a class="permalink" href="index.html#Network">&#xb6;</a>
+			</h2>
+			
+			<pre>type Network interface {
+    Invoke(httpRequest *<a href="http://localhost:8080/pkg/net/http/">http</a>.<a href="http://localhost:8080/pkg/net/http/#Request">Request</a>) (<a href="../models/index.html">models</a>.<a href="../models/index.html#WebResponse">WebResponse</a>, <a href="http://localhost:8080/pkg/builtin/#error">error</a>)
+}</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+				
+				<h3 id="NewHttpTempRedirectDecorator">func <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/ds3/networking/httpRedirect.go?s=342:419#L10">NewHttpTempRedirectDecorator</a>
+					<a class="permalink" href="index.html#NewHttpTempRedirectDecorator">&#xb6;</a>
+				</h3>
+				<pre>func NewHttpTempRedirectDecorator(network <a href="index.html#Network">Network</a>, maxRedirect <a href="http://localhost:8080/pkg/builtin/#int">int</a>) <a href="index.html#Network">Network</a></pre>
+				
+				
+				
+			
+				
+				<h3 id="NewNetworkRetryDecorator">func <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/ds3/networking/networkRetry.go?s=340:412#L11">NewNetworkRetryDecorator</a>
+					<a class="permalink" href="index.html#NewNetworkRetryDecorator">&#xb6;</a>
+				</h3>
+				<pre>func NewNetworkRetryDecorator(network <a href="index.html#Network">Network</a>, maxRetires <a href="http://localhost:8080/pkg/builtin/#int">int</a>) <a href="index.html#Network">Network</a></pre>
+				
+				
+				
+			
+				
+				<h3 id="NewSendNetwork">func <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/ds3/networking/net.go?s=467:526#L19">NewSendNetwork</a>
+					<a class="permalink" href="index.html#NewSendNetwork">&#xb6;</a>
+				</h3>
+				<pre>func NewSendNetwork(connectionInfo *<a href="index.html#ConnectionInfo">ConnectionInfo</a>) <a href="index.html#Network">Network</a></pre>
+				
+				
+				
+			
+
+			
+		
+			
+			
+			<h2 id="NetworkRetryDecorator">type <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/ds3/networking/networkRetry.go?s=250:338#L6">NetworkRetryDecorator</a>
+				<a class="permalink" href="index.html#NetworkRetryDecorator">&#xb6;</a>
+			</h2>
+			<p>
+Decorator for Network which handles network related retries
+</p>
+
+			<pre>type NetworkRetryDecorator struct {
+    <span class="comment">// contains filtered or unexported fields</span>
+}</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="NetworkRetryDecorator.Invoke">func (*NetworkRetryDecorator) <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/ds3/networking/networkRetry.go?s=548:661#L18">Invoke</a>
+					<a class="permalink" href="index.html#NetworkRetryDecorator.Invoke">&#xb6;</a>
+				</h3>
+				<pre>func (networkRetryDecorator *<a href="index.html#NetworkRetryDecorator">NetworkRetryDecorator</a>) Invoke(httpRequest *<a href="http://localhost:8080/pkg/net/http/">http</a>.<a href="http://localhost:8080/pkg/net/http/#Request">Request</a>) (<a href="../models/index.html">models</a>.<a href="../models/index.html#WebResponse">WebResponse</a>, <a href="http://localhost:8080/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="SendNetwork">type <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/ds3/networking/net.go?s=408:465#L15">SendNetwork</a>
+				<a class="permalink" href="index.html#SendNetwork">&#xb6;</a>
+			</h2>
+			<p>
+Performs http requests
+</p>
+
+			<pre>type SendNetwork struct {
+    <span class="comment">// contains filtered or unexported fields</span>
+}</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="SendNetwork.Invoke">func (*SendNetwork) <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/ds3/networking/net.go?s=643:736#L25">Invoke</a>
+					<a class="permalink" href="index.html#SendNetwork.Invoke">&#xb6;</a>
+				</h3>
+				<pre>func (sendNetwork *<a href="index.html#SendNetwork">SendNetwork</a>) Invoke(httpRequest *<a href="http://localhost:8080/pkg/net/http/">http</a>.<a href="http://localhost:8080/pkg/net/http/#Request">Request</a>) (<a href="../models/index.html">models</a>.<a href="../models/index.html#WebResponse">WebResponse</a>, <a href="http://localhost:8080/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="ToStringPtrInterface">type <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/ds3/networking/typeConverterUtils.go?s=1010:1073#L38">ToStringPtrInterface</a>
+				<a class="permalink" href="index.html#ToStringPtrInterface">&#xb6;</a>
+			</h2>
+			<p>
+Interface for a to string method
+</p>
+
+			<pre>type ToStringPtrInterface interface {
+    StringPtr() *<a href="http://localhost:8080/pkg/builtin/#string">string</a>
+}</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+		
+	
+
+	
+
+
+
+
+
+
+
+<div id="footer">
+Build version go1.9.2.<br>
+Except as <a href="https://developers.google.com/site-policies#restrictions">noted</a>,
+the content of this page is licensed under the
+Creative Commons Attribution 3.0 License,
+and code is licensed under a <a href="http://localhost:8080/LICENSE">BSD license</a>.<br>
+<a href="http://localhost:8080/doc/tos.html">Terms of Service</a> | 
+<a href="http://www.google.com/intl/en/policies/privacy/">Privacy Policy</a>
+</div>
+
+</div><!-- .container -->
+</div><!-- #page -->
+
+<!-- TODO(adonovan): load these from <head> using "defer" attribute? -->
+<script type="text/javascript" src="../../jquery.js"></script>
+<script type="text/javascript" src="../../jquery.treeview.js"></script>
+<script type="text/javascript" src="../../jquery.treeview.edit.js"></script>
+
+
+<script>var goVersion = "go1.9.2";</script>
+<script type="text/javascript" src="../../godocs.js"></script>
+
+</body>
+</html>
+

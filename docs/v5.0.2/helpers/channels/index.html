@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#375EAB">
+
+  <title>channels - The Go Programming Language</title>
+
+<link type="text/css" rel="stylesheet" href="../../style.css">
+
+<link rel="stylesheet" href="../../jquery.treeview.css">
+<script type="text/javascript">window.initFuncs = [];</script>
+</head>
+<body>
+
+<div id='lowframe' style="position: fixed; bottom: 0; left: 0; height: 0; width: 100%; border-top: thin solid grey; background-color: white; overflow: auto;">
+...
+</div><!-- #lowframe -->
+
+<div id="topbar" class="wide"><div class="container">
+<div class="top-heading" id="heading-wide"><a href="http://localhost:8080/">The Go Programming Language</a></div>
+<div class="top-heading" id="heading-narrow"><a href="http://localhost:8080/">Go</a></div>
+<a href="index.html#" id="menu-button"><span id="menu-button-arrow">&#9661;</span></a>
+<form method="GET" action="http://localhost:8080/search">
+<div id="menu">
+<a href="http://localhost:8080/doc/">Documents</a>
+<a href="http://localhost:8080/pkg/">Packages</a>
+<a href="http://localhost:8080/project/">The Project</a>
+<a href="http://localhost:8080/help/">Help</a>
+<a href="http://localhost:8080/blog/">Blog</a>
+
+<input type="text" id="search" name="q" class="inactive" value="Search" placeholder="Search">
+</div>
+</form>
+
+</div></div>
+
+
+
+<div id="page" class="wide">
+<div class="container">
+
+
+  <h1>
+    Package channels
+    <span class="text-muted"></span>
+  </h1>
+
+
+
+
+
+
+
+<div id="nav"></div>
+
+
+<!--
+	Copyright 2009 The Go Authors. All rights reserved.
+	Use of this source code is governed by a BSD-style
+	license that can be found in the LICENSE file.
+-->
+<!--
+	Note: Static (i.e., not template-generated) href and id
+	attributes start with "pkg-" to make it impossible for
+	them to conflict with generated attributes (some of which
+	correspond to Go identifiers).
+-->
+
+	<script type='text/javascript'>
+	document.ANALYSIS_DATA = null;
+	document.CALLGRAPH = null;
+	</script>
+
+	
+		
+		<div id="short-nav">
+			<dl>
+			<dd><code>import "github.com/SpectraLogic/ds3_go_sdk/helpers/channels"</code></dd>
+			</dl>
+			<dl>
+			<dd><a href="index.html#pkg-overview" class="overviewLink">Overview</a></dd>
+			<dd><a href="index.html#pkg-index" class="indexLink">Index</a></dd>
+			
+			
+			</dl>
+		</div>
+		<!-- The package's Name is printed as title by the top-level template -->
+		<div id="pkg-overview" class="toggleVisible">
+			<div class="collapsed">
+				<h2 class="toggleButton" title="Click to show Overview section">Overview ▹</h2>
+			</div>
+			<div class="expanded">
+				<h2 class="toggleButton" title="Click to hide Overview section">Overview ▾</h2>
+				
+			</div>
+		</div>
+		
+
+		<div id="pkg-index" class="toggleVisible">
+		<div class="collapsed">
+			<h2 class="toggleButton" title="Click to show Index section">Index ▹</h2>
+		</div>
+		<div class="expanded">
+			<h2 class="toggleButton" title="Click to hide Index section">Index ▾</h2>
+
+		<!-- Table of contents for API; must be named manual-nav to turn off auto nav. -->
+			<div id="manual-nav">
+			<dl>
+			
+			
+			
+				
+				<dd><a href="index.html#NewDs3ObjectReadCloserDecorator">func NewDs3ObjectReadCloserDecorator(reader io.Reader) io.ReadCloser</a></dd>
+			
+				
+				<dd><a href="index.html#NewObjectReadChannelDecorator">func NewObjectReadChannelDecorator(reader io.Reader) models.ReadChannelBuilder</a></dd>
+			
+				
+				<dd><a href="index.html#NewPartialObjectChannelBuilder">func NewPartialObjectChannelBuilder(name string, objRanges []ds3Models.Range) helperModels.WriteChannelBuilder</a></dd>
+			
+				
+				<dd><a href="index.html#NewReadChannelBuilder">func NewReadChannelBuilder(name string) helperModels.ReadChannelBuilder</a></dd>
+			
+				
+				<dd><a href="index.html#NewWriteChannelBuilder">func NewWriteChannelBuilder(name string) helperModels.WriteChannelBuilder</a></dd>
+			
+			
+				
+				<dd><a href="index.html#Ds3ObjectReadCloser">type Ds3ObjectReadCloser</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#Ds3ObjectReadCloser.Close">func (Ds3ObjectReadCloser Ds3ObjectReadCloser) Close() error</a></dd>
+				
+			
+				
+				<dd><a href="index.html#ObjectReadChannelBuilder">type ObjectReadChannelBuilder</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#ObjectReadChannelBuilder.GetChannel">func (builder *ObjectReadChannelBuilder) GetChannel(offset int64) (io.ReadCloser, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#ObjectReadChannelBuilder.IsChannelAvailable">func (builder *ObjectReadChannelBuilder) IsChannelAvailable(offset int64) bool</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#ObjectReadChannelBuilder.OnDone">func (ObjectReadChannelBuilder) OnDone(reader io.ReadCloser)</a></dd>
+				
+			
+				
+				<dd><a href="index.html#ObjectReadChannelDecorator">type ObjectReadChannelDecorator</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#ObjectReadChannelDecorator.GetChannel">func (readChannelDecorator *ObjectReadChannelDecorator) GetChannel(offset int64) (io.ReadCloser, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#ObjectReadChannelDecorator.IsChannelAvailable">func (readChannelDecorator *ObjectReadChannelDecorator) IsChannelAvailable(offset int64) bool</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#ObjectReadChannelDecorator.OnDone">func (readChannelDecorator *ObjectReadChannelDecorator) OnDone(reader io.ReadCloser)</a></dd>
+				
+			
+				
+				<dd><a href="index.html#ObjectWriteChannelBuilder">type ObjectWriteChannelBuilder</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#ObjectWriteChannelBuilder.GetChannel">func (builder *ObjectWriteChannelBuilder) GetChannel(offset int64) (io.WriteCloser, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#ObjectWriteChannelBuilder.IsChannelAvailable">func (builder *ObjectWriteChannelBuilder) IsChannelAvailable(offset int64) bool</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#ObjectWriteChannelBuilder.OnDone">func (builder *ObjectWriteChannelBuilder) OnDone(writer io.WriteCloser)</a></dd>
+				
+			
+				
+				<dd><a href="index.html#PartialObjectWriteChannelBuilder">type PartialObjectWriteChannelBuilder</a></dd>
+				
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#PartialObjectWriteChannelBuilder.GetChannel">func (builder *PartialObjectWriteChannelBuilder) GetChannel(objectOffset int64) (io.WriteCloser, error)</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#PartialObjectWriteChannelBuilder.IsChannelAvailable">func (builder *PartialObjectWriteChannelBuilder) IsChannelAvailable(objectOffset int64) bool</a></dd>
+				
+					
+					<dd>&nbsp; &nbsp; <a href="index.html#PartialObjectWriteChannelBuilder.OnDone">func (builder *PartialObjectWriteChannelBuilder) OnDone(writer io.WriteCloser)</a></dd>
+				
+			
+			
+			</dl>
+			</div><!-- #manual-nav -->
+
+		
+
+		
+			<h4>Package files</h4>
+			<p>
+			<span style="font-size:90%">
+			
+				<a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/channels/ds3OjectReadCloserDecorator.go">ds3OjectReadCloserDecorator.go</a>
+			
+				<a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/channels/objectReadChannelBuilder.go">objectReadChannelBuilder.go</a>
+			
+				<a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/channels/objectReadChannelDecorator.go">objectReadChannelDecorator.go</a>
+			
+				<a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/channels/objectWriteChannelBuilder.go">objectWriteChannelBuilder.go</a>
+			
+				<a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/channels/partialObjectRangeMap.go">partialObjectRangeMap.go</a>
+			
+				<a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/channels/partialObjectWriteChannelBuilder.go">partialObjectWriteChannelBuilder.go</a>
+			
+			</span>
+			</p>
+		
+		</div><!-- .expanded -->
+		</div><!-- #pkg-index -->
+
+		<div id="pkg-callgraph" class="toggle" style="display: none">
+		<div class="collapsed">
+			<h2 class="toggleButton" title="Click to show Internal Call Graph section">Internal call graph ▹</h2>
+		</div> <!-- .expanded -->
+		<div class="expanded">
+			<h2 class="toggleButton" title="Click to hide Internal Call Graph section">Internal call graph ▾</h2>
+			<p>
+			  In the call graph viewer below, each node
+			  is a function belonging to this package
+			  and its children are the functions it
+			  calls&mdash;perhaps dynamically.
+			</p>
+			<p>
+			  The root nodes are the entry points of the
+			  package: functions that may be called from
+			  outside the package.
+			  There may be non-exported or anonymous
+			  functions among them if they are called
+			  dynamically from another package.
+			</p>
+			<p>
+			  Click a node to visit that function's source code.
+			  From there you can visit its callers by
+			  clicking its declaring <code>func</code>
+			  token.
+			</p>
+			<p>
+			  Functions may be omitted if they were
+			  determined to be unreachable in the
+			  particular programs or tests that were
+			  analyzed.
+			</p>
+			<!-- Zero means show all package entry points. -->
+			<ul style="margin-left: 0.5in" id="callgraph-0" class="treeview"></ul>
+		</div>
+		</div> <!-- #pkg-callgraph -->
+
+		
+		
+		
+			
+			
+			<h2 id="NewDs3ObjectReadCloserDecorator">func <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/channels/ds3OjectReadCloserDecorator.go?s=79:147#L1">NewDs3ObjectReadCloserDecorator</a>
+				<a class="permalink" href="index.html#NewDs3ObjectReadCloserDecorator">&#xb6;</a>
+			</h2>
+			<pre>func NewDs3ObjectReadCloserDecorator(reader <a href="http://localhost:8080/pkg/io/">io</a>.<a href="http://localhost:8080/pkg/io/#Reader">Reader</a>) <a href="http://localhost:8080/pkg/io/">io</a>.<a href="http://localhost:8080/pkg/io/#ReadCloser">ReadCloser</a></pre>
+			
+			
+			
+
+		
+			
+			
+			<h2 id="NewObjectReadChannelDecorator">func <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/channels/objectReadChannelDecorator.go?s=159:237#L2">NewObjectReadChannelDecorator</a>
+				<a class="permalink" href="index.html#NewObjectReadChannelDecorator">&#xb6;</a>
+			</h2>
+			<pre>func NewObjectReadChannelDecorator(reader <a href="http://localhost:8080/pkg/io/">io</a>.<a href="http://localhost:8080/pkg/io/#Reader">Reader</a>) <a href="../models/index.html">models</a>.<a href="../models/index.html#ReadChannelBuilder">ReadChannelBuilder</a></pre>
+			
+			
+			
+
+		
+			
+			
+			<h2 id="NewPartialObjectChannelBuilder">func <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/channels/partialObjectWriteChannelBuilder.go?s=349:459#L6">NewPartialObjectChannelBuilder</a>
+				<a class="permalink" href="index.html#NewPartialObjectChannelBuilder">&#xb6;</a>
+			</h2>
+			<pre>func NewPartialObjectChannelBuilder(name <a href="http://localhost:8080/pkg/builtin/#string">string</a>, objRanges []<a href="../../ds3/models/index.html">ds3Models</a>.<a href="../../ds3/models/index.html#Range">Range</a>) <a href="../models/index.html">helperModels</a>.<a href="../models/index.html#WriteChannelBuilder">WriteChannelBuilder</a></pre>
+			
+			
+			
+
+		
+			
+			
+			<h2 id="NewReadChannelBuilder">func <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/channels/objectReadChannelBuilder.go?s=377:448#L7">NewReadChannelBuilder</a>
+				<a class="permalink" href="index.html#NewReadChannelBuilder">&#xb6;</a>
+			</h2>
+			<pre>func NewReadChannelBuilder(name <a href="http://localhost:8080/pkg/builtin/#string">string</a>) <a href="../models/index.html">helperModels</a>.<a href="../models/index.html#ReadChannelBuilder">ReadChannelBuilder</a></pre>
+			
+			
+			
+
+		
+			
+			
+			<h2 id="NewWriteChannelBuilder">func <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/channels/objectWriteChannelBuilder.go?s=429:502#L6">NewWriteChannelBuilder</a>
+				<a class="permalink" href="index.html#NewWriteChannelBuilder">&#xb6;</a>
+			</h2>
+			<pre>func NewWriteChannelBuilder(name <a href="http://localhost:8080/pkg/builtin/#string">string</a>) <a href="../models/index.html">helperModels</a>.<a href="../models/index.html#WriteChannelBuilder">WriteChannelBuilder</a></pre>
+			
+			
+			
+
+		
+		
+			
+			
+			<h2 id="Ds3ObjectReadCloser">type <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/channels/ds3OjectReadCloserDecorator.go?s=31:77#L1">Ds3ObjectReadCloser</a>
+				<a class="permalink" href="index.html#Ds3ObjectReadCloser">&#xb6;</a>
+			</h2>
+			
+			<pre>type Ds3ObjectReadCloser struct {
+    <a href="http://localhost:8080/pkg/io/">io</a>.<a href="http://localhost:8080/pkg/io/#Reader">Reader</a>
+}</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="Ds3ObjectReadCloser.Close">func (Ds3ObjectReadCloser) <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/channels/ds3OjectReadCloserDecorator.go?s=200:260#L3">Close</a>
+					<a class="permalink" href="index.html#Ds3ObjectReadCloser.Close">&#xb6;</a>
+				</h3>
+				<pre>func (Ds3ObjectReadCloser <a href="index.html#Ds3ObjectReadCloser">Ds3ObjectReadCloser</a>) Close() <a href="http://localhost:8080/pkg/builtin/#error">error</a></pre>
+				
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="ObjectReadChannelBuilder">type <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/channels/objectReadChannelBuilder.go?s=319:375#L3">ObjectReadChannelBuilder</a>
+				<a class="permalink" href="index.html#ObjectReadChannelBuilder">&#xb6;</a>
+			</h2>
+			<p>
+Implements the ReadChannelBuilder interface and uses a file as the ReadCloser implementation.
+This channel functions as a random-access and can be used concurrently.
+</p>
+
+			<pre>type ObjectReadChannelBuilder struct {
+    <span class="comment">// contains filtered or unexported fields</span>
+}</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="ObjectReadChannelBuilder.GetChannel">func (*ObjectReadChannelBuilder) <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/channels/objectReadChannelBuilder.go?s=502:590#L11">GetChannel</a>
+					<a class="permalink" href="index.html#ObjectReadChannelBuilder.GetChannel">&#xb6;</a>
+				</h3>
+				<pre>func (builder *<a href="index.html#ObjectReadChannelBuilder">ObjectReadChannelBuilder</a>) GetChannel(offset <a href="http://localhost:8080/pkg/builtin/#int64">int64</a>) (<a href="http://localhost:8080/pkg/io/">io</a>.<a href="http://localhost:8080/pkg/io/#ReadCloser">ReadCloser</a>, <a href="http://localhost:8080/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="ObjectReadChannelBuilder.IsChannelAvailable">func (*ObjectReadChannelBuilder) <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/channels/objectReadChannelBuilder.go?s=770:848#L20">IsChannelAvailable</a>
+					<a class="permalink" href="index.html#ObjectReadChannelBuilder.IsChannelAvailable">&#xb6;</a>
+				</h3>
+				<pre>func (builder *<a href="index.html#ObjectReadChannelBuilder">ObjectReadChannelBuilder</a>) IsChannelAvailable(offset <a href="http://localhost:8080/pkg/builtin/#int64">int64</a>) <a href="http://localhost:8080/pkg/builtin/#bool">bool</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="ObjectReadChannelBuilder.OnDone">func (ObjectReadChannelBuilder) <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/channels/objectReadChannelBuilder.go?s=870:930#L24">OnDone</a>
+					<a class="permalink" href="index.html#ObjectReadChannelBuilder.OnDone">&#xb6;</a>
+				</h3>
+				<pre>func (<a href="index.html#ObjectReadChannelBuilder">ObjectReadChannelBuilder</a>) OnDone(reader <a href="http://localhost:8080/pkg/io/">io</a>.<a href="http://localhost:8080/pkg/io/#ReadCloser">ReadCloser</a>)</pre>
+				
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="ObjectReadChannelDecorator">type <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/channels/objectReadChannelDecorator.go?s=89:157#L1">ObjectReadChannelDecorator</a>
+				<a class="permalink" href="index.html#ObjectReadChannelDecorator">&#xb6;</a>
+			</h2>
+			
+			<pre>type ObjectReadChannelDecorator struct {
+    <span class="comment">// contains filtered or unexported fields</span>
+}</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="ObjectReadChannelDecorator.GetChannel">func (*ObjectReadChannelDecorator) <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/channels/objectReadChannelDecorator.go?s=447:550#L10">GetChannel</a>
+					<a class="permalink" href="index.html#ObjectReadChannelDecorator.GetChannel">&#xb6;</a>
+				</h3>
+				<pre>func (readChannelDecorator *<a href="index.html#ObjectReadChannelDecorator">ObjectReadChannelDecorator</a>) GetChannel(offset <a href="http://localhost:8080/pkg/builtin/#int64">int64</a>) (<a href="http://localhost:8080/pkg/io/">io</a>.<a href="http://localhost:8080/pkg/io/#ReadCloser">ReadCloser</a>, <a href="http://localhost:8080/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="ObjectReadChannelDecorator.IsChannelAvailable">func (*ObjectReadChannelDecorator) <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/channels/objectReadChannelDecorator.go?s=335:428#L6">IsChannelAvailable</a>
+					<a class="permalink" href="index.html#ObjectReadChannelDecorator.IsChannelAvailable">&#xb6;</a>
+				</h3>
+				<pre>func (readChannelDecorator *<a href="index.html#ObjectReadChannelDecorator">ObjectReadChannelDecorator</a>) IsChannelAvailable(offset <a href="http://localhost:8080/pkg/builtin/#int64">int64</a>) <a href="http://localhost:8080/pkg/builtin/#bool">bool</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="ObjectReadChannelDecorator.OnDone">func (*ObjectReadChannelDecorator) <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/channels/objectReadChannelDecorator.go?s=601:685#L14">OnDone</a>
+					<a class="permalink" href="index.html#ObjectReadChannelDecorator.OnDone">&#xb6;</a>
+				</h3>
+				<pre>func (readChannelDecorator *<a href="index.html#ObjectReadChannelDecorator">ObjectReadChannelDecorator</a>) OnDone(reader <a href="http://localhost:8080/pkg/io/">io</a>.<a href="http://localhost:8080/pkg/io/#ReadCloser">ReadCloser</a>)</pre>
+				
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="ObjectWriteChannelBuilder">type <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/channels/objectWriteChannelBuilder.go?s=370:427#L2">ObjectWriteChannelBuilder</a>
+				<a class="permalink" href="index.html#ObjectWriteChannelBuilder">&#xb6;</a>
+			</h2>
+			<p>
+Implements the WriteChannelBuilder interface and uses a file as the WriteCloser implementation.
+This channel functions as a random-access and can be used concurrently so long as two writers
+are not writing to the same location within the file.
+</p>
+
+			<pre>type ObjectWriteChannelBuilder struct {
+    <span class="comment">// contains filtered or unexported fields</span>
+}</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="ObjectWriteChannelBuilder.GetChannel">func (*ObjectWriteChannelBuilder) <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/channels/objectWriteChannelBuilder.go?s=658:748#L14">GetChannel</a>
+					<a class="permalink" href="index.html#ObjectWriteChannelBuilder.GetChannel">&#xb6;</a>
+				</h3>
+				<pre>func (builder *<a href="index.html#ObjectWriteChannelBuilder">ObjectWriteChannelBuilder</a>) GetChannel(offset <a href="http://localhost:8080/pkg/builtin/#int64">int64</a>) (<a href="http://localhost:8080/pkg/io/">io</a>.<a href="http://localhost:8080/pkg/io/#WriteCloser">WriteCloser</a>, <a href="http://localhost:8080/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="ObjectWriteChannelBuilder.IsChannelAvailable">func (*ObjectWriteChannelBuilder) <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/channels/objectWriteChannelBuilder.go?s=557:636#L10">IsChannelAvailable</a>
+					<a class="permalink" href="index.html#ObjectWriteChannelBuilder.IsChannelAvailable">&#xb6;</a>
+				</h3>
+				<pre>func (builder *<a href="index.html#ObjectWriteChannelBuilder">ObjectWriteChannelBuilder</a>) IsChannelAvailable(offset <a href="http://localhost:8080/pkg/builtin/#int64">int64</a>) <a href="http://localhost:8080/pkg/builtin/#bool">bool</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="ObjectWriteChannelBuilder.OnDone">func (*ObjectWriteChannelBuilder) <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/channels/objectWriteChannelBuilder.go?s=928:999#L23">OnDone</a>
+					<a class="permalink" href="index.html#ObjectWriteChannelBuilder.OnDone">&#xb6;</a>
+				</h3>
+				<pre>func (builder *<a href="index.html#ObjectWriteChannelBuilder">ObjectWriteChannelBuilder</a>) OnDone(writer <a href="http://localhost:8080/pkg/io/">io</a>.<a href="http://localhost:8080/pkg/io/#WriteCloser">WriteCloser</a>)</pre>
+				
+				
+				
+				
+			
+		
+			
+			
+			<h2 id="PartialObjectWriteChannelBuilder">type <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/channels/partialObjectWriteChannelBuilder.go?s=179:347#L1">PartialObjectWriteChannelBuilder</a>
+				<a class="permalink" href="index.html#PartialObjectWriteChannelBuilder">&#xb6;</a>
+			</h2>
+			
+			<pre>type PartialObjectWriteChannelBuilder struct {
+    <span class="comment">// contains filtered or unexported fields</span>
+}</pre>
+
+			
+
+			
+
+			
+			
+			
+
+			
+
+			
+				
+				<h3 id="PartialObjectWriteChannelBuilder.GetChannel">func (*PartialObjectWriteChannelBuilder) <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/channels/partialObjectWriteChannelBuilder.go?s=707:810#L18">GetChannel</a>
+					<a class="permalink" href="index.html#PartialObjectWriteChannelBuilder.GetChannel">&#xb6;</a>
+				</h3>
+				<pre>func (builder *<a href="index.html#PartialObjectWriteChannelBuilder">PartialObjectWriteChannelBuilder</a>) GetChannel(objectOffset <a href="http://localhost:8080/pkg/builtin/#int64">int64</a>) (<a href="http://localhost:8080/pkg/io/">io</a>.<a href="http://localhost:8080/pkg/io/#WriteCloser">WriteCloser</a>, <a href="http://localhost:8080/pkg/builtin/#error">error</a>)</pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="PartialObjectWriteChannelBuilder.IsChannelAvailable">func (*PartialObjectWriteChannelBuilder) <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/channels/partialObjectWriteChannelBuilder.go?s=593:685#L14">IsChannelAvailable</a>
+					<a class="permalink" href="index.html#PartialObjectWriteChannelBuilder.IsChannelAvailable">&#xb6;</a>
+				</h3>
+				<pre>func (builder *<a href="index.html#PartialObjectWriteChannelBuilder">PartialObjectWriteChannelBuilder</a>) IsChannelAvailable(objectOffset <a href="http://localhost:8080/pkg/builtin/#int64">int64</a>) <a href="http://localhost:8080/pkg/builtin/#bool">bool</a></pre>
+				
+				
+				
+				
+			
+				
+				<h3 id="PartialObjectWriteChannelBuilder.OnDone">func (*PartialObjectWriteChannelBuilder) <a href="http://localhost:8080/src/github.com/SpectraLogic/ds3_go_sdk/helpers/channels/partialObjectWriteChannelBuilder.go?s=1212:1290#L37">OnDone</a>
+					<a class="permalink" href="index.html#PartialObjectWriteChannelBuilder.OnDone">&#xb6;</a>
+				</h3>
+				<pre>func (builder *<a href="index.html#PartialObjectWriteChannelBuilder">PartialObjectWriteChannelBuilder</a>) OnDone(writer <a href="http://localhost:8080/pkg/io/">io</a>.<a href="http://localhost:8080/pkg/io/#WriteCloser">WriteCloser</a>)</pre>
+				
+				
+				
+				
+			
+		
+	
+
+	
+
+
+
+
+
+
+
+<div id="footer">
+Build version go1.9.2.<br>
+Except as <a href="https://developers.google.com/site-policies#restrictions">noted</a>,
+the content of this page is licensed under the
+Creative Commons Attribution 3.0 License,
+and code is licensed under a <a href="http://localhost:8080/LICENSE">BSD license</a>.<br>
+<a href="http://localhost:8080/doc/tos.html">Terms of Service</a> | 
+<a href="http://www.google.com/intl/en/policies/privacy/">Privacy Policy</a>
+</div>
+
+</div><!-- .container -->
+</div><!-- #page -->
+
+<!-- TODO(adonovan): load these from <head> using "defer" attribute? -->
+<script type="text/javascript" src="../../jquery.js"></script>
+<script type="text/javascript" src="../../jquery.treeview.js"></script>
+<script type="text/javascript" src="../../jquery.treeview.edit.js"></script>
+
+
+<script>var goVersion = "go1.9.2";</script>
+<script type="text/javascript" src="../../godocs.js"></script>
+
+</body>
+</html>
+
