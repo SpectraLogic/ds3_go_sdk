@@ -35,4 +35,8 @@ func main() {
     // Retrieves several objects from a bucket on the BP.
     // Source code: getBulkSample.go
     functions.GetBulkSample()
+
+    // Creates some buckets on the BP
+    // Source code: putBucketSample.go
+    functions.PutBucketSample()
 }
