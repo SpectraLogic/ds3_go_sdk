@@ -55,7 +55,8 @@ Examples
 All examples are listed in the [samples](samples/) module. All samples can be run from [samples main](samples/samples.go).
 
 * [How to use get service to list buckets](samples/functions/getServiceSample.go)
-* [How to create a bucket](samples/functions/getBucketSample.go)
+* [How to create a bucket](samples/functions/putBucketSample.go)
+* [How to get a list of S3 objects in a bucket](samples/functions/getBucketSample.go)
 * [How to get a single object using a naked S3 get](samples/functions/getObjectSample.go)
 * [How to use bulk put to send multiple files to the BP efficiently](samples/functions/putBulkSample.go)
 * [How to use bulk get to retrieve multiple files from the BP efficiently](samples/functions/getBulkSample.go)
