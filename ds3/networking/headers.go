@@ -1,3 +1,14 @@
+// Copyright 2014-2018 Spectra Logic Corporation. All Rights Reserved.
+// Licensed under the Apache License, Version 2.0 (the "License"). You may not use
+// this file except in compliance with the License. A copy of the License is located at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// or in the "license" file accompanying this file.
+// This file is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+// CONDITIONS OF ANY KIND, either express or implied. See the License for the
+// specific language governing permissions and limitations under the License.
+
 package networking
 
 import (
@@ -8,6 +19,7 @@ import (
     "encoding/base64"
     "errors"
     "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
+    "net/url"
 )
 
 // Http Headers
@@ -55,6 +67,12 @@ type signatureFields struct {
 
 func (fields *signatureFields) BuildAuthHeaderValue(creds *Credentials) (string) {
     // Build the string that we need to compute the MAC on.
+
+    // Create a URL containing just the path so that we can use the library's escaping logic
+    // to match the http request escaping
+    var urlPath url.URL
+    urlPath.Path = fields.Path
+
     stringToSign := fmt.Sprintf(
         "%s\n%s\n%s\n%s\n%s%s",
         fields.Verb,
@@ -62,7 +80,7 @@ func (fields *signatureFields) BuildAuthHeaderValue(creds *Credentials) (string)
         fields.ContentType,
         fields.Date,
         fields.CanonicalizedAmzHeaders,
-        fields.Path,
+        urlPath.EscapedPath(),
     )
 
     signature := computeSignature(creds.Key, stringToSign)
