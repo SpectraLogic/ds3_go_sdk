@@ -57,12 +57,13 @@ func getCurrentTime() (string) {
 }
 
 type signatureFields struct {
-    Verb                    string
-    ContentHash             string
-    ContentType             string
-    Date                    string
-    CanonicalizedAmzHeaders string
-    Path                    string
+    Verb                      string
+    ContentHash               string
+    ContentType               string
+    Date                      string
+    CanonicalizedAmzHeaders   string
+    CanonicalizedSubResources string
+    Path                      string
 }
 
 func (fields *signatureFields) BuildAuthHeaderValue(creds *Credentials) (string) {
@@ -74,13 +75,14 @@ func (fields *signatureFields) BuildAuthHeaderValue(creds *Credentials) (string)
     urlPath.Path = fields.Path
 
     stringToSign := fmt.Sprintf(
-        "%s\n%s\n%s\n%s\n%s%s",
+        "%s\n%s\n%s\n%s\n%s%s%s",
         fields.Verb,
         fields.ContentHash,
         fields.ContentType,
         fields.Date,
         fields.CanonicalizedAmzHeaders,
         urlPath.EscapedPath(),
+        fields.CanonicalizedSubResources,
     )
 
     signature := computeSignature(creds.Key, stringToSign)
