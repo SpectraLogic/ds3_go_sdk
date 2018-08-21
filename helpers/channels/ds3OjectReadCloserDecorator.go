@@ -11,6 +11,10 @@ func NewDs3ObjectReadCloserDecorator(reader io.Reader) io.ReadCloser {
 }
 
 func (Ds3ObjectReadCloser Ds3ObjectReadCloser) Close() error {
+	readCloser, isReadCloser := Ds3ObjectReadCloser.Reader.(io.ReadCloser)
+	if isReadCloser && readCloser != nil {
+		return readCloser.Close()
+	}
 	return nil
 }
 
