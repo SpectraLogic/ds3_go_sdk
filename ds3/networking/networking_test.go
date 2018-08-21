@@ -60,3 +60,30 @@ func TestBuildingAuthorizationDigestWithMetadata(t *testing.T) {
 	expected := models.AMZ_META_HEADER + strings.ToLower(gracie) + ":" + eskimo + "\n" + models.AMZ_META_HEADER + strings.ToLower(shasta) + ":" + samoyed + "\n"
 	ds3Testing.AssertBool(t, "amazonHeader string isn't what we expected", true, strings.Compare(amazonHeaders, expected) == 0)
 }
+
+func TestBuildingAuthorizationDigestWithSignatureQueryParams(t *testing.T) {
+	httpRequestBuilder := NewHttpRequestBuilder()
+
+	endpointUrl, err := url.Parse("https://google.com")
+	ds3Testing.AssertNilError(t, err)
+
+	connectionInfo := ConnectionInfo{
+		Endpoint:    endpointUrl,
+		Credentials: &Credentials{AccessId: "access", Key: "key"},
+		Proxy:       nil}
+
+	httpRequestBuilder.
+		WithQueryParam("versioning", "one with spaces").
+		WithQueryParam("delete", "").
+		WithQueryParam("uploads", "two").
+		WithQueryParam("doesnotexist", "four").
+		WithQueryParam("versionId", "version").
+		Build(&connectionInfo)
+
+	subResources := httpRequestBuilder.signatureFields.CanonicalizedSubResources
+
+	ds3Testing.AssertBool(t, "expected sub resources to have something in it", true, len(subResources) > 0)
+
+	expected := "?delete&uploads=two&versionId=version&versioning=one%20with%20spaces"
+	ds3Testing.AssertString(t, "sub resources", expected, subResources)
+}

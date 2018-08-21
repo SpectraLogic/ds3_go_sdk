@@ -18,6 +18,31 @@ import (
     "github.com/SpectraLogic/ds3_go_sdk/ds3/networking"
 )
 
+func (client *Client) CompleteBlobject(request *models.CompleteBlobjectRequest) (*models.CompleteBlobjectResponse, error) {
+    // Build the http request
+    httpRequest, err := networking.NewHttpRequestBuilder().
+        WithHttpVerb(HTTP_VERB_POST).
+        WithPath("/" + request.BucketName + "/" + request.ObjectName).
+        WithQueryParam("blob", request.Blob).
+        WithQueryParam("job", request.Job).
+        Build(client.connectionInfo)
+
+    if err != nil {
+        return nil, err
+    }
+
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
+
+    // Invoke the HTTP request.
+    response, requestErr := networkRetryDecorator.Invoke(httpRequest)
+    if requestErr != nil {
+        return nil, requestErr
+    }
+
+    // Create a response object based on the result.
+    return models.NewCompleteBlobjectResponse(response)
+}
+
 func (client *Client) CompleteMultiPartUpload(request *models.CompleteMultiPartUploadRequest) (*models.CompleteMultiPartUploadResponse, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
@@ -1276,6 +1301,7 @@ func (client *Client) RegisterS3TargetSpectraS3(request *models.RegisterS3Target
         WithOptionalQueryParam("data_path_end_point", request.DataPathEndPoint).
         WithOptionalQueryParam("default_read_preference", networking.InterfaceToStrPtr(request.DefaultReadPreference)).
         WithOptionalQueryParam("https", networking.BoolPtrToStrPtr(request.Https)).
+        WithOptionalQueryParam("naming_mode", networking.InterfaceToStrPtr(request.NamingMode)).
         WithOptionalQueryParam("offline_data_staging_window_in_tb", networking.IntPtrToStrPtr(request.OfflineDataStagingWindowInTb)).
         WithOptionalQueryParam("permit_going_out_of_sync", networking.BoolPtrToStrPtr(request.PermitGoingOutOfSync)).
         WithOptionalQueryParam("proxy_domain", request.ProxyDomain).
@@ -1309,7 +1335,9 @@ func (client *Client) DelegateCreateUserSpectraS3(request *models.DelegateCreate
         WithHttpVerb(HTTP_VERB_POST).
         WithPath("/_rest_/user").
         WithQueryParam("name", request.Name).
+        WithOptionalQueryParam("default_data_policy_id", request.DefaultDataPolicyId).
         WithOptionalQueryParam("id", request.Id).
+        WithOptionalQueryParam("max_buckets", networking.IntPtrToStrPtr(request.MaxBuckets)).
         WithOptionalQueryParam("secret_key", request.SecretKey).
         Build(client.connectionInfo)
 

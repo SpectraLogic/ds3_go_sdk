@@ -129,6 +129,7 @@ func (builder *HttpRequestBuilder) Build(conn *ConnectionInfo) (*http.Request, e
     builder.signatureFields.Date = getCurrentTime()
 
     builder.maybeAddAmazonCanonicalHeaders()
+    builder.maybeAddSignatureQueryParams()
 
     authHeaderVal := builder.signatureFields.BuildAuthHeaderValue(conn.Credentials)
 
@@ -141,6 +142,56 @@ func (builder *HttpRequestBuilder) buildUrl(conn *ConnectionInfo) string {
     httpUrl.Path = builder.signatureFields.Path
     httpUrl.RawQuery = encodeQueryParams(builder.queryParams)
     return httpUrl.String()
+}
+
+func (builder *HttpRequestBuilder) maybeAddSignatureQueryParams() {
+    if len(*builder.queryParams) == 0 {
+        return
+    }
+
+    signatureQueryParams := NewCustomUrlValues()
+
+    // get the list of query parameters that are required in the signature
+    for key, values := range *builder.queryParams {
+        switch key {
+        case "acl",
+            "lifecycle",
+            "location",
+            "logging",
+            "notification",
+            "partNumber",
+            "requestPayment",
+            "torrent",
+            "uploadId",
+            "uploads",
+            "versionId",
+            "versioning",
+            "versions",
+            "website",
+            "delete",
+            "response-content-type",
+            "response-content-language",
+            "response-expires",
+            "response-cache-control",
+            "response-content-disposition",
+            "response-content-encoding":
+
+            // add all values associated with the key to the signature
+            for _, value := range values {
+                signatureQueryParams.Add(key, value)
+            }
+
+        default:
+            //do nothing
+        }
+    }
+
+    if signatureQueryParams.Size() == 0 {
+        return
+    }
+
+    // encode query parameters and percent encode the spaces
+    builder.signatureFields.CanonicalizedSubResources = "?" + strings.Replace(signatureQueryParams.Encode(), "+", "%20", -1)
 }
 
 func (builder *HttpRequestBuilder) maybeAddAmazonCanonicalHeaders() {

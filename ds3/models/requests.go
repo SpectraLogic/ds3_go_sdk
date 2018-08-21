@@ -32,6 +32,22 @@ func NewAbortMultiPartUploadRequest(bucketName string, objectName string, upload
     }
 }
 
+type CompleteBlobjectRequest struct {
+    BucketName string
+    ObjectName string
+    Blob string
+    Job string
+}
+
+func NewCompleteBlobjectRequest(bucketName string, objectName string, blob string, job string) *CompleteBlobjectRequest {
+    return &CompleteBlobjectRequest{
+        BucketName: bucketName,
+        ObjectName: objectName,
+        Blob: blob,
+        Job: job,
+    }
+}
+
 type CompleteMultiPartUploadRequest struct {
     BucketName string
     ObjectName string
@@ -3054,6 +3070,7 @@ type PutBulkJobSpectraS3Request struct {
     MinimizeSpanningAcrossMedia *bool
     Name *string
     Objects []Ds3PutObject
+    PreAllocateJobSpace bool
     Priority Priority
     VerifyAfterWrite *bool
 }
@@ -3097,6 +3114,11 @@ func (putBulkJobSpectraS3Request *PutBulkJobSpectraS3Request) WithMinimizeSpanni
 
 func (putBulkJobSpectraS3Request *PutBulkJobSpectraS3Request) WithName(name string) *PutBulkJobSpectraS3Request {
     putBulkJobSpectraS3Request.Name = &name
+    return putBulkJobSpectraS3Request
+}
+
+func (putBulkJobSpectraS3Request *PutBulkJobSpectraS3Request) WithPreAllocateJobSpace() *PutBulkJobSpectraS3Request {
+    putBulkJobSpectraS3Request.PreAllocateJobSpace = true
     return putBulkJobSpectraS3Request
 }
 
@@ -9013,6 +9035,7 @@ type GetS3TargetsSpectraS3Request struct {
     Https *bool
     LastPage bool
     Name *string
+    NamingMode CloudNamingMode
     PageLength *int
     PageOffset *int
     PageStartMarker *string
@@ -9054,6 +9077,11 @@ func (getS3TargetsSpectraS3Request *GetS3TargetsSpectraS3Request) WithLastPage()
 
 func (getS3TargetsSpectraS3Request *GetS3TargetsSpectraS3Request) WithName(name string) *GetS3TargetsSpectraS3Request {
     getS3TargetsSpectraS3Request.Name = &name
+    return getS3TargetsSpectraS3Request
+}
+
+func (getS3TargetsSpectraS3Request *GetS3TargetsSpectraS3Request) WithNamingMode(namingMode CloudNamingMode) *GetS3TargetsSpectraS3Request {
+    getS3TargetsSpectraS3Request.NamingMode = namingMode
     return getS3TargetsSpectraS3Request
 }
 
@@ -9141,6 +9169,7 @@ type ModifyS3TargetSpectraS3Request struct {
     DefaultReadPreference TargetReadPreferenceType
     Https *bool
     Name *string
+    NamingMode CloudNamingMode
     OfflineDataStagingWindowInTb *int
     PermitGoingOutOfSync *bool
     ProxyDomain *string
@@ -9198,6 +9227,11 @@ func (modifyS3TargetSpectraS3Request *ModifyS3TargetSpectraS3Request) WithHttps(
 
 func (modifyS3TargetSpectraS3Request *ModifyS3TargetSpectraS3Request) WithName(name string) *ModifyS3TargetSpectraS3Request {
     modifyS3TargetSpectraS3Request.Name = &name
+    return modifyS3TargetSpectraS3Request
+}
+
+func (modifyS3TargetSpectraS3Request *ModifyS3TargetSpectraS3Request) WithNamingMode(namingMode CloudNamingMode) *ModifyS3TargetSpectraS3Request {
+    modifyS3TargetSpectraS3Request.NamingMode = namingMode
     return modifyS3TargetSpectraS3Request
 }
 
@@ -9265,6 +9299,7 @@ type RegisterS3TargetSpectraS3Request struct {
     DefaultReadPreference TargetReadPreferenceType
     Https *bool
     Name string
+    NamingMode CloudNamingMode
     OfflineDataStagingWindowInTb *int
     PermitGoingOutOfSync *bool
     ProxyDomain *string
@@ -9312,6 +9347,11 @@ func (registerS3TargetSpectraS3Request *RegisterS3TargetSpectraS3Request) WithDe
 
 func (registerS3TargetSpectraS3Request *RegisterS3TargetSpectraS3Request) WithHttps(https bool) *RegisterS3TargetSpectraS3Request {
     registerS3TargetSpectraS3Request.Https = &https
+    return registerS3TargetSpectraS3Request
+}
+
+func (registerS3TargetSpectraS3Request *RegisterS3TargetSpectraS3Request) WithNamingMode(namingMode CloudNamingMode) *RegisterS3TargetSpectraS3Request {
+    registerS3TargetSpectraS3Request.NamingMode = namingMode
     return registerS3TargetSpectraS3Request
 }
 
@@ -9377,7 +9417,9 @@ func (verifyS3TargetSpectraS3Request *VerifyS3TargetSpectraS3Request) WithFullDe
 }
 
 type DelegateCreateUserSpectraS3Request struct {
+    DefaultDataPolicyId *string
     Id *string
+    MaxBuckets *int
     Name string
     SecretKey *string
 }
@@ -9388,8 +9430,18 @@ func NewDelegateCreateUserSpectraS3Request(name string) *DelegateCreateUserSpect
     }
 }
 
+func (delegateCreateUserSpectraS3Request *DelegateCreateUserSpectraS3Request) WithDefaultDataPolicyId(defaultDataPolicyId string) *DelegateCreateUserSpectraS3Request {
+    delegateCreateUserSpectraS3Request.DefaultDataPolicyId = &defaultDataPolicyId
+    return delegateCreateUserSpectraS3Request
+}
+
 func (delegateCreateUserSpectraS3Request *DelegateCreateUserSpectraS3Request) WithId(id string) *DelegateCreateUserSpectraS3Request {
     delegateCreateUserSpectraS3Request.Id = &id
+    return delegateCreateUserSpectraS3Request
+}
+
+func (delegateCreateUserSpectraS3Request *DelegateCreateUserSpectraS3Request) WithMaxBuckets(maxBuckets int) *DelegateCreateUserSpectraS3Request {
+    delegateCreateUserSpectraS3Request.MaxBuckets = &maxBuckets
     return delegateCreateUserSpectraS3Request
 }
 
