@@ -145,58 +145,53 @@ func (builder *HttpRequestBuilder) buildUrl(conn *ConnectionInfo) string {
 }
 
 func (builder *HttpRequestBuilder) maybeAddSignatureQueryParams() {
-    headerKeys := make([]string, 0)
+    if len(*builder.queryParams) == 0 {
+        return
+    }
+
+    signatureQueryParams := NewCustomUrlValues()
 
     // get the list of query parameters that are required in the signature
-    for key := range *builder.headers {
+    for key, values := range *builder.queryParams {
         switch key {
-        case "Acl",
-            "Lifecycle",
-            "Location",
-            "Logging",
-            "Notification",
-            "Partnumber",
-            "Requestpayment",
-            "Torrent",
-            "Uploadid",
-            "Uploads",
-            "Versionid",
-            "Versioning",
-            "Versions",
-            "Website",
-            "Delete",
-            "Response-Content-Type",
-            "Response-Content-Language",
-            "Response-Expires",
-            "Response-Cache-Control",
-            "Response-Content-Disposition",
-            "Response-Content-Encoding":
-            headerKeys = append(headerKeys, key)
+        case "acl",
+            "lifecycle",
+            "location",
+            "logging",
+            "notification",
+            "partNumber",
+            "requestPayment",
+            "torrent",
+            "uploadId",
+            "uploads",
+            "versionId",
+            "versioning",
+            "versions",
+            "website",
+            "delete",
+            "response-content-type",
+            "response-content-language",
+            "response-expires",
+            "response-cache-control",
+            "response-content-disposition",
+            "response-content-encoding":
+
+            // add all values associated with the key to the signature
+            for _, value := range values {
+                signatureQueryParams.Add(key, value)
+            }
+
         default:
             //do nothing
         }
     }
 
-    if len(headerKeys) == 0 {
+    if signatureQueryParams.Size() == 0 {
         return
     }
 
-    sort.Strings(headerKeys)
-
-    queryParamStrings := make([]string, 0)
-
-    for _, key := range headerKeys {
-        queryParamStrings = append(queryParamStrings, toQueryParamForSignature(key, (*builder.headers)[key]))
-    }
-
-    builder.signatureFields.CanonicalizedSubResources = "?" + strings.Join(queryParamStrings, "&")
-}
-
-func toQueryParamForSignature(key string, values []string) string {
-    if len(values) == 0 || (len(values) == 1 && values[0] == "") {
-        return key
-    }
-    return key + "=" + strings.Join(values, ",")
+    // encode query parameters and percent encode the spaces
+    builder.signatureFields.CanonicalizedSubResources = "?" + strings.Replace(signatureQueryParams.Encode(), "+", "%20", -1)
 }
 
 func (builder *HttpRequestBuilder) maybeAddAmazonCanonicalHeaders() {

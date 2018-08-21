@@ -73,18 +73,17 @@ func TestBuildingAuthorizationDigestWithSignatureQueryParams(t *testing.T) {
 		Proxy:       nil}
 
 	httpRequestBuilder.
-		WithHeader("versioning", "one").
-		WithHeader("delete", "").
-		WithHeader("uploads", "two").
-		WithHeader("uploads", "three").
-		WithHeader("doesnotexist", "four").
-		WithHeader("VersionId", "version").
+		WithQueryParam("versioning", "one with spaces").
+		WithQueryParam("delete", "").
+		WithQueryParam("uploads", "two").
+		WithQueryParam("doesnotexist", "four").
+		WithQueryParam("versionId", "version").
 		Build(&connectionInfo)
 
 	subResources := httpRequestBuilder.signatureFields.CanonicalizedSubResources
 
 	ds3Testing.AssertBool(t, "expected sub resources to have something in it", true, len(subResources) > 0)
 
-	expected := "?Delete&Uploads=two,three&Versionid=version&Versioning=one"
+	expected := "?delete&uploads=two&versionId=version&versioning=one%20with%20spaces"
 	ds3Testing.AssertString(t, "sub resources", expected, subResources)
 }
