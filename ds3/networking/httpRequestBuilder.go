@@ -129,6 +129,7 @@ func (builder *HttpRequestBuilder) Build(conn *ConnectionInfo) (*http.Request, e
     builder.signatureFields.Date = getCurrentTime()
 
     builder.maybeAddAmazonCanonicalHeaders()
+    builder.maybeAddSignatureQueryParams()
 
     authHeaderVal := builder.signatureFields.BuildAuthHeaderValue(conn.Credentials)
 
@@ -141,6 +142,61 @@ func (builder *HttpRequestBuilder) buildUrl(conn *ConnectionInfo) string {
     httpUrl.Path = builder.signatureFields.Path
     httpUrl.RawQuery = encodeQueryParams(builder.queryParams)
     return httpUrl.String()
+}
+
+func (builder *HttpRequestBuilder) maybeAddSignatureQueryParams() {
+    headerKeys := make([]string, 0)
+
+    // get the list of query parameters that are required in the signature
+    for key := range *builder.headers {
+        switch key {
+        case "Acl",
+            "Lifecycle",
+            "Location",
+            "Logging",
+            "Notification",
+            "Partnumber",
+            "Requestpayment",
+            "Torrent",
+            "Uploadid",
+            "Uploads",
+            "Versionid",
+            "Versioning",
+            "Versions",
+            "Website",
+            "Delete",
+            "Response-Content-Type",
+            "Response-Content-Language",
+            "Response-Expires",
+            "Response-Cache-Control",
+            "Response-Content-Disposition",
+            "Response-Content-Encoding":
+            headerKeys = append(headerKeys, key)
+        default:
+            //do nothing
+        }
+    }
+
+    if len(headerKeys) == 0 {
+        return
+    }
+
+    sort.Strings(headerKeys)
+
+    queryParamStrings := make([]string, 0)
+
+    for _, key := range headerKeys {
+        queryParamStrings = append(queryParamStrings, toQueryParamForSignature(key, (*builder.headers)[key]))
+    }
+
+    builder.signatureFields.CanonicalizedSubResources = "?" + strings.Join(queryParamStrings, "&")
+}
+
+func toQueryParamForSignature(key string, values []string) string {
+    if len(values) == 0 || (len(values) == 1 && values[0] == "") {
+        return key
+    }
+    return key + "=" + strings.Join(values, ",")
 }
 
 func (builder *HttpRequestBuilder) maybeAddAmazonCanonicalHeaders() {
