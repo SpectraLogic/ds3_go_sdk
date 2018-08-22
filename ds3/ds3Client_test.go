@@ -803,7 +803,10 @@ func TestDeleteObjects(t *testing.T) {
     expectedRequest := "<Delete><Object><Key>obj1</Key></Object><Object><Key>obj2</Key></Object><Object><Key>obj3</Key></Object></Delete>"
     expectedResponse := "<DeleteResult><Deleted><Key>obj1</Key></Deleted><Deleted><Key>obj2</Key></Deleted><Error><Code>ObjectNotFound</Code><Key>obj3</Key><Message>Object not found</Message></Error></DeleteResult>"
 
-    expectedDeleted := []models.S3ObjectToDelete{{&objectNames[0]}, {&objectNames[1]}}
+    expectedDeleted := []models.S3ObjectToDelete{
+        { Key:&objectNames[0] },
+        { Key:&objectNames[1] },
+    }
 
     code := "ObjectNotFound"
     message := "Object not found"
