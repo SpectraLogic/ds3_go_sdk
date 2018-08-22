@@ -406,6 +406,43 @@ func (capacitySummaryContainer *CapacitySummaryContainer) parse(xmlNode *XmlNode
     }
 }
 
+type CloudNamingMode Enum
+
+const (
+    CLOUD_NAMING_MODE_STANDARD CloudNamingMode = 1 + iota
+    CLOUD_NAMING_MODE_NATIVE CloudNamingMode = 1 + iota
+)
+
+func (cloudNamingMode *CloudNamingMode) UnmarshalText(text []byte) error {
+    var str string = string(bytes.ToUpper(text))
+    switch str {
+        case "": *cloudNamingMode = UNDEFINED
+        case "STANDARD": *cloudNamingMode = CLOUD_NAMING_MODE_STANDARD
+        case "NATIVE": *cloudNamingMode = CLOUD_NAMING_MODE_NATIVE
+        default:
+            *cloudNamingMode = UNDEFINED
+            return errors.New(fmt.Sprintf("Cannot marshal '%s' into CloudNamingMode", str))
+    }
+    return nil
+}
+
+func (cloudNamingMode CloudNamingMode) String() string {
+    switch cloudNamingMode {
+        case CLOUD_NAMING_MODE_STANDARD: return "STANDARD"
+        case CLOUD_NAMING_MODE_NATIVE: return "NATIVE"
+        default:
+            log.Printf("Error: invalid CloudNamingMode represented by '%d'", cloudNamingMode)
+            return ""
+    }
+}
+
+func (cloudNamingMode CloudNamingMode) StringPtr() *string {
+    if cloudNamingMode == UNDEFINED {
+        return nil
+    }
+    result := cloudNamingMode.String()
+    return &result
+}
 type CompletedJob struct {
     BucketId string
     CachedSizeInBytes int64
@@ -4035,6 +4072,7 @@ type AzureTarget struct {
     Id string
     LastFullyVerified *string
     Name *string
+    NamingMode CloudNamingMode
     PermitGoingOutOfSync bool
     Quiesced Quiesced
     State TargetState
@@ -4065,6 +4103,8 @@ func (azureTarget *AzureTarget) parse(xmlNode *XmlNode, aggErr *AggregateError) 
             azureTarget.LastFullyVerified = parseNullableString(child.Content)
         case "Name":
             azureTarget.Name = parseNullableString(child.Content)
+        case "NamingMode":
+            parseEnum(child.Content, &azureTarget.NamingMode, aggErr)
         case "PermitGoingOutOfSync":
             azureTarget.PermitGoingOutOfSync = parseBool(child.Content, aggErr)
         case "Quiesced":
@@ -4350,6 +4390,7 @@ type S3Target struct {
     Id string
     LastFullyVerified *string
     Name *string
+    NamingMode CloudNamingMode
     OfflineDataStagingWindowInTb int
     PermitGoingOutOfSync bool
     ProxyDomain *string
@@ -4389,6 +4430,8 @@ func (s3Target *S3Target) parse(xmlNode *XmlNode, aggErr *AggregateError) {
             s3Target.LastFullyVerified = parseNullableString(child.Content)
         case "Name":
             s3Target.Name = parseNullableString(child.Content)
+        case "NamingMode":
+            parseEnum(child.Content, &s3Target.NamingMode, aggErr)
         case "OfflineDataStagingWindowInTb":
             s3Target.OfflineDataStagingWindowInTb = parseInt(child.Content, aggErr)
         case "PermitGoingOutOfSync":
@@ -5185,6 +5228,7 @@ type DeleteObjectError struct {
     Code *string
     Key *string
     Message *string
+    VersionId *string
 }
 
 func (deleteObjectError *DeleteObjectError) parse(xmlNode *XmlNode, aggErr *AggregateError) {
@@ -5198,6 +5242,8 @@ func (deleteObjectError *DeleteObjectError) parse(xmlNode *XmlNode, aggErr *Aggr
             deleteObjectError.Key = parseNullableString(child.Content)
         case "Message":
             deleteObjectError.Message = parseNullableString(child.Content)
+        case "VersionId":
+            deleteObjectError.VersionId = parseNullableString(child.Content)
         default:
             log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing DeleteObjectError.", child.XMLName.Local)
         }
@@ -5821,6 +5867,7 @@ func (contents *Contents) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
 type S3ObjectToDelete struct {
     Key *string
+    VersionId *string
 }
 
 func (s3ObjectToDelete *S3ObjectToDelete) parse(xmlNode *XmlNode, aggErr *AggregateError) {
@@ -5830,6 +5877,8 @@ func (s3ObjectToDelete *S3ObjectToDelete) parse(xmlNode *XmlNode, aggErr *Aggreg
         switch child.XMLName.Local {
         case "Key":
             s3ObjectToDelete.Key = parseNullableString(child.Content)
+        case "VersionId":
+            s3ObjectToDelete.VersionId = parseNullableString(child.Content)
         default:
             log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing S3ObjectToDelete.", child.XMLName.Local)
         }

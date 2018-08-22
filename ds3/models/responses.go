@@ -36,6 +36,24 @@ func NewAbortMultiPartUploadResponse(webResponse WebResponse) (*AbortMultiPartUp
     }
 }
 
+type CompleteBlobResponse struct {
+    
+    Headers *http.Header
+}
+
+
+
+func NewCompleteBlobResponse(webResponse WebResponse) (*CompleteBlobResponse, error) {
+    expectedStatusCodes := []int { 200 }
+
+    switch code := webResponse.StatusCode(); code {
+    case 200:
+        return &CompleteBlobResponse{Headers: webResponse.Header()}, nil
+    default:
+        return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
+    }
+}
+
 type CompleteMultiPartUploadResponse struct {
     CompleteMultipartUploadResult CompleteMultipartUploadResult
     Headers *http.Header

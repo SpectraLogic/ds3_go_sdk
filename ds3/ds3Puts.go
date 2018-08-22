@@ -613,6 +613,7 @@ func (client *Client) PutBulkJobSpectraS3(request *models.PutBulkJobSpectraS3Req
         WithOptionalQueryParam("max_upload_size", networking.Int64PtrToStrPtr(request.MaxUploadSize)).
         WithOptionalQueryParam("minimize_spanning_across_media", networking.BoolPtrToStrPtr(request.MinimizeSpanningAcrossMedia)).
         WithOptionalQueryParam("name", request.Name).
+        WithOptionalVoidQueryParam("pre_allocate_job_space", request.PreAllocateJobSpace).
         WithOptionalQueryParam("priority", networking.InterfaceToStrPtr(request.Priority)).
         WithOptionalQueryParam("verify_after_write", networking.BoolPtrToStrPtr(request.VerifyAfterWrite)).
         WithQueryParam("operation", "start_bulk_put").
@@ -2584,6 +2585,7 @@ func (client *Client) ModifyS3TargetSpectraS3(request *models.ModifyS3TargetSpec
         WithOptionalQueryParam("default_read_preference", networking.InterfaceToStrPtr(request.DefaultReadPreference)).
         WithOptionalQueryParam("https", networking.BoolPtrToStrPtr(request.Https)).
         WithOptionalQueryParam("name", request.Name).
+        WithOptionalQueryParam("naming_mode", networking.InterfaceToStrPtr(request.NamingMode)).
         WithOptionalQueryParam("offline_data_staging_window_in_tb", networking.IntPtrToStrPtr(request.OfflineDataStagingWindowInTb)).
         WithOptionalQueryParam("permit_going_out_of_sync", networking.BoolPtrToStrPtr(request.PermitGoingOutOfSync)).
         WithOptionalQueryParam("proxy_domain", request.ProxyDomain).
