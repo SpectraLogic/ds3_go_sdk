@@ -524,3 +524,28 @@ func TestPuttingZeroLengthObject(t *testing.T) {
     ds3Testing.AssertInt64(t, "Object size equal", 0, getBucketResponse.ListBucketResult.Objects[0].Size)
 }
 
+func TestDeleteObjects(t *testing.T) {
+    bucketName := "GoTestDeleteObjects"
+
+    // create bucket
+    err := testutils.PutBucketLogError(t, client, bucketName)
+    ds3Testing.AssertNilError(t, err)
+    defer deleteBucketAndContent(t, bucketName)
+
+    // put the test books into the bucket
+    testutils.PutTestBooks(client, bucketName)
+
+    // list all objects in the bucket
+    getBucket, err := client.GetBucket(models.NewGetBucketRequest(bucketName))
+
+    ds3Testing.AssertInt(t, "number of objects to delete", 4, len(getBucket.ListBucketResult.Objects))
+
+    names := make([]string, 0)
+    for _, obj := range getBucket.ListBucketResult.Objects {
+        names = append(names, *obj.Key)
+    }
+
+    deleteObjs := models.NewDeleteObjectsRequest(bucketName, names)
+    _, err = client.DeleteObjects(deleteObjs)
+    ds3Testing.AssertNilError(t, err)
+}
