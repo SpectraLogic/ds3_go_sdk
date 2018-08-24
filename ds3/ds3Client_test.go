@@ -1989,3 +1989,28 @@ func TestStageObjectsJob(t *testing.T) {
     ds3Testing.AssertInt(t, "Number of objects", 1, len(response.MasterObjectList.Objects))
     ds3Testing.AssertInt(t, "Number of blobs", 3, len(response.MasterObjectList.Objects[0].Objects))
 }
+
+func TestCompleteBlobWithHeaders(t *testing.T) {
+    responsePayload := ""
+    blob := "myBlob"
+    job := "myJob"
+    bucket := "myBucket"
+    object := "myObject"
+
+    queryParams := &url.Values{}
+    queryParams.Add("blob", blob)
+    queryParams.Add("job", job)
+
+    requestHeaders := &http.Header{ "X-Amz-Meta-Key1": []string{ "val1,val2" }, "X-Amz-Meta-Key2": []string{ "val3" } }
+
+    // Create and run mocked client call
+    _, err := mockedClient(t).
+        Expecting(HTTP_VERB_POST, "/" + bucket + "/" + object, queryParams, requestHeaders, nil).
+        Returning(200, responsePayload, nil).
+        CompleteBlob(models.NewCompleteBlobRequest(bucket, object, blob, job).
+            WithMetaData("key1", "val1", "val2").
+            WithMetaData("key2", "val3"))
+
+    //Check the error result
+    ds3Testing.AssertNilError(t, err)
+}

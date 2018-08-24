@@ -37,6 +37,7 @@ type CompleteBlobRequest struct {
     ObjectName string
     Blob string
     Job string
+    Metadata map[string]string
 }
 
 func NewCompleteBlobRequest(bucketName string, objectName string, blob string, job string) *CompleteBlobRequest {
@@ -45,7 +46,17 @@ func NewCompleteBlobRequest(bucketName string, objectName string, blob string, j
         ObjectName: objectName,
         Blob: blob,
         Job: job,
+        Metadata: make(map[string]string),
     }
+}
+
+func (completeBlobRequest *CompleteBlobRequest) WithMetaData(key string, values ...string) *CompleteBlobRequest {
+    if strings.HasPrefix(strings.ToLower(key), AMZ_META_HEADER) {
+        completeBlobRequest.Metadata[key] = strings.Join(values, ",")
+    } else {
+        completeBlobRequest.Metadata[strings.ToLower(AMZ_META_HEADER + key)] = strings.Join(values, ",")
+    }
+    return completeBlobRequest
 }
 
 type CompleteMultiPartUploadRequest struct {
