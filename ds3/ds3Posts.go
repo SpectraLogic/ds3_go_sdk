@@ -26,6 +26,7 @@ func (client *Client) CompleteBlob(request *models.CompleteBlobRequest) (*models
         WithQueryParam("blob", request.Blob).
         WithQueryParam("job", request.Job).
         WithHeaders(request.Metadata).
+        WithChecksum(request.Checksum).
         Build(client.connectionInfo)
 
     if err != nil {

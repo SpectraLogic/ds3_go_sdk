@@ -2001,7 +2001,11 @@ func TestCompleteBlobWithHeaders(t *testing.T) {
     queryParams.Add("blob", blob)
     queryParams.Add("job", job)
 
-    requestHeaders := &http.Header{ "X-Amz-Meta-Key1": []string{ "val1,val2" }, "X-Amz-Meta-Key2": []string{ "val3" } }
+    requestHeaders := &http.Header{
+        "X-Amz-Meta-Key1": []string{ "val1,val2" },
+        "X-Amz-Meta-Key2": []string{ "val3" },
+        "Content-Crc32": []string{ "my hash" },
+    }
 
     // Create and run mocked client call
     _, err := mockedClient(t).
@@ -2009,7 +2013,8 @@ func TestCompleteBlobWithHeaders(t *testing.T) {
         Returning(200, responsePayload, nil).
         CompleteBlob(models.NewCompleteBlobRequest(bucket, object, blob, job).
             WithMetaData("key1", "val1", "val2").
-            WithMetaData("key2", "val3"))
+            WithMetaData("key2", "val3").
+            WithChecksum("my hash", models.CHECKSUM_TYPE_CRC_32))
 
     //Check the error result
     ds3Testing.AssertNilError(t, err)
