@@ -1310,6 +1310,7 @@ func (client *Client) DelegateCreateUserSpectraS3(request *models.DelegateCreate
         WithPath("/_rest_/user").
         WithQueryParam("name", request.Name).
         WithOptionalQueryParam("id", request.Id).
+        WithOptionalQueryParam("max_buckets", networking.IntPtrToStrPtr(request.MaxBuckets)).
         WithOptionalQueryParam("secret_key", request.SecretKey).
         Build(client.connectionInfo)
 

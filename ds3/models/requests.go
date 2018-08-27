@@ -9378,6 +9378,7 @@ func (verifyS3TargetSpectraS3Request *VerifyS3TargetSpectraS3Request) WithFullDe
 
 type DelegateCreateUserSpectraS3Request struct {
     Id *string
+    MaxBuckets *int
     Name string
     SecretKey *string
 }
@@ -9390,6 +9391,11 @@ func NewDelegateCreateUserSpectraS3Request(name string) *DelegateCreateUserSpect
 
 func (delegateCreateUserSpectraS3Request *DelegateCreateUserSpectraS3Request) WithId(id string) *DelegateCreateUserSpectraS3Request {
     delegateCreateUserSpectraS3Request.Id = &id
+    return delegateCreateUserSpectraS3Request
+}
+
+func (delegateCreateUserSpectraS3Request *DelegateCreateUserSpectraS3Request) WithMaxBuckets(maxBuckets int) *DelegateCreateUserSpectraS3Request {
+    delegateCreateUserSpectraS3Request.MaxBuckets = &maxBuckets
     return delegateCreateUserSpectraS3Request
 }
 
