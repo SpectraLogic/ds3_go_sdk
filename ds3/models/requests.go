@@ -37,6 +37,7 @@ type CompleteBlobRequest struct {
     ObjectName string
     Blob string
     Job string
+    Checksum Checksum
     Metadata map[string]string
 }
 
@@ -46,8 +47,15 @@ func NewCompleteBlobRequest(bucketName string, objectName string, blob string, j
         ObjectName: objectName,
         Blob: blob,
         Job: job,
+        Checksum: NewNoneChecksum(),
         Metadata: make(map[string]string),
     }
+}
+
+func (completeBlobRequest *CompleteBlobRequest) WithChecksum(contentHash string, checksumType ChecksumType) *CompleteBlobRequest {
+    completeBlobRequest.Checksum.ContentHash = contentHash
+    completeBlobRequest.Checksum.Type = checksumType
+    return completeBlobRequest
 }
 
 func (completeBlobRequest *CompleteBlobRequest) WithMetaData(key string, values ...string) *CompleteBlobRequest {
