@@ -5185,6 +5185,7 @@ type DeleteObjectError struct {
     Code *string
     Key *string
     Message *string
+    VersionId *string
 }
 
 func (deleteObjectError *DeleteObjectError) parse(xmlNode *XmlNode, aggErr *AggregateError) {
@@ -5198,6 +5199,8 @@ func (deleteObjectError *DeleteObjectError) parse(xmlNode *XmlNode, aggErr *Aggr
             deleteObjectError.Key = parseNullableString(child.Content)
         case "Message":
             deleteObjectError.Message = parseNullableString(child.Content)
+        case "VersionId":
+            deleteObjectError.VersionId = parseNullableString(child.Content)
         default:
             log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing DeleteObjectError.", child.XMLName.Local)
         }
@@ -5821,6 +5824,7 @@ func (contents *Contents) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 
 type S3ObjectToDelete struct {
     Key *string
+    VersionId *string
 }
 
 func (s3ObjectToDelete *S3ObjectToDelete) parse(xmlNode *XmlNode, aggErr *AggregateError) {
@@ -5830,6 +5834,8 @@ func (s3ObjectToDelete *S3ObjectToDelete) parse(xmlNode *XmlNode, aggErr *Aggreg
         switch child.XMLName.Local {
         case "Key":
             s3ObjectToDelete.Key = parseNullableString(child.Content)
+        case "VersionId":
+            s3ObjectToDelete.VersionId = parseNullableString(child.Content)
         default:
             log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing S3ObjectToDelete.", child.XMLName.Local)
         }
