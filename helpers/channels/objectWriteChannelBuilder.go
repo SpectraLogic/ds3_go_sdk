@@ -22,10 +22,11 @@ func (builder *ObjectWriteChannelBuilder) IsChannelAvailable(offset int64) bool 
 }
 
 func (builder *ObjectWriteChannelBuilder) GetChannel(offset int64) (io.WriteCloser, error) {
-    f, err := os.OpenFile(builder.name, os.O_WRONLY, defaultPermissions)
+    f, err := os.OpenFile(builder.name, os.O_WRONLY | os.O_CREATE, os.ModePerm)
     if err != nil {
         return nil, err
     }
+
     f.Seek(offset, io.SeekStart)
     return f, nil
 }
