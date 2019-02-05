@@ -45,8 +45,11 @@ func TestPutBulk(t *testing.T) {
     writeObjects, err := getTestBooksAsWriteObjects()
     ds3Testing.AssertNilError(t, err)
 
-    err = helper.PutObjects(testBucket, *writeObjects, strategy)
+    jobId, err := helper.PutObjects(testBucket, *writeObjects, strategy)
     ds3Testing.AssertNilError(t, err)
+    if jobId == "" {
+        t.Error("expected to get a BP job ID, but instead got nothing")
+    }
 
     // verify all books are on BP
     getBucket, getBucketErr := client.GetBucket(ds3Models.NewGetBucketRequest(testBucket))
@@ -75,8 +78,11 @@ func TestPutBulkBlobSpanningChunksRandomAccess(t *testing.T) {
 
     ds3Testing.AssertNilError(t, err)
 
-    err = helper.PutObjects(testBucket, writeObjects, strategy)
+    jobId, err := helper.PutObjects(testBucket, writeObjects, strategy)
     ds3Testing.AssertNilError(t, err)
+    if jobId == "" {
+        t.Error("expected to get a BP job ID, but instead got nothing")
+    }
 
 
     testutils.VerifyFilesOnBP(t, testBucket, []string {LargeBookTitle}, LargeBookPath, client)
@@ -96,8 +102,11 @@ func TestPutBulkBlobSpanningChunksStreamAccess(t *testing.T) {
 
     ds3Testing.AssertNilError(t, err)
 
-    err = helper.PutObjects(testBucket, writeObjects, strategy)
+    jobId, err := helper.PutObjects(testBucket, writeObjects, strategy)
     ds3Testing.AssertNilError(t, err)
+    if jobId == "" {
+        t.Error("expected to get a BP job ID, but instead got nothing")
+    }
 
     testutils.VerifyFilesOnBP(t, testBucket, []string {LargeBookTitle}, LargeBookPath, client)
 }
@@ -142,8 +151,11 @@ func TestGetBulk(t *testing.T) {
         {Name: testutils.BookTitles[3], ChannelBuilder: channels.NewWriteChannelBuilder(file3.Name())},
     }
 
-    err = helper.GetObjects(testBucket, readObjects, strategy)
+    jobId, err := helper.GetObjects(testBucket, readObjects, strategy)
     ds3Testing.AssertNilError(t, err)
+    if jobId == "" {
+        t.Error("expected to get a BP job ID, but instead got nothing")
+    }
 
     utils.VerifyBookContent(testutils.BookTitles[0], file0)
     utils.VerifyBookContent(testutils.BookTitles[1], file1)
@@ -172,8 +184,11 @@ func TestGetBulkBlobSpanningChunksRandomAccess(t *testing.T) {
         {Name: LargeBookTitle, ChannelBuilder: channels.NewWriteChannelBuilder(file.Name())},
     }
 
-    err = helper.GetObjects(testBucket, readObjects, strategy)
+    jobId, err := helper.GetObjects(testBucket, readObjects, strategy)
     ds3Testing.AssertNilError(t, err)
+    if jobId == "" {
+        t.Error("expected to get a BP job ID, but instead got nothing")
+    }
 
     err = VerifyLargeBookContent(file)
     ds3Testing.AssertNilError(t, err)
@@ -207,8 +222,11 @@ func TestGetBulkPartialObjectRandomAccess(t *testing.T) {
         {Name: LargeBookTitle, ChannelBuilder: channels.NewPartialObjectChannelBuilder(file.Name(), ranges), Ranges: ranges},
     }
 
-    err = helper.GetObjects(testBucket, readObjects, strategy)
+    jobId, err := helper.GetObjects(testBucket, readObjects, strategy)
     ds3Testing.AssertNilError(t, err)
+    if jobId == "" {
+        t.Error("expected to get a BP job ID, but instead got nothing")
+    }
 
     file.Seek(0, io.SeekStart)
     testutils.VerifyPartialFile(t, LargeBookPath + LargeBookTitle, 101, 0, file)

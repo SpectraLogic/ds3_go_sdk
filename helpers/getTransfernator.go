@@ -63,13 +63,13 @@ func createPartialGetObjects(getObject helperModels.GetObject) []ds3Models.Ds3Ge
     return partialObjects
 }
 
-func (transceiver *getTransceiver) transfer() error {
+func (transceiver *getTransceiver) transfer() (string, error) {
     // create bulk get job
     bulkGet := newBulkGetRequest(transceiver.BucketName, transceiver.ReadObjects, transceiver.Strategy.Options)
 
     bulkGetResponse, err := transceiver.Client.GetBulkJobSpectraS3(bulkGet)
     if err != nil {
-        return err
+        return "", err
     }
 
     // init queue, producer and consumer
@@ -86,5 +86,5 @@ func (transceiver *getTransceiver) transfer() error {
     go consumer.run()
     waitGroup.Wait()
 
-    return aggErr.GetErrors()
+    return bulkGetResponse.MasterObjectList.JobId, aggErr.GetErrors()
 }

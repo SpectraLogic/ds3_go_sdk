@@ -61,13 +61,13 @@ func newBulkPutRequest(bucketName string, writeObjects *[]helperModels.PutObject
     return bulkPut
 }
 
-func (transceiver *putTransceiver) transfer() error {
+func (transceiver *putTransceiver) transfer() (string, error) {
     // create bulk put job
     bulkPut := newBulkPutRequest(transceiver.BucketName, transceiver.WriteObjects, transceiver.Strategy.Options)
 
     bulkPutResponse, err := transceiver.Client.PutBulkJobSpectraS3(bulkPut)
     if err != nil {
-        return err
+        return "", err
     }
 
     // init queue, producer and consumer
@@ -85,7 +85,7 @@ func (transceiver *putTransceiver) transfer() error {
     go consumer.run()
     waitGroup.Wait()
 
-    return aggErr.GetErrors()
+    return bulkPutResponse.MasterObjectList.JobId, aggErr.GetErrors()
 }
 
 /*
