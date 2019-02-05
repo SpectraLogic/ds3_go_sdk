@@ -46,5 +46,6 @@ func LoadLargeFile(bucket string, client *ds3.Client) error {
     var writeObjects []helperModels.PutObject
     writeObjects = append(writeObjects, *writeObj)
 
-    return helper.PutObjects(bucket, writeObjects, newTestTransferStrategy())
+    _, err = helper.PutObjects(bucket, writeObjects, newTestTransferStrategy())
+    return err
 }
