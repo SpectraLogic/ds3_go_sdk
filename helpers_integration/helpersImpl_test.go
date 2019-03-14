@@ -233,3 +233,46 @@ func TestGetBulkPartialObjectRandomAccess(t *testing.T) {
     testutils.VerifyPartialFile(t, LargeBookPath + LargeBookTitle, 201, 200, file)
     testutils.VerifyPartialFile(t, LargeBookPath + LargeBookTitle, 101, 500, file)
 }
+
+func TestPutObjectDoesNotExist(t *testing.T) {
+    defer testutils.DeleteBucketContents(client, testBucket)
+    helper := helpers.NewHelpers(client)
+
+    strategy := newTestTransferStrategy()
+
+    channelBuilder := channels.NewReadChannelBuilder("does-not-exist")
+    nonExistentPutObj := helperModels.PutObject{
+        PutObject:      ds3Models.Ds3PutObject{Name:"does-not-exist",Size:10},
+        ChannelBuilder: channelBuilder,
+    }
+
+    writeObjects := []helperModels.PutObject { nonExistentPutObj }
+
+    jobId, err := helper.PutObjects(testBucket, writeObjects, strategy)
+
+    // Verify that the expected error occurred instead of a panic
+    if err == nil {
+        t.Fatal("expected to get an error due to file not existing")
+    }
+    aggErr, ok := err.(*ds3Models.AggregateError)
+    if !ok {
+        t.Fatal("expected error to be of type AggregateError")
+    }
+    if len(aggErr.Errors) != 1 {
+        t.Fatalf("expected 1 aggregate error, but got %d", len(aggErr.Errors))
+    }
+    expected := "open does-not-exist: no such file or directory"
+    ds3Testing.AssertString(t, "expected error", expected, aggErr.Errors[0].Error())
+
+
+    if jobId == "" {
+        t.Error("expected to get a BP job ID, but instead got nothing")
+    }
+
+    // verify nothing is on the BP
+    getBucket, getBucketErr := client.GetBucket(ds3Models.NewGetBucketRequest(testBucket))
+    ds3Testing.AssertNilError(t, getBucketErr)
+    if len(getBucket.ListBucketResult.Objects) != 0 {
+        t.Fatalf("Expected '%d' objects in bucket '%s', but found '%d'.", 0, testBucket, len(getBucket.ListBucketResult.Objects))
+    }
+}
