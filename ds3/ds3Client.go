@@ -3,6 +3,7 @@ package ds3
 import (
     "github.com/SpectraLogic/ds3_go_sdk/ds3/networking"
     "net/url"
+    "github.com/SpectraLogic/ds3_go_sdk/sdk_log"
 )
 
 const (
@@ -18,11 +19,15 @@ type Client struct {
     sendNetwork    networking.Network
     clientPolicy   *ClientPolicy
     connectionInfo *networking.ConnectionInfo
+
+    // Logger where all messages will be logged to
+    sdk_log.Logger
 }
 
 type ClientBuilder struct {
     connectionInfo *networking.ConnectionInfo
-    clientPolicy *ClientPolicy
+    clientPolicy   *ClientPolicy
+    logger         sdk_log.Logger
 }
 
 type ClientPolicy struct {
@@ -35,13 +40,14 @@ const DEFAULT_MAX_REDIRECTS = 5
 
 func NewClientBuilder(endpoint *url.URL, creds *networking.Credentials) *ClientBuilder {
     return &ClientBuilder{
-        &networking.ConnectionInfo{
+        connectionInfo: &networking.ConnectionInfo{
             Endpoint:    endpoint,
             Credentials: creds,
             Proxy:       nil},
-        &ClientPolicy{
+        clientPolicy: &ClientPolicy{
             maxRetries: DEFAULT_MAX_RETRIES,
-            maxRedirect: DEFAULT_MAX_REDIRECTS}}
+            maxRedirect: DEFAULT_MAX_REDIRECTS},
+    }
 }
 
 func (clientBuilder *ClientBuilder) WithProxy(proxy *url.URL) *ClientBuilder {
@@ -59,10 +65,20 @@ func (clientBuilder *ClientBuilder) WithNetworkRetryCount(count int) *ClientBuil
     return clientBuilder
 }
 
+func (clientBuilder *ClientBuilder) WithLogger(logger sdk_log.Logger) *ClientBuilder {
+    clientBuilder.logger = logger
+    return clientBuilder
+}
+
 func (clientBuilder *ClientBuilder) BuildClient() *Client {
+    if clientBuilder.logger == nil {
+        clientBuilder.logger = sdk_log.NewSimpleLogger()
+    }
+
     return &Client{
         sendNetwork:    networking.NewSendNetwork(clientBuilder.connectionInfo),
         clientPolicy:   clientBuilder.clientPolicy,
         connectionInfo: clientBuilder.connectionInfo,
+        Logger:         clientBuilder.logger,
     }
 }

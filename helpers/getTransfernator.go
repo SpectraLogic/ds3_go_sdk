@@ -75,7 +75,7 @@ func (transceiver *getTransceiver) transfer() (string, error) {
     // init queue, producer and consumer
     var waitGroup sync.WaitGroup
 
-    queue := newOperationQueue(transceiver.Strategy.BlobStrategy.maxWaitingTransfers())
+    queue := newOperationQueue(transceiver.Strategy.BlobStrategy.maxWaitingTransfers(), transceiver.Client.Logger)
     producer := newGetProducer(&bulkGetResponse.MasterObjectList, transceiver.ReadObjects, &queue, transceiver.Strategy, transceiver.Client, &waitGroup)
     consumer := newConsumer(&queue, &waitGroup, transceiver.Strategy.BlobStrategy.maxConcurrentTransfers())
 
