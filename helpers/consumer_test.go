@@ -3,19 +3,16 @@ package helpers
 import (
     "testing"
     "sync"
-    "fmt"
     "github.com/SpectraLogic/ds3_go_sdk/ds3_utils/ds3Testing"
 )
 
-func testTransferBuilder(i int, waitGroup *sync.WaitGroup, resultCount *int, resultMux *sync.Mutex) TransferOperation {
+func testTransferBuilder(t *testing.T, i int, resultCount *int, resultMux *sync.Mutex) TransferOperation {
     return func() {
-        //defer waitGroup.Done()
-
         resultMux.Lock()
         *resultCount++
         resultMux.Unlock()
 
-        fmt.Printf("Transfer Op: '%d'\n", i)
+        t.Logf("Transfer Op: '%d'\n", i)
     }
 }
 
@@ -31,9 +28,9 @@ func TestProducerConsumerModel(t *testing.T) {
         for i := 0; i < 10; i++ {
             wg.Add(1)
 
-            var transferOf = testTransferBuilder(i, &wg, &resultCount, &resultMux)
+            var transferOf = testTransferBuilder(t, i, &resultCount, &resultMux)
 
-            fmt.Printf("Producer: '%d'\n", i)
+            t.Logf("Producer: '%d'\n", i)
 
             *queue <- transferOf
         }
