@@ -4,24 +4,25 @@ import (
     "log"
 )
 
+// A logger which prints everything to log.Printf with the level as a prefix.
 func NewSimpleLogger() Logger {
     return &SimpleLogger{}
 }
 
 type SimpleLogger struct {}
 
-func (logger *SimpleLogger) Infof(format string, args ...interface{}) {
+func (SimpleLogger) Infof(format string, args ...interface{}) {
     log.Printf("INFO " + format, args...)
 }
 
-func (logger *SimpleLogger) Debugf(format string, args ...interface{}) {
+func (SimpleLogger) Debugf(format string, args ...interface{}) {
     log.Printf("DEBUG " + format, args...)
 }
 
-func (logger *SimpleLogger) Warningf(format string, args ...interface{}) {
+func (SimpleLogger) Warningf(format string, args ...interface{}) {
     log.Printf("WARNING " + format, args...)
 }
 
-func (logger *SimpleLogger) Errorf(format string, args ...interface{}) {
+func (SimpleLogger) Errorf(format string, args ...interface{}) {
     log.Printf("ERROR " + format, args...)
 }
