@@ -1,7 +1,6 @@
 package models
 
 import (
-    "github.com/SpectraLogic/core_go/test_helpers"
     "io"
     "strings"
     "testing"
@@ -32,15 +31,22 @@ func TestUnmarshalingTapeWithPreviousState(t *testing.T) {
 
     // create the xml tree
     root, err := parseXmlTree(responseReadCloser)
-    test_helpers.FatalOnError(t, err, "getting xml parse tree from response")
+    if err != nil {
+        t.Fatalf("expected not to error when parsing xml tree: %v", err)
+    }
 
     // parse the response
     var aggErr AggregateError
     var tapeResponse GetTapesSpectraS3Response
     tapeResponse.TapeList.parse(root, &aggErr)
 
-    test_helpers.AssertEqual(t, 0, len(aggErr.Errors), "expected no errors when parsing response")
-    test_helpers.AssertEqual(t, 1, len(tapeResponse.TapeList.Tapes), "un-marshaled one tape")
+    if len(aggErr.Errors) > 0 {
+        t.Fatalf("expected no errors when marshaling, but got %d", len(aggErr.Errors))
+    }
+
+    if len(tapeResponse.TapeList.Tapes) != 1 {
+        t.Fatalf("expected to unmarshal one tape, but got %d", len(tapeResponse.TapeList.Tapes))
+    }
 
     for _, err := range aggErr.Errors {
         t.Logf(err.Error())
