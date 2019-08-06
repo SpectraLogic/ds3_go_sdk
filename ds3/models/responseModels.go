@@ -143,6 +143,7 @@ func (blob *Blob) parse(xmlNode *XmlNode, aggErr *AggregateError) {
         case "Checksum":
             blob.Checksum = parseNullableString(child.Content)
         case "ChecksumType":
+            blob.ChecksumType = new(ChecksumType)
             parseNullableEnum(child.Content, blob.ChecksumType, aggErr)
         case "Id":
             blob.Id = parseString(child.Content)
@@ -539,6 +540,7 @@ func (dataPathBackend *DataPathBackend) parse(xmlNode *XmlNode, aggErr *Aggregat
         case "CacheAvailableRetryAfterInSeconds":
             dataPathBackend.CacheAvailableRetryAfterInSeconds = parseInt(child.Content, aggErr)
         case "DefaultVerifyDataAfterImport":
+            dataPathBackend.DefaultVerifyDataAfterImport = new(Priority)
             parseNullableEnum(child.Content, dataPathBackend.DefaultVerifyDataAfterImport, aggErr)
         case "DefaultVerifyDataPriorToImport":
             dataPathBackend.DefaultVerifyDataPriorToImport = parseBool(child.Content, aggErr)
@@ -1621,6 +1623,7 @@ func (storageDomain *StorageDomain) parse(xmlNode *XmlNode, aggErr *AggregateErr
         case "SecureMediaAllocation":
             storageDomain.SecureMediaAllocation = parseBool(child.Content, aggErr)
         case "VerifyPriorToAutoEject":
+            storageDomain.VerifyPriorToAutoEject = new(Priority)
             parseNullableEnum(child.Content, storageDomain.VerifyPriorToAutoEject, aggErr)
         case "WriteOptimization":
             parseEnum(child.Content, &storageDomain.WriteOptimization, aggErr)
@@ -3347,6 +3350,7 @@ func (tape *Tape) parse(xmlNode *XmlNode, aggErr *AggregateError) {
         case "PartitionId":
             tape.PartitionId = parseNullableString(child.Content)
         case "PreviousState":
+            tape.PreviousState = new(TapeState)
             parseNullableEnum(child.Content, tape.PreviousState, aggErr)
         case "SerialNumber":
             tape.SerialNumber = parseNullableString(child.Content)
@@ -3361,6 +3365,7 @@ func (tape *Tape) parse(xmlNode *XmlNode, aggErr *AggregateError) {
         case "Type":
             tape.Type = parseString(child.Content)
         case "VerifyPending":
+            tape.VerifyPending = new(Priority)
             parseNullableEnum(child.Content, tape.VerifyPending, aggErr)
         case "WriteProtected":
             tape.WriteProtected = parseBool(child.Content, aggErr)
@@ -3737,6 +3742,7 @@ func (tapePartition *TapePartition) parse(xmlNode *XmlNode, aggErr *AggregateErr
         case "AutoCompactionEnabled":
             tapePartition.AutoCompactionEnabled = parseBool(child.Content, aggErr)
         case "DriveType":
+            tapePartition.DriveType = new(TapeDriveType)
             parseNullableEnum(child.Content, tapePartition.DriveType, aggErr)
         case "ErrorMessage":
             tapePartition.ErrorMessage = parseNullableString(child.Content)
@@ -4406,6 +4412,7 @@ func (s3Target *S3Target) parse(xmlNode *XmlNode, aggErr *AggregateError) {
         case "Quiesced":
             parseEnum(child.Content, &s3Target.Quiesced, aggErr)
         case "Region":
+            s3Target.Region = new(S3Region)
             parseNullableEnum(child.Content, s3Target.Region, aggErr)
         case "SecretKey":
             s3Target.SecretKey = parseNullableString(child.Content)
@@ -5256,6 +5263,7 @@ func (detailedTapePartition *DetailedTapePartition) parse(xmlNode *XmlNode, aggE
         case "AutoCompactionEnabled":
             detailedTapePartition.AutoCompactionEnabled = parseBool(child.Content, aggErr)
         case "DriveType":
+            detailedTapePartition.DriveType = new(TapeDriveType)
             parseNullableEnum(child.Content, detailedTapePartition.DriveType, aggErr)
         case "DriveTypes":
             var model TapeDriveType
@@ -5997,6 +6005,7 @@ func (namedDetailedTapePartition *NamedDetailedTapePartition) parse(xmlNode *Xml
         case "AutoCompactionEnabled":
             namedDetailedTapePartition.AutoCompactionEnabled = parseBool(child.Content, aggErr)
         case "DriveType":
+            namedDetailedTapePartition.DriveType = new(TapeDriveType)
             parseNullableEnum(child.Content, namedDetailedTapePartition.DriveType, aggErr)
         case "DriveTypes":
             var model TapeDriveType
