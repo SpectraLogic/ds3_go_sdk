@@ -89,6 +89,16 @@ func (autoInspectMode AutoInspectMode) StringPtr() *string {
     result := autoInspectMode.String()
     return &result
 }
+
+func newAutoInspectModeFromContent(content []byte, aggErr *AggregateError) *AutoInspectMode {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(AutoInspectMode)
+    parseEnum(content, result, aggErr)
+    return result
+}
 type AzureDataReplicationRule struct {
     DataPolicyId string
     Id string
@@ -143,8 +153,7 @@ func (blob *Blob) parse(xmlNode *XmlNode, aggErr *AggregateError) {
         case "Checksum":
             blob.Checksum = parseNullableString(child.Content)
         case "ChecksumType":
-            blob.ChecksumType = new(ChecksumType)
-            parseNullableEnum(child.Content, blob.ChecksumType, aggErr)
+            blob.ChecksumType = newChecksumTypeFromContent(child.Content, aggErr)
         case "Id":
             blob.Id = parseString(child.Content)
         case "Length":
@@ -205,6 +214,16 @@ func (priority Priority) StringPtr() *string {
     }
     result := priority.String()
     return &result
+}
+
+func newPriorityFromContent(content []byte, aggErr *AggregateError) *Priority {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(Priority)
+    parseEnum(content, result, aggErr)
+    return result
 }
 type Bucket struct {
     CreationDate string
@@ -321,6 +340,16 @@ func (bucketAclPermission BucketAclPermission) StringPtr() *string {
     }
     result := bucketAclPermission.String()
     return &result
+}
+
+func newBucketAclPermissionFromContent(content []byte, aggErr *AggregateError) *BucketAclPermission {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(BucketAclPermission)
+    parseEnum(content, result, aggErr)
+    return result
 }
 type CanceledJob struct {
     BucketId string
@@ -506,6 +535,16 @@ func (dataIsolationLevel DataIsolationLevel) StringPtr() *string {
     result := dataIsolationLevel.String()
     return &result
 }
+
+func newDataIsolationLevelFromContent(content []byte, aggErr *AggregateError) *DataIsolationLevel {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(DataIsolationLevel)
+    parseEnum(content, result, aggErr)
+    return result
+}
 type DataPathBackend struct {
     Activated bool
     AllowNewJobRequests bool
@@ -540,8 +579,7 @@ func (dataPathBackend *DataPathBackend) parse(xmlNode *XmlNode, aggErr *Aggregat
         case "CacheAvailableRetryAfterInSeconds":
             dataPathBackend.CacheAvailableRetryAfterInSeconds = parseInt(child.Content, aggErr)
         case "DefaultVerifyDataAfterImport":
-            dataPathBackend.DefaultVerifyDataAfterImport = new(Priority)
-            parseNullableEnum(child.Content, dataPathBackend.DefaultVerifyDataAfterImport, aggErr)
+            dataPathBackend.DefaultVerifyDataAfterImport = newPriorityFromContent(child.Content, aggErr)
         case "DefaultVerifyDataPriorToImport":
             dataPathBackend.DefaultVerifyDataPriorToImport = parseBool(child.Content, aggErr)
         case "Id":
@@ -641,6 +679,16 @@ func (dataPersistenceRuleType DataPersistenceRuleType) StringPtr() *string {
     result := dataPersistenceRuleType.String()
     return &result
 }
+
+func newDataPersistenceRuleTypeFromContent(content []byte, aggErr *AggregateError) *DataPersistenceRuleType {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(DataPersistenceRuleType)
+    parseEnum(content, result, aggErr)
+    return result
+}
 type DataPlacementRuleState Enum
 
 const (
@@ -677,6 +725,16 @@ func (dataPlacementRuleState DataPlacementRuleState) StringPtr() *string {
     }
     result := dataPlacementRuleState.String()
     return &result
+}
+
+func newDataPlacementRuleStateFromContent(content []byte, aggErr *AggregateError) *DataPlacementRuleState {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(DataPlacementRuleState)
+    parseEnum(content, result, aggErr)
+    return result
 }
 type DataPolicy struct {
     AlwaysForcePutJobCreation bool
@@ -802,6 +860,16 @@ func (dataReplicationRuleType DataReplicationRuleType) StringPtr() *string {
     }
     result := dataReplicationRuleType.String()
     return &result
+}
+
+func newDataReplicationRuleTypeFromContent(content []byte, aggErr *AggregateError) *DataReplicationRuleType {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(DataReplicationRuleType)
+    parseEnum(content, result, aggErr)
+    return result
 }
 type DegradedBlob struct {
     AzureReplicationRuleId *string
@@ -941,6 +1009,16 @@ func (featureKeyType FeatureKeyType) StringPtr() *string {
     }
     result := featureKeyType.String()
     return &result
+}
+
+func newFeatureKeyTypeFromContent(content []byte, aggErr *AggregateError) *FeatureKeyType {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(FeatureKeyType)
+    parseEnum(content, result, aggErr)
+    return result
 }
 type Group struct {
     BuiltIn bool
@@ -1164,6 +1242,16 @@ func (jobChunkBlobStoreState JobChunkBlobStoreState) StringPtr() *string {
     result := jobChunkBlobStoreState.String()
     return &result
 }
+
+func newJobChunkBlobStoreStateFromContent(content []byte, aggErr *AggregateError) *JobChunkBlobStoreState {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(JobChunkBlobStoreState)
+    parseEnum(content, result, aggErr)
+    return result
+}
 type JobChunkClientProcessingOrderGuarantee Enum
 
 const (
@@ -1200,6 +1288,16 @@ func (jobChunkClientProcessingOrderGuarantee JobChunkClientProcessingOrderGuaran
     }
     result := jobChunkClientProcessingOrderGuarantee.String()
     return &result
+}
+
+func newJobChunkClientProcessingOrderGuaranteeFromContent(content []byte, aggErr *AggregateError) *JobChunkClientProcessingOrderGuarantee {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(JobChunkClientProcessingOrderGuarantee)
+    parseEnum(content, result, aggErr)
+    return result
 }
 type JobRequestType Enum
 
@@ -1241,6 +1339,16 @@ func (jobRequestType JobRequestType) StringPtr() *string {
     result := jobRequestType.String()
     return &result
 }
+
+func newJobRequestTypeFromContent(content []byte, aggErr *AggregateError) *JobRequestType {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(JobRequestType)
+    parseEnum(content, result, aggErr)
+    return result
+}
 type JobRestore Enum
 
 const (
@@ -1281,6 +1389,16 @@ func (jobRestore JobRestore) StringPtr() *string {
     result := jobRestore.String()
     return &result
 }
+
+func newJobRestoreFromContent(content []byte, aggErr *AggregateError) *JobRestore {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(JobRestore)
+    parseEnum(content, result, aggErr)
+    return result
+}
 type LtfsFileNamingMode Enum
 
 const (
@@ -1317,6 +1435,16 @@ func (ltfsFileNamingMode LtfsFileNamingMode) StringPtr() *string {
     }
     result := ltfsFileNamingMode.String()
     return &result
+}
+
+func newLtfsFileNamingModeFromContent(content []byte, aggErr *AggregateError) *LtfsFileNamingMode {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(LtfsFileNamingMode)
+    parseEnum(content, result, aggErr)
+    return result
 }
 type Node struct {
     DataPathHttpPort *int
@@ -1437,6 +1565,16 @@ func (s3InitialDataPlacementPolicy S3InitialDataPlacementPolicy) StringPtr() *st
     result := s3InitialDataPlacementPolicy.String()
     return &result
 }
+
+func newS3InitialDataPlacementPolicyFromContent(content []byte, aggErr *AggregateError) *S3InitialDataPlacementPolicy {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(S3InitialDataPlacementPolicy)
+    parseEnum(content, result, aggErr)
+    return result
+}
 type S3Object struct {
     BucketId string
     CreationDate *string
@@ -1505,6 +1643,16 @@ func (s3ObjectType S3ObjectType) StringPtr() *string {
     }
     result := s3ObjectType.String()
     return &result
+}
+
+func newS3ObjectTypeFromContent(content []byte, aggErr *AggregateError) *S3ObjectType {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(S3ObjectType)
+    parseEnum(content, result, aggErr)
+    return result
 }
 type S3Region Enum
 
@@ -1576,6 +1724,16 @@ func (s3Region S3Region) StringPtr() *string {
     result := s3Region.String()
     return &result
 }
+
+func newS3RegionFromContent(content []byte, aggErr *AggregateError) *S3Region {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(S3Region)
+    parseEnum(content, result, aggErr)
+    return result
+}
 type StorageDomain struct {
     AutoEjectMediaFullThreshold *int64
     AutoEjectUponCron *string
@@ -1623,8 +1781,7 @@ func (storageDomain *StorageDomain) parse(xmlNode *XmlNode, aggErr *AggregateErr
         case "SecureMediaAllocation":
             storageDomain.SecureMediaAllocation = parseBool(child.Content, aggErr)
         case "VerifyPriorToAutoEject":
-            storageDomain.VerifyPriorToAutoEject = new(Priority)
-            parseNullableEnum(child.Content, storageDomain.VerifyPriorToAutoEject, aggErr)
+            storageDomain.VerifyPriorToAutoEject = newPriorityFromContent(child.Content, aggErr)
         case "WriteOptimization":
             parseEnum(child.Content, &storageDomain.WriteOptimization, aggErr)
         default:
@@ -1725,6 +1882,16 @@ func (storageDomainFailureType StorageDomainFailureType) StringPtr() *string {
     result := storageDomainFailureType.String()
     return &result
 }
+
+func newStorageDomainFailureTypeFromContent(content []byte, aggErr *AggregateError) *StorageDomainFailureType {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(StorageDomainFailureType)
+    parseEnum(content, result, aggErr)
+    return result
+}
 type StorageDomainMember struct {
     AutoCompactionThreshold *int
     Id string
@@ -1799,6 +1966,16 @@ func (storageDomainMemberState StorageDomainMemberState) StringPtr() *string {
     }
     result := storageDomainMemberState.String()
     return &result
+}
+
+func newStorageDomainMemberStateFromContent(content []byte, aggErr *AggregateError) *StorageDomainMemberState {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(StorageDomainMemberState)
+    parseEnum(content, result, aggErr)
+    return result
 }
 type SystemFailure struct {
     Date string
@@ -1875,6 +2052,16 @@ func (systemFailureType SystemFailureType) StringPtr() *string {
     result := systemFailureType.String()
     return &result
 }
+
+func newSystemFailureTypeFromContent(content []byte, aggErr *AggregateError) *SystemFailureType {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(SystemFailureType)
+    parseEnum(content, result, aggErr)
+    return result
+}
 type UnavailableMediaUsagePolicy Enum
 
 const (
@@ -1914,6 +2101,16 @@ func (unavailableMediaUsagePolicy UnavailableMediaUsagePolicy) StringPtr() *stri
     }
     result := unavailableMediaUsagePolicy.String()
     return &result
+}
+
+func newUnavailableMediaUsagePolicyFromContent(content []byte, aggErr *AggregateError) *UnavailableMediaUsagePolicy {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(UnavailableMediaUsagePolicy)
+    parseEnum(content, result, aggErr)
+    return result
 }
 type SpectraUser struct {
     AuthId *string
@@ -1987,6 +2184,16 @@ func (versioningLevel VersioningLevel) StringPtr() *string {
     result := versioningLevel.String()
     return &result
 }
+
+func newVersioningLevelFromContent(content []byte, aggErr *AggregateError) *VersioningLevel {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(VersioningLevel)
+    parseEnum(content, result, aggErr)
+    return result
+}
 type WriteOptimization Enum
 
 const (
@@ -2023,6 +2230,16 @@ func (writeOptimization WriteOptimization) StringPtr() *string {
     }
     result := writeOptimization.String()
     return &result
+}
+
+func newWriteOptimizationFromContent(content []byte, aggErr *AggregateError) *WriteOptimization {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(WriteOptimization)
+    parseEnum(content, result, aggErr)
+    return result
 }
 type WritePreferenceLevel Enum
 
@@ -2066,6 +2283,16 @@ func (writePreferenceLevel WritePreferenceLevel) StringPtr() *string {
     }
     result := writePreferenceLevel.String()
     return &result
+}
+
+func newWritePreferenceLevelFromContent(content []byte, aggErr *AggregateError) *WritePreferenceLevel {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(WritePreferenceLevel)
+    parseEnum(content, result, aggErr)
+    return result
 }
 type AzureTargetFailureNotificationRegistration struct {
     CreationDate string
@@ -2960,6 +3187,16 @@ func (poolFailureType PoolFailureType) StringPtr() *string {
     result := poolFailureType.String()
     return &result
 }
+
+func newPoolFailureTypeFromContent(content []byte, aggErr *AggregateError) *PoolFailureType {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(PoolFailureType)
+    parseEnum(content, result, aggErr)
+    return result
+}
 type PoolHealth Enum
 
 const (
@@ -2996,6 +3233,16 @@ func (poolHealth PoolHealth) StringPtr() *string {
     }
     result := poolHealth.String()
     return &result
+}
+
+func newPoolHealthFromContent(content []byte, aggErr *AggregateError) *PoolHealth {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(PoolHealth)
+    parseEnum(content, result, aggErr)
+    return result
 }
 type PoolPartition struct {
     Id string
@@ -3069,6 +3316,16 @@ func (poolState PoolState) StringPtr() *string {
     result := poolState.String()
     return &result
 }
+
+func newPoolStateFromContent(content []byte, aggErr *AggregateError) *PoolState {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(PoolState)
+    parseEnum(content, result, aggErr)
+    return result
+}
 type PoolType Enum
 
 const (
@@ -3105,6 +3362,16 @@ func (poolType PoolType) StringPtr() *string {
     }
     result := poolType.String()
     return &result
+}
+
+func newPoolTypeFromContent(content []byte, aggErr *AggregateError) *PoolType {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(PoolType)
+    parseEnum(content, result, aggErr)
+    return result
 }
 type SuspectBlobPool struct {
     BlobId string
@@ -3178,6 +3445,16 @@ func (quiesced Quiesced) StringPtr() *string {
     result := quiesced.String()
     return &result
 }
+
+func newQuiescedFromContent(content []byte, aggErr *AggregateError) *Quiesced {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(Quiesced)
+    parseEnum(content, result, aggErr)
+    return result
+}
 type ReservedTaskType Enum
 
 const (
@@ -3218,6 +3495,16 @@ func (reservedTaskType ReservedTaskType) StringPtr() *string {
     result := reservedTaskType.String()
     return &result
 }
+
+func newReservedTaskTypeFromContent(content []byte, aggErr *AggregateError) *ReservedTaskType {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(ReservedTaskType)
+    parseEnum(content, result, aggErr)
+    return result
+}
 type ImportExportConfiguration Enum
 
 const (
@@ -3254,6 +3541,16 @@ func (importExportConfiguration ImportExportConfiguration) StringPtr() *string {
     }
     result := importExportConfiguration.String()
     return &result
+}
+
+func newImportExportConfigurationFromContent(content []byte, aggErr *AggregateError) *ImportExportConfiguration {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(ImportExportConfiguration)
+    parseEnum(content, result, aggErr)
+    return result
 }
 type SuspectBlobTape struct {
     BlobId string
@@ -3350,8 +3647,7 @@ func (tape *Tape) parse(xmlNode *XmlNode, aggErr *AggregateError) {
         case "PartitionId":
             tape.PartitionId = parseNullableString(child.Content)
         case "PreviousState":
-            tape.PreviousState = new(TapeState)
-            parseNullableEnum(child.Content, tape.PreviousState, aggErr)
+            tape.PreviousState = newTapeStateFromContent(child.Content, aggErr)
         case "SerialNumber":
             tape.SerialNumber = parseNullableString(child.Content)
         case "State":
@@ -3365,8 +3661,7 @@ func (tape *Tape) parse(xmlNode *XmlNode, aggErr *AggregateError) {
         case "Type":
             tape.Type = parseString(child.Content)
         case "VerifyPending":
-            tape.VerifyPending = new(Priority)
-            parseNullableEnum(child.Content, tape.VerifyPending, aggErr)
+            tape.VerifyPending = newPriorityFromContent(child.Content, aggErr)
         case "WriteProtected":
             tape.WriteProtected = parseBool(child.Content, aggErr)
         default:
@@ -3512,6 +3807,16 @@ func (tapeDriveState TapeDriveState) StringPtr() *string {
     result := tapeDriveState.String()
     return &result
 }
+
+func newTapeDriveStateFromContent(content []byte, aggErr *AggregateError) *TapeDriveState {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(TapeDriveState)
+    parseEnum(content, result, aggErr)
+    return result
+}
 type TapeDriveType Enum
 
 const (
@@ -3566,6 +3871,16 @@ func (tapeDriveType TapeDriveType) StringPtr() *string {
     }
     result := tapeDriveType.String()
     return &result
+}
+
+func newTapeDriveTypeFromContent(content []byte, aggErr *AggregateError) *TapeDriveType {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(TapeDriveType)
+    parseEnum(content, result, aggErr)
+    return result
 }
 type DetailedTapeFailure struct {
     Date string
@@ -3693,6 +4008,16 @@ func (tapeFailureType TapeFailureType) StringPtr() *string {
     result := tapeFailureType.String()
     return &result
 }
+
+func newTapeFailureTypeFromContent(content []byte, aggErr *AggregateError) *TapeFailureType {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(TapeFailureType)
+    parseEnum(content, result, aggErr)
+    return result
+}
 type TapeLibrary struct {
     Id string
     ManagementUrl *string
@@ -3742,8 +4067,7 @@ func (tapePartition *TapePartition) parse(xmlNode *XmlNode, aggErr *AggregateErr
         case "AutoCompactionEnabled":
             tapePartition.AutoCompactionEnabled = parseBool(child.Content, aggErr)
         case "DriveType":
-            tapePartition.DriveType = new(TapeDriveType)
-            parseNullableEnum(child.Content, tapePartition.DriveType, aggErr)
+            tapePartition.DriveType = newTapeDriveTypeFromContent(child.Content, aggErr)
         case "ErrorMessage":
             tapePartition.ErrorMessage = parseNullableString(child.Content)
         case "Id":
@@ -3878,6 +4202,16 @@ func (tapePartitionFailureType TapePartitionFailureType) StringPtr() *string {
     result := tapePartitionFailureType.String()
     return &result
 }
+
+func newTapePartitionFailureTypeFromContent(content []byte, aggErr *AggregateError) *TapePartitionFailureType {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(TapePartitionFailureType)
+    parseEnum(content, result, aggErr)
+    return result
+}
 type TapePartitionState Enum
 
 const (
@@ -3917,6 +4251,16 @@ func (tapePartitionState TapePartitionState) StringPtr() *string {
     }
     result := tapePartitionState.String()
     return &result
+}
+
+func newTapePartitionStateFromContent(content []byte, aggErr *AggregateError) *TapePartitionState {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(TapePartitionState)
+    parseEnum(content, result, aggErr)
+    return result
 }
 type TapeState Enum
 
@@ -4029,6 +4373,16 @@ func (tapeState TapeState) StringPtr() *string {
     }
     result := tapeState.String()
     return &result
+}
+
+func newTapeStateFromContent(content []byte, aggErr *AggregateError) *TapeState {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(TapeState)
+    parseEnum(content, result, aggErr)
+    return result
 }
 type AzureTarget struct {
     AccountKey *string
@@ -4290,6 +4644,16 @@ func (ds3TargetAccessControlReplication Ds3TargetAccessControlReplication) Strin
     result := ds3TargetAccessControlReplication.String()
     return &result
 }
+
+func newDs3TargetAccessControlReplicationFromContent(content []byte, aggErr *AggregateError) *Ds3TargetAccessControlReplication {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(Ds3TargetAccessControlReplication)
+    parseEnum(content, result, aggErr)
+    return result
+}
 type Ds3TargetFailure struct {
     Date string
     ErrorMessage *string
@@ -4412,8 +4776,7 @@ func (s3Target *S3Target) parse(xmlNode *XmlNode, aggErr *AggregateError) {
         case "Quiesced":
             parseEnum(child.Content, &s3Target.Quiesced, aggErr)
         case "Region":
-            s3Target.Region = new(S3Region)
-            parseNullableEnum(child.Content, s3Target.Region, aggErr)
+            s3Target.Region = newS3RegionFromContent(child.Content, aggErr)
         case "SecretKey":
             s3Target.SecretKey = parseNullableString(child.Content)
         case "StagedDataExpirationInDays":
@@ -4646,6 +5009,16 @@ func (targetFailureType TargetFailureType) StringPtr() *string {
     result := targetFailureType.String()
     return &result
 }
+
+func newTargetFailureTypeFromContent(content []byte, aggErr *AggregateError) *TargetFailureType {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(TargetFailureType)
+    parseEnum(content, result, aggErr)
+    return result
+}
 type TargetReadPreferenceType Enum
 
 const (
@@ -4695,6 +5068,16 @@ func (targetReadPreferenceType TargetReadPreferenceType) StringPtr() *string {
     result := targetReadPreferenceType.String()
     return &result
 }
+
+func newTargetReadPreferenceTypeFromContent(content []byte, aggErr *AggregateError) *TargetReadPreferenceType {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(TargetReadPreferenceType)
+    parseEnum(content, result, aggErr)
+    return result
+}
 type TargetState Enum
 
 const (
@@ -4731,6 +5114,16 @@ func (targetState TargetState) StringPtr() *string {
     }
     result := targetState.String()
     return &result
+}
+
+func newTargetStateFromContent(content []byte, aggErr *AggregateError) *TargetState {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(TargetState)
+    parseEnum(content, result, aggErr)
+    return result
 }
 type BulkObject struct {
     Bucket *string
@@ -4920,6 +5313,16 @@ func (blobStoreTaskState BlobStoreTaskState) StringPtr() *string {
     result := blobStoreTaskState.String()
     return &result
 }
+
+func newBlobStoreTaskStateFromContent(content []byte, aggErr *AggregateError) *BlobStoreTaskState {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(BlobStoreTaskState)
+    parseEnum(content, result, aggErr)
+    return result
+}
 type BlobStoreTasksInformation struct {
     Tasks []BlobStoreTaskInformation
 }
@@ -4997,6 +5400,16 @@ func (cacheEntryState CacheEntryState) StringPtr() *string {
     }
     result := cacheEntryState.String()
     return &result
+}
+
+func newCacheEntryStateFromContent(content []byte, aggErr *AggregateError) *CacheEntryState {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(CacheEntryState)
+    parseEnum(content, result, aggErr)
+    return result
 }
 type CacheFilesystemInformation struct {
     AvailableCapacityInBytes int64
@@ -5263,8 +5676,7 @@ func (detailedTapePartition *DetailedTapePartition) parse(xmlNode *XmlNode, aggE
         case "AutoCompactionEnabled":
             detailedTapePartition.AutoCompactionEnabled = parseBool(child.Content, aggErr)
         case "DriveType":
-            detailedTapePartition.DriveType = new(TapeDriveType)
-            parseNullableEnum(child.Content, detailedTapePartition.DriveType, aggErr)
+            detailedTapePartition.DriveType = newTapeDriveTypeFromContent(child.Content, aggErr)
         case "DriveTypes":
             var model TapeDriveType
             parseEnum(child.Content, &model, aggErr)
@@ -5511,6 +5923,16 @@ func (jobStatus JobStatus) StringPtr() *string {
     }
     result := jobStatus.String()
     return &result
+}
+
+func newJobStatusFromContent(content []byte, aggErr *AggregateError) *JobStatus {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(JobStatus)
+    parseEnum(content, result, aggErr)
+    return result
 }
 type MasterObjectList struct {
     Aggregating bool
@@ -6005,8 +6427,7 @@ func (namedDetailedTapePartition *NamedDetailedTapePartition) parse(xmlNode *Xml
         case "AutoCompactionEnabled":
             namedDetailedTapePartition.AutoCompactionEnabled = parseBool(child.Content, aggErr)
         case "DriveType":
-            namedDetailedTapePartition.DriveType = new(TapeDriveType)
-            parseNullableEnum(child.Content, namedDetailedTapePartition.DriveType, aggErr)
+            namedDetailedTapePartition.DriveType = newTapeDriveTypeFromContent(child.Content, aggErr)
         case "DriveTypes":
             var model TapeDriveType
             parseEnum(child.Content, &model, aggErr)
@@ -6182,6 +6603,16 @@ func (restOperationType RestOperationType) StringPtr() *string {
     result := restOperationType.String()
     return &result
 }
+
+func newRestOperationTypeFromContent(content []byte, aggErr *AggregateError) *RestOperationType {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(RestOperationType)
+    parseEnum(content, result, aggErr)
+    return result
+}
 type DatabasePhysicalSpaceState Enum
 
 const (
@@ -6225,6 +6656,16 @@ func (databasePhysicalSpaceState DatabasePhysicalSpaceState) StringPtr() *string
     result := databasePhysicalSpaceState.String()
     return &result
 }
+
+func newDatabasePhysicalSpaceStateFromContent(content []byte, aggErr *AggregateError) *DatabasePhysicalSpaceState {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(DatabasePhysicalSpaceState)
+    parseEnum(content, result, aggErr)
+    return result
+}
 type HttpResponseFormatType Enum
 
 const (
@@ -6264,6 +6705,16 @@ func (httpResponseFormatType HttpResponseFormatType) StringPtr() *string {
     }
     result := httpResponseFormatType.String()
     return &result
+}
+
+func newHttpResponseFormatTypeFromContent(content []byte, aggErr *AggregateError) *HttpResponseFormatType {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(HttpResponseFormatType)
+    parseEnum(content, result, aggErr)
+    return result
 }
 type RequestType Enum
 
@@ -6311,6 +6762,16 @@ func (requestType RequestType) StringPtr() *string {
     result := requestType.String()
     return &result
 }
+
+func newRequestTypeFromContent(content []byte, aggErr *AggregateError) *RequestType {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(RequestType)
+    parseEnum(content, result, aggErr)
+    return result
+}
 type NamingConventionType Enum
 
 const (
@@ -6356,6 +6817,16 @@ func (namingConventionType NamingConventionType) StringPtr() *string {
     }
     result := namingConventionType.String()
     return &result
+}
+
+func newNamingConventionTypeFromContent(content []byte, aggErr *AggregateError) *NamingConventionType {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(NamingConventionType)
+    parseEnum(content, result, aggErr)
+    return result
 }
 type ChecksumType Enum
 
@@ -6403,6 +6874,16 @@ func (checksumType ChecksumType) StringPtr() *string {
     }
     result := checksumType.String()
     return &result
+}
+
+func newChecksumTypeFromContent(content []byte, aggErr *AggregateError) *ChecksumType {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(ChecksumType)
+    parseEnum(content, result, aggErr)
+    return result
 }
 type BucketAclList struct {
     BucketAcls []BucketAcl

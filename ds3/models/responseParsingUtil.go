@@ -12,10 +12,10 @@
 package models
 
 import (
-    "strconv"
     "log"
-    "strings"
     "net/http"
+    "strconv"
+    "strings"
 )
 
 // Contains utils used by model parsers to parse response payloads.

@@ -1916,11 +1916,11 @@ func TestVerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3(t *testing.T)
     ds3Testing.AssertStringPtrIsNil(t, "PartiallyVerifiedEndOfTape", tape.PartiallyVerifiedEndOfTape)
     ds3Testing.AssertNonNilStringPtr(t, "PartitionId", "dc681797-927a-4eb0-9652-d19d06534e50", tape.PartitionId)
     if tape.PreviousState != nil {
-        t.Fatalf("Expeted previous state to be 'nil' but was '%s'.", tape.PreviousState.String())
+        t.Fatalf("Expeted previous state to be 'nil' but was '%v'.", tape.PreviousState)
     }
     ds3Testing.AssertStringPtrIsNil(t, "SerialNumber", tape.SerialNumber)
     if tape.State != models.TAPE_STATE_PENDING_INSPECTION {
-        t.Fatalf("Expected tape state 'TAPE_STATE_PENDING_INSPECTION' but got '%s'.", tape.State.String())
+        t.Fatalf("Expected tape state 'TAPE_STATE_PENDING_INSPECTION' but got '%v'.", tape.State)
     }
     ds3Testing.AssertStringPtrIsNil(t, "StorageDomainId", tape.StorageDomainMemberId)
     ds3Testing.AssertBool(t, "TakeOwnershipPending", false, tape.TakeOwnershipPending)
