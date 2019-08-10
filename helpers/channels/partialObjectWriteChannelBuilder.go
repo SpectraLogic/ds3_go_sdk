@@ -11,6 +11,7 @@ type PartialObjectWriteChannelBuilder struct {
     name string
     // map of object ranges to destination offset for start of range
     rangeMap partialObjectRangeMap
+    FatalErrorHandler
 }
 
 func NewPartialObjectChannelBuilder(name string, objRanges []ds3Models.Range) helperModels.WriteChannelBuilder {

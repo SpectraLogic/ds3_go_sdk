@@ -11,6 +11,7 @@ import (
 // are not writing to the same location within the file.
 type ObjectWriteChannelBuilder struct {
     name string
+    FatalErrorHandler
 }
 
 func NewWriteChannelBuilder(name string) helperModels.WriteChannelBuilder {

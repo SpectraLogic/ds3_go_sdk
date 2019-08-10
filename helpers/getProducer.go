@@ -78,6 +78,12 @@ type getObjectInfo struct {
 // Creates the transfer operation that will perform the data retrieval of the specified blob from BP
 func (producer *getProducer) transferOperationBuilder(info getObjectInfo, aggErr *ds3Models.AggregateError) TransferOperation {
     return func() {
+        // has this file fatally errored while transferring a different blob?
+        if info.channelBuilder.HasFatalError() {
+            // skip performing this blob transfer
+            producer.Warningf("fatal error occurred previously on this file, skipping retrieval of blob objectName='%s' offset=%d", info.blob.Name(), info.blob.Offset())
+            return
+        }
         blobRanges := producer.rangeFinder.GetRanges(info.blob.Name(), info.blob.Offset(), info.blob.Length())
 
         producer.Debugf("transferring objectName='%s' offset=%d ranges=%v", info.blob.Name(), info.blob.Offset(), blobRanges)
@@ -93,6 +99,7 @@ func (producer *getProducer) transferOperationBuilder(info getObjectInfo, aggErr
         getObjResponse, err := producer.client.GetObject(getObjRequest)
         if err != nil {
             aggErr.Append(err)
+            info.channelBuilder.SetFatalError(err)
             producer.Errorf("unable to retrieve object '%s' at offset %d: %s", info.blob.Name(), info.blob.Offset(), err.Error())
             return
         }
@@ -101,6 +108,7 @@ func (producer *getProducer) transferOperationBuilder(info getObjectInfo, aggErr
             writer, err := info.channelBuilder.GetChannel(info.blob.Offset())
             if err != nil {
                 aggErr.Append(err)
+                info.channelBuilder.SetFatalError(err)
                 producer.Errorf("unable to read contents of object '%s' at offset '%d': %s", info.blob.Name(), info.blob.Offset(), err.Error())
                 return
             }
@@ -108,6 +116,7 @@ func (producer *getProducer) transferOperationBuilder(info getObjectInfo, aggErr
             _, err = io.Copy(writer, getObjResponse.Content) //copy all content from response reader to destination writer
             if err != nil {
                 aggErr.Append(err)
+                info.channelBuilder.SetFatalError(err)
                 producer.Errorf("unable to copy content of object '%s' at offset '%d' from source to destination: %s", info.blob.Name(), info.blob.Offset(), err.Error())
             }
             return
@@ -118,6 +127,7 @@ func (producer *getProducer) transferOperationBuilder(info getObjectInfo, aggErr
             err := writeRangeToDestination(info.channelBuilder, r, getObjResponse.Content)
             if err != nil {
                 aggErr.Append(err)
+                info.channelBuilder.SetFatalError(err)
                 producer.Errorf("unable to write to destination channel for object '%s' with range '%v': %s", info.blob.Name(), r, err.Error())
             }
         }
@@ -145,6 +155,13 @@ func (producer *getProducer) queueBlobForTransfer(blob *helperModels.BlobDescrip
     }
 
     curReadObj := producer.readObjectMap[blob.Name()]
+
+    if curReadObj.ChannelBuilder.HasFatalError() {
+        // a fatal error happened on a previous blob for this file, skip processing
+        producer.Warningf("fatal error occurred while transferring previous blob on this file, skipping blob '%s' offset=%d length=%d", blob.Name(), blob.Offset(), blob.Length())
+        producer.processedBlobTracker.MarkProcessed(*blob)
+        return
+    }
 
     if !curReadObj.ChannelBuilder.IsChannelAvailable(blob.Offset()) {
         producer.Debugf("channel is not currently available for getting blob '%s' offset=%d length=%d", blob.Name(), blob.Offset(), blob.Length())

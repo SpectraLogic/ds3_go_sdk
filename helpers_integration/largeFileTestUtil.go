@@ -36,6 +36,8 @@ func VerifyLargeBookContent(content io.ReadCloser) error {
 }
 
 func LoadLargeFile(bucket string, client *ds3.Client) error {
+    fmt.Printf("Loading large file to BP")
+    defer fmt.Printf("Finished loading large file to BP")
     helper := helpers.NewHelpers(client)
 
     writeObj, err := getTestWriteObjectRandomAccess(LargeBookTitle, LargeBookPath + LargeBookTitle)

@@ -1,9 +1,9 @@
 package channels
 
 import (
+    helperModels "github.com/SpectraLogic/ds3_go_sdk/helpers/models"
     "io"
     "os"
-    helperModels "github.com/SpectraLogic/ds3_go_sdk/helpers/models"
 )
 
 const defaultPermissions = 0
@@ -12,6 +12,7 @@ const defaultPermissions = 0
 // This channel functions as a random-access and can be used concurrently.
 type ObjectReadChannelBuilder struct {
     name string
+    FatalErrorHandler
 }
 
 func NewReadChannelBuilder(name string) helperModels.ReadChannelBuilder {
