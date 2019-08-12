@@ -17,11 +17,15 @@ func (errHandler *FatalErrorHandler) HasFatalError() bool {
     return errHandler.fatalError != nil
 }
 
+// Captures the first fatal error that occurs.
+// In a multi-threaded environment, all subsequent errors will be ignored.
 func (errHandler *FatalErrorHandler) SetFatalError(err error) {
     errHandler.errLock.Lock()
     defer errHandler.errLock.Unlock()
 
-    errHandler.fatalError = err
+    if errHandler.fatalError == nil {
+        errHandler.fatalError = err
+    }
 }
 
 func (errHandler *FatalErrorHandler) GetFatalError() error {
