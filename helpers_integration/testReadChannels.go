@@ -1,6 +1,7 @@
 package helpers_integration
 
 import (
+    "github.com/SpectraLogic/ds3_go_sdk/helpers/channels"
     "sync"
     "io"
     "log"
@@ -12,6 +13,7 @@ import (
 type testStreamAccessReadChannelBuilder struct {
     f *os.File
     channelCounter channelCounter
+    channels.FatalErrorHandler
 }
 
 // Used as a thread safe counter to keep track of the current number of channels in use for a given ReadChannelBuilder
@@ -42,7 +44,7 @@ func (builder *testStreamAccessReadChannelBuilder) GetChannel(offset int64) (io.
     if builder.channelCounter.currentCount() > 0 {
         return nil, errors.New("ERROR: channel is not currently available")
     }
-    log.Printf("DEBUG: incrementing channel semaphore with length %d", builder.channelCounter.currentCount()) //todo delete
+    log.Printf("DEBUG: incrementing channel semaphore with length %d", builder.channelCounter.currentCount())
     builder.channelCounter.increment()
     return builder.f, nil
 }
@@ -50,10 +52,10 @@ func (builder *testStreamAccessReadChannelBuilder) GetChannel(offset int64) (io.
 func (builder *testStreamAccessReadChannelBuilder) IsChannelAvailable(offset int64) bool {
     curOffset, _ := builder.f.Seek(0, io.SeekCurrent)
     if curOffset != offset || builder.channelCounter.currentCount() > 0 {
-        log.Printf("DEBUG: channel is not available. Offset expected=%d actual=%d. Semaphore expected=0 actual=%d", offset, curOffset, builder.channelCounter.currentCount()) //todo delete
+        log.Printf("DEBUG: channel is not available. Offset expected=%d actual=%d. Semaphore expected=0 actual=%d", offset, curOffset, builder.channelCounter.currentCount())
         return false
     }
-    log.Print("DEBUG: channel deamed available\n") //todo delete
+    log.Print("DEBUG: channel deamed available\n")
     return true
 }
 

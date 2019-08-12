@@ -1,11 +1,11 @@
 package helpers
 
 import (
+    "github.com/SpectraLogic/ds3_go_sdk/ds3"
     ds3Models "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
     helperModels "github.com/SpectraLogic/ds3_go_sdk/helpers/models"
-    "github.com/SpectraLogic/ds3_go_sdk/ds3"
-    "sync"
     "github.com/SpectraLogic/ds3_go_sdk/sdk_log"
+    "sync"
 )
 
 type putProducer struct {
@@ -62,9 +62,16 @@ type putObjectInfo struct {
 // Creates the transfer operation that will perform the data upload of the specified blob to BP
 func (producer *putProducer) transferOperationBuilder(info putObjectInfo, aggErr *ds3Models.AggregateError) TransferOperation {
     return func() {
+        // has this file fatally errored while transferring a different blob?
+        if info.channelBuilder.HasFatalError() {
+            // skip performing this blob transfer
+            producer.Warningf("fatal error occurred previously on this file, skipping sending blob name='%s' offset=%d length=%d", info.blob.Name(), info.blob.Offset(), info.blob.Length())
+            return
+        }
         reader, err := info.channelBuilder.GetChannel(info.blob.Offset())
         if err != nil {
             aggErr.Append(err)
+            info.channelBuilder.SetFatalError(err)
             producer.Errorf("could not get reader for object with name='%s' offset=%d length=%d", info.blob.Name(), info.blob.Offset(), info.blob.Length())
             return
         }
@@ -80,6 +87,7 @@ func (producer *putProducer) transferOperationBuilder(info putObjectInfo, aggErr
         _, err = producer.client.PutObject(putObjRequest)
         if err != nil {
             aggErr.Append(err)
+            info.channelBuilder.SetFatalError(err)
             producer.Errorf("problem during transfer of %s: %s", info.blob.Name(), err.Error())
         }
     }
@@ -149,6 +157,13 @@ func (producer *putProducer) queueBlobForTransfer(blob *helperModels.BlobDescrip
     }
 
     curWriteObj := producer.writeObjectMap[blob.Name()]
+
+    if curWriteObj.ChannelBuilder.HasFatalError() {
+        // a fatal error happened on a previous blob for this file, skip processing
+        producer.Warningf("fatal error occurred while transferring previous blob on this file, skipping blob %s offset=%d length=%d", blob.Name(), blob.Offset(), blob.Length())
+        producer.processedBlobTracker.MarkProcessed(*blob)
+        return
+    }
 
     if !curWriteObj.ChannelBuilder.IsChannelAvailable(blob.Offset()) {
         producer.Debugf("channel is not currently available for blob %s offset=%d length=%d", blob.Name(), blob.Offset(), blob.Length())

@@ -7,6 +7,7 @@ import (
 
 type ObjectReadChannelDecorator struct {
 	readCloser io.ReadCloser
+	FatalErrorHandler
 }
 
 func NewObjectReadChannelDecorator(reader io.Reader) models.ReadChannelBuilder {

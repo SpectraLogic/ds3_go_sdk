@@ -1,19 +1,19 @@
 package helpers_integration
 
 import (
-    "testing"
-    "log"
-    "os"
     "github.com/SpectraLogic/ds3_go_sdk/ds3"
+    ds3Models "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3_integration/utils"
     "github.com/SpectraLogic/ds3_go_sdk/ds3_utils/ds3Testing"
     "github.com/SpectraLogic/ds3_go_sdk/helpers"
-    ds3Models "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
-    helperModels "github.com/SpectraLogic/ds3_go_sdk/helpers/models"
-    "github.com/SpectraLogic/ds3_go_sdk/ds3_integration/utils"
-    "io/ioutil"
-    "github.com/SpectraLogic/ds3_go_sdk/samples/utils"
     "github.com/SpectraLogic/ds3_go_sdk/helpers/channels"
+    helperModels "github.com/SpectraLogic/ds3_go_sdk/helpers/models"
+    "github.com/SpectraLogic/ds3_go_sdk/samples/utils"
     "io"
+    "io/ioutil"
+    "log"
+    "os"
+    "testing"
 )
 
 var client *ds3.Client
@@ -111,6 +111,32 @@ func TestPutBulkBlobSpanningChunksStreamAccess(t *testing.T) {
     testutils.VerifyFilesOnBP(t, testBucket, []string {LargeBookTitle}, LargeBookPath, client)
 }
 
+// GOSDK-26: On archive helpers can hang indefinitely using streaming strategy if blob fails.
+// Test validates the above jira is fixed.
+func TestPutBulkBlobSpanningChunksStreamAccessDoesNotExist(t *testing.T) {
+    defer testutils.DeleteBucketContents(client, testBucket)
+
+    helper := helpers.NewHelpers(client)
+
+    strategy := newTestTransferStrategy()
+
+    // open a file but lie that its bigger than it is
+    f, err := os.Open(testutils.BookPath + testutils.BookTitles[0])
+    writeObj := helperModels.PutObject{
+        PutObject: ds3Models.Ds3PutObject{Name: LargeBookTitle, Size: 20*1024*1024},
+        ChannelBuilder: &testStreamAccessReadChannelBuilder{f: f},
+    }
+
+    var writeObjects []helperModels.PutObject
+    writeObjects = append(writeObjects, writeObj)
+
+    ds3Testing.AssertNilError(t, err)
+
+    _, err = helper.PutObjects(testBucket, writeObjects, strategy)
+    if err == nil {
+        t.Errorf("expected an error while putting objects due to bad file size")
+    }
+}
 
 func TestGetBulk(t *testing.T) {
     defer testutils.DeleteBucketContents(client, testBucket)
@@ -194,6 +220,67 @@ func TestGetBulkBlobSpanningChunksRandomAccess(t *testing.T) {
     ds3Testing.AssertNilError(t, err)
 }
 
+func TestGetBulkBlobSpanningChunksStreaming(t *testing.T) {
+    defer testutils.DeleteBucketContents(client, testBucket)
+
+    LoadLargeFile(testBucket, client)
+
+    helper := helpers.NewHelpers(client)
+
+    strategy := helpers.ReadTransferStrategy{
+        Options: helpers.ReadBulkJobOptions{}, // use default job options
+        BlobStrategy: newTestBlobStrategy(),
+    }
+
+    file, err := ioutil.TempFile(os.TempDir(), "goTest")
+    ds3Testing.AssertNilError(t, err)
+    defer file.Close()
+    defer os.Remove(file.Name())
+
+    fileWriter, err := os.OpenFile(file.Name(), os.O_WRONLY | os.O_CREATE, os.ModePerm)
+    defer fileWriter.Close()
+
+    readObjects := []helperModels.GetObject{
+        {Name: LargeBookTitle, ChannelBuilder: &testStreamAccessWriteChannelBuilder{f: fileWriter}},
+    }
+
+    jobId, err := helper.GetObjects(testBucket, readObjects, strategy)
+    ds3Testing.AssertNilError(t, err)
+    if jobId == "" {
+        t.Error("expected to get a BP job ID, but instead got nothing")
+    }
+
+    err = VerifyLargeBookContent(file)
+    ds3Testing.AssertNilError(t, err)
+}
+
+func TestGetBulkBlobSpanningChunksStreamingFailBlob(t *testing.T) {
+    defer testutils.DeleteBucketContents(client, testBucket)
+
+    LoadLargeFile(testBucket, client)
+
+    helper := helpers.NewHelpers(client)
+
+    strategy := helpers.ReadTransferStrategy{
+        Options: helpers.ReadBulkJobOptions{}, // use default job options
+        BlobStrategy: newTestBlobStrategy(),
+    }
+
+    file, err := ioutil.TempFile(os.TempDir(), "goTest")
+    ds3Testing.AssertNilError(t, err)
+    defer file.Close()
+    defer os.Remove(file.Name())
+
+    readObjects := []helperModels.GetObject{
+        {Name: LargeBookTitle, ChannelBuilder: &testStreamAccessWriteFailOnFirstBlob{}},
+    }
+
+    _, err = helper.GetObjects(testBucket, readObjects, strategy)
+    if err == nil {
+        t.Errorf("expected error when retrieving file")
+    }
+}
+
 func TestGetBulkPartialObjectRandomAccess(t *testing.T) {
     defer testutils.DeleteBucketContents(client, testBucket)
 
@@ -248,7 +335,7 @@ func TestPutObjectDoesNotExist(t *testing.T) {
 
     writeObjects := []helperModels.PutObject { nonExistentPutObj }
 
-    jobId, err := helper.PutObjects(testBucket, writeObjects, strategy)
+    _, err := helper.PutObjects(testBucket, writeObjects, strategy)
 
     // Verify that the expected error occurred instead of a panic
     if err == nil {
@@ -263,16 +350,4 @@ func TestPutObjectDoesNotExist(t *testing.T) {
     }
     expected := "open does-not-exist: no such file or directory"
     ds3Testing.AssertString(t, "expected error", expected, aggErr.Errors[0].Error())
-
-
-    if jobId == "" {
-        t.Error("expected to get a BP job ID, but instead got nothing")
-    }
-
-    // verify nothing is on the BP
-    getBucket, getBucketErr := client.GetBucket(ds3Models.NewGetBucketRequest(testBucket))
-    ds3Testing.AssertNilError(t, getBucketErr)
-    if len(getBucket.ListBucketResult.Objects) != 0 {
-        t.Fatalf("Expected '%d' objects in bucket '%s', but found '%d'.", 0, testBucket, len(getBucket.ListBucketResult.Objects))
-    }
 }
