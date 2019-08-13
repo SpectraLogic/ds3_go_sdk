@@ -72,7 +72,7 @@ func (producer *putProducer) transferOperationBuilder(info putObjectInfo, aggErr
         if err != nil {
             aggErr.Append(err)
             info.channelBuilder.SetFatalError(err)
-            producer.Errorf("could not get reader for object with name='%s' offset=%d length=%d", info.blob.Name(), info.blob.Offset(), info.blob.Length())
+            producer.Errorf("could not get reader for object with name='%s' offset=%d length=%d: %v", info.blob.Name(), info.blob.Offset(), info.blob.Length(), err)
             return
         }
         defer info.channelBuilder.OnDone(reader)
