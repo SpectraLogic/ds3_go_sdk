@@ -83,15 +83,20 @@ func PerformanceGetSample(bucketName string) (*utils.PerformanceTest, error) {
                         WithJob(bulkGetResponse.MasterObjectList.JobId).
                         WithOffset(curObj.Offset)
 
-                    _, err := client.GetObject(getObjRequest)
+                    response, err := client.GetObject(getObjRequest)
                     if err != nil {
                         log.Fatal(err)
                     }
+                    buf := make([]byte, curObj.Length)
+                    contentLen, err := response.Content.Read(buf)
+                    if err != nil {
+                        return nil, err
+                    }
 
                     lap := time.Since(stopwatch)
-                    fmt.Printf("Got: %d ", curObj.Length - curObj.Offset)
+                    fmt.Printf("Got: %d ", contentLen)
                     fmt.Printf(" Time (s): %f\n", lap.Seconds())
-                    ret = ret.AddInterval(lap.Seconds(), curObj.Length - curObj.Offset)
+                    ret = ret.AddInterval(lap.Seconds(), int64(contentLen))
                 }
                 curChunkCount++
             }
