@@ -11,32 +11,49 @@
 
 package main
 
-import "github.com/SpectraLogic/ds3_go_sdk/samples/functions"
+import (
+    "encoding/json"
+    "fmt"
+    "github.com/SpectraLogic/ds3_go_sdk/samples/functions"
+    "github.com/SpectraLogic/ds3_go_sdk/samples/utils"
+)
+
+const (
+    blockSize = 2 *1024 *1024
+    numFiles = 5
+    jobName = "PerformanceTest"
+)
 
 // Runs the various sample code. Each sample is self contained and can be run separately.
 func main() {
+    // opject returned / printed tpo console
+    output := utils.PerformanceOutput{}
+    bucketName := "bucket_" + jobName
 
-    // Lists all existing buckets on the BP.
-    // Source code: getServiceSample.go
-    functions.GetServiceSample()
+    // Put Random binary data
+    putStats, err := functions.PerormancePutSample(numFiles, blockSize, bucketName)
+    if err != nil {
+        output.AddError(fmt.Sprintf("Put operation failed", err))
+    } else {
+        putStats.Name = jobName + "_put"
+        output.Put = putStats
+    }
 
-    // Creates a bucket on the BP and puts sample files in the bucket.
-    // Source code: putBulkSample.go
-    functions.PutBulkSample()
+    // Retrieve same data to test Get.
+    getStats, err := functions.PerformanceGetSample(bucketName)
+    if err != nil {
+        output.AddError(fmt.Sprintf("Get operation failed", err))
+    } else {
+        getStats.Name = jobName + "_get"
+        getStats.NumFiles = numFiles
+        getStats.BlockSize = blockSize
+        output.Get = getStats
+    }
 
-    // Gets a list of S3 objects in a bucket.
-    // Source code: getBucketSample.go
-    functions.GetBucketSample()
-
-    // Retrieve an object from a bucket.
-    // Source code: getObjectSample.go
-    functions.GetObjectSample()
-
-    // Retrieves several objects from a bucket on the BP.
-    // Source code: getBulkSample.go
-    functions.GetBulkSample()
-
-    // Creates some buckets on the BP
-    // Source code: putBucketSample.go
-    functions.PutBucketSample()
+    // export pretty JSON
+    jsonOut, err := json.MarshalIndent(output, "", " ")
+    if err != nil {
+        jsonOut = []byte(fmt.Sprintf("{errors: [\"Could not marshall JSON object\"]}"))
+    }
+    fmt.Printf("%s\n", jsonOut)
 }

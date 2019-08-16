@@ -19,11 +19,87 @@ import (
     "fmt"
     "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
     "github.com/SpectraLogic/ds3_go_sdk/ds3"
+    "math/rand"
+    "time"
 )
 
 const BucketName = "GoPutBulkBucket"
 const ResourceFolder = "./samples/resources/"
 var BookNames = []string{"beowulf.txt", "sherlock_holmes.txt", "tale_of_two_cities.txt", "ulysses.txt"}
+
+const PerformanceFilePrefix = "perffile_"
+
+type PerformanceInterval struct {
+    Seconds	        float64	`json:"seconds"`
+    Bytes			int64	`json:"bytes"`
+    BytesPerSecond	int64	`json:"bytes_per_second"`
+}
+
+type PerformanceTest struct {
+    Name		string			        `json:"name"`
+    NumFiles    int                     `json:"numFiles"`
+    BlockSize   int64                   `json:"blockSize"`
+    Start 		int64		            `json:"start"`
+    Intervals 	[]PerformanceInterval	`json:"intervals"`
+    Error 		string			        `json:"error"`
+}
+
+type PerformanceOutput struct {
+    Put     *PerformanceTest `json:"put"`
+    Get     *PerformanceTest `json:"get"`
+    Errors   []string        `json:"errors"`
+}
+
+func (o *PerformanceOutput) AddError(message string) *PerformanceOutput {
+    if o.Errors == nil {
+        o.Errors = []string{}
+    }
+    o.Errors = append(o.Errors, message)
+    return o
+}
+
+func NewPerformanceTest(numFiles int, blockSize int64) (*PerformanceTest) {
+    return &PerformanceTest{
+        Name: "",
+        NumFiles: numFiles,
+        BlockSize: blockSize,
+        Start: time.Now().Unix(),
+        Intervals: []PerformanceInterval{},
+    }
+}
+
+func (p *PerformanceTest) AddInterval(sec float64, size int64) *PerformanceTest {
+    int := PerformanceInterval{sec, size, int64(float64(size)/sec)}
+    p.Intervals = append(p.Intervals, int)
+    return p
+}
+
+// ReaderWithSizeDecorator that vends random bytes.
+func BuildPerformanceReaderWithSizeDecorator(length int64) models.ReadCloserWithSizeDecorator {
+    return &performanceReaderWithSizeDecorator{
+        length,
+    }
+}
+
+type performanceReaderWithSizeDecorator struct {
+    size int64
+}
+
+func (byteReaderWithSizeDecorator *performanceReaderWithSizeDecorator) Read(b []byte) (int, error) {
+    return rand.Read(b)
+}
+
+func (performanceReaderWithSizeDecorator) Close() error {
+    return nil
+}
+
+func (byteReaderWithSizeDecorator *performanceReaderWithSizeDecorator) Seek(offset int64, whence int) (int64, error) {
+    return offset, nil
+}
+
+func (byteReaderWithSizeDecorator *performanceReaderWithSizeDecorator) Size() (int64, error) {
+    return byteReaderWithSizeDecorator.size, nil
+}
 
 // Loads a book from resources folder.
 func LoadBook(book string) (models.ReaderWithSizeDecorator, error) {
