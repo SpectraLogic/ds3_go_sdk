@@ -13,6 +13,7 @@ package functions
 
 import (
     "github.com/SpectraLogic/ds3_go_sdk/ds3/buildclient"
+    "io/ioutil"
     "log"
     "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
     "github.com/SpectraLogic/ds3_go_sdk/samples/utils"
@@ -87,14 +88,14 @@ func PerformanceGetSample(bucketName string) (*utils.PerformanceTest, error) {
                     if err != nil {
                         log.Fatal(err)
                     }
-                    buf := make([]byte, curObj.Length)
-                    contentLen, err := response.Content.Read(buf)
+                    contentBytes, err := ioutil.ReadAll(response.Content)
                     if err != nil {
                         return nil, err
                     }
+                    contentLen := len(contentBytes)
 
                     lap := time.Since(stopwatch)
-                    fmt.Printf("Got: %d ", contentLen)
+                    fmt.Printf("ContentLen: %d ", contentLen)
                     fmt.Printf(" Time (s): %f\n", lap.Seconds())
                     ret = ret.AddInterval(lap.Seconds(), int64(contentLen))
                 }
