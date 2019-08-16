@@ -55,7 +55,6 @@ func PerformanceGetSample(bucketName string) (*utils.PerformanceTest, error) {
     if err != nil {
         return nil, err
     }
-    stopwatch := time.Now()
 
     // Bulk jobs are split into multiple chunks which then need to be transferred.
     totalChunkCount := len(bulkGetResponse.MasterObjectList.Objects)
@@ -78,6 +77,7 @@ func PerformanceGetSample(bucketName string) (*utils.PerformanceTest, error) {
             for _, curChunk := range chunksReadyResponse.MasterObjectList.Objects {
 
                 for _, curObj := range curChunk.Objects {
+                    stopwatch := time.Now()
 
                     getObjRequest := models.NewGetObjectRequest(bucketName, *curObj.Name).
                         WithJob(bulkGetResponse.MasterObjectList.JobId).
