@@ -19,8 +19,9 @@ import (
 )
 
 const (
-    blockSize = 2 *1024 *1024
-    numFiles = 5
+    fileSize = 1024 * 1024
+    filesPerThread = 10
+    numThreads = 3
     jobName = "PerformanceTest"
 )
 
@@ -31,7 +32,7 @@ func main() {
     bucketName := "bucket_" + jobName
 
     // Put Random binary data
-    putStats, err := functions.PerormancePutSample(numFiles, blockSize, bucketName)
+    putStats, err := functions.PerormancePutSample( numThreads, filesPerThread, fileSize, bucketName)
     if err != nil {
         output.AddError(fmt.Sprintf("Put operation failed", err))
     } else {
@@ -40,13 +41,13 @@ func main() {
     }
 
     // Retrieve same data to test Get.
-    getStats, err := functions.PerformanceGetSample(bucketName)
+    getStats, err := functions.PerformanceGetSample(numThreads, filesPerThread, fileSize, bucketName)
     if err != nil {
         output.AddError(fmt.Sprintf("Get operation failed", err))
     } else {
         getStats.Name = jobName + "_get"
-        getStats.NumFiles = numFiles
-        getStats.BlockSize = blockSize
+        getStats.NumFiles = filesPerThread
+        getStats.FileSize = fileSize
         output.Get = getStats
     }
 

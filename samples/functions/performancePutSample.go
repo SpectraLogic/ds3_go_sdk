@@ -13,17 +13,19 @@ package functions
 
 import (
     "fmt"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3"
     "github.com/SpectraLogic/ds3_go_sdk/ds3/buildclient"
     "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
     "github.com/SpectraLogic/ds3_go_sdk/samples/utils"
-    "log"
     "strconv"
+    "sync"
     "time"
 )
 
-func PerormancePutSample(numFiles int, blockSize int64, bucketName string) (*utils.PerformanceTest, error) {
-    ret := utils.NewPerformanceTest(numFiles, blockSize)
+func PerormancePutSample(numThreads int, filesPerThread int, fileSize int64, bucketName string) (*utils.PerformanceTest, error) {
     fmt.Println("---- Put Performance Data ----")
+
+    ret := utils.NewPerformanceTest(numThreads, filesPerThread, fileSize)
 
     // Create a client from environment variables.
     client, err := buildclient.FromEnv()
@@ -34,15 +36,41 @@ func PerormancePutSample(numFiles int, blockSize int64, bucketName string) (*uti
     // Create a bucket where our files will be stored.
     _, err = client.PutBucket(models.NewPutBucketRequest(bucketName))
     if err != nil {
-        // warn but don't fail on bucket exists
-        ret.Error = fmt.Sprintf("Warning: Bucket Exits?", err)
+        return nil, fmt.Errorf("Bucket Exists?", err)
     }
+
+    burstsChannel := make(chan utils.PerformanceBurst, numThreads)
+    var wg sync.WaitGroup
+    stopwatch := time.Now()
+    for threadNum := 1; threadNum <= numThreads; threadNum++ {
+        wg.Add(1)
+        go putTestObjects(client, threadNum, ret, bucketName, burstsChannel, &wg)
+    }
+    wg.Wait()
+    lap := time.Since(stopwatch)
+    totalSeconds := lap.Seconds()
+
+    // package all interval data
+    bursts := []utils.PerformanceBurst{}
+    for threadNum := 1; threadNum <= numThreads; threadNum++ {
+        fmt.Println("Reading channel")
+        bursts = append(bursts, <-burstsChannel)
+    }
+    ret.Bursts = bursts
+    ret.Seconds = totalSeconds
+    return ret, err
+}
+
+func putTestObjects(client *ds3.Client, threadNum int, test *utils.PerformanceTest, bucketName string, c chan utils.PerformanceBurst, wg *sync.WaitGroup) {
+
+    defer wg.Done()
+    ret := utils.NewPerformanceBurst(threadNum)
 
     // Create the list of Ds3PutObjects to be put to the Black Pearl via bulk put
     var ds3PutObjects []models.Ds3PutObject
-    for fileNum := 0; fileNum < numFiles; fileNum++ {
-        fileName := utils.PerformanceFilePrefix + strconv.Itoa(fileNum)
-        curObj := models.Ds3PutObject{ Name:fileName, Size:blockSize}
+    for fileNum := 0; fileNum < test.NumFiles; fileNum++ {
+        fileName := utils.PerformanceFilePrefix + strconv.Itoa(threadNum) + "_" + strconv.Itoa(fileNum)
+        curObj := models.Ds3PutObject{ Name:fileName, Size: test.FileSize}
         ds3PutObjects = append(ds3PutObjects, curObj)
     }
 
@@ -53,7 +81,8 @@ func PerormancePutSample(numFiles int, blockSize int64, bucketName string) (*uti
     // directly send the data.
     putBulkResponse, err := client.PutBulkJobSpectraS3(putBulkRequest)
     if err != nil {
-        return nil, err
+        c <- *utils.NewPerformanceBurstError(fmt.Sprintf("Cound not create request", err))
+        return
     }
 
     // The bulk request will split the files over several chunks if it needs to.
@@ -71,7 +100,8 @@ func PerormancePutSample(numFiles int, blockSize int64, bucketName string) (*uti
         chunksReady := models.NewGetJobChunksReadyForClientProcessingSpectraS3Request(putBulkResponse.MasterObjectList.JobId)
         chunksReadyResponse, err := client.GetJobChunksReadyForClientProcessingSpectraS3(chunksReady)
         if err != nil {
-            return nil, err
+            c <- *utils.NewPerformanceBurstError(fmt.Sprintf("Cound not get job chuncks", err))
+            return
         }
 
         // Check to see if any chunks can be processed
@@ -83,7 +113,7 @@ func PerormancePutSample(numFiles int, blockSize int64, bucketName string) (*uti
 
                 for _, curObj := range curChunk.Objects {
                     stopwatch := time.Now()
-                    reader := utils.BuildPerformanceReaderWithSizeDecorator(blockSize)
+                    reader := utils.BuildPerformanceReaderWithSizeDecorator(test.FileSize)
 
                     putObjRequest := models.NewPutObjectRequest(bucketName, *curObj.Name, reader).
                         WithJob(chunksReadyResponse.MasterObjectList.JobId).
@@ -91,7 +121,8 @@ func PerormancePutSample(numFiles int, blockSize int64, bucketName string) (*uti
 
                     _, err = client.PutObject(putObjRequest)
                     if err != nil {
-                        log.Fatal(err)
+                        c <- *utils.NewPerformanceBurstError(fmt.Sprintf("Cound not put object", err))
+                        return
                     }
                     lap := time.Since(stopwatch)
                     fmt.Printf("Sent: %d ", curObj.Length - curObj.Offset)
@@ -106,5 +137,5 @@ func PerormancePutSample(numFiles int, blockSize int64, bucketName string) (*uti
             time.Sleep(time.Second * 5)
         }
     }
-    return ret, nil
+    c <- *ret
 }

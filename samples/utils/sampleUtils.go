@@ -12,13 +12,13 @@
 package utils
 
 import (
-    "io/ioutil"
-    "io"
     "bytes"
     "errors"
     "fmt"
-    "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
     "github.com/SpectraLogic/ds3_go_sdk/ds3"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
+    "io"
+    "io/ioutil"
     "math/rand"
     "time"
 )
@@ -35,12 +35,20 @@ type PerformanceInterval struct {
     BytesPerSecond	int64	`json:"bytes_per_second"`
 }
 
+type PerformanceBurst struct {
+    ThreadID        int                     `json:"id"`
+    Intervals       []PerformanceInterval   `json:"intervals"`
+    Error           string                  `json:"error,omitempty"`
+}
+
 type PerformanceTest struct {
     Name		string			        `json:"name"`
-    NumFiles    int                     `json:"numFiles"`
-    BlockSize   int64                   `json:"blockSize"`
+    NumThreads  int                     `json:"numThreads"`
+    NumFiles    int                     `json:"filesPerThread"`
+    FileSize    int64                   `json:"fileSize"`
     Start 		int64		            `json:"start"`
-    Intervals 	[]PerformanceInterval	`json:"intervals"`
+    Seconds 	float64		            `json:"seconds"`
+    Bursts 	    []PerformanceBurst	    `json:"bursts"`
     Error 		string			        `json:"error"`
 }
 
@@ -58,19 +66,41 @@ func (o *PerformanceOutput) AddError(message string) *PerformanceOutput {
     return o
 }
 
-func NewPerformanceTest(numFiles int, blockSize int64) (*PerformanceTest) {
+func NewPerformanceTest(numThreads int, numFiles int, fileSize int64) (*PerformanceTest) {
     return &PerformanceTest{
         Name: "",
+        NumThreads: numThreads,
         NumFiles: numFiles,
-        BlockSize: blockSize,
+        FileSize: fileSize,
         Start: time.Now().Unix(),
+        Seconds: 0.0,
+        Bursts: []PerformanceBurst{},
+    }
+}
+
+func NewPerformanceInterval(seconds float64, bytes int64) *PerformanceInterval {
+    return &PerformanceInterval{
+        Seconds: seconds,
+        Bytes: bytes,
+        BytesPerSecond: int64(float64(bytes)/seconds),
+    }
+}
+
+func NewPerformanceBurst(threadId int) *PerformanceBurst {
+    return &PerformanceBurst{
+        ThreadID: threadId,
         Intervals: []PerformanceInterval{},
     }
 }
 
-func (p *PerformanceTest) AddInterval(sec float64, size int64) *PerformanceTest {
-    int := PerformanceInterval{sec, size, int64(float64(size)/sec)}
-    p.Intervals = append(p.Intervals, int)
+func NewPerformanceBurstError(err string) *PerformanceBurst {
+    return &PerformanceBurst{Error: err,}
+}
+
+
+func (p *PerformanceBurst) AddInterval(sec float64, size int64) *PerformanceBurst {
+    interval := NewPerformanceInterval(sec, size)
+    p.Intervals = append(p.Intervals, *interval)
     return p
 }
 
