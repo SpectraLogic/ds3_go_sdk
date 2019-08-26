@@ -12,12 +12,12 @@
 package functions
 
 import (
+    "bufio"
     "fmt"
     "github.com/SpectraLogic/ds3_go_sdk/ds3"
     "github.com/SpectraLogic/ds3_go_sdk/ds3/buildclient"
     "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
     "github.com/SpectraLogic/ds3_go_sdk/samples/utils"
-    "io/ioutil"
     "log"
     "strconv"
     "sync"
@@ -115,12 +115,13 @@ func getTestObjects(client *ds3.Client, threadNum int, test *utils.PerformanceTe
                     if err != nil {
                         log.Fatal(err)
                     }
-                    contentBytes, err := ioutil.ReadAll(response.Content)
+                    bufferredReader := bufio.NewReader(response.Content)
+                    contentLen, err := bufferredReader.Discard(int(test.FileSize))
                     if err != nil {
                         c <- *utils.NewPerformanceBurstError(fmt.Sprintf("Cound not read object data", err))
                         return
                     }
-                    contentLen := len(contentBytes)
+                    bufferredReader.Reset(response.Content)
 
                     lap := time.Since(stopwatch)
                     fmt.Printf("ContentLen: %d ", contentLen)

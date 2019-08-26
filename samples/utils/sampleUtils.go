@@ -116,7 +116,10 @@ type performanceReaderWithSizeDecorator struct {
 }
 
 func (byteReaderWithSizeDecorator *performanceReaderWithSizeDecorator) Read(b []byte) (int, error) {
-    return rand.Read(b)
+    randBuf := make([]byte, 4096)
+    rand.Read(randBuf)
+    bufRead := bytes.NewReader(bytes.Repeat(randBuf, len(b)/4096))
+    return bufRead.Read(b)
 }
 
 func (performanceReaderWithSizeDecorator) Close() error {
