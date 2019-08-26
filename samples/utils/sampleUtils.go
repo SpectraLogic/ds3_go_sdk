@@ -19,8 +19,8 @@ import (
     "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
     "io"
     "io/ioutil"
-    "math/rand"
     "time"
+    "crypto/rand"
 )
 
 const BucketName = "GoPutBulkBucket"
@@ -116,10 +116,7 @@ type performanceReaderWithSizeDecorator struct {
 }
 
 func (byteReaderWithSizeDecorator *performanceReaderWithSizeDecorator) Read(b []byte) (int, error) {
-    randBuf := make([]byte, 4096)
-    rand.Read(randBuf)
-    bufRead := bytes.NewReader(bytes.Repeat(randBuf, len(b)/4096))
-    return bufRead.Read(b)
+    return rand.Read(b)
 }
 
 func (performanceReaderWithSizeDecorator) Close() error {
