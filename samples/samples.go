@@ -25,7 +25,6 @@ const (
     jobName = "PerformanceTest"
 )
 
-// Runs the various sample code. Each sample is self contained and can be run separately.
 func main() {
     // opject returned / printed tpo console
     output := utils.PerformanceOutput{}

@@ -16,6 +16,7 @@ type Arguments struct {
     KeyPrefix string
     MaxKeys int
     Start, End int
+    NumThreads, NumFiles, FileSize int
 }
 
 func ParseArgs() (*Arguments, error) {
@@ -31,6 +32,9 @@ func ParseArgs() (*Arguments, error) {
     maxKeysParam := flag.Int("max-keys", 0, "The maximum number of objects to return.")
     startParam := flag.Int("start", 0, "The object location at which to start.")
     endParam := flag.Int("end", 0, "The object location at which to end.")
+    perfThreadsParam := flag.Int("num_threads", 0, "Number of threads for performance test.")
+    perfFilesParam := flag.Int("num_files", 0, "Number of files per thread for performance test.")
+    perfSizeParam := flag.Int("file_size", 0, "File size in MB for performance test.")
     flag.Parse()
 
     // Build the arguments object.
@@ -46,6 +50,9 @@ func ParseArgs() (*Arguments, error) {
         MaxKeys: *maxKeysParam,
         Start: *startParam,
         End: *endParam,
+        NumThreads: *perfThreadsParam,
+        NumFiles: *perfFilesParam,
+        FileSize: *perfSizeParam,
     }
 
     // Validate required arguments.
