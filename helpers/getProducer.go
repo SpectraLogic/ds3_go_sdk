@@ -103,6 +103,10 @@ func (producer *getProducer) transferOperationBuilder(info getObjectInfo, aggErr
             producer.Errorf("unable to retrieve object '%s' at offset %d: %s", info.blob.Name(), info.blob.Offset(), err.Error())
             return
         }
+        defer func() {
+           err := getObjResponse.Content.Close()
+           producer.Warningf("unable to close response body for object '%s' at offset '%s': %s", info.blob.Name(), info.blob.Offset(), err)
+        }()
 
         if len(blobRanges) == 0 {
             writer, err := info.channelBuilder.GetChannel(info.blob.Offset())
