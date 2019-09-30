@@ -12,14 +12,14 @@
 package networking
 
 import (
-    "fmt"
-    "time"
     "crypto/hmac"
     "crypto/sha1"
     "encoding/base64"
     "errors"
+    "fmt"
     "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
     "net/url"
+    "time"
 )
 
 // Http Headers
@@ -81,7 +81,7 @@ func (fields *signatureFields) BuildAuthHeaderValue(creds *Credentials) (string)
         fields.ContentType,
         fields.Date,
         fields.CanonicalizedAmzHeaders,
-        urlPath.EscapedPath(),
+        customEscapePath(urlPath),
         fields.CanonicalizedSubResources,
     )
 

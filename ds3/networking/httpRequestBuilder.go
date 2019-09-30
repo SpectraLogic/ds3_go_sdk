@@ -141,7 +141,19 @@ func (builder *HttpRequestBuilder) buildUrl(conn *ConnectionInfo) string {
     var httpUrl = *conn.Endpoint
     httpUrl.Path = builder.signatureFields.Path
     httpUrl.RawQuery = encodeQueryParams(builder.queryParams)
+
+    // Perform a custom percent encoding of the path to ensure ; and + are percent encoded as BP expects
+    httpUrl.RawPath = customEscapePath(httpUrl)
+
     return httpUrl.String()
+}
+
+// Returns the percent encoded path of the provided URL in a format that is congruent with BP.
+// This uses the standard path escaping plus it explicitly percent encodes ; and + since the
+// http library does not encode them by default.
+func customEscapePath(httpUrl url.URL) string {
+    replacer := strings.NewReplacer(";", "%3B", "+", "%2B")
+    return replacer.Replace(httpUrl.EscapedPath())
 }
 
 func (builder *HttpRequestBuilder) maybeAddSignatureQueryParams() {

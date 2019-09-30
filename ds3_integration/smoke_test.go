@@ -12,6 +12,7 @@
 package ds3_integration
 
 import (
+    "fmt"
     "testing"
     "log"
     "os"
@@ -86,6 +87,36 @@ func TestObject(t *testing.T) {
         if bytes.Compare(bs, book) != 0 {
             t.Error("Retrieved book does not match uploaded book.")
         }
+    }
+}
+
+func TestPutGetFilePercentEncodingObjectNames(t *testing.T) {
+    defer testutils.DeleteBucketContents(client, testBucket)
+
+    inputSymbols := []string {"-", ".", "_", "~", "!", "$", "'", "(", ")", "*", ",", "&", "=", "@", ":", "/", ";", "+", "?", " ", "%", "#", "'"}
+
+    for i, input := range inputSymbols {
+        objectName := fmt.Sprintf("test%ssymbol%d", input, i)
+
+        func() {
+            //Put object to BP
+            content := []byte("hello world")
+            defer testutils.DeleteObjectLogError(t, client, testBucket, objectName)
+
+            putObjErr := testutils.PutObjectLogError(t, client, testBucket, objectName, content)
+            ds3Testing.AssertNilError(t, putObjErr)
+
+            //Verify that object exists
+            getObjectResponse, getObjErr := testutils.GetObjectLogError(t, client, testBucket, objectName)
+            if getObjErr != nil {
+                defer getObjectResponse.Content.Close()
+                retrievedContent, readErr := ioutil.ReadAll(getObjectResponse.Content)
+                ds3Testing.AssertNilError(t, readErr)
+                if bytes.Compare(retrievedContent, content) != 0 {
+                    t.Error("Retrieved content does not match uploaded content.")
+                }
+            }
+        }()
     }
 }
 
