@@ -2,7 +2,7 @@ package networking
 
 import (
     "fmt"
-    "github.com/SpectraLogic/core_go/test_helpers"
+    "github.com/SpectraLogic/ds3_go_sdk/ds3_utils/ds3Testing"
     "net/url"
     "testing"
 )
@@ -35,7 +35,7 @@ func TestBuildUrlEscapingPath(t *testing.T) {
     const bucketName = "myBucket"
 
     endPoint, err := url.Parse("http://sm2u-1-10g.eng.sldomain.com")
-    test_helpers.FatalOnError(t, err, "unable to parse endpoint")
+    ds3Testing.AssertNilError(t, err)
 
     connectionInfo := &ConnectionInfo{
         Endpoint: endPoint,
@@ -52,6 +52,6 @@ func TestBuildUrlEscapingPath(t *testing.T) {
 
         expectedObjectName := fmt.Sprintf("object%swithsymbol", testCase.encoded)
         expected := fmt.Sprintf("%s/%s/%s", endPoint.String(), bucketName, expectedObjectName)
-        test_helpers.AssertEqual(t, expected, encodedUrl, fmt.Sprintf("encoding symbol %s", testCase.input))
+        ds3Testing.AssertString(t, fmt.Sprintf("encoding symbol %s", testCase.input), expected, encodedUrl)
     }
 }
