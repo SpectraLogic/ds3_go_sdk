@@ -26,7 +26,7 @@ func (aggregateError *AggregateError) Error() string {
     aggregateError.mux.RLock()
     defer aggregateError.mux.RUnlock()
 
-    msg := fmt.Sprintf("Multiple errors occured: %d\n", len(aggregateError.Errors))
+    msg := fmt.Sprintf("%d error(s) occurred:\n", len(aggregateError.Errors))
 
     for i, err := range aggregateError.Errors {
         msg += fmt.Sprintf("%d) %s\n", i + 1, err.Error())

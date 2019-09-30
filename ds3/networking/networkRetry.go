@@ -43,7 +43,7 @@ func (networkRetryDecorator *NetworkRetryDecorator) Invoke(httpRequest *http.Req
 
     // We had as many network related retries as we're allowed to use.
     return nil, errors.New(fmt.Sprintf(
-        "Cannot send request. Retried the max number of %d times. Error: `%s`.",
+        "Cannot send request. Retried the network connection the maximum number of %d times. Error: `%s`.",
         networkRetryDecorator.policy.maxRetries,
         lastErr.Error(),
     ))
