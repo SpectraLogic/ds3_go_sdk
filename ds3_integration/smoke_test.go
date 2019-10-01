@@ -80,7 +80,8 @@ func TestObject(t *testing.T) {
 
     //Verify that object exists
     getObjectResponse, getObjErr := testutils.GetObjectLogError(t, client, testBucket, beowulf)
-    if getObjErr != nil {
+    ds3Testing.AssertNilError(t, putObjErr)
+    if getObjErr == nil {
         defer getObjectResponse.Content.Close()
         bs, readErr := ioutil.ReadAll(getObjectResponse.Content)
         ds3Testing.AssertNilError(t, readErr)
@@ -93,7 +94,7 @@ func TestObject(t *testing.T) {
 func TestPutGetFilePercentEncodingObjectNames(t *testing.T) {
     defer testutils.DeleteBucketContents(client, testBucket)
 
-    inputSymbols := []string {"-", ".", "_", "~", "!", "$", "'", "(", ")", "*", ",", "&", "=", "@", ":", "/", ";", "+", "?", " ", "%", "#", "'"}
+    inputSymbols := []string {"-", ".", "_", "~", "!", "$", "'", "(", ")", "*", ",", "&", "=", "@", ":", "/", ";", "+", "?", " ", "%", "#", "'", "\t"}
 
     for i, input := range inputSymbols {
         objectName := fmt.Sprintf("test%ssymbol%d", input, i)
@@ -108,7 +109,8 @@ func TestPutGetFilePercentEncodingObjectNames(t *testing.T) {
 
             //Verify that object exists
             getObjectResponse, getObjErr := testutils.GetObjectLogError(t, client, testBucket, objectName)
-            if getObjErr != nil {
+            ds3Testing.AssertNilError(t, getObjErr)
+            if getObjErr == nil {
                 defer getObjectResponse.Content.Close()
                 retrievedContent, readErr := ioutil.ReadAll(getObjectResponse.Content)
                 ds3Testing.AssertNilError(t, readErr)

@@ -30,6 +30,7 @@ func TestBuildUrlEscapingPath(t *testing.T) {
         {input:"%", encoded:"%25"},
         {input:"#", encoded:"%23"},
         {input:"'", encoded:"%27"},
+        {input:"\t", encoded:"%09"},
     }
 
     const bucketName = "myBucket"
