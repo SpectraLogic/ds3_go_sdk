@@ -10,6 +10,7 @@ var MinUploadSize int64 = 10485760
 type WriteTransferStrategy struct {
     BlobStrategy WriteBlobStrategy
     Options      WriteBulkJobOptions
+    Listeners    ListenerStrategy
 }
 
 // Defines the options to use on the put bulk job
