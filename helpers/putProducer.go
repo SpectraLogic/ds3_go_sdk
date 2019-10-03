@@ -142,9 +142,9 @@ func (producer *putProducer) processWaitingBlobs(bucketName string, jobId string
         //attempt transfer
         curBlob, err := producer.deferredBlobQueue.Pop()
         if err != nil {
-            producer.strategy.Listeners.Errored(curBlob.Name(), err)
+            //should not be possible to get here
             producer.Errorf("problem when getting next blob to be transferred: %s", err.Error())
-            continue
+            break
         }
         producer.Debugf("attempting to process %s offset=%d length=%d", curBlob.Name(), curBlob.Offset(), curBlob.Length())
         producer.queueBlobForTransfer(curBlob, bucketName, jobId)

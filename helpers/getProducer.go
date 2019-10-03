@@ -204,8 +204,8 @@ func (producer *getProducer) processWaitingBlobs(bucketName string, jobId string
         producer.Debugf("attempting to process '%s' offset=%d length=%d", curBlob.Name(), curBlob.Offset(), curBlob.Length())
         if err != nil {
             //should not be possible to get here
-            producer.strategy.Listeners.Errored(curBlob.Name(), err)
             producer.Errorf("failure during blob transfer '%s' at offset %d: %s", curBlob.Name(), curBlob.Offset(), err.Error())
+            break
         }
         producer.queueBlobForTransfer(curBlob, bucketName, jobId)
     }
