@@ -84,9 +84,9 @@ func (transceiver *getTransceiver) transfer() (string, error) {
 
     // Wait for completion of producer-consumer goroutines
     var aggErr ds3Models.AggregateError
-    waitGroup.Add(2)  // adding producer and consumer goroutines to wait group
-    go producer.run(&aggErr) // producer will add to waitGroup for every blob retrieval added to queue, and each transfer performed will decrement from waitGroup
+    waitGroup.Add(1)  // adding producer and consumer goroutines to wait group
     go consumer.run()
+    err = producer.run() // producer will add to waitGroup for every blob retrieval added to queue, and each transfer performed will decrement from waitGroup
     waitGroup.Wait()
 
     return bulkGetResponse.MasterObjectList.JobId, aggErr.GetErrors()

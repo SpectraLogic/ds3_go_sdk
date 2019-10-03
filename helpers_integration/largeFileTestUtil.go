@@ -9,6 +9,7 @@ import (
     "github.com/SpectraLogic/ds3_go_sdk/ds3"
     "github.com/SpectraLogic/ds3_go_sdk/helpers"
     helperModels "github.com/SpectraLogic/ds3_go_sdk/helpers/models"
+    "testing"
 )
 
 const LargeBookPath = "./resources/bigfiles/"
@@ -35,7 +36,7 @@ func VerifyLargeBookContent(content io.ReadCloser) error {
     return nil
 }
 
-func LoadLargeFile(bucket string, client *ds3.Client) error {
+func LoadLargeFile(t *testing.T, bucket string, client *ds3.Client) error {
     fmt.Printf("Loading large file to BP")
     defer fmt.Printf("Finished loading large file to BP")
     helper := helpers.NewHelpers(client)
@@ -48,6 +49,6 @@ func LoadLargeFile(bucket string, client *ds3.Client) error {
     var writeObjects []helperModels.PutObject
     writeObjects = append(writeObjects, *writeObj)
 
-    _, err = helper.PutObjects(bucket, writeObjects, newTestTransferStrategy())
+    _, err = helper.PutObjects(bucket, writeObjects, newTestTransferStrategy(t))
     return err
 }

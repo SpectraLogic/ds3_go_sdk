@@ -5,6 +5,7 @@ import "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
 type ReadTransferStrategy struct {
     BlobStrategy ReadBlobStrategy
     Options      ReadBulkJobOptions
+    Listeners    ListenerStrategy
 }
 
 // Defines the options to use on the get bulk job
