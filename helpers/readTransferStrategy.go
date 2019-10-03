@@ -13,8 +13,8 @@ type ReadBulkJobOptions struct {
     Aggregating *bool
     ChunkClientProcessingOrderGuarantee models.JobChunkClientProcessingOrderGuarantee
     ImplicitJobIdResolution *bool
-    name *string
-    priority models.Priority
+    Name *string
+    Priority models.Priority
 }
 
 // Strategy for how to blob objects for writing

@@ -40,8 +40,11 @@ func newBulkGetRequest(bucketName string, readObjects *[]helperModels.GetObject,
     if options.ImplicitJobIdResolution != nil {
         bulkGet.WithImplicitJobIdResolution(*options.ImplicitJobIdResolution)
     }
-    if options.priority != ds3Models.UNDEFINED {
-        bulkGet.WithPriority(options.priority)
+    if options.Priority != ds3Models.UNDEFINED {
+        bulkGet.WithPriority(options.Priority)
+    }
+    if options.Name != nil {
+        bulkGet.WithName(*options.Name)
     }
 
     return bulkGet
