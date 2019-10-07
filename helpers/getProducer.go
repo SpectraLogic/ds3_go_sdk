@@ -105,7 +105,9 @@ func (producer *getProducer) transferOperationBuilder(info getObjectInfo) Transf
         }
         defer func() {
            err := getObjResponse.Content.Close()
-           producer.Warningf("unable to close response body for object '%s' at offset '%s': %s", info.blob.Name(), info.blob.Offset(), err)
+           if err != nil {
+               producer.Warningf("unable to close response body for object '%s' at offset '%d': %s", info.blob.Name(), info.blob.Offset(), err)
+           }
         }()
 
         if len(blobRanges) == 0 {
