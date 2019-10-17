@@ -4,8 +4,9 @@ import "time"
 
 // Strategy for how to blob objects, used both in writing and reading blob strategies
 type BlobStrategy interface {
-    // Determines the maximum amount to delay between calls to getAvailableJobChunk calls.
+    // Determines the maximum amount to delay between calls to getAvailableJobChunk.
     // If blobs are finishing processing, then we will query for more ready blobs earlier.
+    // The recommended duration is five minutes.
     delay() time.Duration
 
     // determines the maximum number of go routines to be created when transferring objects to/from BP

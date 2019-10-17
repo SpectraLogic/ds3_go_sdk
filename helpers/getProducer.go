@@ -253,6 +253,10 @@ func (producer *getProducer) run() error {
         select {
         case _, ok := <- producer.blobDoneChannel:
             if ok {
+                // reset the timer
+                ticker.Stop()
+                ticker = time.NewTicker(producer.strategy.BlobStrategy.delay())
+
                 err = producer.queueBlobsReadyForTransfer(totalBlobCount)
                 if err != nil {
                     // A fatal error has occurred, stop queuing blobs for processing and
@@ -298,6 +302,15 @@ func (producer *getProducer) queueBlobsReadyForTransfer(totalBlobCount int64) er
         return nil
     }
 
+    // Attempt to transfer waiting blobs
+    producer.processWaitingBlobs(*producer.JobMasterObjectList.BucketName, producer.JobMasterObjectList.JobId)
+
+    // Check if we need to query the BP for allocated blobs, or if we already know everything is allocated.
+    if int64(producer.deferredBlobQueue.Size()) + producer.processedBlobTracker.NumberOfProcessedBlobs() >= totalBlobCount {
+        // Everything is already allocated, no need to query BP for allocated chunks
+        return nil
+    }
+
     // Get the list of available chunks that the server can receive. The server may
     // not be able to receive everything, so not all chunks will necessarily be
     // returned
@@ -316,9 +329,6 @@ func (producer *getProducer) queueBlobsReadyForTransfer(totalBlobCount int64) er
         for _, curChunk := range chunksReadyResponse.MasterObjectList.Objects {
             producer.processChunk(&curChunk, *chunksReadyResponse.MasterObjectList.BucketName, chunksReadyResponse.MasterObjectList.JobId)
         }
-
-        // Attempt to transfer waiting blobs
-        producer.processWaitingBlobs(*chunksReadyResponse.MasterObjectList.BucketName, chunksReadyResponse.MasterObjectList.JobId)
     } else {
         // When no chunks are returned we need to sleep to allow for cache space to
         // be freed.

@@ -235,6 +235,10 @@ func (producer *putProducer) run() error {
         select {
         case _, ok := <- producer.blobDoneChannel:
             if ok {
+                // reset the timer
+                ticker.Stop()
+                ticker = time.NewTicker(producer.strategy.BlobStrategy.delay())
+
                 err = producer.queueBlobsReadyForTransfer(totalBlobCount)
                 if err != nil {
                     // A fatal error has occurred, stop queuing blobs for processing and
@@ -271,12 +275,21 @@ func (producer *putProducer) queueBlobsReadyForTransfer(totalBlobCount int64) er
         return nil
     }
 
-    // check if there is anything left to be queued
+    // check if there is anything left to be processed
     if !producer.hasMoreToProcess(totalBlobCount) {
         // Everything has been queued for processing.
         producer.continueQueuingBlobs = false
         // close processing queue to signal consumer we won't be sending any more blobs.
         close(*producer.queue)
+        return nil
+    }
+
+    // Attempt to transfer waiting blobs
+    producer.processWaitingBlobs(*producer.JobMasterObjectList.BucketName, producer.JobMasterObjectList.JobId)
+
+    // Check if we need to query the BP for allocated blobs, or if we already know everything is allocated.
+    if int64(producer.deferredBlobQueue.Size()) + producer.processedBlobTracker.NumberOfProcessedBlobs() >= totalBlobCount {
+        // Everything is already allocated, no need to query BP for allocated chunks
         return nil
     }
 
@@ -298,9 +311,6 @@ func (producer *putProducer) queueBlobsReadyForTransfer(totalBlobCount int64) er
         for _, curChunk := range chunksReadyResponse.MasterObjectList.Objects {
             producer.processChunk(&curChunk, *chunksReadyResponse.MasterObjectList.BucketName, chunksReadyResponse.MasterObjectList.JobId)
         }
-
-        // Attempt to transfer waiting blobs
-        producer.processWaitingBlobs(*chunksReadyResponse.MasterObjectList.BucketName, chunksReadyResponse.MasterObjectList.JobId)
     }
     return nil
 }
