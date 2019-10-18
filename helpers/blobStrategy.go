@@ -4,8 +4,10 @@ import "time"
 
 // Strategy for how to blob objects, used both in writing and reading blob strategies
 type BlobStrategy interface {
-    // performs delay when no job chunks are available
-    delay()
+    // Determines the maximum amount to delay between calls to getAvailableJobChunk.
+    // If blobs are finishing processing, then we will query for more ready blobs earlier.
+    // The recommended duration is five minutes.
+    delay() time.Duration
 
     // determines the maximum number of go routines to be created when transferring objects to/from BP
     maxConcurrentTransfers() uint
@@ -21,8 +23,8 @@ type SimpleBlobStrategy struct {
     MaxWaitingTransfers    uint
 }
 
-func (strategy *SimpleBlobStrategy) delay() {
-    time.Sleep(strategy.Delay)
+func (strategy *SimpleBlobStrategy) delay() time.Duration {
+    return strategy.Delay
 }
 
 func (strategy *SimpleBlobStrategy) maxConcurrentTransfers() uint {

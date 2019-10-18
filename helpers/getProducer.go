@@ -8,6 +8,7 @@ import (
     "github.com/SpectraLogic/ds3_go_sdk/sdk_log"
     "io"
     "sync"
+    "time"
 )
 
 type getProducer struct {
@@ -22,9 +23,25 @@ type getProducer struct {
     deferredBlobQueue    BlobDescriptionQueue // queue of blobs whose channels are not yet ready for transfer
     rangeFinder          ranges.BlobRangeFinder
     sdk_log.Logger
+
+    // Channel that represents blobs that have finished being process.
+    // This will be written to once a get object operation has completed regardless of error or success.
+    // This is used to notify the runner to re-check if any blobs are now ready to be retrieved.
+    blobDoneChannel <-chan struct{}
+
+    // Used to track if we are done queuing blobs
+    continueQueuingBlobs bool
 }
 
-func newGetProducer(jobMasterObjectList *ds3Models.MasterObjectList, getObjects *[]helperModels.GetObject, queue *chan TransferOperation, strategy *ReadTransferStrategy, client *ds3.Client, waitGroup *sync.WaitGroup) *getProducer {
+func newGetProducer(
+    jobMasterObjectList *ds3Models.MasterObjectList,
+    getObjects *[]helperModels.GetObject,
+    queue *chan TransferOperation,
+    strategy *ReadTransferStrategy,
+    blobDoneChannel <-chan struct{},
+    client *ds3.Client,
+    waitGroup *sync.WaitGroup) *getProducer {
+
     return &getProducer{
         JobMasterObjectList:  jobMasterObjectList,
         GetObjects:           getObjects,
@@ -37,6 +54,8 @@ func newGetProducer(jobMasterObjectList *ds3Models.MasterObjectList, getObjects 
         deferredBlobQueue:    NewBlobDescriptionQueue(),
         rangeFinder:          ranges.NewBlobRangeFinder(getObjects),
         Logger:               client.Logger, //use the same logger as the client
+        blobDoneChannel:      blobDoneChannel,
+        continueQueuingBlobs: true,
     }
 }
 
@@ -217,40 +236,103 @@ func (producer *getProducer) processWaitingBlobs(bucketName string, jobId string
 // Each transfer operation will retrieve one blob of content from the BP.
 // Once all blobs have been queued to be transferred, the producer will finish, even if all operations have not been consumed yet.
 func (producer *getProducer) run() error {
-    defer close(*producer.queue)
-
     // determine number of blobs to be processed
     var totalBlobCount int64 = producer.totalBlobCount()
     producer.Debugf("job status totalBlobs=%d processedBlobs=%d", totalBlobCount, producer.processedBlobTracker.NumberOfProcessedBlobs())
 
-    // process all chunks and make sure all blobs are queued for transfer
-    for producer.processedBlobTracker.NumberOfProcessedBlobs() < totalBlobCount || producer.deferredBlobQueue.Size() > 0 {
-        // Get the list of available chunks that the server can receive. The server may
-        // not be able to receive everything, so not all chunks will necessarily be
-        // returned
-        chunksReady := ds3Models.NewGetJobChunksReadyForClientProcessingSpectraS3Request(producer.JobMasterObjectList.JobId)
-        chunksReadyResponse, err := producer.client.GetJobChunksReadyForClientProcessingSpectraS3(chunksReady)
-        if err != nil {
-            producer.Errorf("unrecoverable error: %v", err)
-            return err
-        }
+    // initiate first set of blob transfers
+    err := producer.queueBlobsReadyForTransfer(totalBlobCount)
+    if err != nil {
+        return err
+    }
 
-        // Check to see if any chunks can be processed
-        numberOfChunks := len(chunksReadyResponse.MasterObjectList.Objects)
-        if numberOfChunks > 0 {
-            // Loop through all the chunks that are available for processing, and send
-            // the files that are contained within them.
-            for _, curChunk := range chunksReadyResponse.MasterObjectList.Objects {
-                producer.processChunk(&curChunk, *chunksReadyResponse.MasterObjectList.BucketName, chunksReadyResponse.MasterObjectList.JobId)
+    // wait for either a timer or for at least one blob to finish before attempting to queue more items for transfer
+    ticker := time.NewTicker(producer.strategy.BlobStrategy.delay())
+    var fatalErr error
+    for {
+        select {
+        case _, ok := <- producer.blobDoneChannel:
+            if ok {
+                // reset the timer
+                ticker.Stop()
+                ticker = time.NewTicker(producer.strategy.BlobStrategy.delay())
+
+                err = producer.queueBlobsReadyForTransfer(totalBlobCount)
+                if err != nil {
+                    // A fatal error has occurred, stop queuing blobs for processing and
+                    // close processing queue to signal consumer we won't be sending any more blobs.
+                    producer.continueQueuingBlobs = false
+                    fatalErr = err
+                    close(*producer.queue)
+                }
+            } else {
+                // The consumer closed the channel, signaling completion.
+                return fatalErr
             }
-
-            // Attempt to transfer waiting blobs
-            producer.processWaitingBlobs(*chunksReadyResponse.MasterObjectList.BucketName, chunksReadyResponse.MasterObjectList.JobId)
-        } else {
-            // When no chunks are returned we need to sleep to allow for cache space to
-            // be freed.
-            producer.strategy.BlobStrategy.delay()
+        case <- ticker.C:
+            err = producer.queueBlobsReadyForTransfer(totalBlobCount)
+            if err != nil {
+                // A fatal error has occurred, stop queuing blobs for processing and
+                // close processing queue to signal consumer we won't be sending any more blobs.
+                producer.continueQueuingBlobs = false
+                fatalErr = err
+                close(*producer.queue)
+            }
         }
+    }
+    return fatalErr
+}
+
+func (producer *getProducer) hasMoreToProcess(totalBlobCount int64) bool {
+    return producer.processedBlobTracker.NumberOfProcessedBlobs() < totalBlobCount || producer.deferredBlobQueue.Size() > 0
+}
+
+func (producer *getProducer) queueBlobsReadyForTransfer(totalBlobCount int64) error {
+    if !producer.continueQueuingBlobs {
+        // We've queued up all the blobs we are going to for this job.
+        return nil
+    }
+
+    // check if there is anything left to be queued
+    if !producer.hasMoreToProcess(totalBlobCount) {
+        // Everything has been queued for processing.
+        producer.continueQueuingBlobs = false
+        // close processing queue to signal consumer we won't be sending any more blobs.
+        close(*producer.queue)
+        return nil
+    }
+
+    // Attempt to transfer waiting blobs
+    producer.processWaitingBlobs(*producer.JobMasterObjectList.BucketName, producer.JobMasterObjectList.JobId)
+
+    // Check if we need to query the BP for allocated blobs, or if we already know everything is allocated.
+    if int64(producer.deferredBlobQueue.Size()) + producer.processedBlobTracker.NumberOfProcessedBlobs() >= totalBlobCount {
+        // Everything is already allocated, no need to query BP for allocated chunks
+        return nil
+    }
+
+    // Get the list of available chunks that the server can receive. The server may
+    // not be able to receive everything, so not all chunks will necessarily be
+    // returned
+    chunksReady := ds3Models.NewGetJobChunksReadyForClientProcessingSpectraS3Request(producer.JobMasterObjectList.JobId)
+    chunksReadyResponse, err := producer.client.GetJobChunksReadyForClientProcessingSpectraS3(chunksReady)
+    if err != nil {
+        producer.Errorf("unrecoverable error: %v", err)
+        return err
+    }
+
+    // Check to see if any chunks can be processed
+    numberOfChunks := len(chunksReadyResponse.MasterObjectList.Objects)
+    if numberOfChunks > 0 {
+        // Loop through all the chunks that are available for processing, and send
+        // the files that are contained within them.
+        for _, curChunk := range chunksReadyResponse.MasterObjectList.Objects {
+            producer.processChunk(&curChunk, *chunksReadyResponse.MasterObjectList.BucketName, chunksReadyResponse.MasterObjectList.JobId)
+        }
+    } else {
+        // When no chunks are returned we need to sleep to allow for cache space to
+        // be freed.
+        producer.strategy.BlobStrategy.delay()
     }
     return nil
 }
