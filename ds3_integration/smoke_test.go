@@ -12,17 +12,17 @@
 package ds3_integration
 
 import (
+    "bytes"
     "fmt"
-    "testing"
-    "log"
-    "os"
     "github.com/SpectraLogic/ds3_go_sdk/ds3"
     "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
     "github.com/SpectraLogic/ds3_go_sdk/ds3_integration/utils"
-    "io/ioutil"
-    "bytes"
     "github.com/SpectraLogic/ds3_go_sdk/ds3_utils/ds3Testing"
+    "io/ioutil"
+    "log"
+    "os"
     "strconv"
+    "testing"
 )
 
 var client *ds3.Client
@@ -342,11 +342,13 @@ func TestBulkGet(t *testing.T) {
 
     // Get all objects and verify content
     for _, obj := range availableChunks.Objects.Objects {
-        getObj, objErr := client.GetObject(models.NewGetObjectRequest(testBucket, *obj.Name))
-        ds3Testing.AssertNilError(t, objErr)
+        func() {
+            getObj, objErr := client.GetObject(models.NewGetObjectRequest(testBucket, *obj.Name))
+            ds3Testing.AssertNilError(t, objErr)
 
-        defer getObj.Content.Close()
-        testutils.VerifyBookContent(t, *obj.Name, getObj.Content)
+            defer getObj.Content.Close()
+            testutils.VerifyBookContent(t, *obj.Name, getObj.Content)
+        }()
     }
 }
 
