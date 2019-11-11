@@ -26,6 +26,7 @@ type AbortMultiPartUploadResponse struct {
 
 
 func NewAbortMultiPartUploadResponse(webResponse WebResponse) (*AbortMultiPartUploadResponse, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -46,6 +47,7 @@ func (completeMultiPartUploadResponse *CompleteMultiPartUploadResponse) parse(we
 }
 
 func NewCompleteMultiPartUploadResponse(webResponse WebResponse) (*CompleteMultiPartUploadResponse, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -69,6 +71,7 @@ type PutBucketResponse struct {
 
 
 func NewPutBucketResponse(webResponse WebResponse) (*PutBucketResponse, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -87,6 +90,7 @@ type PutMultiPartUploadPartResponse struct {
 
 
 func NewPutMultiPartUploadPartResponse(webResponse WebResponse) (*PutMultiPartUploadPartResponse, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -105,6 +109,7 @@ type PutObjectResponse struct {
 
 
 func NewPutObjectResponse(webResponse WebResponse) (*PutObjectResponse, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -123,6 +128,7 @@ type DeleteBucketResponse struct {
 
 
 func NewDeleteBucketResponse(webResponse WebResponse) (*DeleteBucketResponse, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -141,6 +147,7 @@ type DeleteObjectResponse struct {
 
 
 func NewDeleteObjectResponse(webResponse WebResponse) (*DeleteObjectResponse, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -161,6 +168,7 @@ func (deleteObjectsResponse *DeleteObjectsResponse) parse(webResponse WebRespons
 }
 
 func NewDeleteObjectsResponse(webResponse WebResponse) (*DeleteObjectsResponse, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -186,6 +194,7 @@ func (getBucketResponse *GetBucketResponse) parse(webResponse WebResponse) error
 }
 
 func NewGetBucketResponse(webResponse WebResponse) (*GetBucketResponse, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -211,6 +220,7 @@ func (getServiceResponse *GetServiceResponse) parse(webResponse WebResponse) err
 }
 
 func NewGetServiceResponse(webResponse WebResponse) (*GetServiceResponse, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -242,6 +252,7 @@ func NewGetObjectResponse(webResponse WebResponse) (*GetObjectResponse, error) {
     case 206:
         return &GetObjectResponse{ Content: webResponse.Body(), Headers: webResponse.Header() }, nil
     default:
+        defer webResponse.Body().Close()
         return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
     }
 }
@@ -254,6 +265,7 @@ type HeadBucketResponse struct {
 
 
 func NewHeadBucketResponse(webResponse WebResponse) (*HeadBucketResponse, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -273,6 +285,7 @@ type HeadObjectResponse struct {
 
 
 func NewHeadObjectResponse(webResponse WebResponse) (*HeadObjectResponse, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -301,6 +314,7 @@ func (initiateMultiPartUploadResponse *InitiateMultiPartUploadResponse) parse(we
 }
 
 func NewInitiateMultiPartUploadResponse(webResponse WebResponse) (*InitiateMultiPartUploadResponse, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -326,6 +340,7 @@ func (listMultiPartUploadPartsResponse *ListMultiPartUploadPartsResponse) parse(
 }
 
 func NewListMultiPartUploadPartsResponse(webResponse WebResponse) (*ListMultiPartUploadPartsResponse, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -351,6 +366,7 @@ func (listMultiPartUploadsResponse *ListMultiPartUploadsResponse) parse(webRespo
 }
 
 func NewListMultiPartUploadsResponse(webResponse WebResponse) (*ListMultiPartUploadsResponse, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -376,6 +392,7 @@ func (putBucketAclForGroupSpectraS3Response *PutBucketAclForGroupSpectraS3Respon
 }
 
 func NewPutBucketAclForGroupSpectraS3Response(webResponse WebResponse) (*PutBucketAclForGroupSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
@@ -401,6 +418,7 @@ func (putBucketAclForUserSpectraS3Response *PutBucketAclForUserSpectraS3Response
 }
 
 func NewPutBucketAclForUserSpectraS3Response(webResponse WebResponse) (*PutBucketAclForUserSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
@@ -426,6 +444,7 @@ func (putDataPolicyAclForGroupSpectraS3Response *PutDataPolicyAclForGroupSpectra
 }
 
 func NewPutDataPolicyAclForGroupSpectraS3Response(webResponse WebResponse) (*PutDataPolicyAclForGroupSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
@@ -451,6 +470,7 @@ func (putDataPolicyAclForUserSpectraS3Response *PutDataPolicyAclForUserSpectraS3
 }
 
 func NewPutDataPolicyAclForUserSpectraS3Response(webResponse WebResponse) (*PutDataPolicyAclForUserSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
@@ -476,6 +496,7 @@ func (putGlobalBucketAclForGroupSpectraS3Response *PutGlobalBucketAclForGroupSpe
 }
 
 func NewPutGlobalBucketAclForGroupSpectraS3Response(webResponse WebResponse) (*PutGlobalBucketAclForGroupSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
@@ -501,6 +522,7 @@ func (putGlobalBucketAclForUserSpectraS3Response *PutGlobalBucketAclForUserSpect
 }
 
 func NewPutGlobalBucketAclForUserSpectraS3Response(webResponse WebResponse) (*PutGlobalBucketAclForUserSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
@@ -526,6 +548,7 @@ func (putGlobalDataPolicyAclForGroupSpectraS3Response *PutGlobalDataPolicyAclFor
 }
 
 func NewPutGlobalDataPolicyAclForGroupSpectraS3Response(webResponse WebResponse) (*PutGlobalDataPolicyAclForGroupSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
@@ -551,6 +574,7 @@ func (putGlobalDataPolicyAclForUserSpectraS3Response *PutGlobalDataPolicyAclForU
 }
 
 func NewPutGlobalDataPolicyAclForUserSpectraS3Response(webResponse WebResponse) (*PutGlobalDataPolicyAclForUserSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
@@ -574,6 +598,7 @@ type DeleteBucketAclSpectraS3Response struct {
 
 
 func NewDeleteBucketAclSpectraS3Response(webResponse WebResponse) (*DeleteBucketAclSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -592,6 +617,7 @@ type DeleteDataPolicyAclSpectraS3Response struct {
 
 
 func NewDeleteDataPolicyAclSpectraS3Response(webResponse WebResponse) (*DeleteDataPolicyAclSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -612,6 +638,7 @@ func (getBucketAclSpectraS3Response *GetBucketAclSpectraS3Response) parse(webRes
 }
 
 func NewGetBucketAclSpectraS3Response(webResponse WebResponse) (*GetBucketAclSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -637,6 +664,7 @@ func (getBucketAclsSpectraS3Response *GetBucketAclsSpectraS3Response) parse(webR
 }
 
 func NewGetBucketAclsSpectraS3Response(webResponse WebResponse) (*GetBucketAclsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -662,6 +690,7 @@ func (getDataPolicyAclSpectraS3Response *GetDataPolicyAclSpectraS3Response) pars
 }
 
 func NewGetDataPolicyAclSpectraS3Response(webResponse WebResponse) (*GetDataPolicyAclSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -687,6 +716,7 @@ func (getDataPolicyAclsSpectraS3Response *GetDataPolicyAclsSpectraS3Response) pa
 }
 
 func NewGetDataPolicyAclsSpectraS3Response(webResponse WebResponse) (*GetDataPolicyAclsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -712,6 +742,7 @@ func (putBucketSpectraS3Response *PutBucketSpectraS3Response) parse(webResponse 
 }
 
 func NewPutBucketSpectraS3Response(webResponse WebResponse) (*PutBucketSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
@@ -735,6 +766,7 @@ type DeleteBucketSpectraS3Response struct {
 
 
 func NewDeleteBucketSpectraS3Response(webResponse WebResponse) (*DeleteBucketSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -755,6 +787,7 @@ func (getBucketSpectraS3Response *GetBucketSpectraS3Response) parse(webResponse 
 }
 
 func NewGetBucketSpectraS3Response(webResponse WebResponse) (*GetBucketSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -780,6 +813,7 @@ func (getBucketsSpectraS3Response *GetBucketsSpectraS3Response) parse(webRespons
 }
 
 func NewGetBucketsSpectraS3Response(webResponse WebResponse) (*GetBucketsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -805,6 +839,7 @@ func (modifyBucketSpectraS3Response *ModifyBucketSpectraS3Response) parse(webRes
 }
 
 func NewModifyBucketSpectraS3Response(webResponse WebResponse) (*ModifyBucketSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -828,6 +863,7 @@ type ForceFullCacheReclaimSpectraS3Response struct {
 
 
 func NewForceFullCacheReclaimSpectraS3Response(webResponse WebResponse) (*ForceFullCacheReclaimSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -848,6 +884,7 @@ func (getCacheFilesystemSpectraS3Response *GetCacheFilesystemSpectraS3Response) 
 }
 
 func NewGetCacheFilesystemSpectraS3Response(webResponse WebResponse) (*GetCacheFilesystemSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -873,6 +910,7 @@ func (getCacheFilesystemsSpectraS3Response *GetCacheFilesystemsSpectraS3Response
 }
 
 func NewGetCacheFilesystemsSpectraS3Response(webResponse WebResponse) (*GetCacheFilesystemsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -898,6 +936,7 @@ func (getCacheStateSpectraS3Response *GetCacheStateSpectraS3Response) parse(webR
 }
 
 func NewGetCacheStateSpectraS3Response(webResponse WebResponse) (*GetCacheStateSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -923,6 +962,7 @@ func (modifyCacheFilesystemSpectraS3Response *ModifyCacheFilesystemSpectraS3Resp
 }
 
 func NewModifyCacheFilesystemSpectraS3Response(webResponse WebResponse) (*ModifyCacheFilesystemSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -948,6 +988,7 @@ func (getBucketCapacitySummarySpectraS3Response *GetBucketCapacitySummarySpectra
 }
 
 func NewGetBucketCapacitySummarySpectraS3Response(webResponse WebResponse) (*GetBucketCapacitySummarySpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -973,6 +1014,7 @@ func (getStorageDomainCapacitySummarySpectraS3Response *GetStorageDomainCapacity
 }
 
 func NewGetStorageDomainCapacitySummarySpectraS3Response(webResponse WebResponse) (*GetStorageDomainCapacitySummarySpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -998,6 +1040,7 @@ func (getSystemCapacitySummarySpectraS3Response *GetSystemCapacitySummarySpectra
 }
 
 func NewGetSystemCapacitySummarySpectraS3Response(webResponse WebResponse) (*GetSystemCapacitySummarySpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -1023,6 +1066,7 @@ func (getDataPathBackendSpectraS3Response *GetDataPathBackendSpectraS3Response) 
 }
 
 func NewGetDataPathBackendSpectraS3Response(webResponse WebResponse) (*GetDataPathBackendSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -1048,6 +1092,7 @@ func (getDataPlannerBlobStoreTasksSpectraS3Response *GetDataPlannerBlobStoreTask
 }
 
 func NewGetDataPlannerBlobStoreTasksSpectraS3Response(webResponse WebResponse) (*GetDataPlannerBlobStoreTasksSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -1073,6 +1118,7 @@ func (modifyDataPathBackendSpectraS3Response *ModifyDataPathBackendSpectraS3Resp
 }
 
 func NewModifyDataPathBackendSpectraS3Response(webResponse WebResponse) (*ModifyDataPathBackendSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -1098,6 +1144,7 @@ func (putAzureDataReplicationRuleSpectraS3Response *PutAzureDataReplicationRuleS
 }
 
 func NewPutAzureDataReplicationRuleSpectraS3Response(webResponse WebResponse) (*PutAzureDataReplicationRuleSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
@@ -1123,6 +1170,7 @@ func (putDataPersistenceRuleSpectraS3Response *PutDataPersistenceRuleSpectraS3Re
 }
 
 func NewPutDataPersistenceRuleSpectraS3Response(webResponse WebResponse) (*PutDataPersistenceRuleSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
@@ -1148,6 +1196,7 @@ func (putDataPolicySpectraS3Response *PutDataPolicySpectraS3Response) parse(webR
 }
 
 func NewPutDataPolicySpectraS3Response(webResponse WebResponse) (*PutDataPolicySpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
@@ -1173,6 +1222,7 @@ func (putDs3DataReplicationRuleSpectraS3Response *PutDs3DataReplicationRuleSpect
 }
 
 func NewPutDs3DataReplicationRuleSpectraS3Response(webResponse WebResponse) (*PutDs3DataReplicationRuleSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
@@ -1198,6 +1248,7 @@ func (putS3DataReplicationRuleSpectraS3Response *PutS3DataReplicationRuleSpectra
 }
 
 func NewPutS3DataReplicationRuleSpectraS3Response(webResponse WebResponse) (*PutS3DataReplicationRuleSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
@@ -1221,6 +1272,7 @@ type DeleteAzureDataReplicationRuleSpectraS3Response struct {
 
 
 func NewDeleteAzureDataReplicationRuleSpectraS3Response(webResponse WebResponse) (*DeleteAzureDataReplicationRuleSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -1239,6 +1291,7 @@ type DeleteDataPersistenceRuleSpectraS3Response struct {
 
 
 func NewDeleteDataPersistenceRuleSpectraS3Response(webResponse WebResponse) (*DeleteDataPersistenceRuleSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -1257,6 +1310,7 @@ type DeleteDataPolicySpectraS3Response struct {
 
 
 func NewDeleteDataPolicySpectraS3Response(webResponse WebResponse) (*DeleteDataPolicySpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -1275,6 +1329,7 @@ type DeleteDs3DataReplicationRuleSpectraS3Response struct {
 
 
 func NewDeleteDs3DataReplicationRuleSpectraS3Response(webResponse WebResponse) (*DeleteDs3DataReplicationRuleSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -1293,6 +1348,7 @@ type DeleteS3DataReplicationRuleSpectraS3Response struct {
 
 
 func NewDeleteS3DataReplicationRuleSpectraS3Response(webResponse WebResponse) (*DeleteS3DataReplicationRuleSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -1313,6 +1369,7 @@ func (getAzureDataReplicationRuleSpectraS3Response *GetAzureDataReplicationRuleS
 }
 
 func NewGetAzureDataReplicationRuleSpectraS3Response(webResponse WebResponse) (*GetAzureDataReplicationRuleSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -1338,6 +1395,7 @@ func (getAzureDataReplicationRulesSpectraS3Response *GetAzureDataReplicationRule
 }
 
 func NewGetAzureDataReplicationRulesSpectraS3Response(webResponse WebResponse) (*GetAzureDataReplicationRulesSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -1363,6 +1421,7 @@ func (getDataPersistenceRuleSpectraS3Response *GetDataPersistenceRuleSpectraS3Re
 }
 
 func NewGetDataPersistenceRuleSpectraS3Response(webResponse WebResponse) (*GetDataPersistenceRuleSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -1388,6 +1447,7 @@ func (getDataPersistenceRulesSpectraS3Response *GetDataPersistenceRulesSpectraS3
 }
 
 func NewGetDataPersistenceRulesSpectraS3Response(webResponse WebResponse) (*GetDataPersistenceRulesSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -1413,6 +1473,7 @@ func (getDataPoliciesSpectraS3Response *GetDataPoliciesSpectraS3Response) parse(
 }
 
 func NewGetDataPoliciesSpectraS3Response(webResponse WebResponse) (*GetDataPoliciesSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -1438,6 +1499,7 @@ func (getDataPolicySpectraS3Response *GetDataPolicySpectraS3Response) parse(webR
 }
 
 func NewGetDataPolicySpectraS3Response(webResponse WebResponse) (*GetDataPolicySpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -1463,6 +1525,7 @@ func (getDs3DataReplicationRuleSpectraS3Response *GetDs3DataReplicationRuleSpect
 }
 
 func NewGetDs3DataReplicationRuleSpectraS3Response(webResponse WebResponse) (*GetDs3DataReplicationRuleSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -1488,6 +1551,7 @@ func (getDs3DataReplicationRulesSpectraS3Response *GetDs3DataReplicationRulesSpe
 }
 
 func NewGetDs3DataReplicationRulesSpectraS3Response(webResponse WebResponse) (*GetDs3DataReplicationRulesSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -1513,6 +1577,7 @@ func (getS3DataReplicationRuleSpectraS3Response *GetS3DataReplicationRuleSpectra
 }
 
 func NewGetS3DataReplicationRuleSpectraS3Response(webResponse WebResponse) (*GetS3DataReplicationRuleSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -1538,6 +1603,7 @@ func (getS3DataReplicationRulesSpectraS3Response *GetS3DataReplicationRulesSpect
 }
 
 func NewGetS3DataReplicationRulesSpectraS3Response(webResponse WebResponse) (*GetS3DataReplicationRulesSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -1563,6 +1629,7 @@ func (modifyAzureDataReplicationRuleSpectraS3Response *ModifyAzureDataReplicatio
 }
 
 func NewModifyAzureDataReplicationRuleSpectraS3Response(webResponse WebResponse) (*ModifyAzureDataReplicationRuleSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -1588,6 +1655,7 @@ func (modifyDataPersistenceRuleSpectraS3Response *ModifyDataPersistenceRuleSpect
 }
 
 func NewModifyDataPersistenceRuleSpectraS3Response(webResponse WebResponse) (*ModifyDataPersistenceRuleSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -1613,6 +1681,7 @@ func (modifyDataPolicySpectraS3Response *ModifyDataPolicySpectraS3Response) pars
 }
 
 func NewModifyDataPolicySpectraS3Response(webResponse WebResponse) (*ModifyDataPolicySpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -1638,6 +1707,7 @@ func (modifyDs3DataReplicationRuleSpectraS3Response *ModifyDs3DataReplicationRul
 }
 
 func NewModifyDs3DataReplicationRuleSpectraS3Response(webResponse WebResponse) (*ModifyDs3DataReplicationRuleSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -1663,6 +1733,7 @@ func (modifyS3DataReplicationRuleSpectraS3Response *ModifyS3DataReplicationRuleS
 }
 
 func NewModifyS3DataReplicationRuleSpectraS3Response(webResponse WebResponse) (*ModifyS3DataReplicationRuleSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -1686,6 +1757,7 @@ type ClearSuspectBlobAzureTargetsSpectraS3Response struct {
 
 
 func NewClearSuspectBlobAzureTargetsSpectraS3Response(webResponse WebResponse) (*ClearSuspectBlobAzureTargetsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -1704,6 +1776,7 @@ type ClearSuspectBlobDs3TargetsSpectraS3Response struct {
 
 
 func NewClearSuspectBlobDs3TargetsSpectraS3Response(webResponse WebResponse) (*ClearSuspectBlobDs3TargetsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -1722,6 +1795,7 @@ type ClearSuspectBlobPoolsSpectraS3Response struct {
 
 
 func NewClearSuspectBlobPoolsSpectraS3Response(webResponse WebResponse) (*ClearSuspectBlobPoolsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -1740,6 +1814,7 @@ type ClearSuspectBlobS3TargetsSpectraS3Response struct {
 
 
 func NewClearSuspectBlobS3TargetsSpectraS3Response(webResponse WebResponse) (*ClearSuspectBlobS3TargetsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -1758,6 +1833,7 @@ type ClearSuspectBlobTapesSpectraS3Response struct {
 
 
 func NewClearSuspectBlobTapesSpectraS3Response(webResponse WebResponse) (*ClearSuspectBlobTapesSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -1778,6 +1854,7 @@ func (getDegradedAzureDataReplicationRulesSpectraS3Response *GetDegradedAzureDat
 }
 
 func NewGetDegradedAzureDataReplicationRulesSpectraS3Response(webResponse WebResponse) (*GetDegradedAzureDataReplicationRulesSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -1803,6 +1880,7 @@ func (getDegradedBlobsSpectraS3Response *GetDegradedBlobsSpectraS3Response) pars
 }
 
 func NewGetDegradedBlobsSpectraS3Response(webResponse WebResponse) (*GetDegradedBlobsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -1828,6 +1906,7 @@ func (getDegradedBucketsSpectraS3Response *GetDegradedBucketsSpectraS3Response) 
 }
 
 func NewGetDegradedBucketsSpectraS3Response(webResponse WebResponse) (*GetDegradedBucketsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -1853,6 +1932,7 @@ func (getDegradedDataPersistenceRulesSpectraS3Response *GetDegradedDataPersisten
 }
 
 func NewGetDegradedDataPersistenceRulesSpectraS3Response(webResponse WebResponse) (*GetDegradedDataPersistenceRulesSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -1878,6 +1958,7 @@ func (getDegradedDs3DataReplicationRulesSpectraS3Response *GetDegradedDs3DataRep
 }
 
 func NewGetDegradedDs3DataReplicationRulesSpectraS3Response(webResponse WebResponse) (*GetDegradedDs3DataReplicationRulesSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -1903,6 +1984,7 @@ func (getDegradedS3DataReplicationRulesSpectraS3Response *GetDegradedS3DataRepli
 }
 
 func NewGetDegradedS3DataReplicationRulesSpectraS3Response(webResponse WebResponse) (*GetDegradedS3DataReplicationRulesSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -1928,6 +2010,7 @@ func (getSuspectBlobAzureTargetsSpectraS3Response *GetSuspectBlobAzureTargetsSpe
 }
 
 func NewGetSuspectBlobAzureTargetsSpectraS3Response(webResponse WebResponse) (*GetSuspectBlobAzureTargetsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -1953,6 +2036,7 @@ func (getSuspectBlobDs3TargetsSpectraS3Response *GetSuspectBlobDs3TargetsSpectra
 }
 
 func NewGetSuspectBlobDs3TargetsSpectraS3Response(webResponse WebResponse) (*GetSuspectBlobDs3TargetsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -1978,6 +2062,7 @@ func (getSuspectBlobPoolsSpectraS3Response *GetSuspectBlobPoolsSpectraS3Response
 }
 
 func NewGetSuspectBlobPoolsSpectraS3Response(webResponse WebResponse) (*GetSuspectBlobPoolsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -2003,6 +2088,7 @@ func (getSuspectBlobS3TargetsSpectraS3Response *GetSuspectBlobS3TargetsSpectraS3
 }
 
 func NewGetSuspectBlobS3TargetsSpectraS3Response(webResponse WebResponse) (*GetSuspectBlobS3TargetsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -2028,6 +2114,7 @@ func (getSuspectBlobTapesSpectraS3Response *GetSuspectBlobTapesSpectraS3Response
 }
 
 func NewGetSuspectBlobTapesSpectraS3Response(webResponse WebResponse) (*GetSuspectBlobTapesSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -2053,6 +2140,7 @@ func (getSuspectBucketsSpectraS3Response *GetSuspectBucketsSpectraS3Response) pa
 }
 
 func NewGetSuspectBucketsSpectraS3Response(webResponse WebResponse) (*GetSuspectBucketsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -2078,6 +2166,7 @@ func (getSuspectObjectsSpectraS3Response *GetSuspectObjectsSpectraS3Response) pa
 }
 
 func NewGetSuspectObjectsSpectraS3Response(webResponse WebResponse) (*GetSuspectObjectsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -2103,6 +2192,7 @@ func (getSuspectObjectsWithFullDetailsSpectraS3Response *GetSuspectObjectsWithFu
 }
 
 func NewGetSuspectObjectsWithFullDetailsSpectraS3Response(webResponse WebResponse) (*GetSuspectObjectsWithFullDetailsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -2126,6 +2216,7 @@ type MarkSuspectBlobAzureTargetsAsDegradedSpectraS3Response struct {
 
 
 func NewMarkSuspectBlobAzureTargetsAsDegradedSpectraS3Response(webResponse WebResponse) (*MarkSuspectBlobAzureTargetsAsDegradedSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -2144,6 +2235,7 @@ type MarkSuspectBlobDs3TargetsAsDegradedSpectraS3Response struct {
 
 
 func NewMarkSuspectBlobDs3TargetsAsDegradedSpectraS3Response(webResponse WebResponse) (*MarkSuspectBlobDs3TargetsAsDegradedSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -2162,6 +2254,7 @@ type MarkSuspectBlobPoolsAsDegradedSpectraS3Response struct {
 
 
 func NewMarkSuspectBlobPoolsAsDegradedSpectraS3Response(webResponse WebResponse) (*MarkSuspectBlobPoolsAsDegradedSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -2180,6 +2273,7 @@ type MarkSuspectBlobS3TargetsAsDegradedSpectraS3Response struct {
 
 
 func NewMarkSuspectBlobS3TargetsAsDegradedSpectraS3Response(webResponse WebResponse) (*MarkSuspectBlobS3TargetsAsDegradedSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -2198,6 +2292,7 @@ type MarkSuspectBlobTapesAsDegradedSpectraS3Response struct {
 
 
 func NewMarkSuspectBlobTapesAsDegradedSpectraS3Response(webResponse WebResponse) (*MarkSuspectBlobTapesAsDegradedSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -2218,6 +2313,7 @@ func (putGroupGroupMemberSpectraS3Response *PutGroupGroupMemberSpectraS3Response
 }
 
 func NewPutGroupGroupMemberSpectraS3Response(webResponse WebResponse) (*PutGroupGroupMemberSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
@@ -2243,6 +2339,7 @@ func (putGroupSpectraS3Response *PutGroupSpectraS3Response) parse(webResponse We
 }
 
 func NewPutGroupSpectraS3Response(webResponse WebResponse) (*PutGroupSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
@@ -2268,6 +2365,7 @@ func (putUserGroupMemberSpectraS3Response *PutUserGroupMemberSpectraS3Response) 
 }
 
 func NewPutUserGroupMemberSpectraS3Response(webResponse WebResponse) (*PutUserGroupMemberSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
@@ -2291,6 +2389,7 @@ type DeleteGroupMemberSpectraS3Response struct {
 
 
 func NewDeleteGroupMemberSpectraS3Response(webResponse WebResponse) (*DeleteGroupMemberSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -2309,6 +2408,7 @@ type DeleteGroupSpectraS3Response struct {
 
 
 func NewDeleteGroupSpectraS3Response(webResponse WebResponse) (*DeleteGroupSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -2329,6 +2429,7 @@ func (getGroupMemberSpectraS3Response *GetGroupMemberSpectraS3Response) parse(we
 }
 
 func NewGetGroupMemberSpectraS3Response(webResponse WebResponse) (*GetGroupMemberSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -2354,6 +2455,7 @@ func (getGroupMembersSpectraS3Response *GetGroupMembersSpectraS3Response) parse(
 }
 
 func NewGetGroupMembersSpectraS3Response(webResponse WebResponse) (*GetGroupMembersSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -2379,6 +2481,7 @@ func (getGroupSpectraS3Response *GetGroupSpectraS3Response) parse(webResponse We
 }
 
 func NewGetGroupSpectraS3Response(webResponse WebResponse) (*GetGroupSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -2404,6 +2507,7 @@ func (getGroupsSpectraS3Response *GetGroupsSpectraS3Response) parse(webResponse 
 }
 
 func NewGetGroupsSpectraS3Response(webResponse WebResponse) (*GetGroupsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -2429,6 +2533,7 @@ func (modifyGroupSpectraS3Response *ModifyGroupSpectraS3Response) parse(webRespo
 }
 
 func NewModifyGroupSpectraS3Response(webResponse WebResponse) (*ModifyGroupSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -2454,6 +2559,7 @@ func (verifyUserIsMemberOfGroupSpectraS3Response *VerifyUserIsMemberOfGroupSpect
 }
 
 func NewVerifyUserIsMemberOfGroupSpectraS3Response(webResponse WebResponse) (*VerifyUserIsMemberOfGroupSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200, 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -2481,6 +2587,7 @@ func (allocateJobChunkSpectraS3Response *AllocateJobChunkSpectraS3Response) pars
 }
 
 func NewAllocateJobChunkSpectraS3Response(webResponse WebResponse) (*AllocateJobChunkSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -2504,6 +2611,7 @@ type CancelActiveJobSpectraS3Response struct {
 
 
 func NewCancelActiveJobSpectraS3Response(webResponse WebResponse) (*CancelActiveJobSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -2522,6 +2630,7 @@ type CancelAllActiveJobsSpectraS3Response struct {
 
 
 func NewCancelAllActiveJobsSpectraS3Response(webResponse WebResponse) (*CancelAllActiveJobsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -2540,6 +2649,7 @@ type CancelAllJobsSpectraS3Response struct {
 
 
 func NewCancelAllJobsSpectraS3Response(webResponse WebResponse) (*CancelAllJobsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -2558,6 +2668,7 @@ type CancelJobSpectraS3Response struct {
 
 
 func NewCancelJobSpectraS3Response(webResponse WebResponse) (*CancelJobSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -2576,6 +2687,7 @@ type ClearAllCanceledJobsSpectraS3Response struct {
 
 
 func NewClearAllCanceledJobsSpectraS3Response(webResponse WebResponse) (*ClearAllCanceledJobsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -2594,6 +2706,7 @@ type ClearAllCompletedJobsSpectraS3Response struct {
 
 
 func NewClearAllCompletedJobsSpectraS3Response(webResponse WebResponse) (*ClearAllCompletedJobsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -2614,6 +2727,7 @@ func (closeAggregatingJobSpectraS3Response *CloseAggregatingJobSpectraS3Response
 }
 
 func NewCloseAggregatingJobSpectraS3Response(webResponse WebResponse) (*CloseAggregatingJobSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -2639,6 +2753,7 @@ func (getBulkJobSpectraS3Response *GetBulkJobSpectraS3Response) parse(webRespons
 }
 
 func NewGetBulkJobSpectraS3Response(webResponse WebResponse) (*GetBulkJobSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -2664,6 +2779,7 @@ func (putBulkJobSpectraS3Response *PutBulkJobSpectraS3Response) parse(webRespons
 }
 
 func NewPutBulkJobSpectraS3Response(webResponse WebResponse) (*PutBulkJobSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -2689,6 +2805,7 @@ func (verifyBulkJobSpectraS3Response *VerifyBulkJobSpectraS3Response) parse(webR
 }
 
 func NewVerifyBulkJobSpectraS3Response(webResponse WebResponse) (*VerifyBulkJobSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -2714,6 +2831,7 @@ func (getActiveJobSpectraS3Response *GetActiveJobSpectraS3Response) parse(webRes
 }
 
 func NewGetActiveJobSpectraS3Response(webResponse WebResponse) (*GetActiveJobSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -2739,6 +2857,7 @@ func (getActiveJobsSpectraS3Response *GetActiveJobsSpectraS3Response) parse(webR
 }
 
 func NewGetActiveJobsSpectraS3Response(webResponse WebResponse) (*GetActiveJobsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -2764,6 +2883,7 @@ func (getCanceledJobSpectraS3Response *GetCanceledJobSpectraS3Response) parse(we
 }
 
 func NewGetCanceledJobSpectraS3Response(webResponse WebResponse) (*GetCanceledJobSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -2789,6 +2909,7 @@ func (getCanceledJobsSpectraS3Response *GetCanceledJobsSpectraS3Response) parse(
 }
 
 func NewGetCanceledJobsSpectraS3Response(webResponse WebResponse) (*GetCanceledJobsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -2814,6 +2935,7 @@ func (getCompletedJobSpectraS3Response *GetCompletedJobSpectraS3Response) parse(
 }
 
 func NewGetCompletedJobSpectraS3Response(webResponse WebResponse) (*GetCompletedJobSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -2839,6 +2961,7 @@ func (getCompletedJobsSpectraS3Response *GetCompletedJobsSpectraS3Response) pars
 }
 
 func NewGetCompletedJobsSpectraS3Response(webResponse WebResponse) (*GetCompletedJobsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -2864,6 +2987,7 @@ func (getJobChunkDaoSpectraS3Response *GetJobChunkDaoSpectraS3Response) parse(we
 }
 
 func NewGetJobChunkDaoSpectraS3Response(webResponse WebResponse) (*GetJobChunkDaoSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -2889,6 +3013,7 @@ func (getJobChunkSpectraS3Response *GetJobChunkSpectraS3Response) parse(webRespo
 }
 
 func NewGetJobChunkSpectraS3Response(webResponse WebResponse) (*GetJobChunkSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -2914,6 +3039,7 @@ func (getJobChunksReadyForClientProcessingSpectraS3Response *GetJobChunksReadyFo
 }
 
 func NewGetJobChunksReadyForClientProcessingSpectraS3Response(webResponse WebResponse) (*GetJobChunksReadyForClientProcessingSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -2939,6 +3065,7 @@ func (getJobSpectraS3Response *GetJobSpectraS3Response) parse(webResponse WebRes
 }
 
 func NewGetJobSpectraS3Response(webResponse WebResponse) (*GetJobSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -2962,6 +3089,7 @@ type GetJobToReplicateSpectraS3Response struct {
 
 
 func NewGetJobToReplicateSpectraS3Response(webResponse WebResponse) (*GetJobToReplicateSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -2986,6 +3114,7 @@ func (getJobsSpectraS3Response *GetJobsSpectraS3Response) parse(webResponse WebR
 }
 
 func NewGetJobsSpectraS3Response(webResponse WebResponse) (*GetJobsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -3011,6 +3140,7 @@ func (modifyActiveJobSpectraS3Response *ModifyActiveJobSpectraS3Response) parse(
 }
 
 func NewModifyActiveJobSpectraS3Response(webResponse WebResponse) (*ModifyActiveJobSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -3036,6 +3166,7 @@ func (modifyJobSpectraS3Response *ModifyJobSpectraS3Response) parse(webResponse 
 }
 
 func NewModifyJobSpectraS3Response(webResponse WebResponse) (*ModifyJobSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -3061,6 +3192,7 @@ func (replicatePutJobSpectraS3Response *ReplicatePutJobSpectraS3Response) parse(
 }
 
 func NewReplicatePutJobSpectraS3Response(webResponse WebResponse) (*ReplicatePutJobSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200, 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -3088,6 +3220,7 @@ func (stageObjectsJobSpectraS3Response *StageObjectsJobSpectraS3Response) parse(
 }
 
 func NewStageObjectsJobSpectraS3Response(webResponse WebResponse) (*StageObjectsJobSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -3111,6 +3244,7 @@ type TruncateActiveJobSpectraS3Response struct {
 
 
 func NewTruncateActiveJobSpectraS3Response(webResponse WebResponse) (*TruncateActiveJobSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -3129,6 +3263,7 @@ type TruncateAllActiveJobsSpectraS3Response struct {
 
 
 func NewTruncateAllActiveJobsSpectraS3Response(webResponse WebResponse) (*TruncateAllActiveJobsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -3147,6 +3282,7 @@ type TruncateAllJobsSpectraS3Response struct {
 
 
 func NewTruncateAllJobsSpectraS3Response(webResponse WebResponse) (*TruncateAllJobsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -3165,6 +3301,7 @@ type TruncateJobSpectraS3Response struct {
 
 
 func NewTruncateJobSpectraS3Response(webResponse WebResponse) (*TruncateJobSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -3183,6 +3320,7 @@ type VerifySafeToCreatePutJobSpectraS3Response struct {
 
 
 func NewVerifySafeToCreatePutJobSpectraS3Response(webResponse WebResponse) (*VerifySafeToCreatePutJobSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -3203,6 +3341,7 @@ func (getNodeSpectraS3Response *GetNodeSpectraS3Response) parse(webResponse WebR
 }
 
 func NewGetNodeSpectraS3Response(webResponse WebResponse) (*GetNodeSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -3228,6 +3367,7 @@ func (getNodesSpectraS3Response *GetNodesSpectraS3Response) parse(webResponse We
 }
 
 func NewGetNodesSpectraS3Response(webResponse WebResponse) (*GetNodesSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -3253,6 +3393,7 @@ func (modifyNodeSpectraS3Response *ModifyNodeSpectraS3Response) parse(webRespons
 }
 
 func NewModifyNodeSpectraS3Response(webResponse WebResponse) (*ModifyNodeSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -3278,6 +3419,7 @@ func (putAzureTargetFailureNotificationRegistrationSpectraS3Response *PutAzureTa
 }
 
 func NewPutAzureTargetFailureNotificationRegistrationSpectraS3Response(webResponse WebResponse) (*PutAzureTargetFailureNotificationRegistrationSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
@@ -3303,6 +3445,7 @@ func (putDs3TargetFailureNotificationRegistrationSpectraS3Response *PutDs3Target
 }
 
 func NewPutDs3TargetFailureNotificationRegistrationSpectraS3Response(webResponse WebResponse) (*PutDs3TargetFailureNotificationRegistrationSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
@@ -3328,6 +3471,7 @@ func (putJobCompletedNotificationRegistrationSpectraS3Response *PutJobCompletedN
 }
 
 func NewPutJobCompletedNotificationRegistrationSpectraS3Response(webResponse WebResponse) (*PutJobCompletedNotificationRegistrationSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
@@ -3353,6 +3497,7 @@ func (putJobCreatedNotificationRegistrationSpectraS3Response *PutJobCreatedNotif
 }
 
 func NewPutJobCreatedNotificationRegistrationSpectraS3Response(webResponse WebResponse) (*PutJobCreatedNotificationRegistrationSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
@@ -3378,6 +3523,7 @@ func (putJobCreationFailedNotificationRegistrationSpectraS3Response *PutJobCreat
 }
 
 func NewPutJobCreationFailedNotificationRegistrationSpectraS3Response(webResponse WebResponse) (*PutJobCreationFailedNotificationRegistrationSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
@@ -3403,6 +3549,7 @@ func (putObjectCachedNotificationRegistrationSpectraS3Response *PutObjectCachedN
 }
 
 func NewPutObjectCachedNotificationRegistrationSpectraS3Response(webResponse WebResponse) (*PutObjectCachedNotificationRegistrationSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
@@ -3428,6 +3575,7 @@ func (putObjectLostNotificationRegistrationSpectraS3Response *PutObjectLostNotif
 }
 
 func NewPutObjectLostNotificationRegistrationSpectraS3Response(webResponse WebResponse) (*PutObjectLostNotificationRegistrationSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
@@ -3453,6 +3601,7 @@ func (putObjectPersistedNotificationRegistrationSpectraS3Response *PutObjectPers
 }
 
 func NewPutObjectPersistedNotificationRegistrationSpectraS3Response(webResponse WebResponse) (*PutObjectPersistedNotificationRegistrationSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
@@ -3478,6 +3627,7 @@ func (putPoolFailureNotificationRegistrationSpectraS3Response *PutPoolFailureNot
 }
 
 func NewPutPoolFailureNotificationRegistrationSpectraS3Response(webResponse WebResponse) (*PutPoolFailureNotificationRegistrationSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
@@ -3503,6 +3653,7 @@ func (putS3TargetFailureNotificationRegistrationSpectraS3Response *PutS3TargetFa
 }
 
 func NewPutS3TargetFailureNotificationRegistrationSpectraS3Response(webResponse WebResponse) (*PutS3TargetFailureNotificationRegistrationSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
@@ -3528,6 +3679,7 @@ func (putStorageDomainFailureNotificationRegistrationSpectraS3Response *PutStora
 }
 
 func NewPutStorageDomainFailureNotificationRegistrationSpectraS3Response(webResponse WebResponse) (*PutStorageDomainFailureNotificationRegistrationSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
@@ -3553,6 +3705,7 @@ func (putSystemFailureNotificationRegistrationSpectraS3Response *PutSystemFailur
 }
 
 func NewPutSystemFailureNotificationRegistrationSpectraS3Response(webResponse WebResponse) (*PutSystemFailureNotificationRegistrationSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
@@ -3578,6 +3731,7 @@ func (putTapeFailureNotificationRegistrationSpectraS3Response *PutTapeFailureNot
 }
 
 func NewPutTapeFailureNotificationRegistrationSpectraS3Response(webResponse WebResponse) (*PutTapeFailureNotificationRegistrationSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
@@ -3603,6 +3757,7 @@ func (putTapePartitionFailureNotificationRegistrationSpectraS3Response *PutTapeP
 }
 
 func NewPutTapePartitionFailureNotificationRegistrationSpectraS3Response(webResponse WebResponse) (*PutTapePartitionFailureNotificationRegistrationSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
@@ -3626,6 +3781,7 @@ type DeleteAzureTargetFailureNotificationRegistrationSpectraS3Response struct {
 
 
 func NewDeleteAzureTargetFailureNotificationRegistrationSpectraS3Response(webResponse WebResponse) (*DeleteAzureTargetFailureNotificationRegistrationSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -3644,6 +3800,7 @@ type DeleteDs3TargetFailureNotificationRegistrationSpectraS3Response struct {
 
 
 func NewDeleteDs3TargetFailureNotificationRegistrationSpectraS3Response(webResponse WebResponse) (*DeleteDs3TargetFailureNotificationRegistrationSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -3662,6 +3819,7 @@ type DeleteJobCompletedNotificationRegistrationSpectraS3Response struct {
 
 
 func NewDeleteJobCompletedNotificationRegistrationSpectraS3Response(webResponse WebResponse) (*DeleteJobCompletedNotificationRegistrationSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -3680,6 +3838,7 @@ type DeleteJobCreatedNotificationRegistrationSpectraS3Response struct {
 
 
 func NewDeleteJobCreatedNotificationRegistrationSpectraS3Response(webResponse WebResponse) (*DeleteJobCreatedNotificationRegistrationSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -3698,6 +3857,7 @@ type DeleteJobCreationFailedNotificationRegistrationSpectraS3Response struct {
 
 
 func NewDeleteJobCreationFailedNotificationRegistrationSpectraS3Response(webResponse WebResponse) (*DeleteJobCreationFailedNotificationRegistrationSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -3716,6 +3876,7 @@ type DeleteObjectCachedNotificationRegistrationSpectraS3Response struct {
 
 
 func NewDeleteObjectCachedNotificationRegistrationSpectraS3Response(webResponse WebResponse) (*DeleteObjectCachedNotificationRegistrationSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -3734,6 +3895,7 @@ type DeleteObjectLostNotificationRegistrationSpectraS3Response struct {
 
 
 func NewDeleteObjectLostNotificationRegistrationSpectraS3Response(webResponse WebResponse) (*DeleteObjectLostNotificationRegistrationSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -3752,6 +3914,7 @@ type DeleteObjectPersistedNotificationRegistrationSpectraS3Response struct {
 
 
 func NewDeleteObjectPersistedNotificationRegistrationSpectraS3Response(webResponse WebResponse) (*DeleteObjectPersistedNotificationRegistrationSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -3770,6 +3933,7 @@ type DeletePoolFailureNotificationRegistrationSpectraS3Response struct {
 
 
 func NewDeletePoolFailureNotificationRegistrationSpectraS3Response(webResponse WebResponse) (*DeletePoolFailureNotificationRegistrationSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -3788,6 +3952,7 @@ type DeleteS3TargetFailureNotificationRegistrationSpectraS3Response struct {
 
 
 func NewDeleteS3TargetFailureNotificationRegistrationSpectraS3Response(webResponse WebResponse) (*DeleteS3TargetFailureNotificationRegistrationSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -3806,6 +3971,7 @@ type DeleteStorageDomainFailureNotificationRegistrationSpectraS3Response struct 
 
 
 func NewDeleteStorageDomainFailureNotificationRegistrationSpectraS3Response(webResponse WebResponse) (*DeleteStorageDomainFailureNotificationRegistrationSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -3824,6 +3990,7 @@ type DeleteSystemFailureNotificationRegistrationSpectraS3Response struct {
 
 
 func NewDeleteSystemFailureNotificationRegistrationSpectraS3Response(webResponse WebResponse) (*DeleteSystemFailureNotificationRegistrationSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -3842,6 +4009,7 @@ type DeleteTapeFailureNotificationRegistrationSpectraS3Response struct {
 
 
 func NewDeleteTapeFailureNotificationRegistrationSpectraS3Response(webResponse WebResponse) (*DeleteTapeFailureNotificationRegistrationSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -3860,6 +4028,7 @@ type DeleteTapePartitionFailureNotificationRegistrationSpectraS3Response struct 
 
 
 func NewDeleteTapePartitionFailureNotificationRegistrationSpectraS3Response(webResponse WebResponse) (*DeleteTapePartitionFailureNotificationRegistrationSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -3880,6 +4049,7 @@ func (getAzureTargetFailureNotificationRegistrationSpectraS3Response *GetAzureTa
 }
 
 func NewGetAzureTargetFailureNotificationRegistrationSpectraS3Response(webResponse WebResponse) (*GetAzureTargetFailureNotificationRegistrationSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -3905,6 +4075,7 @@ func (getAzureTargetFailureNotificationRegistrationsSpectraS3Response *GetAzureT
 }
 
 func NewGetAzureTargetFailureNotificationRegistrationsSpectraS3Response(webResponse WebResponse) (*GetAzureTargetFailureNotificationRegistrationsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -3930,6 +4101,7 @@ func (getDs3TargetFailureNotificationRegistrationSpectraS3Response *GetDs3Target
 }
 
 func NewGetDs3TargetFailureNotificationRegistrationSpectraS3Response(webResponse WebResponse) (*GetDs3TargetFailureNotificationRegistrationSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -3955,6 +4127,7 @@ func (getDs3TargetFailureNotificationRegistrationsSpectraS3Response *GetDs3Targe
 }
 
 func NewGetDs3TargetFailureNotificationRegistrationsSpectraS3Response(webResponse WebResponse) (*GetDs3TargetFailureNotificationRegistrationsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -3980,6 +4153,7 @@ func (getJobCompletedNotificationRegistrationSpectraS3Response *GetJobCompletedN
 }
 
 func NewGetJobCompletedNotificationRegistrationSpectraS3Response(webResponse WebResponse) (*GetJobCompletedNotificationRegistrationSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -4005,6 +4179,7 @@ func (getJobCompletedNotificationRegistrationsSpectraS3Response *GetJobCompleted
 }
 
 func NewGetJobCompletedNotificationRegistrationsSpectraS3Response(webResponse WebResponse) (*GetJobCompletedNotificationRegistrationsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -4030,6 +4205,7 @@ func (getJobCreatedNotificationRegistrationSpectraS3Response *GetJobCreatedNotif
 }
 
 func NewGetJobCreatedNotificationRegistrationSpectraS3Response(webResponse WebResponse) (*GetJobCreatedNotificationRegistrationSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -4055,6 +4231,7 @@ func (getJobCreatedNotificationRegistrationsSpectraS3Response *GetJobCreatedNoti
 }
 
 func NewGetJobCreatedNotificationRegistrationsSpectraS3Response(webResponse WebResponse) (*GetJobCreatedNotificationRegistrationsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -4080,6 +4257,7 @@ func (getJobCreationFailedNotificationRegistrationSpectraS3Response *GetJobCreat
 }
 
 func NewGetJobCreationFailedNotificationRegistrationSpectraS3Response(webResponse WebResponse) (*GetJobCreationFailedNotificationRegistrationSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -4105,6 +4283,7 @@ func (getJobCreationFailedNotificationRegistrationsSpectraS3Response *GetJobCrea
 }
 
 func NewGetJobCreationFailedNotificationRegistrationsSpectraS3Response(webResponse WebResponse) (*GetJobCreationFailedNotificationRegistrationsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -4130,6 +4309,7 @@ func (getObjectCachedNotificationRegistrationSpectraS3Response *GetObjectCachedN
 }
 
 func NewGetObjectCachedNotificationRegistrationSpectraS3Response(webResponse WebResponse) (*GetObjectCachedNotificationRegistrationSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -4155,6 +4335,7 @@ func (getObjectCachedNotificationRegistrationsSpectraS3Response *GetObjectCached
 }
 
 func NewGetObjectCachedNotificationRegistrationsSpectraS3Response(webResponse WebResponse) (*GetObjectCachedNotificationRegistrationsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -4180,6 +4361,7 @@ func (getObjectLostNotificationRegistrationSpectraS3Response *GetObjectLostNotif
 }
 
 func NewGetObjectLostNotificationRegistrationSpectraS3Response(webResponse WebResponse) (*GetObjectLostNotificationRegistrationSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -4205,6 +4387,7 @@ func (getObjectLostNotificationRegistrationsSpectraS3Response *GetObjectLostNoti
 }
 
 func NewGetObjectLostNotificationRegistrationsSpectraS3Response(webResponse WebResponse) (*GetObjectLostNotificationRegistrationsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -4230,6 +4413,7 @@ func (getObjectPersistedNotificationRegistrationSpectraS3Response *GetObjectPers
 }
 
 func NewGetObjectPersistedNotificationRegistrationSpectraS3Response(webResponse WebResponse) (*GetObjectPersistedNotificationRegistrationSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -4255,6 +4439,7 @@ func (getObjectPersistedNotificationRegistrationsSpectraS3Response *GetObjectPer
 }
 
 func NewGetObjectPersistedNotificationRegistrationsSpectraS3Response(webResponse WebResponse) (*GetObjectPersistedNotificationRegistrationsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -4280,6 +4465,7 @@ func (getPoolFailureNotificationRegistrationSpectraS3Response *GetPoolFailureNot
 }
 
 func NewGetPoolFailureNotificationRegistrationSpectraS3Response(webResponse WebResponse) (*GetPoolFailureNotificationRegistrationSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -4305,6 +4491,7 @@ func (getPoolFailureNotificationRegistrationsSpectraS3Response *GetPoolFailureNo
 }
 
 func NewGetPoolFailureNotificationRegistrationsSpectraS3Response(webResponse WebResponse) (*GetPoolFailureNotificationRegistrationsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -4330,6 +4517,7 @@ func (getS3TargetFailureNotificationRegistrationSpectraS3Response *GetS3TargetFa
 }
 
 func NewGetS3TargetFailureNotificationRegistrationSpectraS3Response(webResponse WebResponse) (*GetS3TargetFailureNotificationRegistrationSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -4355,6 +4543,7 @@ func (getS3TargetFailureNotificationRegistrationsSpectraS3Response *GetS3TargetF
 }
 
 func NewGetS3TargetFailureNotificationRegistrationsSpectraS3Response(webResponse WebResponse) (*GetS3TargetFailureNotificationRegistrationsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -4380,6 +4569,7 @@ func (getStorageDomainFailureNotificationRegistrationSpectraS3Response *GetStora
 }
 
 func NewGetStorageDomainFailureNotificationRegistrationSpectraS3Response(webResponse WebResponse) (*GetStorageDomainFailureNotificationRegistrationSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -4405,6 +4595,7 @@ func (getStorageDomainFailureNotificationRegistrationsSpectraS3Response *GetStor
 }
 
 func NewGetStorageDomainFailureNotificationRegistrationsSpectraS3Response(webResponse WebResponse) (*GetStorageDomainFailureNotificationRegistrationsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -4430,6 +4621,7 @@ func (getSystemFailureNotificationRegistrationSpectraS3Response *GetSystemFailur
 }
 
 func NewGetSystemFailureNotificationRegistrationSpectraS3Response(webResponse WebResponse) (*GetSystemFailureNotificationRegistrationSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -4455,6 +4647,7 @@ func (getSystemFailureNotificationRegistrationsSpectraS3Response *GetSystemFailu
 }
 
 func NewGetSystemFailureNotificationRegistrationsSpectraS3Response(webResponse WebResponse) (*GetSystemFailureNotificationRegistrationsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -4480,6 +4673,7 @@ func (getTapeFailureNotificationRegistrationSpectraS3Response *GetTapeFailureNot
 }
 
 func NewGetTapeFailureNotificationRegistrationSpectraS3Response(webResponse WebResponse) (*GetTapeFailureNotificationRegistrationSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -4505,6 +4699,7 @@ func (getTapeFailureNotificationRegistrationsSpectraS3Response *GetTapeFailureNo
 }
 
 func NewGetTapeFailureNotificationRegistrationsSpectraS3Response(webResponse WebResponse) (*GetTapeFailureNotificationRegistrationsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -4530,6 +4725,7 @@ func (getTapePartitionFailureNotificationRegistrationSpectraS3Response *GetTapeP
 }
 
 func NewGetTapePartitionFailureNotificationRegistrationSpectraS3Response(webResponse WebResponse) (*GetTapePartitionFailureNotificationRegistrationSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -4555,6 +4751,7 @@ func (getTapePartitionFailureNotificationRegistrationsSpectraS3Response *GetTape
 }
 
 func NewGetTapePartitionFailureNotificationRegistrationsSpectraS3Response(webResponse WebResponse) (*GetTapePartitionFailureNotificationRegistrationsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -4578,6 +4775,7 @@ type DeleteFolderRecursivelySpectraS3Response struct {
 
 
 func NewDeleteFolderRecursivelySpectraS3Response(webResponse WebResponse) (*DeleteFolderRecursivelySpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -4596,6 +4794,7 @@ type GetBlobPersistenceSpectraS3Response struct {
 
 
 func NewGetBlobPersistenceSpectraS3Response(webResponse WebResponse) (*GetBlobPersistenceSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -4620,6 +4819,7 @@ func (getObjectDetailsSpectraS3Response *GetObjectDetailsSpectraS3Response) pars
 }
 
 func NewGetObjectDetailsSpectraS3Response(webResponse WebResponse) (*GetObjectDetailsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -4645,6 +4845,7 @@ func (getObjectsDetailsSpectraS3Response *GetObjectsDetailsSpectraS3Response) pa
 }
 
 func NewGetObjectsDetailsSpectraS3Response(webResponse WebResponse) (*GetObjectsDetailsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -4670,6 +4871,7 @@ func (getObjectsWithFullDetailsSpectraS3Response *GetObjectsWithFullDetailsSpect
 }
 
 func NewGetObjectsWithFullDetailsSpectraS3Response(webResponse WebResponse) (*GetObjectsWithFullDetailsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -4695,6 +4897,7 @@ func (getPhysicalPlacementForObjectsSpectraS3Response *GetPhysicalPlacementForOb
 }
 
 func NewGetPhysicalPlacementForObjectsSpectraS3Response(webResponse WebResponse) (*GetPhysicalPlacementForObjectsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -4720,6 +4923,7 @@ func (getPhysicalPlacementForObjectsWithFullDetailsSpectraS3Response *GetPhysica
 }
 
 func NewGetPhysicalPlacementForObjectsWithFullDetailsSpectraS3Response(webResponse WebResponse) (*GetPhysicalPlacementForObjectsWithFullDetailsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -4745,6 +4949,7 @@ func (undeleteObjectSpectraS3Response *UndeleteObjectSpectraS3Response) parse(we
 }
 
 func NewUndeleteObjectSpectraS3Response(webResponse WebResponse) (*UndeleteObjectSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -4770,6 +4975,7 @@ func (verifyPhysicalPlacementForObjectsSpectraS3Response *VerifyPhysicalPlacemen
 }
 
 func NewVerifyPhysicalPlacementForObjectsSpectraS3Response(webResponse WebResponse) (*VerifyPhysicalPlacementForObjectsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -4795,6 +5001,7 @@ func (verifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Response *VerifyP
 }
 
 func NewVerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Response(webResponse WebResponse) (*VerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -4818,6 +5025,7 @@ type CancelImportOnAllPoolsSpectraS3Response struct {
 
 
 func NewCancelImportOnAllPoolsSpectraS3Response(webResponse WebResponse) (*CancelImportOnAllPoolsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -4838,6 +5046,7 @@ func (cancelImportPoolSpectraS3Response *CancelImportPoolSpectraS3Response) pars
 }
 
 func NewCancelImportPoolSpectraS3Response(webResponse WebResponse) (*CancelImportPoolSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -4861,6 +5070,7 @@ type CancelVerifyOnAllPoolsSpectraS3Response struct {
 
 
 func NewCancelVerifyOnAllPoolsSpectraS3Response(webResponse WebResponse) (*CancelVerifyOnAllPoolsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -4881,6 +5091,7 @@ func (cancelVerifyPoolSpectraS3Response *CancelVerifyPoolSpectraS3Response) pars
 }
 
 func NewCancelVerifyPoolSpectraS3Response(webResponse WebResponse) (*CancelVerifyPoolSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -4904,6 +5115,7 @@ type CompactAllPoolsSpectraS3Response struct {
 
 
 func NewCompactAllPoolsSpectraS3Response(webResponse WebResponse) (*CompactAllPoolsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -4924,6 +5136,7 @@ func (compactPoolSpectraS3Response *CompactPoolSpectraS3Response) parse(webRespo
 }
 
 func NewCompactPoolSpectraS3Response(webResponse WebResponse) (*CompactPoolSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -4949,6 +5162,7 @@ func (putPoolPartitionSpectraS3Response *PutPoolPartitionSpectraS3Response) pars
 }
 
 func NewPutPoolPartitionSpectraS3Response(webResponse WebResponse) (*PutPoolPartitionSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
@@ -4972,6 +5186,7 @@ type DeallocatePoolSpectraS3Response struct {
 
 
 func NewDeallocatePoolSpectraS3Response(webResponse WebResponse) (*DeallocatePoolSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -4990,6 +5205,7 @@ type DeletePermanentlyLostPoolSpectraS3Response struct {
 
 
 func NewDeletePermanentlyLostPoolSpectraS3Response(webResponse WebResponse) (*DeletePermanentlyLostPoolSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -5008,6 +5224,7 @@ type DeletePoolFailureSpectraS3Response struct {
 
 
 func NewDeletePoolFailureSpectraS3Response(webResponse WebResponse) (*DeletePoolFailureSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -5026,6 +5243,7 @@ type DeletePoolPartitionSpectraS3Response struct {
 
 
 func NewDeletePoolPartitionSpectraS3Response(webResponse WebResponse) (*DeletePoolPartitionSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -5044,6 +5262,7 @@ type ForcePoolEnvironmentRefreshSpectraS3Response struct {
 
 
 func NewForcePoolEnvironmentRefreshSpectraS3Response(webResponse WebResponse) (*ForcePoolEnvironmentRefreshSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -5062,6 +5281,7 @@ type FormatAllForeignPoolsSpectraS3Response struct {
 
 
 func NewFormatAllForeignPoolsSpectraS3Response(webResponse WebResponse) (*FormatAllForeignPoolsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -5082,6 +5302,7 @@ func (formatForeignPoolSpectraS3Response *FormatForeignPoolSpectraS3Response) pa
 }
 
 func NewFormatForeignPoolSpectraS3Response(webResponse WebResponse) (*FormatForeignPoolSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -5107,6 +5328,7 @@ func (getBlobsOnPoolSpectraS3Response *GetBlobsOnPoolSpectraS3Response) parse(we
 }
 
 func NewGetBlobsOnPoolSpectraS3Response(webResponse WebResponse) (*GetBlobsOnPoolSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -5132,6 +5354,7 @@ func (getPoolFailuresSpectraS3Response *GetPoolFailuresSpectraS3Response) parse(
 }
 
 func NewGetPoolFailuresSpectraS3Response(webResponse WebResponse) (*GetPoolFailuresSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -5157,6 +5380,7 @@ func (getPoolPartitionSpectraS3Response *GetPoolPartitionSpectraS3Response) pars
 }
 
 func NewGetPoolPartitionSpectraS3Response(webResponse WebResponse) (*GetPoolPartitionSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -5182,6 +5406,7 @@ func (getPoolPartitionsSpectraS3Response *GetPoolPartitionsSpectraS3Response) pa
 }
 
 func NewGetPoolPartitionsSpectraS3Response(webResponse WebResponse) (*GetPoolPartitionsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -5207,6 +5432,7 @@ func (getPoolSpectraS3Response *GetPoolSpectraS3Response) parse(webResponse WebR
 }
 
 func NewGetPoolSpectraS3Response(webResponse WebResponse) (*GetPoolSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -5232,6 +5458,7 @@ func (getPoolsSpectraS3Response *GetPoolsSpectraS3Response) parse(webResponse We
 }
 
 func NewGetPoolsSpectraS3Response(webResponse WebResponse) (*GetPoolsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -5255,6 +5482,7 @@ type ImportAllPoolsSpectraS3Response struct {
 
 
 func NewImportAllPoolsSpectraS3Response(webResponse WebResponse) (*ImportAllPoolsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -5275,6 +5503,7 @@ func (importPoolSpectraS3Response *ImportPoolSpectraS3Response) parse(webRespons
 }
 
 func NewImportPoolSpectraS3Response(webResponse WebResponse) (*ImportPoolSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -5298,6 +5527,7 @@ type ModifyAllPoolsSpectraS3Response struct {
 
 
 func NewModifyAllPoolsSpectraS3Response(webResponse WebResponse) (*ModifyAllPoolsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -5318,6 +5548,7 @@ func (modifyPoolPartitionSpectraS3Response *ModifyPoolPartitionSpectraS3Response
 }
 
 func NewModifyPoolPartitionSpectraS3Response(webResponse WebResponse) (*ModifyPoolPartitionSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -5343,6 +5574,7 @@ func (modifyPoolSpectraS3Response *ModifyPoolSpectraS3Response) parse(webRespons
 }
 
 func NewModifyPoolSpectraS3Response(webResponse WebResponse) (*ModifyPoolSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -5366,6 +5598,7 @@ type VerifyAllPoolsSpectraS3Response struct {
 
 
 func NewVerifyAllPoolsSpectraS3Response(webResponse WebResponse) (*VerifyAllPoolsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -5386,6 +5619,7 @@ func (verifyPoolSpectraS3Response *VerifyPoolSpectraS3Response) parse(webRespons
 }
 
 func NewVerifyPoolSpectraS3Response(webResponse WebResponse) (*VerifyPoolSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -5409,6 +5643,7 @@ type ConvertStorageDomainToDs3TargetSpectraS3Response struct {
 
 
 func NewConvertStorageDomainToDs3TargetSpectraS3Response(webResponse WebResponse) (*ConvertStorageDomainToDs3TargetSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -5429,6 +5664,7 @@ func (putPoolStorageDomainMemberSpectraS3Response *PutPoolStorageDomainMemberSpe
 }
 
 func NewPutPoolStorageDomainMemberSpectraS3Response(webResponse WebResponse) (*PutPoolStorageDomainMemberSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
@@ -5454,6 +5690,7 @@ func (putStorageDomainSpectraS3Response *PutStorageDomainSpectraS3Response) pars
 }
 
 func NewPutStorageDomainSpectraS3Response(webResponse WebResponse) (*PutStorageDomainSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
@@ -5479,6 +5716,7 @@ func (putTapeStorageDomainMemberSpectraS3Response *PutTapeStorageDomainMemberSpe
 }
 
 func NewPutTapeStorageDomainMemberSpectraS3Response(webResponse WebResponse) (*PutTapeStorageDomainMemberSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
@@ -5502,6 +5740,7 @@ type DeleteStorageDomainFailureSpectraS3Response struct {
 
 
 func NewDeleteStorageDomainFailureSpectraS3Response(webResponse WebResponse) (*DeleteStorageDomainFailureSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -5520,6 +5759,7 @@ type DeleteStorageDomainMemberSpectraS3Response struct {
 
 
 func NewDeleteStorageDomainMemberSpectraS3Response(webResponse WebResponse) (*DeleteStorageDomainMemberSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -5538,6 +5778,7 @@ type DeleteStorageDomainSpectraS3Response struct {
 
 
 func NewDeleteStorageDomainSpectraS3Response(webResponse WebResponse) (*DeleteStorageDomainSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -5558,6 +5799,7 @@ func (getStorageDomainFailuresSpectraS3Response *GetStorageDomainFailuresSpectra
 }
 
 func NewGetStorageDomainFailuresSpectraS3Response(webResponse WebResponse) (*GetStorageDomainFailuresSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -5583,6 +5825,7 @@ func (getStorageDomainMemberSpectraS3Response *GetStorageDomainMemberSpectraS3Re
 }
 
 func NewGetStorageDomainMemberSpectraS3Response(webResponse WebResponse) (*GetStorageDomainMemberSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -5608,6 +5851,7 @@ func (getStorageDomainMembersSpectraS3Response *GetStorageDomainMembersSpectraS3
 }
 
 func NewGetStorageDomainMembersSpectraS3Response(webResponse WebResponse) (*GetStorageDomainMembersSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -5633,6 +5877,7 @@ func (getStorageDomainSpectraS3Response *GetStorageDomainSpectraS3Response) pars
 }
 
 func NewGetStorageDomainSpectraS3Response(webResponse WebResponse) (*GetStorageDomainSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -5658,6 +5903,7 @@ func (getStorageDomainsSpectraS3Response *GetStorageDomainsSpectraS3Response) pa
 }
 
 func NewGetStorageDomainsSpectraS3Response(webResponse WebResponse) (*GetStorageDomainsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -5683,6 +5929,7 @@ func (modifyStorageDomainMemberSpectraS3Response *ModifyStorageDomainMemberSpect
 }
 
 func NewModifyStorageDomainMemberSpectraS3Response(webResponse WebResponse) (*ModifyStorageDomainMemberSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -5708,6 +5955,7 @@ func (modifyStorageDomainSpectraS3Response *ModifyStorageDomainSpectraS3Response
 }
 
 func NewModifyStorageDomainSpectraS3Response(webResponse WebResponse) (*ModifyStorageDomainSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -5731,6 +5979,7 @@ type ForceFeatureKeyValidationSpectraS3Response struct {
 
 
 func NewForceFeatureKeyValidationSpectraS3Response(webResponse WebResponse) (*ForceFeatureKeyValidationSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -5751,6 +6000,7 @@ func (getFeatureKeysSpectraS3Response *GetFeatureKeysSpectraS3Response) parse(we
 }
 
 func NewGetFeatureKeysSpectraS3Response(webResponse WebResponse) (*GetFeatureKeysSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -5776,6 +6026,7 @@ func (getSystemFailuresSpectraS3Response *GetSystemFailuresSpectraS3Response) pa
 }
 
 func NewGetSystemFailuresSpectraS3Response(webResponse WebResponse) (*GetSystemFailuresSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -5801,6 +6052,7 @@ func (getSystemInformationSpectraS3Response *GetSystemInformationSpectraS3Respon
 }
 
 func NewGetSystemInformationSpectraS3Response(webResponse WebResponse) (*GetSystemInformationSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -5826,6 +6078,7 @@ func (resetInstanceIdentifierSpectraS3Response *ResetInstanceIdentifierSpectraS3
 }
 
 func NewResetInstanceIdentifierSpectraS3Response(webResponse WebResponse) (*ResetInstanceIdentifierSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -5851,6 +6104,7 @@ func (verifySystemHealthSpectraS3Response *VerifySystemHealthSpectraS3Response) 
 }
 
 func NewVerifySystemHealthSpectraS3Response(webResponse WebResponse) (*VerifySystemHealthSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -5876,6 +6130,7 @@ func (cancelEjectOnAllTapesSpectraS3Response *CancelEjectOnAllTapesSpectraS3Resp
 }
 
 func NewCancelEjectOnAllTapesSpectraS3Response(webResponse WebResponse) (*CancelEjectOnAllTapesSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204, 207 }
 
     switch code := webResponse.StatusCode(); code {
@@ -5903,6 +6158,7 @@ func (cancelEjectTapeSpectraS3Response *CancelEjectTapeSpectraS3Response) parse(
 }
 
 func NewCancelEjectTapeSpectraS3Response(webResponse WebResponse) (*CancelEjectTapeSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -5928,6 +6184,7 @@ func (cancelFormatOnAllTapesSpectraS3Response *CancelFormatOnAllTapesSpectraS3Re
 }
 
 func NewCancelFormatOnAllTapesSpectraS3Response(webResponse WebResponse) (*CancelFormatOnAllTapesSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204, 207 }
 
     switch code := webResponse.StatusCode(); code {
@@ -5955,6 +6212,7 @@ func (cancelFormatTapeSpectraS3Response *CancelFormatTapeSpectraS3Response) pars
 }
 
 func NewCancelFormatTapeSpectraS3Response(webResponse WebResponse) (*CancelFormatTapeSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -5980,6 +6238,7 @@ func (cancelImportOnAllTapesSpectraS3Response *CancelImportOnAllTapesSpectraS3Re
 }
 
 func NewCancelImportOnAllTapesSpectraS3Response(webResponse WebResponse) (*CancelImportOnAllTapesSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204, 207 }
 
     switch code := webResponse.StatusCode(); code {
@@ -6007,6 +6266,7 @@ func (cancelImportTapeSpectraS3Response *CancelImportTapeSpectraS3Response) pars
 }
 
 func NewCancelImportTapeSpectraS3Response(webResponse WebResponse) (*CancelImportTapeSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -6032,6 +6292,7 @@ func (cancelOnlineOnAllTapesSpectraS3Response *CancelOnlineOnAllTapesSpectraS3Re
 }
 
 func NewCancelOnlineOnAllTapesSpectraS3Response(webResponse WebResponse) (*CancelOnlineOnAllTapesSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204, 207 }
 
     switch code := webResponse.StatusCode(); code {
@@ -6059,6 +6320,7 @@ func (cancelOnlineTapeSpectraS3Response *CancelOnlineTapeSpectraS3Response) pars
 }
 
 func NewCancelOnlineTapeSpectraS3Response(webResponse WebResponse) (*CancelOnlineTapeSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -6084,6 +6346,7 @@ func (cancelVerifyOnAllTapesSpectraS3Response *CancelVerifyOnAllTapesSpectraS3Re
 }
 
 func NewCancelVerifyOnAllTapesSpectraS3Response(webResponse WebResponse) (*CancelVerifyOnAllTapesSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204, 207 }
 
     switch code := webResponse.StatusCode(); code {
@@ -6111,6 +6374,7 @@ func (cancelVerifyTapeSpectraS3Response *CancelVerifyTapeSpectraS3Response) pars
 }
 
 func NewCancelVerifyTapeSpectraS3Response(webResponse WebResponse) (*CancelVerifyTapeSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -6136,6 +6400,7 @@ func (cleanTapeDriveSpectraS3Response *CleanTapeDriveSpectraS3Response) parse(we
 }
 
 func NewCleanTapeDriveSpectraS3Response(webResponse WebResponse) (*CleanTapeDriveSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -6161,6 +6426,7 @@ func (putTapeDensityDirectiveSpectraS3Response *PutTapeDensityDirectiveSpectraS3
 }
 
 func NewPutTapeDensityDirectiveSpectraS3Response(webResponse WebResponse) (*PutTapeDensityDirectiveSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
@@ -6184,6 +6450,7 @@ type DeletePermanentlyLostTapeSpectraS3Response struct {
 
 
 func NewDeletePermanentlyLostTapeSpectraS3Response(webResponse WebResponse) (*DeletePermanentlyLostTapeSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -6202,6 +6469,7 @@ type DeleteTapeDensityDirectiveSpectraS3Response struct {
 
 
 func NewDeleteTapeDensityDirectiveSpectraS3Response(webResponse WebResponse) (*DeleteTapeDensityDirectiveSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -6220,6 +6488,7 @@ type DeleteTapeDriveSpectraS3Response struct {
 
 
 func NewDeleteTapeDriveSpectraS3Response(webResponse WebResponse) (*DeleteTapeDriveSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -6238,6 +6507,7 @@ type DeleteTapeFailureSpectraS3Response struct {
 
 
 func NewDeleteTapeFailureSpectraS3Response(webResponse WebResponse) (*DeleteTapeFailureSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -6256,6 +6526,7 @@ type DeleteTapePartitionFailureSpectraS3Response struct {
 
 
 func NewDeleteTapePartitionFailureSpectraS3Response(webResponse WebResponse) (*DeleteTapePartitionFailureSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -6274,6 +6545,7 @@ type DeleteTapePartitionSpectraS3Response struct {
 
 
 func NewDeleteTapePartitionSpectraS3Response(webResponse WebResponse) (*DeleteTapePartitionSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -6294,6 +6566,7 @@ func (ejectAllTapesSpectraS3Response *EjectAllTapesSpectraS3Response) parse(webR
 }
 
 func NewEjectAllTapesSpectraS3Response(webResponse WebResponse) (*EjectAllTapesSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204, 207 }
 
     switch code := webResponse.StatusCode(); code {
@@ -6319,6 +6592,7 @@ type EjectStorageDomainBlobsSpectraS3Response struct {
 
 
 func NewEjectStorageDomainBlobsSpectraS3Response(webResponse WebResponse) (*EjectStorageDomainBlobsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -6339,6 +6613,7 @@ func (ejectStorageDomainSpectraS3Response *EjectStorageDomainSpectraS3Response) 
 }
 
 func NewEjectStorageDomainSpectraS3Response(webResponse WebResponse) (*EjectStorageDomainSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204, 207 }
 
     switch code := webResponse.StatusCode(); code {
@@ -6366,6 +6641,7 @@ func (ejectTapeSpectraS3Response *EjectTapeSpectraS3Response) parse(webResponse 
 }
 
 func NewEjectTapeSpectraS3Response(webResponse WebResponse) (*EjectTapeSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -6389,6 +6665,7 @@ type ForceTapeEnvironmentRefreshSpectraS3Response struct {
 
 
 func NewForceTapeEnvironmentRefreshSpectraS3Response(webResponse WebResponse) (*ForceTapeEnvironmentRefreshSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -6409,6 +6686,7 @@ func (formatAllTapesSpectraS3Response *FormatAllTapesSpectraS3Response) parse(we
 }
 
 func NewFormatAllTapesSpectraS3Response(webResponse WebResponse) (*FormatAllTapesSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204, 207 }
 
     switch code := webResponse.StatusCode(); code {
@@ -6436,6 +6714,7 @@ func (formatTapeSpectraS3Response *FormatTapeSpectraS3Response) parse(webRespons
 }
 
 func NewFormatTapeSpectraS3Response(webResponse WebResponse) (*FormatTapeSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -6461,6 +6740,7 @@ func (getBlobsOnTapeSpectraS3Response *GetBlobsOnTapeSpectraS3Response) parse(we
 }
 
 func NewGetBlobsOnTapeSpectraS3Response(webResponse WebResponse) (*GetBlobsOnTapeSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -6486,6 +6766,7 @@ func (getTapeDensityDirectiveSpectraS3Response *GetTapeDensityDirectiveSpectraS3
 }
 
 func NewGetTapeDensityDirectiveSpectraS3Response(webResponse WebResponse) (*GetTapeDensityDirectiveSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -6511,6 +6792,7 @@ func (getTapeDensityDirectivesSpectraS3Response *GetTapeDensityDirectivesSpectra
 }
 
 func NewGetTapeDensityDirectivesSpectraS3Response(webResponse WebResponse) (*GetTapeDensityDirectivesSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -6536,6 +6818,7 @@ func (getTapeDriveSpectraS3Response *GetTapeDriveSpectraS3Response) parse(webRes
 }
 
 func NewGetTapeDriveSpectraS3Response(webResponse WebResponse) (*GetTapeDriveSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -6561,6 +6844,7 @@ func (getTapeDrivesSpectraS3Response *GetTapeDrivesSpectraS3Response) parse(webR
 }
 
 func NewGetTapeDrivesSpectraS3Response(webResponse WebResponse) (*GetTapeDrivesSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -6586,6 +6870,7 @@ func (getTapeFailuresSpectraS3Response *GetTapeFailuresSpectraS3Response) parse(
 }
 
 func NewGetTapeFailuresSpectraS3Response(webResponse WebResponse) (*GetTapeFailuresSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -6611,6 +6896,7 @@ func (getTapeLibrariesSpectraS3Response *GetTapeLibrariesSpectraS3Response) pars
 }
 
 func NewGetTapeLibrariesSpectraS3Response(webResponse WebResponse) (*GetTapeLibrariesSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -6636,6 +6922,7 @@ func (getTapeLibrarySpectraS3Response *GetTapeLibrarySpectraS3Response) parse(we
 }
 
 func NewGetTapeLibrarySpectraS3Response(webResponse WebResponse) (*GetTapeLibrarySpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -6661,6 +6948,7 @@ func (getTapePartitionFailuresSpectraS3Response *GetTapePartitionFailuresSpectra
 }
 
 func NewGetTapePartitionFailuresSpectraS3Response(webResponse WebResponse) (*GetTapePartitionFailuresSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -6686,6 +6974,7 @@ func (getTapePartitionSpectraS3Response *GetTapePartitionSpectraS3Response) pars
 }
 
 func NewGetTapePartitionSpectraS3Response(webResponse WebResponse) (*GetTapePartitionSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -6711,6 +7000,7 @@ func (getTapePartitionWithFullDetailsSpectraS3Response *GetTapePartitionWithFull
 }
 
 func NewGetTapePartitionWithFullDetailsSpectraS3Response(webResponse WebResponse) (*GetTapePartitionWithFullDetailsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -6736,6 +7026,7 @@ func (getTapePartitionsSpectraS3Response *GetTapePartitionsSpectraS3Response) pa
 }
 
 func NewGetTapePartitionsSpectraS3Response(webResponse WebResponse) (*GetTapePartitionsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -6761,6 +7052,7 @@ func (getTapePartitionsWithFullDetailsSpectraS3Response *GetTapePartitionsWithFu
 }
 
 func NewGetTapePartitionsWithFullDetailsSpectraS3Response(webResponse WebResponse) (*GetTapePartitionsWithFullDetailsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -6786,6 +7078,7 @@ func (getTapeSpectraS3Response *GetTapeSpectraS3Response) parse(webResponse WebR
 }
 
 func NewGetTapeSpectraS3Response(webResponse WebResponse) (*GetTapeSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -6811,6 +7104,7 @@ func (getTapesSpectraS3Response *GetTapesSpectraS3Response) parse(webResponse We
 }
 
 func NewGetTapesSpectraS3Response(webResponse WebResponse) (*GetTapesSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -6834,6 +7128,7 @@ type ImportAllTapesSpectraS3Response struct {
 
 
 func NewImportAllTapesSpectraS3Response(webResponse WebResponse) (*ImportAllTapesSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -6854,6 +7149,7 @@ func (importTapeSpectraS3Response *ImportTapeSpectraS3Response) parse(webRespons
 }
 
 func NewImportTapeSpectraS3Response(webResponse WebResponse) (*ImportTapeSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -6879,6 +7175,7 @@ func (inspectAllTapesSpectraS3Response *InspectAllTapesSpectraS3Response) parse(
 }
 
 func NewInspectAllTapesSpectraS3Response(webResponse WebResponse) (*InspectAllTapesSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204, 207 }
 
     switch code := webResponse.StatusCode(); code {
@@ -6906,6 +7203,7 @@ func (inspectTapeSpectraS3Response *InspectTapeSpectraS3Response) parse(webRespo
 }
 
 func NewInspectTapeSpectraS3Response(webResponse WebResponse) (*InspectTapeSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -6929,6 +7227,7 @@ type ModifyAllTapePartitionsSpectraS3Response struct {
 
 
 func NewModifyAllTapePartitionsSpectraS3Response(webResponse WebResponse) (*ModifyAllTapePartitionsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -6949,6 +7248,7 @@ func (modifyTapeDriveSpectraS3Response *ModifyTapeDriveSpectraS3Response) parse(
 }
 
 func NewModifyTapeDriveSpectraS3Response(webResponse WebResponse) (*ModifyTapeDriveSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -6974,6 +7274,7 @@ func (modifyTapePartitionSpectraS3Response *ModifyTapePartitionSpectraS3Response
 }
 
 func NewModifyTapePartitionSpectraS3Response(webResponse WebResponse) (*ModifyTapePartitionSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -6999,6 +7300,7 @@ func (modifyTapeSpectraS3Response *ModifyTapeSpectraS3Response) parse(webRespons
 }
 
 func NewModifyTapeSpectraS3Response(webResponse WebResponse) (*ModifyTapeSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -7024,6 +7326,7 @@ func (onlineAllTapesSpectraS3Response *OnlineAllTapesSpectraS3Response) parse(we
 }
 
 func NewOnlineAllTapesSpectraS3Response(webResponse WebResponse) (*OnlineAllTapesSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204, 207 }
 
     switch code := webResponse.StatusCode(); code {
@@ -7051,6 +7354,7 @@ func (onlineTapeSpectraS3Response *OnlineTapeSpectraS3Response) parse(webRespons
 }
 
 func NewOnlineTapeSpectraS3Response(webResponse WebResponse) (*OnlineTapeSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -7074,6 +7378,7 @@ type RawImportAllTapesSpectraS3Response struct {
 
 
 func NewRawImportAllTapesSpectraS3Response(webResponse WebResponse) (*RawImportAllTapesSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -7094,6 +7399,7 @@ func (rawImportTapeSpectraS3Response *RawImportTapeSpectraS3Response) parse(webR
 }
 
 func NewRawImportTapeSpectraS3Response(webResponse WebResponse) (*RawImportTapeSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -7119,6 +7425,7 @@ func (verifyAllTapesSpectraS3Response *VerifyAllTapesSpectraS3Response) parse(we
 }
 
 func NewVerifyAllTapesSpectraS3Response(webResponse WebResponse) (*VerifyAllTapesSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204, 207 }
 
     switch code := webResponse.StatusCode(); code {
@@ -7146,6 +7453,7 @@ func (verifyTapeSpectraS3Response *VerifyTapeSpectraS3Response) parse(webRespons
 }
 
 func NewVerifyTapeSpectraS3Response(webResponse WebResponse) (*VerifyTapeSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -7169,6 +7477,7 @@ type ForceTargetEnvironmentRefreshSpectraS3Response struct {
 
 
 func NewForceTargetEnvironmentRefreshSpectraS3Response(webResponse WebResponse) (*ForceTargetEnvironmentRefreshSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -7189,6 +7498,7 @@ func (putAzureTargetBucketNameSpectraS3Response *PutAzureTargetBucketNameSpectra
 }
 
 func NewPutAzureTargetBucketNameSpectraS3Response(webResponse WebResponse) (*PutAzureTargetBucketNameSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
@@ -7214,6 +7524,7 @@ func (putAzureTargetReadPreferenceSpectraS3Response *PutAzureTargetReadPreferenc
 }
 
 func NewPutAzureTargetReadPreferenceSpectraS3Response(webResponse WebResponse) (*PutAzureTargetReadPreferenceSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
@@ -7237,6 +7548,7 @@ type DeleteAzureTargetBucketNameSpectraS3Response struct {
 
 
 func NewDeleteAzureTargetBucketNameSpectraS3Response(webResponse WebResponse) (*DeleteAzureTargetBucketNameSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -7255,6 +7567,7 @@ type DeleteAzureTargetFailureSpectraS3Response struct {
 
 
 func NewDeleteAzureTargetFailureSpectraS3Response(webResponse WebResponse) (*DeleteAzureTargetFailureSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -7273,6 +7586,7 @@ type DeleteAzureTargetReadPreferenceSpectraS3Response struct {
 
 
 func NewDeleteAzureTargetReadPreferenceSpectraS3Response(webResponse WebResponse) (*DeleteAzureTargetReadPreferenceSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -7291,6 +7605,7 @@ type DeleteAzureTargetSpectraS3Response struct {
 
 
 func NewDeleteAzureTargetSpectraS3Response(webResponse WebResponse) (*DeleteAzureTargetSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -7311,6 +7626,7 @@ func (getAzureTargetBucketNamesSpectraS3Response *GetAzureTargetBucketNamesSpect
 }
 
 func NewGetAzureTargetBucketNamesSpectraS3Response(webResponse WebResponse) (*GetAzureTargetBucketNamesSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -7336,6 +7652,7 @@ func (getAzureTargetFailuresSpectraS3Response *GetAzureTargetFailuresSpectraS3Re
 }
 
 func NewGetAzureTargetFailuresSpectraS3Response(webResponse WebResponse) (*GetAzureTargetFailuresSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -7361,6 +7678,7 @@ func (getAzureTargetReadPreferenceSpectraS3Response *GetAzureTargetReadPreferenc
 }
 
 func NewGetAzureTargetReadPreferenceSpectraS3Response(webResponse WebResponse) (*GetAzureTargetReadPreferenceSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -7386,6 +7704,7 @@ func (getAzureTargetReadPreferencesSpectraS3Response *GetAzureTargetReadPreferen
 }
 
 func NewGetAzureTargetReadPreferencesSpectraS3Response(webResponse WebResponse) (*GetAzureTargetReadPreferencesSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -7411,6 +7730,7 @@ func (getAzureTargetSpectraS3Response *GetAzureTargetSpectraS3Response) parse(we
 }
 
 func NewGetAzureTargetSpectraS3Response(webResponse WebResponse) (*GetAzureTargetSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -7436,6 +7756,7 @@ func (getAzureTargetsSpectraS3Response *GetAzureTargetsSpectraS3Response) parse(
 }
 
 func NewGetAzureTargetsSpectraS3Response(webResponse WebResponse) (*GetAzureTargetsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -7461,6 +7782,7 @@ func (getBlobsOnAzureTargetSpectraS3Response *GetBlobsOnAzureTargetSpectraS3Resp
 }
 
 func NewGetBlobsOnAzureTargetSpectraS3Response(webResponse WebResponse) (*GetBlobsOnAzureTargetSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -7484,6 +7806,7 @@ type ImportAzureTargetSpectraS3Response struct {
 
 
 func NewImportAzureTargetSpectraS3Response(webResponse WebResponse) (*ImportAzureTargetSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -7502,6 +7825,7 @@ type ModifyAllAzureTargetsSpectraS3Response struct {
 
 
 func NewModifyAllAzureTargetsSpectraS3Response(webResponse WebResponse) (*ModifyAllAzureTargetsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -7522,6 +7846,7 @@ func (modifyAzureTargetSpectraS3Response *ModifyAzureTargetSpectraS3Response) pa
 }
 
 func NewModifyAzureTargetSpectraS3Response(webResponse WebResponse) (*ModifyAzureTargetSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -7547,6 +7872,7 @@ func (registerAzureTargetSpectraS3Response *RegisterAzureTargetSpectraS3Response
 }
 
 func NewRegisterAzureTargetSpectraS3Response(webResponse WebResponse) (*RegisterAzureTargetSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
@@ -7572,6 +7898,7 @@ func (verifyAzureTargetSpectraS3Response *VerifyAzureTargetSpectraS3Response) pa
 }
 
 func NewVerifyAzureTargetSpectraS3Response(webResponse WebResponse) (*VerifyAzureTargetSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -7597,6 +7924,7 @@ func (putDs3TargetReadPreferenceSpectraS3Response *PutDs3TargetReadPreferenceSpe
 }
 
 func NewPutDs3TargetReadPreferenceSpectraS3Response(webResponse WebResponse) (*PutDs3TargetReadPreferenceSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
@@ -7620,6 +7948,7 @@ type DeleteDs3TargetFailureSpectraS3Response struct {
 
 
 func NewDeleteDs3TargetFailureSpectraS3Response(webResponse WebResponse) (*DeleteDs3TargetFailureSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -7638,6 +7967,7 @@ type DeleteDs3TargetReadPreferenceSpectraS3Response struct {
 
 
 func NewDeleteDs3TargetReadPreferenceSpectraS3Response(webResponse WebResponse) (*DeleteDs3TargetReadPreferenceSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -7656,6 +7986,7 @@ type DeleteDs3TargetSpectraS3Response struct {
 
 
 func NewDeleteDs3TargetSpectraS3Response(webResponse WebResponse) (*DeleteDs3TargetSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -7676,6 +8007,7 @@ func (getBlobsOnDs3TargetSpectraS3Response *GetBlobsOnDs3TargetSpectraS3Response
 }
 
 func NewGetBlobsOnDs3TargetSpectraS3Response(webResponse WebResponse) (*GetBlobsOnDs3TargetSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -7701,6 +8033,7 @@ func (getDs3TargetDataPoliciesSpectraS3Response *GetDs3TargetDataPoliciesSpectra
 }
 
 func NewGetDs3TargetDataPoliciesSpectraS3Response(webResponse WebResponse) (*GetDs3TargetDataPoliciesSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -7726,6 +8059,7 @@ func (getDs3TargetFailuresSpectraS3Response *GetDs3TargetFailuresSpectraS3Respon
 }
 
 func NewGetDs3TargetFailuresSpectraS3Response(webResponse WebResponse) (*GetDs3TargetFailuresSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -7751,6 +8085,7 @@ func (getDs3TargetReadPreferenceSpectraS3Response *GetDs3TargetReadPreferenceSpe
 }
 
 func NewGetDs3TargetReadPreferenceSpectraS3Response(webResponse WebResponse) (*GetDs3TargetReadPreferenceSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -7776,6 +8111,7 @@ func (getDs3TargetReadPreferencesSpectraS3Response *GetDs3TargetReadPreferencesS
 }
 
 func NewGetDs3TargetReadPreferencesSpectraS3Response(webResponse WebResponse) (*GetDs3TargetReadPreferencesSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -7801,6 +8137,7 @@ func (getDs3TargetSpectraS3Response *GetDs3TargetSpectraS3Response) parse(webRes
 }
 
 func NewGetDs3TargetSpectraS3Response(webResponse WebResponse) (*GetDs3TargetSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -7826,6 +8163,7 @@ func (getDs3TargetsSpectraS3Response *GetDs3TargetsSpectraS3Response) parse(webR
 }
 
 func NewGetDs3TargetsSpectraS3Response(webResponse WebResponse) (*GetDs3TargetsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -7849,6 +8187,7 @@ type ModifyAllDs3TargetsSpectraS3Response struct {
 
 
 func NewModifyAllDs3TargetsSpectraS3Response(webResponse WebResponse) (*ModifyAllDs3TargetsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -7869,6 +8208,7 @@ func (modifyDs3TargetSpectraS3Response *ModifyDs3TargetSpectraS3Response) parse(
 }
 
 func NewModifyDs3TargetSpectraS3Response(webResponse WebResponse) (*ModifyDs3TargetSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -7892,6 +8232,7 @@ type PairBackRegisteredDs3TargetSpectraS3Response struct {
 
 
 func NewPairBackRegisteredDs3TargetSpectraS3Response(webResponse WebResponse) (*PairBackRegisteredDs3TargetSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -7912,6 +8253,7 @@ func (registerDs3TargetSpectraS3Response *RegisterDs3TargetSpectraS3Response) pa
 }
 
 func NewRegisterDs3TargetSpectraS3Response(webResponse WebResponse) (*RegisterDs3TargetSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
@@ -7937,6 +8279,7 @@ func (verifyDs3TargetSpectraS3Response *VerifyDs3TargetSpectraS3Response) parse(
 }
 
 func NewVerifyDs3TargetSpectraS3Response(webResponse WebResponse) (*VerifyDs3TargetSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -7962,6 +8305,7 @@ func (putS3TargetBucketNameSpectraS3Response *PutS3TargetBucketNameSpectraS3Resp
 }
 
 func NewPutS3TargetBucketNameSpectraS3Response(webResponse WebResponse) (*PutS3TargetBucketNameSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
@@ -7987,6 +8331,7 @@ func (putS3TargetReadPreferenceSpectraS3Response *PutS3TargetReadPreferenceSpect
 }
 
 func NewPutS3TargetReadPreferenceSpectraS3Response(webResponse WebResponse) (*PutS3TargetReadPreferenceSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
@@ -8010,6 +8355,7 @@ type DeleteS3TargetBucketNameSpectraS3Response struct {
 
 
 func NewDeleteS3TargetBucketNameSpectraS3Response(webResponse WebResponse) (*DeleteS3TargetBucketNameSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -8028,6 +8374,7 @@ type DeleteS3TargetFailureSpectraS3Response struct {
 
 
 func NewDeleteS3TargetFailureSpectraS3Response(webResponse WebResponse) (*DeleteS3TargetFailureSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -8046,6 +8393,7 @@ type DeleteS3TargetReadPreferenceSpectraS3Response struct {
 
 
 func NewDeleteS3TargetReadPreferenceSpectraS3Response(webResponse WebResponse) (*DeleteS3TargetReadPreferenceSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -8064,6 +8412,7 @@ type DeleteS3TargetSpectraS3Response struct {
 
 
 func NewDeleteS3TargetSpectraS3Response(webResponse WebResponse) (*DeleteS3TargetSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -8084,6 +8433,7 @@ func (getBlobsOnS3TargetSpectraS3Response *GetBlobsOnS3TargetSpectraS3Response) 
 }
 
 func NewGetBlobsOnS3TargetSpectraS3Response(webResponse WebResponse) (*GetBlobsOnS3TargetSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -8109,6 +8459,7 @@ func (getS3TargetBucketNamesSpectraS3Response *GetS3TargetBucketNamesSpectraS3Re
 }
 
 func NewGetS3TargetBucketNamesSpectraS3Response(webResponse WebResponse) (*GetS3TargetBucketNamesSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -8134,6 +8485,7 @@ func (getS3TargetFailuresSpectraS3Response *GetS3TargetFailuresSpectraS3Response
 }
 
 func NewGetS3TargetFailuresSpectraS3Response(webResponse WebResponse) (*GetS3TargetFailuresSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -8159,6 +8511,7 @@ func (getS3TargetReadPreferenceSpectraS3Response *GetS3TargetReadPreferenceSpect
 }
 
 func NewGetS3TargetReadPreferenceSpectraS3Response(webResponse WebResponse) (*GetS3TargetReadPreferenceSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -8184,6 +8537,7 @@ func (getS3TargetReadPreferencesSpectraS3Response *GetS3TargetReadPreferencesSpe
 }
 
 func NewGetS3TargetReadPreferencesSpectraS3Response(webResponse WebResponse) (*GetS3TargetReadPreferencesSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -8209,6 +8563,7 @@ func (getS3TargetSpectraS3Response *GetS3TargetSpectraS3Response) parse(webRespo
 }
 
 func NewGetS3TargetSpectraS3Response(webResponse WebResponse) (*GetS3TargetSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -8234,6 +8589,7 @@ func (getS3TargetsSpectraS3Response *GetS3TargetsSpectraS3Response) parse(webRes
 }
 
 func NewGetS3TargetsSpectraS3Response(webResponse WebResponse) (*GetS3TargetsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -8257,6 +8613,7 @@ type ImportS3TargetSpectraS3Response struct {
 
 
 func NewImportS3TargetSpectraS3Response(webResponse WebResponse) (*ImportS3TargetSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -8275,6 +8632,7 @@ type ModifyAllS3TargetsSpectraS3Response struct {
 
 
 func NewModifyAllS3TargetsSpectraS3Response(webResponse WebResponse) (*ModifyAllS3TargetsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -8295,6 +8653,7 @@ func (modifyS3TargetSpectraS3Response *ModifyS3TargetSpectraS3Response) parse(we
 }
 
 func NewModifyS3TargetSpectraS3Response(webResponse WebResponse) (*ModifyS3TargetSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -8320,6 +8679,7 @@ func (registerS3TargetSpectraS3Response *RegisterS3TargetSpectraS3Response) pars
 }
 
 func NewRegisterS3TargetSpectraS3Response(webResponse WebResponse) (*RegisterS3TargetSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
@@ -8345,6 +8705,7 @@ func (verifyS3TargetSpectraS3Response *VerifyS3TargetSpectraS3Response) parse(we
 }
 
 func NewVerifyS3TargetSpectraS3Response(webResponse WebResponse) (*VerifyS3TargetSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -8370,6 +8731,7 @@ func (delegateCreateUserSpectraS3Response *DelegateCreateUserSpectraS3Response) 
 }
 
 func NewDelegateCreateUserSpectraS3Response(webResponse WebResponse) (*DelegateCreateUserSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 201 }
 
     switch code := webResponse.StatusCode(); code {
@@ -8393,6 +8755,7 @@ type DelegateDeleteUserSpectraS3Response struct {
 
 
 func NewDelegateDeleteUserSpectraS3Response(webResponse WebResponse) (*DelegateDeleteUserSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 204 }
 
     switch code := webResponse.StatusCode(); code {
@@ -8413,6 +8776,7 @@ func (getUserSpectraS3Response *GetUserSpectraS3Response) parse(webResponse WebR
 }
 
 func NewGetUserSpectraS3Response(webResponse WebResponse) (*GetUserSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -8438,6 +8802,7 @@ func (getUsersSpectraS3Response *GetUsersSpectraS3Response) parse(webResponse We
 }
 
 func NewGetUsersSpectraS3Response(webResponse WebResponse) (*GetUsersSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -8463,6 +8828,7 @@ func (modifyUserSpectraS3Response *ModifyUserSpectraS3Response) parse(webRespons
 }
 
 func NewModifyUserSpectraS3Response(webResponse WebResponse) (*ModifyUserSpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {
@@ -8488,6 +8854,7 @@ func (regenerateUserSecretKeySpectraS3Response *RegenerateUserSecretKeySpectraS3
 }
 
 func NewRegenerateUserSecretKeySpectraS3Response(webResponse WebResponse) (*RegenerateUserSecretKeySpectraS3Response, error) {
+    defer webResponse.Body().Close()
     expectedStatusCodes := []int { 200 }
 
     switch code := webResponse.StatusCode(); code {

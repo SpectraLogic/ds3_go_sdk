@@ -26,7 +26,6 @@ type modelParser interface {
 func parseResponsePayload(webResponse WebResponse, parsedBody modelParser) error {
     // Clean up the response body.
     body := webResponse.Body()
-    defer body.Close()
 
     // Create the xml tree
     root, err := parseXmlTree(body)
@@ -56,7 +55,6 @@ func parseXmlTree(reader io.ReadCloser) (*XmlNode, error) {
 func getResponseBodyAsString(webResponse WebResponse) (string, error) {
     // Clean up the response body.
     body := webResponse.Body()
-    defer body.Close()
 
     // Get the bytes or forward the error
     bytes, err := ioutil.ReadAll(body)
