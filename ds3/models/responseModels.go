@@ -436,6 +436,53 @@ func (capacitySummaryContainer *CapacitySummaryContainer) parse(xmlNode *XmlNode
     }
 }
 
+type CloudNamingMode Enum
+
+const (
+    CLOUD_NAMING_MODE_BLACK_PEARL CloudNamingMode = 1 + iota
+    CLOUD_NAMING_MODE_AWS_S3 CloudNamingMode = 1 + iota
+)
+
+func (cloudNamingMode *CloudNamingMode) UnmarshalText(text []byte) error {
+    var str string = string(bytes.ToUpper(text))
+    switch str {
+        case "": *cloudNamingMode = UNDEFINED
+        case "BLACK_PEARL": *cloudNamingMode = CLOUD_NAMING_MODE_BLACK_PEARL
+        case "AWS_S3": *cloudNamingMode = CLOUD_NAMING_MODE_AWS_S3
+        default:
+            *cloudNamingMode = UNDEFINED
+            return errors.New(fmt.Sprintf("Cannot marshal '%s' into CloudNamingMode", str))
+    }
+    return nil
+}
+
+func (cloudNamingMode CloudNamingMode) String() string {
+    switch cloudNamingMode {
+        case CLOUD_NAMING_MODE_BLACK_PEARL: return "BLACK_PEARL"
+        case CLOUD_NAMING_MODE_AWS_S3: return "AWS_S3"
+        default:
+            log.Printf("Error: invalid CloudNamingMode represented by '%d'", cloudNamingMode)
+            return ""
+    }
+}
+
+func (cloudNamingMode CloudNamingMode) StringPtr() *string {
+    if cloudNamingMode == UNDEFINED {
+        return nil
+    }
+    result := cloudNamingMode.String()
+    return &result
+}
+
+func newCloudNamingModeFromContent(content []byte, aggErr *AggregateError) *CloudNamingMode {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(CloudNamingMode)
+    parseEnum(content, result, aggErr)
+    return result
+}
 type CompletedJob struct {
     BucketId string
     CachedSizeInBytes int64
@@ -1659,9 +1706,11 @@ type S3Region Enum
 const (
     S3_REGION_GOV_CLOUD S3Region = 1 + iota
     S3_REGION_US_EAST_1 S3Region = 1 + iota
+    S3_REGION_US_EAST_2 S3Region = 1 + iota
     S3_REGION_US_WEST_1 S3Region = 1 + iota
     S3_REGION_US_WEST_2 S3Region = 1 + iota
     S3_REGION_EU_WEST_1 S3Region = 1 + iota
+    S3_REGION_EU_WEST_2 S3Region = 1 + iota
     S3_REGION_EU_CENTRAL_1 S3Region = 1 + iota
     S3_REGION_AP_SOUTH_1 S3Region = 1 + iota
     S3_REGION_AP_SOUTHEAST_1 S3Region = 1 + iota
@@ -1670,6 +1719,7 @@ const (
     S3_REGION_AP_NORTHEAST_2 S3Region = 1 + iota
     S3_REGION_SA_EAST_1 S3Region = 1 + iota
     S3_REGION_CN_NORTH_1 S3Region = 1 + iota
+    S3_REGION_CA_CENTRAL_1 S3Region = 1 + iota
 )
 
 func (s3Region *S3Region) UnmarshalText(text []byte) error {
@@ -1678,9 +1728,11 @@ func (s3Region *S3Region) UnmarshalText(text []byte) error {
         case "": *s3Region = UNDEFINED
         case "GOV_CLOUD": *s3Region = S3_REGION_GOV_CLOUD
         case "US_EAST_1": *s3Region = S3_REGION_US_EAST_1
+        case "US_EAST_2": *s3Region = S3_REGION_US_EAST_2
         case "US_WEST_1": *s3Region = S3_REGION_US_WEST_1
         case "US_WEST_2": *s3Region = S3_REGION_US_WEST_2
         case "EU_WEST_1": *s3Region = S3_REGION_EU_WEST_1
+        case "EU_WEST_2": *s3Region = S3_REGION_EU_WEST_2
         case "EU_CENTRAL_1": *s3Region = S3_REGION_EU_CENTRAL_1
         case "AP_SOUTH_1": *s3Region = S3_REGION_AP_SOUTH_1
         case "AP_SOUTHEAST_1": *s3Region = S3_REGION_AP_SOUTHEAST_1
@@ -1689,6 +1741,7 @@ func (s3Region *S3Region) UnmarshalText(text []byte) error {
         case "AP_NORTHEAST_2": *s3Region = S3_REGION_AP_NORTHEAST_2
         case "SA_EAST_1": *s3Region = S3_REGION_SA_EAST_1
         case "CN_NORTH_1": *s3Region = S3_REGION_CN_NORTH_1
+        case "CA_CENTRAL_1": *s3Region = S3_REGION_CA_CENTRAL_1
         default:
             *s3Region = UNDEFINED
             return errors.New(fmt.Sprintf("Cannot marshal '%s' into S3Region", str))
@@ -1700,9 +1753,11 @@ func (s3Region S3Region) String() string {
     switch s3Region {
         case S3_REGION_GOV_CLOUD: return "GOV_CLOUD"
         case S3_REGION_US_EAST_1: return "US_EAST_1"
+        case S3_REGION_US_EAST_2: return "US_EAST_2"
         case S3_REGION_US_WEST_1: return "US_WEST_1"
         case S3_REGION_US_WEST_2: return "US_WEST_2"
         case S3_REGION_EU_WEST_1: return "EU_WEST_1"
+        case S3_REGION_EU_WEST_2: return "EU_WEST_2"
         case S3_REGION_EU_CENTRAL_1: return "EU_CENTRAL_1"
         case S3_REGION_AP_SOUTH_1: return "AP_SOUTH_1"
         case S3_REGION_AP_SOUTHEAST_1: return "AP_SOUTHEAST_1"
@@ -1711,6 +1766,7 @@ func (s3Region S3Region) String() string {
         case S3_REGION_AP_NORTHEAST_2: return "AP_NORTHEAST_2"
         case S3_REGION_SA_EAST_1: return "SA_EAST_1"
         case S3_REGION_CN_NORTH_1: return "CN_NORTH_1"
+        case S3_REGION_CA_CENTRAL_1: return "CA_CENTRAL_1"
         default:
             log.Printf("Error: invalid S3Region represented by '%d'", s3Region)
             return ""
@@ -3828,6 +3884,7 @@ const (
     TAPE_DRIVE_TYPE_TS1140 TapeDriveType = 1 + iota
     TAPE_DRIVE_TYPE_TS1150 TapeDriveType = 1 + iota
     TAPE_DRIVE_TYPE_TS1155 TapeDriveType = 1 + iota
+    TAPE_DRIVE_TYPE_TS1160 TapeDriveType = 1 + iota
 )
 
 func (tapeDriveType *TapeDriveType) UnmarshalText(text []byte) error {
@@ -3842,6 +3899,7 @@ func (tapeDriveType *TapeDriveType) UnmarshalText(text []byte) error {
         case "TS1140": *tapeDriveType = TAPE_DRIVE_TYPE_TS1140
         case "TS1150": *tapeDriveType = TAPE_DRIVE_TYPE_TS1150
         case "TS1155": *tapeDriveType = TAPE_DRIVE_TYPE_TS1155
+        case "TS1160": *tapeDriveType = TAPE_DRIVE_TYPE_TS1160
         default:
             *tapeDriveType = UNDEFINED
             return errors.New(fmt.Sprintf("Cannot marshal '%s' into TapeDriveType", str))
@@ -3859,6 +3917,7 @@ func (tapeDriveType TapeDriveType) String() string {
         case TAPE_DRIVE_TYPE_TS1140: return "TS1140"
         case TAPE_DRIVE_TYPE_TS1150: return "TS1150"
         case TAPE_DRIVE_TYPE_TS1155: return "TS1155"
+        case TAPE_DRIVE_TYPE_TS1160: return "TS1160"
         default:
             log.Printf("Error: invalid TapeDriveType represented by '%d'", tapeDriveType)
             return ""
@@ -4395,6 +4454,7 @@ type AzureTarget struct {
     Id string
     LastFullyVerified *string
     Name *string
+    NamingMode CloudNamingMode
     PermitGoingOutOfSync bool
     Quiesced Quiesced
     State TargetState
@@ -4425,6 +4485,8 @@ func (azureTarget *AzureTarget) parse(xmlNode *XmlNode, aggErr *AggregateError) 
             azureTarget.LastFullyVerified = parseNullableString(child.Content)
         case "Name":
             azureTarget.Name = parseNullableString(child.Content)
+        case "NamingMode":
+            parseEnum(child.Content, &azureTarget.NamingMode, aggErr)
         case "PermitGoingOutOfSync":
             azureTarget.PermitGoingOutOfSync = parseBool(child.Content, aggErr)
         case "Quiesced":
@@ -4720,6 +4782,7 @@ type S3Target struct {
     Id string
     LastFullyVerified *string
     Name *string
+    NamingMode CloudNamingMode
     OfflineDataStagingWindowInTb int
     PermitGoingOutOfSync bool
     ProxyDomain *string
@@ -4759,6 +4822,8 @@ func (s3Target *S3Target) parse(xmlNode *XmlNode, aggErr *AggregateError) {
             s3Target.LastFullyVerified = parseNullableString(child.Content)
         case "Name":
             s3Target.Name = parseNullableString(child.Content)
+        case "NamingMode":
+            parseEnum(child.Content, &s3Target.NamingMode, aggErr)
         case "OfflineDataStagingWindowInTb":
             s3Target.OfflineDataStagingWindowInTb = parseInt(child.Content, aggErr)
         case "PermitGoingOutOfSync":
