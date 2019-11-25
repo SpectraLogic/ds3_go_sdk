@@ -4118,6 +4118,7 @@ func (client *Client) GetS3TargetsSpectraS3(request *models.GetS3TargetsSpectraS
         WithOptionalQueryParam("https", networking.BoolPtrToStrPtr(request.Https)).
         WithOptionalVoidQueryParam("last_page", request.LastPage).
         WithOptionalQueryParam("name", request.Name).
+        WithOptionalQueryParam("naming_mode", networking.InterfaceToStrPtr(request.NamingMode)).
         WithOptionalQueryParam("page_length", networking.IntPtrToStrPtr(request.PageLength)).
         WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
