@@ -25,6 +25,9 @@ func (client *Client) CompleteBlob(request *models.CompleteBlobRequest) (*models
         WithPath("/" + request.BucketName + "/" + request.ObjectName).
         WithQueryParam("blob", request.Blob).
         WithQueryParam("job", request.Job).
+        WithOptionalQueryParam("size", networking.Int64PtrToStrPtr(request.Size)).
+        WithChecksum(request.Checksum).
+        WithHeaders(request.Metadata).
         Build(client.connectionInfo)
 
     if err != nil {
