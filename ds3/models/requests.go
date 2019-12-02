@@ -36,7 +36,10 @@ type CompleteBlobRequest struct {
     BucketName string
     ObjectName string
     Blob string
+    Checksum Checksum
     Job string
+    Metadata map[string]string
+    Size *int64
 }
 
 func NewCompleteBlobRequest(bucketName string, objectName string, blob string, job string) *CompleteBlobRequest {
@@ -45,9 +48,31 @@ func NewCompleteBlobRequest(bucketName string, objectName string, blob string, j
         ObjectName: objectName,
         Blob: blob,
         Job: job,
+        Checksum: NewNoneChecksum(),
+        Metadata: make(map[string]string),
     }
 }
 
+func (completeBlobRequest *CompleteBlobRequest) WithSize(size int64) *CompleteBlobRequest {
+    completeBlobRequest.Size = &size
+    return completeBlobRequest
+}
+
+
+func (completeBlobRequest *CompleteBlobRequest) WithChecksum(contentHash string, checksumType ChecksumType) *CompleteBlobRequest {
+    completeBlobRequest.Checksum.ContentHash = contentHash
+    completeBlobRequest.Checksum.Type = checksumType
+    return completeBlobRequest
+}
+
+func (completeBlobRequest *CompleteBlobRequest) WithMetaData(key string, values ...string) *CompleteBlobRequest {
+    if strings.HasPrefix(strings.ToLower(key), AMZ_META_HEADER) {
+        completeBlobRequest.Metadata[key] = strings.Join(values, ",")
+    } else {
+        completeBlobRequest.Metadata[strings.ToLower(AMZ_META_HEADER + key)] = strings.Join(values, ",")
+    }
+    return completeBlobRequest
+}
 type CompleteMultiPartUploadRequest struct {
     BucketName string
     ObjectName string
