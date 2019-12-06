@@ -65,6 +65,11 @@ func (clientBuilder *ClientBuilder) WithNetworkRetryCount(count int) *ClientBuil
     return clientBuilder
 }
 
+func (clientBuilder *ClientBuilder) WithIgnoreServerCertificate(ignoreServerCert bool) *ClientBuilder {
+    clientBuilder.connectionInfo.IgnoreServerCertificate = ignoreServerCert
+    return clientBuilder
+}
+
 func (clientBuilder *ClientBuilder) WithLogger(logger sdk_log.Logger) *ClientBuilder {
     clientBuilder.logger = logger
     return clientBuilder
