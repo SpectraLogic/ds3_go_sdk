@@ -21,13 +21,8 @@ type putProducer struct {
     deferredBlobQueue    BlobDescriptionQueue // queue of blobs whose channels are not yet ready for transfer
     sdk_log.Logger
 
-    // Channel that represents blobs that have finished being process.
-    // This will be written to once a put object operation has completed regardless of error or success.
-    // This is used to notify the runner to re-check if any blobs are now ready to be sent.
-    blobDoneChannel <-chan struct{}
-
-    // Used to track if we are done queuing blobs
-    continueQueuingBlobs bool
+    // Conditional value that gets triggered when a blob has finished being transferred
+    doneNotifier NotifyBlobDone
 }
 
 func newPutProducer(
@@ -35,9 +30,9 @@ func newPutProducer(
     putObjects *[]helperModels.PutObject,
     queue *chan TransferOperation,
     strategy *WriteTransferStrategy,
-    blobDoneChannel <-chan struct{},
     client *ds3.Client,
-    waitGroup *sync.WaitGroup) *putProducer {
+    waitGroup *sync.WaitGroup,
+    doneNotifier NotifyBlobDone) *putProducer {
 
     return &putProducer{
         JobMasterObjectList:  jobMasterObjectList,
@@ -50,8 +45,7 @@ func newPutProducer(
         deferredBlobQueue:    NewBlobDescriptionQueue(),
         processedBlobTracker: newProcessedBlobTracker(),
         Logger:               client.Logger, // use the same logger as the client
-        blobDoneChannel:      blobDoneChannel,
-        continueQueuingBlobs: true,
+        doneNotifier:         doneNotifier,
     }
 }
 
@@ -141,20 +135,28 @@ func (producer *putProducer) metadataFrom(info putObjectInfo) map[string]string 
 
 // Processes all the blobs in a chunk and attempts to add them to the transfer queue.
 // If a blob is not ready for transfer, then it is added to the waiting to be transferred queue.
-func (producer *putProducer) processChunk(curChunk *ds3Models.Objects, bucketName string, jobId string) {
+// Returns the number of  blobs added to queue.
+func (producer *putProducer) processChunk(curChunk *ds3Models.Objects, bucketName string, jobId string) int {
+    processedCount := 0
     producer.Debugf("begin chunk processing %s", curChunk.ChunkId)
 
     // transfer blobs that are ready, and queue those that are waiting for channel
     for _, curObj := range curChunk.Objects {
         producer.Debugf("queuing object in waiting to be processed %s offset=%d length=%d", *curObj.Name, curObj.Offset, curObj.Length)
         blob := helperModels.NewBlobDescription(*curObj.Name, curObj.Offset, curObj.Length)
-        producer.queueBlobForTransfer(&blob, bucketName, jobId)
+        if producer.queueBlobForTransfer(&blob, bucketName, jobId) {
+            processedCount++
+        }
     }
+    return processedCount
 }
 
 // Iterates through blobs that are waiting to be transferred and attempts to transfer.
 // If successful, blob is removed from queue. Else, it is re-queued.
-func (producer *putProducer) processWaitingBlobs(bucketName string, jobId string) {
+// Returns the number of blobs added to queue.
+func (producer *putProducer) processWaitingBlobs(bucketName string, jobId string) int {
+    processedCount := 0
+
     // attempt to process all blobs in waiting to be transferred
     waitingBlobs := producer.deferredBlobQueue.Size()
     for i := 0; i < waitingBlobs; i++ {
@@ -166,15 +168,20 @@ func (producer *putProducer) processWaitingBlobs(bucketName string, jobId string
             break
         }
         producer.Debugf("attempting to process %s offset=%d length=%d", curBlob.Name(), curBlob.Offset(), curBlob.Length())
-        producer.queueBlobForTransfer(curBlob, bucketName, jobId)
+        if producer.queueBlobForTransfer(curBlob, bucketName, jobId) {
+            processedCount++
+        }
     }
+
+    return processedCount
 }
 
 // Attempts to transfer a single blob. If the blob is not ready for transfer,
 // it is added to the waiting to transfer queue.
-func (producer *putProducer) queueBlobForTransfer(blob *helperModels.BlobDescription, bucketName string, jobId string) {
+// Returns whether or not the blob was queued for transfer.
+func (producer *putProducer) queueBlobForTransfer(blob *helperModels.BlobDescription, bucketName string, jobId string) bool {
     if producer.processedBlobTracker.IsProcessed(*blob) {
-        return
+        return false // this was already processed
     }
 
     curWriteObj := producer.writeObjectMap[blob.Name()]
@@ -183,14 +190,14 @@ func (producer *putProducer) queueBlobForTransfer(blob *helperModels.BlobDescrip
         // a fatal error happened on a previous blob for this file, skip processing
         producer.Warningf("fatal error occurred while transferring previous blob on this file, skipping blob %s offset=%d length=%d", blob.Name(), blob.Offset(), blob.Length())
         producer.processedBlobTracker.MarkProcessed(*blob)
-        return
+        return false // not actually transferring this blob
     }
 
     if !curWriteObj.ChannelBuilder.IsChannelAvailable(blob.Offset()) {
         producer.Debugf("channel is not currently available for blob %s offset=%d length=%d", blob.Name(), blob.Offset(), blob.Length())
         // Not ready to be transferred
         producer.deferredBlobQueue.Push(blob)
-        return
+        return false // not ready to be sent
     }
 
     producer.Debugf("channel is available for blob %s offset=%d length=%d", curWriteObj.PutObject.Name, blob.Offset(), blob.Length())
@@ -212,85 +219,52 @@ func (producer *putProducer) queueBlobForTransfer(blob *helperModels.BlobDescrip
 
     // Mark blob as processed
     producer.processedBlobTracker.MarkProcessed(*blob)
+
+    return true
 }
 
 // This initiates the production of the transfer operations which will be consumed by a consumer running in a separate go routine.
 // Each transfer operation will put one blob of content to the BP.
 // Once all blobs have been queued to be transferred, the producer will finish, even if all operations have not been consumed yet.
 func (producer *putProducer) run() error {
+    defer close(*producer.queue)
+
     // determine number of blobs to be processed
     var totalBlobCount int64 = producer.totalBlobCount()
     producer.Debugf("job status totalBlobs=%d processedBlobs=%d", totalBlobCount, producer.processedBlobTracker.NumberOfProcessedBlobs())
 
-    // initiate first set of blob transfers
-    err := producer.queueBlobsReadyForTransfer(totalBlobCount)
-    if err != nil {
-        return err
-    }
+    // process all chunks and make sure all blobs are queued for transfer
+    for producer.hasMoreToProcess(totalBlobCount) {
+        processedCount, err := producer.queueBlobsReadyForTransfer(totalBlobCount)
+        if err != nil {
+            return err
+        }
 
-    // wait for either a timer or for at least one blob to finish before attempting to queue more items for transfer
-    ticker := time.NewTicker(producer.strategy.BlobStrategy.delay())
-    var fatalErr error
-    for {
-        select {
-        case _, ok := <- producer.blobDoneChannel:
-            if ok {
-                // reset the timer
-                ticker.Stop()
-                ticker = time.NewTicker(producer.strategy.BlobStrategy.delay())
-
-                err = producer.queueBlobsReadyForTransfer(totalBlobCount)
-                if err != nil {
-                    // A fatal error has occurred, stop queuing blobs for processing and
-                    // close processing queue to signal consumer we won't be sending any more blobs.
-                    producer.continueQueuingBlobs = false
-                    fatalErr = err
-                    close(*producer.queue)
-                }
-            } else {
-                // The consumer closed the channel, signaling completion.
-                return fatalErr
-            }
-        case <- ticker.C:
-            err = producer.queueBlobsReadyForTransfer(totalBlobCount)
-            if err != nil {
-                // A fatal error has occurred, stop queuing blobs for processing and
-                // close processing queue to signal consumer we won't be sending any more blobs.
-                producer.continueQueuingBlobs = false
-                fatalErr = err
-                close(*producer.queue)
-            }
+        // If the last operation processed blobs, then wait for something to finish
+        if processedCount > 0 {
+            // wait for a done signal to be received
+            producer.doneNotifier.Wait()
+        } else if producer.hasMoreToProcess(totalBlobCount) {
+            // nothing could be processed, cache is probably full, wait a bit before trying again
+            time.Sleep(producer.strategy.BlobStrategy.delay())
         }
     }
-    return fatalErr
+    return nil
 }
 
 func (producer *putProducer) hasMoreToProcess(totalBlobCount int64) bool {
     return producer.processedBlobTracker.NumberOfProcessedBlobs() < totalBlobCount || producer.deferredBlobQueue.Size() > 0
 }
 
-func (producer *putProducer) queueBlobsReadyForTransfer(totalBlobCount int64) error {
-    if !producer.continueQueuingBlobs {
-        // We've queued up all the blobs we are going to for this job.
-        return nil
-    }
-
-    // check if there is anything left to be processed
-    if !producer.hasMoreToProcess(totalBlobCount) {
-        // Everything has been queued for processing.
-        producer.continueQueuingBlobs = false
-        // close processing queue to signal consumer we won't be sending any more blobs.
-        close(*producer.queue)
-        return nil
-    }
-
+// Returns the number of items queued for work.
+func (producer *putProducer) queueBlobsReadyForTransfer(totalBlobCount int64) (int, error) {
     // Attempt to transfer waiting blobs
-    producer.processWaitingBlobs(*producer.JobMasterObjectList.BucketName, producer.JobMasterObjectList.JobId)
+    processedCount := producer.processWaitingBlobs(*producer.JobMasterObjectList.BucketName, producer.JobMasterObjectList.JobId)
 
     // Check if we need to query the BP for allocated blobs, or if we already know everything is allocated.
     if int64(producer.deferredBlobQueue.Size()) + producer.processedBlobTracker.NumberOfProcessedBlobs() >= totalBlobCount {
         // Everything is already allocated, no need to query BP for allocated chunks
-        return nil
+        return processedCount, nil
     }
 
     // Get the list of available chunks that the server can receive. The server may
@@ -300,7 +274,7 @@ func (producer *putProducer) queueBlobsReadyForTransfer(totalBlobCount int64) er
     chunksReadyResponse, err := producer.client.GetJobChunksReadyForClientProcessingSpectraS3(chunksReady)
     if err != nil {
         producer.Errorf("unrecoverable error: %v", err)
-        return err
+        return processedCount, err
     }
 
     // Check to see if any chunks can be processed
@@ -309,10 +283,10 @@ func (producer *putProducer) queueBlobsReadyForTransfer(totalBlobCount int64) er
         // Loop through all the chunks that are available for processing, and send
         // the files that are contained within them.
         for _, curChunk := range chunksReadyResponse.MasterObjectList.Objects {
-            producer.processChunk(&curChunk, *chunksReadyResponse.MasterObjectList.BucketName, chunksReadyResponse.MasterObjectList.JobId)
+            processedCount += producer.processChunk(&curChunk, *chunksReadyResponse.MasterObjectList.BucketName, chunksReadyResponse.MasterObjectList.JobId)
         }
     }
-    return nil
+    return processedCount, nil
 }
 
 // Determines the number of blobs to be transferred.
