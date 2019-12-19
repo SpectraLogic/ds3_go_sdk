@@ -40,10 +40,9 @@ func TestProducerConsumerModel(t *testing.T) {
 
     queue := make(chan TransferOperation, 5)
 
-    // make the blob done channel larger than the number of transfer operations queued.
-    blobDoneChannel := make(chan struct{}, numOperations+1)
+    doneNotifier := NewConditionalBool()
 
-    consumer := newConsumer(&queue, blobDoneChannel, &wg, 5)
+    consumer := newConsumer(&queue, &wg, 5, doneNotifier)
 
     go producer(&queue)
     go consumer.run()
@@ -51,13 +50,5 @@ func TestProducerConsumerModel(t *testing.T) {
     wg.Wait()
 
     ds3Testing.AssertInt(t, "Executed Transfer Operations", numOperations, resultCount)
-
-    // verify that 10 done messages were sent
-    ds3Testing.AssertInt(t, "Done signals sent", numOperations, len(blobDoneChannel))
-    for len(blobDoneChannel) > 0 {
-        _, ok := <-blobDoneChannel
-        ds3Testing.AssertBool(t, "expected channel not to be closed", true, ok)
-    }
-    _, ok := <- blobDoneChannel
-    ds3Testing.AssertBool(t, "expected channel to be closed", false, ok)
+    ds3Testing.AssertBool(t, "received done notification", true, doneNotifier.Done)
 }
