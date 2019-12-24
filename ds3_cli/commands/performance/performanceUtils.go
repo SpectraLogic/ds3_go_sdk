@@ -14,6 +14,7 @@ package performance
 import (
     "bytes"
     "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
+    "io"
     "math/rand"
     "time"
 )
@@ -21,6 +22,8 @@ import (
 const PerformanceFilePrefix = "perffile_"
 
 var Randbuf = make([]byte, 1024 * 1024)
+var RandbufReader io.ReaderAt
+
 
 type PerformanceInterval struct {
     Seconds	        float64	`json:"seconds"`
@@ -100,6 +103,7 @@ func (p *PerformanceBurst) AddInterval(sec float64, size int64) *PerformanceBurs
 // ReaderWithSizeDecorator that vends random bytes.
 func BuildPerformanceReaderWithSizeDecorator(length int64) models.ReadCloserWithSizeDecorator {
     rand.Read(Randbuf)
+    RandbufReader = bytes.NewReader(Randbuf)
     return &performanceReaderWithSizeDecorator{
         length,
     }
@@ -110,7 +114,7 @@ type performanceReaderWithSizeDecorator struct {
 }
 
 func (byteReaderWithSizeDecorator *performanceReaderWithSizeDecorator) Read(b []byte) (int, error) {
-    return bytes.NewBuffer(Randbuf).Read(b)
+    return RandbufReader.ReadAt(b, 0)
 }
 
 func (performanceReaderWithSizeDecorator) Close() error {
