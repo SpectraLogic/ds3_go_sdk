@@ -78,10 +78,11 @@ func (transceiver *getTransceiver) transfer() (string, error) {
     // init queue, producer and consumer
     var waitGroup sync.WaitGroup
 
-    blobDoneChannel := make(chan struct{}, 10)
+    doneNotifier := NewConditionalBool()
+
     queue := newOperationQueue(transceiver.Strategy.BlobStrategy.maxWaitingTransfers(), transceiver.Client.Logger)
-    producer := newGetProducer(&bulkGetResponse.MasterObjectList, transceiver.ReadObjects, &queue, transceiver.Strategy, blobDoneChannel, transceiver.Client, &waitGroup)
-    consumer := newConsumer(&queue, blobDoneChannel, &waitGroup, transceiver.Strategy.BlobStrategy.maxConcurrentTransfers())
+    producer := newGetProducer(&bulkGetResponse.MasterObjectList, transceiver.ReadObjects, &queue, transceiver.Strategy, transceiver.Client, &waitGroup, doneNotifier)
+    consumer := newConsumer(&queue, &waitGroup, transceiver.Strategy.BlobStrategy.maxConcurrentTransfers(), doneNotifier)
 
     // Wait for completion of producer-consumer goroutines
     var aggErr ds3Models.AggregateError

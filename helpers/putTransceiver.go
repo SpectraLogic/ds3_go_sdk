@@ -73,10 +73,11 @@ func (transceiver *putTransceiver) transfer() (string, error) {
     // init queue, producer and consumer
     var waitGroup sync.WaitGroup
 
-    blobDoneChannel := make(chan struct{}, 10)
+    doneNotifier := NewConditionalBool()
+
     queue := newOperationQueue(transceiver.Strategy.BlobStrategy.maxWaitingTransfers(), transceiver.Client.Logger)
-    producer := newPutProducer(&bulkPutResponse.MasterObjectList, transceiver.WriteObjects, &queue, transceiver.Strategy, blobDoneChannel, transceiver.Client, &waitGroup)
-    consumer := newConsumer(&queue, blobDoneChannel, &waitGroup, transceiver.Strategy.BlobStrategy.maxConcurrentTransfers())
+    producer := newPutProducer(&bulkPutResponse.MasterObjectList, transceiver.WriteObjects, &queue, transceiver.Strategy, transceiver.Client, &waitGroup, doneNotifier)
+    consumer := newConsumer(&queue, &waitGroup, transceiver.Strategy.BlobStrategy.maxConcurrentTransfers(), doneNotifier)
 
     // Wait for completion of producer-consumer goroutines
     waitGroup.Add(1)  // adding producer and consumer goroutines to wait group
