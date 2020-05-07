@@ -598,6 +598,34 @@ func (client *Client) PutAzureTargetFailureNotificationRegistrationSpectraS3(req
     return models.NewPutAzureTargetFailureNotificationRegistrationSpectraS3Response(response)
 }
 
+func (client *Client) PutBucketChangesNotificationRegistrationSpectraS3(request *models.PutBucketChangesNotificationRegistrationSpectraS3Request) (*models.PutBucketChangesNotificationRegistrationSpectraS3Response, error) {
+    // Build the http request
+    httpRequest, err := networking.NewHttpRequestBuilder().
+        WithHttpVerb(HTTP_VERB_POST).
+        WithPath("/_rest_/bucket_changes_notification_registration").
+        WithQueryParam("notification_end_point", request.NotificationEndPoint).
+        WithOptionalQueryParam("bucket_id", request.BucketId).
+        WithOptionalQueryParam("format", networking.InterfaceToStrPtr(request.Format)).
+        WithOptionalQueryParam("naming_convention", networking.InterfaceToStrPtr(request.NamingConvention)).
+        WithOptionalQueryParam("notification_http_method", networking.InterfaceToStrPtr(request.NotificationHttpMethod)).
+        Build(client.connectionInfo)
+
+    if err != nil {
+        return nil, err
+    }
+
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
+
+    // Invoke the HTTP request.
+    response, requestErr := networkRetryDecorator.Invoke(httpRequest)
+    if requestErr != nil {
+        return nil, requestErr
+    }
+
+    // Create a response object based on the result.
+    return models.NewPutBucketChangesNotificationRegistrationSpectraS3Response(response)
+}
+
 func (client *Client) PutDs3TargetFailureNotificationRegistrationSpectraS3(request *models.PutDs3TargetFailureNotificationRegistrationSpectraS3Request) (*models.PutDs3TargetFailureNotificationRegistrationSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().

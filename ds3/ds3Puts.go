@@ -2040,6 +2040,7 @@ func (client *Client) ModifyTapeDriveSpectraS3(request *models.ModifyTapeDriveSp
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_PUT).
         WithPath("/_rest_/tape_drive/" + request.TapeDriveId).
+        WithOptionalQueryParam("minimum_task_priority", networking.InterfaceToStrPtr(request.MinimumTaskPriority)).
         WithOptionalQueryParam("quiesced", networking.InterfaceToStrPtr(request.Quiesced)).
         WithOptionalQueryParam("reserved_task_type", networking.InterfaceToStrPtr(request.ReservedTaskType)).
         Build(client.connectionInfo)

@@ -2397,6 +2397,144 @@ func (azureTargetFailureNotificationRegistration *AzureTargetFailureNotification
     }
 }
 
+type BucketChangesNotificationRegistration struct {
+    BucketId *string
+    CreationDate string
+    Format HttpResponseFormatType
+    Id string
+    LastFailure *string
+    LastHttpResponseCode *int
+    LastNotification *string
+    LastSequenceNumber *int64
+    NamingConvention NamingConventionType
+    NotificationEndPoint *string
+    NotificationHttpMethod RequestType
+    NumberOfFailuresSinceLastSuccess int
+    UserId *string
+}
+
+func (bucketChangesNotificationRegistration *BucketChangesNotificationRegistration) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+
+    // Parse Child Nodes
+    for _, child := range xmlNode.Children {
+        switch child.XMLName.Local {
+        case "BucketId":
+            bucketChangesNotificationRegistration.BucketId = parseNullableString(child.Content)
+        case "CreationDate":
+            bucketChangesNotificationRegistration.CreationDate = parseString(child.Content)
+        case "Format":
+            parseEnum(child.Content, &bucketChangesNotificationRegistration.Format, aggErr)
+        case "Id":
+            bucketChangesNotificationRegistration.Id = parseString(child.Content)
+        case "LastFailure":
+            bucketChangesNotificationRegistration.LastFailure = parseNullableString(child.Content)
+        case "LastHttpResponseCode":
+            bucketChangesNotificationRegistration.LastHttpResponseCode = parseNullableInt(child.Content, aggErr)
+        case "LastNotification":
+            bucketChangesNotificationRegistration.LastNotification = parseNullableString(child.Content)
+        case "LastSequenceNumber":
+            bucketChangesNotificationRegistration.LastSequenceNumber = parseNullableInt64(child.Content, aggErr)
+        case "NamingConvention":
+            parseEnum(child.Content, &bucketChangesNotificationRegistration.NamingConvention, aggErr)
+        case "NotificationEndPoint":
+            bucketChangesNotificationRegistration.NotificationEndPoint = parseNullableString(child.Content)
+        case "NotificationHttpMethod":
+            parseEnum(child.Content, &bucketChangesNotificationRegistration.NotificationHttpMethod, aggErr)
+        case "NumberOfFailuresSinceLastSuccess":
+            bucketChangesNotificationRegistration.NumberOfFailuresSinceLastSuccess = parseInt(child.Content, aggErr)
+        case "UserId":
+            bucketChangesNotificationRegistration.UserId = parseNullableString(child.Content)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing BucketChangesNotificationRegistration.", child.XMLName.Local)
+        }
+    }
+}
+
+type BucketHistoryEvent struct {
+    BucketId string
+    Id string
+    ObjectName *string
+    SequenceNumber *int64
+    Type BucketHistoryEventType
+    VersionId string
+}
+
+func (bucketHistoryEvent *BucketHistoryEvent) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+
+    // Parse Child Nodes
+    for _, child := range xmlNode.Children {
+        switch child.XMLName.Local {
+        case "BucketId":
+            bucketHistoryEvent.BucketId = parseString(child.Content)
+        case "Id":
+            bucketHistoryEvent.Id = parseString(child.Content)
+        case "ObjectName":
+            bucketHistoryEvent.ObjectName = parseNullableString(child.Content)
+        case "SequenceNumber":
+            bucketHistoryEvent.SequenceNumber = parseNullableInt64(child.Content, aggErr)
+        case "Type":
+            parseEnum(child.Content, &bucketHistoryEvent.Type, aggErr)
+        case "VersionId":
+            bucketHistoryEvent.VersionId = parseString(child.Content)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing BucketHistoryEvent.", child.XMLName.Local)
+        }
+    }
+}
+
+type BucketHistoryEventType Enum
+
+const (
+    BUCKET_HISTORY_EVENT_TYPE_DELETE BucketHistoryEventType = 1 + iota
+    BUCKET_HISTORY_EVENT_TYPE_MARK_LATEST BucketHistoryEventType = 1 + iota
+    BUCKET_HISTORY_EVENT_TYPE_UNMARK_LATEST BucketHistoryEventType = 1 + iota
+    BUCKET_HISTORY_EVENT_TYPE_CREATE BucketHistoryEventType = 1 + iota
+)
+
+func (bucketHistoryEventType *BucketHistoryEventType) UnmarshalText(text []byte) error {
+    var str string = string(bytes.ToUpper(text))
+    switch str {
+        case "": *bucketHistoryEventType = UNDEFINED
+        case "DELETE": *bucketHistoryEventType = BUCKET_HISTORY_EVENT_TYPE_DELETE
+        case "MARK_LATEST": *bucketHistoryEventType = BUCKET_HISTORY_EVENT_TYPE_MARK_LATEST
+        case "UNMARK_LATEST": *bucketHistoryEventType = BUCKET_HISTORY_EVENT_TYPE_UNMARK_LATEST
+        case "CREATE": *bucketHistoryEventType = BUCKET_HISTORY_EVENT_TYPE_CREATE
+        default:
+            *bucketHistoryEventType = UNDEFINED
+            return errors.New(fmt.Sprintf("Cannot marshal '%s' into BucketHistoryEventType", str))
+    }
+    return nil
+}
+
+func (bucketHistoryEventType BucketHistoryEventType) String() string {
+    switch bucketHistoryEventType {
+        case BUCKET_HISTORY_EVENT_TYPE_DELETE: return "DELETE"
+        case BUCKET_HISTORY_EVENT_TYPE_MARK_LATEST: return "MARK_LATEST"
+        case BUCKET_HISTORY_EVENT_TYPE_UNMARK_LATEST: return "UNMARK_LATEST"
+        case BUCKET_HISTORY_EVENT_TYPE_CREATE: return "CREATE"
+        default:
+            log.Printf("Error: invalid BucketHistoryEventType represented by '%d'", bucketHistoryEventType)
+            return ""
+    }
+}
+
+func (bucketHistoryEventType BucketHistoryEventType) StringPtr() *string {
+    if bucketHistoryEventType == UNDEFINED {
+        return nil
+    }
+    result := bucketHistoryEventType.String()
+    return &result
+}
+
+func newBucketHistoryEventTypeFromContent(content []byte, aggErr *AggregateError) *BucketHistoryEventType {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(BucketHistoryEventType)
+    parseEnum(content, result, aggErr)
+    return result
+}
 type Ds3TargetFailureNotificationRegistration struct {
     CreationDate string
     Format HttpResponseFormatType
@@ -3774,6 +3912,7 @@ type TapeDrive struct {
     Id string
     LastCleaned *string
     MfgSerialNumber *string
+    MinimumTaskPriority *Priority
     PartitionId string
     Quiesced Quiesced
     ReservedTaskType ReservedTaskType
@@ -3800,6 +3939,8 @@ func (tapeDrive *TapeDrive) parse(xmlNode *XmlNode, aggErr *AggregateError) {
             tapeDrive.LastCleaned = parseNullableString(child.Content)
         case "MfgSerialNumber":
             tapeDrive.MfgSerialNumber = parseNullableString(child.Content)
+        case "MinimumTaskPriority":
+            tapeDrive.MinimumTaskPriority = newPriorityFromContent(child.Content, aggErr)
         case "PartitionId":
             tapeDrive.PartitionId = parseString(child.Content)
         case "Quiesced":
@@ -7383,6 +7524,44 @@ func (azureTargetFailureNotificationRegistrationList *AzureTargetFailureNotifica
             azureTargetFailureNotificationRegistrationList.AzureTargetFailureNotificationRegistrations = append(azureTargetFailureNotificationRegistrationList.AzureTargetFailureNotificationRegistrations, model)
         default:
             log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing AzureTargetFailureNotificationRegistrationList.", child.XMLName.Local)
+        }
+    }
+}
+
+type BucketChangesNotificationRegistrationList struct {
+    BucketChangesNotificationRegistrations []BucketChangesNotificationRegistration
+}
+
+func (bucketChangesNotificationRegistrationList *BucketChangesNotificationRegistrationList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+
+    // Parse Child Nodes
+    for _, child := range xmlNode.Children {
+        switch child.XMLName.Local {
+        case "BucketChangesNotificationRegistration":
+            var model BucketChangesNotificationRegistration
+            model.parse(&child, aggErr)
+            bucketChangesNotificationRegistrationList.BucketChangesNotificationRegistrations = append(bucketChangesNotificationRegistrationList.BucketChangesNotificationRegistrations, model)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing BucketChangesNotificationRegistrationList.", child.XMLName.Local)
+        }
+    }
+}
+
+type BucketHistoryEventList struct {
+    BucketHistoryEvents []BucketHistoryEvent
+}
+
+func (bucketHistoryEventList *BucketHistoryEventList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+
+    // Parse Child Nodes
+    for _, child := range xmlNode.Children {
+        switch child.XMLName.Local {
+        case "BucketHistoryEvent":
+            var model BucketHistoryEvent
+            model.parse(&child, aggErr)
+            bucketHistoryEventList.BucketHistoryEvents = append(bucketHistoryEventList.BucketHistoryEvents, model)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing BucketHistoryEventList.", child.XMLName.Local)
         }
     }
 }
