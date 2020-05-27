@@ -3,6 +3,7 @@ package helpers
 import (
     "errors"
     helperModels "github.com/SpectraLogic/ds3_go_sdk/helpers/models"
+    "reflect"
 )
 
 // A queue that manages descriptions of blobs
@@ -25,6 +26,12 @@ func NewBlobDescriptionQueue() BlobDescriptionQueue {
 }
 
 func (queue *blobDescriptionQueueImpl) Push(description *helperModels.BlobDescription) {
+    // verify that this blob isn't already in the queue before adding it
+    for _, existingBlob := range queue.queue {
+        if reflect.DeepEqual(*existingBlob, *description) {
+            return
+        }
+    }
     queue.queue = append(queue.queue, description)
 }
 
