@@ -1576,6 +1576,7 @@ const (
     S3_INITIAL_DATA_PLACEMENT_POLICY_REDUCED_REDUNDANCY S3InitialDataPlacementPolicy = 1 + iota
     S3_INITIAL_DATA_PLACEMENT_POLICY_STANDARD_IA S3InitialDataPlacementPolicy = 1 + iota
     S3_INITIAL_DATA_PLACEMENT_POLICY_GLACIER S3InitialDataPlacementPolicy = 1 + iota
+    S3_INITIAL_DATA_PLACEMENT_POLICY_DEEP_ARCHIVE S3InitialDataPlacementPolicy = 1 + iota
 )
 
 func (s3InitialDataPlacementPolicy *S3InitialDataPlacementPolicy) UnmarshalText(text []byte) error {
@@ -1586,6 +1587,7 @@ func (s3InitialDataPlacementPolicy *S3InitialDataPlacementPolicy) UnmarshalText(
         case "REDUCED_REDUNDANCY": *s3InitialDataPlacementPolicy = S3_INITIAL_DATA_PLACEMENT_POLICY_REDUCED_REDUNDANCY
         case "STANDARD_IA": *s3InitialDataPlacementPolicy = S3_INITIAL_DATA_PLACEMENT_POLICY_STANDARD_IA
         case "GLACIER": *s3InitialDataPlacementPolicy = S3_INITIAL_DATA_PLACEMENT_POLICY_GLACIER
+        case "DEEP_ARCHIVE": *s3InitialDataPlacementPolicy = S3_INITIAL_DATA_PLACEMENT_POLICY_DEEP_ARCHIVE
         default:
             *s3InitialDataPlacementPolicy = UNDEFINED
             return errors.New(fmt.Sprintf("Cannot marshal '%s' into S3InitialDataPlacementPolicy", str))
@@ -1599,6 +1601,7 @@ func (s3InitialDataPlacementPolicy S3InitialDataPlacementPolicy) String() string
         case S3_INITIAL_DATA_PLACEMENT_POLICY_REDUCED_REDUNDANCY: return "REDUCED_REDUNDANCY"
         case S3_INITIAL_DATA_PLACEMENT_POLICY_STANDARD_IA: return "STANDARD_IA"
         case S3_INITIAL_DATA_PLACEMENT_POLICY_GLACIER: return "GLACIER"
+        case S3_INITIAL_DATA_PLACEMENT_POLICY_DEEP_ARCHIVE: return "DEEP_ARCHIVE"
         default:
             log.Printf("Error: invalid S3InitialDataPlacementPolicy represented by '%d'", s3InitialDataPlacementPolicy)
             return ""
@@ -2453,6 +2456,7 @@ func (bucketChangesNotificationRegistration *BucketChangesNotificationRegistrati
 type BucketHistoryEvent struct {
     BucketId string
     Id string
+    ObjectCreationDate *string
     ObjectName *string
     SequenceNumber *int64
     Type BucketHistoryEventType
@@ -2468,6 +2472,8 @@ func (bucketHistoryEvent *BucketHistoryEvent) parse(xmlNode *XmlNode, aggErr *Ag
             bucketHistoryEvent.BucketId = parseString(child.Content)
         case "Id":
             bucketHistoryEvent.Id = parseString(child.Content)
+        case "ObjectCreationDate":
+            bucketHistoryEvent.ObjectCreationDate = parseNullableString(child.Content)
         case "ObjectName":
             bucketHistoryEvent.ObjectName = parseNullableString(child.Content)
         case "SequenceNumber":
