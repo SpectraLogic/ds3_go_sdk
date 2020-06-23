@@ -1,6 +1,7 @@
 package helpers
 
 import (
+    "fmt"
     "github.com/SpectraLogic/ds3_go_sdk/ds3"
     ds3Models "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
     helperModels "github.com/SpectraLogic/ds3_go_sdk/helpers/models"
@@ -137,8 +138,15 @@ func (producer *getProducer) transferOperationBuilder(info getObjectInfo) Transf
                 return
             }
             defer info.channelBuilder.OnDone(writer)
-            _, err = io.Copy(writer, getObjResponse.Content) //copy all content from response reader to destination writer
-            if err != nil {
+            bytesWritten, err := io.Copy(writer, getObjResponse.Content) //copy all content from response reader to destination writer
+            if err != nil && err != io.ErrUnexpectedEOF {
+                producer.strategy.Listeners.Errored(info.blob.Name(), err)
+                info.channelBuilder.SetFatalError(err)
+                producer.Errorf("unable to copy content of object '%s' at offset '%d' from source to destination: %s", info.blob.Name(), info.blob.Offset(), err.Error())
+                return
+            }
+            if bytesWritten != info.blob.Length() {
+                err = fmt.Errorf("failed to copy all content of object '%s' at offset '%d': only wrote %d of %d bytes", info.blob.Name(), info.blob.Offset(), bytesWritten, info.blob.Length())
                 producer.strategy.Listeners.Errored(info.blob.Name(), err)
                 info.channelBuilder.SetFatalError(err)
                 producer.Errorf("unable to copy content of object '%s' at offset '%d' from source to destination: %s", info.blob.Name(), info.blob.Offset(), err.Error())
