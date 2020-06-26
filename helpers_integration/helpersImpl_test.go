@@ -504,3 +504,120 @@ func TestBulkPutAndGetLotsOfFiles(t *testing.T) {
         t.Errorf("expected to get a BP job ID, but instead got nothing")
     }
 }
+
+func TestRetryGettingBlobRange(t *testing.T) {
+    defer testutils.DeleteBucketContents(client, testBucket)
+
+    helper := helpers.NewHelpers(client)
+    strategy := newTestTransferStrategy(t)
+
+    // Put a blobbed object to BP
+    const bigFilePath = LargeBookPath + LargeBookTitle
+    writeObj, err := getTestWriteObjectRandomAccess(LargeBookTitle, bigFilePath)
+    ds3Testing.AssertNilError(t, err)
+
+    var writeObjects []helperModels.PutObject
+    writeObjects = append(writeObjects, *writeObj)
+
+    putJobId, err := helper.PutObjects(testBucket, writeObjects, strategy)
+    ds3Testing.AssertNilError(t, err)
+    if putJobId == "" {
+        t.Error("expected to get a BP job ID, but instead got nothing")
+    }
+
+    // Try to get some data from each blob
+    getJob, err := client.GetJobSpectraS3(ds3Models.NewGetJobSpectraS3Request(putJobId))
+    ds3Testing.AssertNilError(t, err)
+
+    blobsChecked := 0
+    for _, curObj := range getJob.MasterObjectList.Objects {
+        for _, blob := range curObj.Objects {
+            func() {
+                // create a temp file for writing the blob to
+                tempFile, err := ioutil.TempFile("", "go-sdk-test-")
+                ds3Testing.AssertNilError(t, err)
+                defer func() {
+                    tempFile.Close()
+                    os.Remove(tempFile.Name())
+                }()
+
+                // get a range of the blob
+                startRange := blob.Offset+10 // retrieve subset of blob
+                endRange := blob.Length+blob.Offset-1
+                bytesWritten, err := helpers.RetryGettingBlobRange(client, testBucket, writeObj.PutObject.Name, blob.Offset, startRange, endRange, tempFile, client.Logger)
+                ds3Testing.AssertNilError(t, err)
+                ds3Testing.AssertInt64(t, "bytes written", endRange-startRange+1, bytesWritten)
+
+                // verify that retrieved partial blob is correct
+                err = tempFile.Sync()
+                ds3Testing.AssertNilError(t, err)
+
+                tempFile.Seek(0, 0)
+                length := endRange-startRange
+                testutils.VerifyPartialFile(t, bigFilePath, length, startRange, tempFile)
+            }()
+            blobsChecked++
+        }
+    }
+    if blobsChecked == 0 {
+        t.Fatalf("didn't verify any blobs")
+    }
+}
+
+func TestGetRemainingBlob(t *testing.T) {
+    defer testutils.DeleteBucketContents(client, testBucket)
+
+    helper := helpers.NewHelpers(client)
+    strategy := newTestTransferStrategy(t)
+
+    // Put a blobbed object to BP
+    const bigFilePath = LargeBookPath + LargeBookTitle
+    writeObj, err := getTestWriteObjectRandomAccess(LargeBookTitle, bigFilePath)
+    ds3Testing.AssertNilError(t, err)
+
+    var writeObjects []helperModels.PutObject
+    writeObjects = append(writeObjects, *writeObj)
+
+    putJobId, err := helper.PutObjects(testBucket, writeObjects, strategy)
+    ds3Testing.AssertNilError(t, err)
+    if putJobId == "" {
+        t.Error("expected to get a BP job ID, but instead got nothing")
+    }
+
+    // Try to get some data from each blob
+    getJob, err := client.GetJobSpectraS3(ds3Models.NewGetJobSpectraS3Request(putJobId))
+    ds3Testing.AssertNilError(t, err)
+
+    blobsChecked := 0
+    for _, curObj := range getJob.MasterObjectList.Objects {
+        for _, blob := range curObj.Objects {
+            func() {
+                // create a temp file for writing the blob to
+                tempFile, err := ioutil.TempFile("", "go-sdk-test-")
+                ds3Testing.AssertNilError(t, err)
+                defer func() {
+                    tempFile.Close()
+                    os.Remove(tempFile.Name())
+                }()
+
+                // get the remainder of the blob after skipping some bytes
+                blob := helperModels.NewBlobDescription(*blob.Name, blob.Offset, blob.Length)
+                var amountToSkip int64 = 10
+                err = helpers.GetRemainingBlob(client, testBucket, &blob, amountToSkip, tempFile, client.Logger)
+                ds3Testing.AssertNilError(t, err)
+
+                // verify that retrieved partial blob is correct
+                err = tempFile.Sync()
+                ds3Testing.AssertNilError(t, err)
+
+                tempFile.Seek(0, 0)
+                length := blob.Length() - amountToSkip
+                testutils.VerifyPartialFile(t, bigFilePath, length, blob.Offset()+amountToSkip, tempFile)
+            }()
+            blobsChecked++
+        }
+    }
+    if blobsChecked == 0 {
+        t.Fatalf("didn't verify any blobs")
+    }
+}
