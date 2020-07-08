@@ -2,7 +2,6 @@ package models
 
 import (
     "io"
-    "strings"
     "net/http"
 )
 
@@ -29,13 +28,10 @@ func (wrappedHttpResponse *WrappedHttpResponse) Body() io.ReadCloser {
 }
 
 func (wrappedHttpResponse *WrappedHttpResponse) Header() *http.Header {
-    // The HTTP spec says headers keys are case insensitive, so we'll just
-    // to lower them before processing the response so we can always get the
-    // right thing.
     result := make(http.Header)
     header := wrappedHttpResponse.rawResponse.Header
     for k, v := range header {
-        result[strings.ToLower(k)] = v
+        result[k] = v
     }
     return &result
 }
