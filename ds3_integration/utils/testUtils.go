@@ -375,7 +375,7 @@ func DeleteBucketLogError(t *testing.T, client *ds3.Client, bucketName string) (
 
 // Deletes the specified bucket and returns an error if one occurs
 func DeleteBucket(client *ds3.Client, bucketName string) (error) {
-    deleteBucket, deleteErr := client.DeleteBucket(models.NewDeleteBucketRequest(bucketName))
+    deleteBucket, deleteErr := client.DeleteBucketSpectraS3(models.NewDeleteBucketSpectraS3Request(bucketName).WithForce())
     if deleteErr != nil {
         return deleteErr
     }

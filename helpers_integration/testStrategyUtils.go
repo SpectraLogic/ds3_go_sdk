@@ -2,6 +2,7 @@ package helpers_integration
 
 import (
     "os"
+    "testing"
     "time"
     "github.com/SpectraLogic/ds3_go_sdk/helpers"
     ds3Models "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
@@ -57,10 +58,19 @@ func getTestBooksAsWriteObjects() (*[]helperModels.PutObject, error) {
 }
 
 // Creates a simple transfer strategy for testing
-func newTestTransferStrategy() helpers.WriteTransferStrategy {
+func newTestTransferStrategy(t * testing.T) helpers.WriteTransferStrategy {
     return helpers.WriteTransferStrategy{
         BlobStrategy: newTestBlobStrategy(),
         Options:      helpers.WriteBulkJobOptions{MaxUploadSize: &helpers.MinUploadSize},
+        Listeners:    newErrorOnErrorListenerStrategy(t),
+    }
+}
+
+func newErrorOnErrorListenerStrategy(t *testing.T) helpers.ListenerStrategy {
+    return helpers.ListenerStrategy{
+        ErrorCallback: func(objectName string, err error) {
+            t.Errorf("unexpected error on '%s': %v", objectName, err)
+        },
     }
 }
 

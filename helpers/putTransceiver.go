@@ -73,19 +73,20 @@ func (transceiver *putTransceiver) transfer() (string, error) {
     // init queue, producer and consumer
     var waitGroup sync.WaitGroup
 
+    doneNotifier := NewConditionalBool()
+
     queue := newOperationQueue(transceiver.Strategy.BlobStrategy.maxWaitingTransfers(), transceiver.Client.Logger)
-    producer := newPutProducer(&bulkPutResponse.MasterObjectList, transceiver.WriteObjects, &queue, transceiver.Strategy, transceiver.Client, &waitGroup)
-    consumer := newConsumer(&queue, &waitGroup, transceiver.Strategy.BlobStrategy.maxConcurrentTransfers())
+    producer := newPutProducer(&bulkPutResponse.MasterObjectList, transceiver.WriteObjects, &queue, transceiver.Strategy, transceiver.Client, &waitGroup, doneNotifier)
+    consumer := newConsumer(&queue, &waitGroup, transceiver.Strategy.BlobStrategy.maxConcurrentTransfers(), doneNotifier)
 
     // Wait for completion of producer-consumer goroutines
-    waitGroup.Add(2)  // adding producer and consumer goroutines to wait group
+    waitGroup.Add(1)  // adding producer and consumer goroutines to wait group
 
-    var aggErr ds3Models.AggregateError
-    go producer.run(&aggErr) // producer will add to waitGroup for every blob added to queue, and each transfer performed will decrement from waitGroup
     go consumer.run()
+    err = producer.run() // producer will add to waitGroup for every blob added to queue, and each transfer performed will decrement from waitGroup
     waitGroup.Wait()
 
-    return bulkPutResponse.MasterObjectList.JobId, aggErr.GetErrors()
+    return bulkPutResponse.MasterObjectList.JobId, err
 }
 
 /*

@@ -1,6 +1,8 @@
 package helpers_integration
 
 import (
+    "bytes"
+    "fmt"
     "github.com/SpectraLogic/ds3_go_sdk/ds3"
     ds3Models "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
     "github.com/SpectraLogic/ds3_go_sdk/ds3_integration/utils"
@@ -13,7 +15,9 @@ import (
     "io/ioutil"
     "log"
     "os"
+    "sync"
     "testing"
+    "time"
 )
 
 var client *ds3.Client
@@ -40,7 +44,7 @@ func TestPutBulk(t *testing.T) {
     defer testutils.DeleteBucketContents(client, testBucket)
     helper := helpers.NewHelpers(client)
 
-    strategy := newTestTransferStrategy()
+    strategy := newTestTransferStrategy(t)
 
     writeObjects, err := getTestBooksAsWriteObjects()
     ds3Testing.AssertNilError(t, err)
@@ -69,7 +73,7 @@ func TestPutBulkBlobSpanningChunksRandomAccess(t *testing.T) {
 
     helper := helpers.NewHelpers(client)
 
-    strategy := newTestTransferStrategy()
+    strategy := newTestTransferStrategy(t)
 
     writeObj, err := getTestWriteObjectRandomAccess(LargeBookTitle, LargeBookPath + LargeBookTitle)
 
@@ -93,7 +97,7 @@ func TestPutBulkBlobSpanningChunksStreamAccess(t *testing.T) {
 
     helper := helpers.NewHelpers(client)
 
-    strategy := newTestTransferStrategy()
+    strategy := newTestTransferStrategy(t)
 
     writeObj, err := getTestWriteObjectStreamAccess(LargeBookTitle, LargeBookPath + LargeBookTitle)
 
@@ -118,7 +122,21 @@ func TestPutBulkBlobSpanningChunksStreamAccessDoesNotExist(t *testing.T) {
 
     helper := helpers.NewHelpers(client)
 
-    strategy := newTestTransferStrategy()
+    errorCallbackCalled := false
+    var mutex sync.Mutex
+    errorCallback := func(objectName string, err error) {
+        mutex.Lock()
+        errorCallbackCalled = true
+        mutex.Unlock()
+
+        ds3Testing.AssertString(t, "object name", LargeBookTitle, objectName)
+    }
+
+    strategy := helpers.WriteTransferStrategy{
+        BlobStrategy: newTestBlobStrategy(),
+        Options:      helpers.WriteBulkJobOptions{MaxUploadSize: &helpers.MinUploadSize},
+        Listeners:    helpers.ListenerStrategy{ErrorCallback:errorCallback},
+    }
 
     // open a file but lie that its bigger than it is
     f, err := os.Open(testutils.BookPath + testutils.BookTitles[0])
@@ -133,9 +151,8 @@ func TestPutBulkBlobSpanningChunksStreamAccessDoesNotExist(t *testing.T) {
     ds3Testing.AssertNilError(t, err)
 
     _, err = helper.PutObjects(testBucket, writeObjects, strategy)
-    if err == nil {
-        t.Errorf("expected an error while putting objects due to bad file size")
-    }
+    ds3Testing.AssertNilError(t, err)
+    ds3Testing.AssertBool(t, "error callback called", true, errorCallbackCalled)
 }
 
 func TestGetBulk(t *testing.T) {
@@ -148,6 +165,7 @@ func TestGetBulk(t *testing.T) {
     strategy := helpers.ReadTransferStrategy{
         Options: helpers.ReadBulkJobOptions{}, // use default job options
         BlobStrategy: newTestBlobStrategy(),
+        Listeners: newErrorOnErrorListenerStrategy(t),
     }
 
     file0, err := ioutil.TempFile(os.TempDir(), "goTest")
@@ -192,13 +210,14 @@ func TestGetBulk(t *testing.T) {
 func TestGetBulkBlobSpanningChunksRandomAccess(t *testing.T) {
     defer testutils.DeleteBucketContents(client, testBucket)
 
-    LoadLargeFile(testBucket, client)
+    LoadLargeFile(t, testBucket, client)
 
     helper := helpers.NewHelpers(client)
 
     strategy := helpers.ReadTransferStrategy{
         Options: helpers.ReadBulkJobOptions{}, // use default job options
         BlobStrategy: newTestBlobStrategy(),
+        Listeners: newErrorOnErrorListenerStrategy(t),
     }
 
     file, err := ioutil.TempFile(os.TempDir(), "goTest")
@@ -223,13 +242,14 @@ func TestGetBulkBlobSpanningChunksRandomAccess(t *testing.T) {
 func TestGetBulkBlobSpanningChunksStreaming(t *testing.T) {
     defer testutils.DeleteBucketContents(client, testBucket)
 
-    LoadLargeFile(testBucket, client)
+    LoadLargeFile(t, testBucket, client)
 
     helper := helpers.NewHelpers(client)
 
     strategy := helpers.ReadTransferStrategy{
         Options: helpers.ReadBulkJobOptions{}, // use default job options
         BlobStrategy: newTestBlobStrategy(),
+        Listeners: newErrorOnErrorListenerStrategy(t),
     }
 
     file, err := ioutil.TempFile(os.TempDir(), "goTest")
@@ -257,13 +277,26 @@ func TestGetBulkBlobSpanningChunksStreaming(t *testing.T) {
 func TestGetBulkBlobSpanningChunksStreamingFailBlob(t *testing.T) {
     defer testutils.DeleteBucketContents(client, testBucket)
 
-    LoadLargeFile(testBucket, client)
+    LoadLargeFile(t, testBucket, client)
 
     helper := helpers.NewHelpers(client)
+
+    errorCallbackCalled := false
+    var mutex sync.Mutex
+    errorCallback := func(objectName string, err error) {
+        mutex.Lock()
+        errorCallbackCalled = true
+        mutex.Unlock()
+
+        ds3Testing.AssertString(t, "object name", LargeBookTitle, objectName)
+    }
 
     strategy := helpers.ReadTransferStrategy{
         Options: helpers.ReadBulkJobOptions{}, // use default job options
         BlobStrategy: newTestBlobStrategy(),
+        Listeners: helpers.ListenerStrategy{
+            ErrorCallback: errorCallback,
+        },
     }
 
     file, err := ioutil.TempFile(os.TempDir(), "goTest")
@@ -276,21 +309,21 @@ func TestGetBulkBlobSpanningChunksStreamingFailBlob(t *testing.T) {
     }
 
     _, err = helper.GetObjects(testBucket, readObjects, strategy)
-    if err == nil {
-        t.Errorf("expected error when retrieving file")
-    }
+    ds3Testing.AssertNilError(t, err)
+    ds3Testing.AssertBool(t, "error callback called", true, errorCallbackCalled)
 }
 
 func TestGetBulkPartialObjectRandomAccess(t *testing.T) {
     defer testutils.DeleteBucketContents(client, testBucket)
 
-    LoadLargeFile(testBucket, client)
+    LoadLargeFile(t, testBucket, client)
 
     helper := helpers.NewHelpers(client)
 
     strategy := helpers.ReadTransferStrategy{
         Options: helpers.ReadBulkJobOptions{}, // use default job options
         BlobStrategy: newTestBlobStrategy(),
+        Listeners: newErrorOnErrorListenerStrategy(t),
     }
 
     file, err := ioutil.TempFile(os.TempDir(), "goTest")
@@ -324,30 +357,150 @@ func TestGetBulkPartialObjectRandomAccess(t *testing.T) {
 func TestPutObjectDoesNotExist(t *testing.T) {
     defer testutils.DeleteBucketContents(client, testBucket)
     helper := helpers.NewHelpers(client)
+    const testObjectName = "does-not-exist"
 
-    strategy := newTestTransferStrategy()
+    errorCallbackCalled := false
+    var mutex sync.Mutex
+    errorCallback := func(objectName string, err error) {
+        mutex.Lock()
+        errorCallbackCalled = true
+        mutex.Unlock()
 
-    channelBuilder := channels.NewReadChannelBuilder("does-not-exist")
+        ds3Testing.AssertString(t, "errored object name", testObjectName, objectName)
+        ds3Testing.AssertBool(t, "error expected to by of type NotExist", true, os.IsNotExist(err))
+    }
+
+    strategy := helpers.WriteTransferStrategy{
+        BlobStrategy: newTestBlobStrategy(),
+        Options:      helpers.WriteBulkJobOptions{MaxUploadSize: &helpers.MinUploadSize},
+        Listeners:    helpers.ListenerStrategy{ErrorCallback:errorCallback},
+    }
+
+    channelBuilder := channels.NewReadChannelBuilder(testObjectName)
     nonExistentPutObj := helperModels.PutObject{
-        PutObject:      ds3Models.Ds3PutObject{Name:"does-not-exist",Size:10},
+        PutObject:      ds3Models.Ds3PutObject{Name:testObjectName,Size:10},
         ChannelBuilder: channelBuilder,
     }
 
     writeObjects := []helperModels.PutObject { nonExistentPutObj }
 
     _, err := helper.PutObjects(testBucket, writeObjects, strategy)
+    ds3Testing.AssertNilError(t, err)
 
-    // Verify that the expected error occurred instead of a panic
-    if err == nil {
-        t.Fatal("expected to get an error due to file not existing")
+    ds3Testing.AssertBool(t, "error callback was called", true, errorCallbackCalled)
+}
+
+type closeWrapper struct {
+    io.Reader
+}
+
+func (wrapper *closeWrapper) Close() error {
+    return nil
+}
+
+type emptyReadChannelBuilder struct {
+    channels.FatalErrorHandler
+}
+
+func (builder *emptyReadChannelBuilder) GetChannel(_ int64) (io.ReadCloser, error) {
+    reader := bytes.NewReader([]byte{})
+    return &closeWrapper{Reader: reader}, nil
+}
+
+func (builder *emptyReadChannelBuilder) IsChannelAvailable(_ int64) bool {
+    return true
+}
+
+func (builder *emptyReadChannelBuilder) OnDone(reader io.ReadCloser) {
+    reader.Close()
+}
+
+type emptyWriteCloser struct {}
+
+func (writer *emptyWriteCloser) Write(p []byte) (n int, err error) {
+    return len(p), nil
+}
+
+func (writer *emptyWriteCloser) Close() error {
+    return nil
+}
+
+type emptyWriteChannelBuilder struct {
+    channels.FatalErrorHandler
+}
+
+func (builder *emptyWriteChannelBuilder) GetChannel(_ int64) (io.WriteCloser, error) {
+    return &emptyWriteCloser{}, nil
+}
+
+func (builder *emptyWriteChannelBuilder) IsChannelAvailable(_ int64) bool {
+    return true
+}
+
+func (builder *emptyWriteChannelBuilder) OnDone(writer io.WriteCloser) {
+    writer.Close()
+}
+
+func TestBulkPutAndGetLotsOfFiles(t *testing.T) {
+    defer func() {
+        // force delete the bucket because its faster than deleting all the files
+        testutils.DeleteBucket(client, testBucket)
+        // re-creating the bucket after force delete because other tests expect it to exist
+        testutils.PutBucket(client, testBucket)
+    }()
+    helper := helpers.NewHelpers(client)
+
+    // put a bunch of files
+    var writeObjects []helperModels.PutObject
+
+    const numObjects = 18650
+    for i := 0; i < numObjects; i++ {
+        objName := fmt.Sprintf("file-%d.txt", i)
+        curWriteObj := helperModels.PutObject{
+            PutObject:      ds3Models.Ds3PutObject{Name:objName, Size:0},
+            ChannelBuilder: &emptyReadChannelBuilder{},
+        }
+        writeObjects = append(writeObjects, curWriteObj)
     }
-    aggErr, ok := err.(*ds3Models.AggregateError)
-    if !ok {
-        t.Fatal("expected error to be of type AggregateError")
+
+    writeStrategy := helpers.WriteTransferStrategy{
+        BlobStrategy: &helpers.SimpleBlobStrategy{
+            Delay:time.Second * 30,
+            MaxConcurrentTransfers:10,
+        },
+        Options:   helpers.WriteBulkJobOptions{MaxUploadSize: &helpers.MinUploadSize},
+        Listeners: newErrorOnErrorListenerStrategy(t),
     }
-    if len(aggErr.Errors) != 1 {
-        t.Fatalf("expected 1 aggregate error, but got %d", len(aggErr.Errors))
+
+    jobId, err := helper.PutObjects(testBucket, writeObjects, writeStrategy)
+    ds3Testing.AssertNilError(t, err)
+    if jobId == "" {
+        t.Error("expected to get a BP job ID, but instead got nothing")
     }
-    expected := "open does-not-exist: no such file or directory"
-    ds3Testing.AssertString(t, "expected error", expected, aggErr.Errors[0].Error())
+
+    // retrieve said files
+    var readObjects []helperModels.GetObject
+    for _, writeObj := range writeObjects {
+        curGetObj := helperModels.GetObject{
+            Name:           writeObj.PutObject.Name,
+            ChannelBuilder: &emptyWriteChannelBuilder{},
+        }
+        readObjects = append(readObjects, curGetObj)
+    }
+
+    readStrategy := helpers.ReadTransferStrategy{
+        Options: helpers.ReadBulkJobOptions{}, // use default job options
+        BlobStrategy: &helpers.SimpleBlobStrategy{
+            Delay:time.Second * 30,
+            MaxConcurrentTransfers:10,
+        },
+        Listeners: newErrorOnErrorListenerStrategy(t),
+    }
+
+    jobId, err = helper.GetObjects(testBucket, readObjects, readStrategy)
+    ds3Testing.AssertNilError(t, err)
+
+    if jobId == "" {
+        t.Errorf("expected to get a BP job ID, but instead got nothing")
+    }
 }

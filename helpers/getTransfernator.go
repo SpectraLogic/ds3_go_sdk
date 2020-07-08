@@ -40,8 +40,11 @@ func newBulkGetRequest(bucketName string, readObjects *[]helperModels.GetObject,
     if options.ImplicitJobIdResolution != nil {
         bulkGet.WithImplicitJobIdResolution(*options.ImplicitJobIdResolution)
     }
-    if options.priority != ds3Models.UNDEFINED {
-        bulkGet.WithPriority(options.priority)
+    if options.Priority != ds3Models.UNDEFINED {
+        bulkGet.WithPriority(options.Priority)
+    }
+    if options.Name != nil {
+        bulkGet.WithName(*options.Name)
     }
 
     return bulkGet
@@ -75,15 +78,17 @@ func (transceiver *getTransceiver) transfer() (string, error) {
     // init queue, producer and consumer
     var waitGroup sync.WaitGroup
 
+    doneNotifier := NewConditionalBool()
+
     queue := newOperationQueue(transceiver.Strategy.BlobStrategy.maxWaitingTransfers(), transceiver.Client.Logger)
-    producer := newGetProducer(&bulkGetResponse.MasterObjectList, transceiver.ReadObjects, &queue, transceiver.Strategy, transceiver.Client, &waitGroup)
-    consumer := newConsumer(&queue, &waitGroup, transceiver.Strategy.BlobStrategy.maxConcurrentTransfers())
+    producer := newGetProducer(&bulkGetResponse.MasterObjectList, transceiver.ReadObjects, &queue, transceiver.Strategy, transceiver.Client, &waitGroup, doneNotifier)
+    consumer := newConsumer(&queue, &waitGroup, transceiver.Strategy.BlobStrategy.maxConcurrentTransfers(), doneNotifier)
 
     // Wait for completion of producer-consumer goroutines
     var aggErr ds3Models.AggregateError
-    waitGroup.Add(2)  // adding producer and consumer goroutines to wait group
-    go producer.run(&aggErr) // producer will add to waitGroup for every blob retrieval added to queue, and each transfer performed will decrement from waitGroup
+    waitGroup.Add(1)  // adding producer and consumer goroutines to wait group
     go consumer.run()
+    err = producer.run() // producer will add to waitGroup for every blob retrieval added to queue, and each transfer performed will decrement from waitGroup
     waitGroup.Wait()
 
     return bulkGetResponse.MasterObjectList.JobId, aggErr.GetErrors()

@@ -12,16 +12,17 @@
 package ds3_integration
 
 import (
-    "testing"
-    "log"
-    "os"
+    "bytes"
+    "fmt"
     "github.com/SpectraLogic/ds3_go_sdk/ds3"
     "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
     "github.com/SpectraLogic/ds3_go_sdk/ds3_integration/utils"
-    "io/ioutil"
-    "bytes"
     "github.com/SpectraLogic/ds3_go_sdk/ds3_utils/ds3Testing"
+    "io/ioutil"
+    "log"
+    "os"
     "strconv"
+    "testing"
 )
 
 var client *ds3.Client
@@ -79,13 +80,45 @@ func TestObject(t *testing.T) {
 
     //Verify that object exists
     getObjectResponse, getObjErr := testutils.GetObjectLogError(t, client, testBucket, beowulf)
-    if getObjErr != nil {
+    ds3Testing.AssertNilError(t, putObjErr)
+    if getObjErr == nil {
         defer getObjectResponse.Content.Close()
         bs, readErr := ioutil.ReadAll(getObjectResponse.Content)
         ds3Testing.AssertNilError(t, readErr)
         if bytes.Compare(bs, book) != 0 {
             t.Error("Retrieved book does not match uploaded book.")
         }
+    }
+}
+
+func TestPutGetFilePercentEncodingObjectNames(t *testing.T) {
+    defer testutils.DeleteBucketContents(client, testBucket)
+
+    inputSymbols := []string {"-", ".", "_", "~", "!", "$", "'", "(", ")", "*", ",", "&", "=", "@", ":", "/", ";", "+", "?", " ", "%", "#", "'", "\t"}
+
+    for i, input := range inputSymbols {
+        objectName := fmt.Sprintf("test%ssymbol%d", input, i)
+
+        func() {
+            //Put object to BP
+            content := []byte("hello world")
+            defer testutils.DeleteObjectLogError(t, client, testBucket, objectName)
+
+            putObjErr := testutils.PutObjectLogError(t, client, testBucket, objectName, content)
+            ds3Testing.AssertNilError(t, putObjErr)
+
+            //Verify that object exists
+            getObjectResponse, getObjErr := testutils.GetObjectLogError(t, client, testBucket, objectName)
+            ds3Testing.AssertNilError(t, getObjErr)
+            if getObjErr == nil {
+                defer getObjectResponse.Content.Close()
+                retrievedContent, readErr := ioutil.ReadAll(getObjectResponse.Content)
+                ds3Testing.AssertNilError(t, readErr)
+                if bytes.Compare(retrievedContent, content) != 0 {
+                    t.Error("Retrieved content does not match uploaded content.")
+                }
+            }
+        }()
     }
 }
 
@@ -309,11 +342,13 @@ func TestBulkGet(t *testing.T) {
 
     // Get all objects and verify content
     for _, obj := range availableChunks.Objects.Objects {
-        getObj, objErr := client.GetObject(models.NewGetObjectRequest(testBucket, *obj.Name))
-        ds3Testing.AssertNilError(t, objErr)
+        func() {
+            getObj, objErr := client.GetObject(models.NewGetObjectRequest(testBucket, *obj.Name))
+            ds3Testing.AssertNilError(t, objErr)
 
-        defer getObj.Content.Close()
-        testutils.VerifyBookContent(t, *obj.Name, getObj.Content)
+            defer getObj.Content.Close()
+            testutils.VerifyBookContent(t, *obj.Name, getObj.Content)
+        }()
     }
 }
 

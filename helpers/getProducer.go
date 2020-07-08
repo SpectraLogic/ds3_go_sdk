@@ -1,13 +1,15 @@
 package helpers
 
 import (
-    ds3Models "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
+    "fmt"
     "github.com/SpectraLogic/ds3_go_sdk/ds3"
-    "sync"
-    "io"
-    "github.com/SpectraLogic/ds3_go_sdk/helpers/ranges"
+    ds3Models "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
     helperModels "github.com/SpectraLogic/ds3_go_sdk/helpers/models"
+    "github.com/SpectraLogic/ds3_go_sdk/helpers/ranges"
     "github.com/SpectraLogic/ds3_go_sdk/sdk_log"
+    "io"
+    "sync"
+    "time"
 )
 
 type getProducer struct {
@@ -22,9 +24,20 @@ type getProducer struct {
     deferredBlobQueue    BlobDescriptionQueue // queue of blobs whose channels are not yet ready for transfer
     rangeFinder          ranges.BlobRangeFinder
     sdk_log.Logger
+
+    // Conditional value that gets triggered when a blob has finished being transferred
+    doneNotifier NotifyBlobDone
 }
 
-func newGetProducer(jobMasterObjectList *ds3Models.MasterObjectList, getObjects *[]helperModels.GetObject, queue *chan TransferOperation, strategy *ReadTransferStrategy, client *ds3.Client, waitGroup *sync.WaitGroup) *getProducer {
+func newGetProducer(
+    jobMasterObjectList *ds3Models.MasterObjectList,
+    getObjects *[]helperModels.GetObject,
+    queue *chan TransferOperation,
+    strategy *ReadTransferStrategy,
+    client *ds3.Client,
+    waitGroup *sync.WaitGroup,
+    doneNotifier NotifyBlobDone) *getProducer {
+
     return &getProducer{
         JobMasterObjectList:  jobMasterObjectList,
         GetObjects:           getObjects,
@@ -37,6 +50,7 @@ func newGetProducer(jobMasterObjectList *ds3Models.MasterObjectList, getObjects 
         deferredBlobQueue:    NewBlobDescriptionQueue(),
         rangeFinder:          ranges.NewBlobRangeFinder(getObjects),
         Logger:               client.Logger, //use the same logger as the client
+        doneNotifier:         doneNotifier,
     }
 }
 
@@ -56,15 +70,20 @@ func toReadObjectMap(getObjects *[]helperModels.GetObject) map[string]helperMode
 }
 
 // Processes all the blobs in a chunk that are ready for transfer from BP
-func (producer *getProducer) processChunk(curChunk *ds3Models.Objects, bucketName string, jobId string, aggErr *ds3Models.AggregateError) {
+// Returns the number of blobs queued for process
+func (producer *getProducer) processChunk(curChunk *ds3Models.Objects, bucketName string, jobId string) int {
     producer.Debugf("begin chunk processing %s", curChunk.ChunkId)
 
+    processedCount := 0
     // transfer blobs that are ready, and queue those that are waiting for channel
     for _, curObj := range curChunk.Objects {
         producer.Debugf("queuing object in waiting to be processed %s offset=%d length=%d", *curObj.Name, curObj.Offset, curObj.Length)
         blob := helperModels.NewBlobDescription(*curObj.Name, curObj.Offset, curObj.Length)
-        producer.queueBlobForTransfer(&blob, bucketName, jobId, aggErr)
+        if producer.queueBlobForTransfer(&blob, bucketName, jobId) {
+            processedCount++
+        }
     }
+    return processedCount
 }
 
 // Information required to perform a get operation of a blob with BP as data source and channelBuilder as destination
@@ -76,7 +95,7 @@ type getObjectInfo struct {
 }
 
 // Creates the transfer operation that will perform the data retrieval of the specified blob from BP
-func (producer *getProducer) transferOperationBuilder(info getObjectInfo, aggErr *ds3Models.AggregateError) TransferOperation {
+func (producer *getProducer) transferOperationBuilder(info getObjectInfo) TransferOperation {
     return func() {
         // has this file fatally errored while transferring a different blob?
         if info.channelBuilder.HasFatalError() {
@@ -98,24 +117,37 @@ func (producer *getProducer) transferOperationBuilder(info getObjectInfo, aggErr
 
         getObjResponse, err := producer.client.GetObject(getObjRequest)
         if err != nil {
-            aggErr.Append(err)
+            producer.strategy.Listeners.Errored(info.blob.Name(), err)
             info.channelBuilder.SetFatalError(err)
             producer.Errorf("unable to retrieve object '%s' at offset %d: %s", info.blob.Name(), info.blob.Offset(), err.Error())
             return
         }
+        defer func() {
+           err := getObjResponse.Content.Close()
+           if err != nil {
+               producer.Warningf("unable to close response body for object '%s' at offset '%d': %s", info.blob.Name(), info.blob.Offset(), err)
+           }
+        }()
 
         if len(blobRanges) == 0 {
             writer, err := info.channelBuilder.GetChannel(info.blob.Offset())
             if err != nil {
-                aggErr.Append(err)
+                producer.strategy.Listeners.Errored(info.blob.Name(), err)
                 info.channelBuilder.SetFatalError(err)
                 producer.Errorf("unable to read contents of object '%s' at offset '%d': %s", info.blob.Name(), info.blob.Offset(), err.Error())
                 return
             }
             defer info.channelBuilder.OnDone(writer)
-            _, err = io.Copy(writer, getObjResponse.Content) //copy all content from response reader to destination writer
-            if err != nil {
-                aggErr.Append(err)
+            bytesWritten, err := io.Copy(writer, getObjResponse.Content) //copy all content from response reader to destination writer
+            if err != nil && err != io.ErrUnexpectedEOF {
+                producer.strategy.Listeners.Errored(info.blob.Name(), err)
+                info.channelBuilder.SetFatalError(err)
+                producer.Errorf("unable to copy content of object '%s' at offset '%d' from source to destination: %s", info.blob.Name(), info.blob.Offset(), err.Error())
+                return
+            }
+            if bytesWritten != info.blob.Length() {
+                err = fmt.Errorf("failed to copy all content of object '%s' at offset '%d': only wrote %d of %d bytes", info.blob.Name(), info.blob.Offset(), bytesWritten, info.blob.Length())
+                producer.strategy.Listeners.Errored(info.blob.Name(), err)
                 info.channelBuilder.SetFatalError(err)
                 producer.Errorf("unable to copy content of object '%s' at offset '%d' from source to destination: %s", info.blob.Name(), info.blob.Offset(), err.Error())
             }
@@ -126,7 +158,7 @@ func (producer *getProducer) transferOperationBuilder(info getObjectInfo, aggErr
         for _, r := range blobRanges {
             err := writeRangeToDestination(info.channelBuilder, r, getObjResponse.Content)
             if err != nil {
-                aggErr.Append(err)
+                producer.strategy.Listeners.Errored(info.blob.Name(), err)
                 info.channelBuilder.SetFatalError(err)
                 producer.Errorf("unable to write to destination channel for object '%s' with range '%v': %s", info.blob.Name(), r, err.Error())
             }
@@ -149,9 +181,10 @@ func writeRangeToDestination(channelBuilder helperModels.WriteChannelBuilder, bl
 
 // Attempts to transfer a single blob from the BP to the client. If the blob is not ready for transfer,
 // then it is added to the waiting to transfer queue
-func (producer *getProducer) queueBlobForTransfer(blob *helperModels.BlobDescription, bucketName string, jobId string, aggErr *ds3Models.AggregateError) {
+// Returns whether or not the blob was queued for transfer
+func (producer *getProducer) queueBlobForTransfer(blob *helperModels.BlobDescription, bucketName string, jobId string) bool {
     if producer.processedBlobTracker.IsProcessed(*blob) {
-        return
+        return false // already been processed
     }
 
     curReadObj := producer.readObjectMap[blob.Name()]
@@ -160,13 +193,13 @@ func (producer *getProducer) queueBlobForTransfer(blob *helperModels.BlobDescrip
         // a fatal error happened on a previous blob for this file, skip processing
         producer.Warningf("fatal error occurred while transferring previous blob on this file, skipping blob '%s' offset=%d length=%d", blob.Name(), blob.Offset(), blob.Length())
         producer.processedBlobTracker.MarkProcessed(*blob)
-        return
+        return false // not going to process
     }
 
     if !curReadObj.ChannelBuilder.IsChannelAvailable(blob.Offset()) {
         producer.Debugf("channel is not currently available for getting blob '%s' offset=%d length=%d", blob.Name(), blob.Offset(), blob.Length())
         producer.deferredBlobQueue.Push(blob)
-        return
+        return false // not ready to be processed
     }
 
     producer.Debugf("channel is available for getting blob '%s' offset=%d length=%d", blob.Name(), blob.Offset(), blob.Length())
@@ -179,7 +212,7 @@ func (producer *getProducer) queueBlobForTransfer(blob *helperModels.BlobDescrip
         jobId:          jobId,
     }
 
-    var transfer TransferOperation = producer.transferOperationBuilder(objInfo, aggErr)
+    var transfer TransferOperation = producer.transferOperationBuilder(objInfo)
 
     // Increment wait group, and enqueue transfer operation
     producer.waitGroup.Add(1)
@@ -187,11 +220,16 @@ func (producer *getProducer) queueBlobForTransfer(blob *helperModels.BlobDescrip
 
     // Mark blob as processed
     producer.processedBlobTracker.MarkProcessed(*blob)
+
+    return true
 }
 
 // Attempts to process all blobs whose channels were not available for transfer.
 // Blobs whose channels are still not available are placed back on the queue.
-func (producer *getProducer) processWaitingBlobs(bucketName string, jobId string, aggErr *ds3Models.AggregateError) {
+// Returns the number of blobs queued for processing.
+func (producer *getProducer) processWaitingBlobs(bucketName string, jobId string) int {
+    processedCount := 0
+
     // attempt to process all blobs in waiting to be transferred
     waitingBlobs := producer.deferredBlobQueue.Size()
     for i := 0; i < waitingBlobs; i++ {
@@ -200,18 +238,20 @@ func (producer *getProducer) processWaitingBlobs(bucketName string, jobId string
         producer.Debugf("attempting to process '%s' offset=%d length=%d", curBlob.Name(), curBlob.Offset(), curBlob.Length())
         if err != nil {
             //should not be possible to get here
-            aggErr.Append(err)
             producer.Errorf("failure during blob transfer '%s' at offset %d: %s", curBlob.Name(), curBlob.Offset(), err.Error())
+            break
         }
-        producer.queueBlobForTransfer(curBlob, bucketName, jobId, aggErr)
+        if producer.queueBlobForTransfer(curBlob, bucketName, jobId) {
+            processedCount++
+        }
     }
+    return processedCount
 }
 
 // This initiates the production of the transfer operations which will be consumed by a consumer running in a separate go routine.
 // Each transfer operation will retrieve one blob of content from the BP.
 // Once all blobs have been queued to be transferred, the producer will finish, even if all operations have not been consumed yet.
-func (producer *getProducer) run(aggErr *ds3Models.AggregateError) {
-    defer producer.waitGroup.Done()
+func (producer *getProducer) run() error {
     defer close(*producer.queue)
 
     // determine number of blobs to be processed
@@ -219,35 +259,58 @@ func (producer *getProducer) run(aggErr *ds3Models.AggregateError) {
     producer.Debugf("job status totalBlobs=%d processedBlobs=%d", totalBlobCount, producer.processedBlobTracker.NumberOfProcessedBlobs())
 
     // process all chunks and make sure all blobs are queued for transfer
-    for producer.processedBlobTracker.NumberOfProcessedBlobs() < totalBlobCount || producer.deferredBlobQueue.Size() > 0 {
-        // Get the list of available chunks that the server can receive. The server may
-        // not be able to receive everything, so not all chunks will necessarily be
-        // returned
-        chunksReady := ds3Models.NewGetJobChunksReadyForClientProcessingSpectraS3Request(producer.JobMasterObjectList.JobId)
-        chunksReadyResponse, err := producer.client.GetJobChunksReadyForClientProcessingSpectraS3(chunksReady)
+    for producer.hasMoreToProcess(totalBlobCount) {
+        processedCount, err := producer.queueBlobsReadyForTransfer(totalBlobCount)
         if err != nil {
-            aggErr.Append(err)
-            producer.Errorf("unrecoverable error: %v", err)
-            return
+            return err
         }
 
-        // Check to see if any chunks can be processed
-        numberOfChunks := len(chunksReadyResponse.MasterObjectList.Objects)
-        if numberOfChunks > 0 {
-            // Loop through all the chunks that are available for processing, and send
-            // the files that are contained within them.
-            for _, curChunk := range chunksReadyResponse.MasterObjectList.Objects {
-                producer.processChunk(&curChunk, *chunksReadyResponse.MasterObjectList.BucketName, chunksReadyResponse.MasterObjectList.JobId, aggErr)
-            }
-
-            // Attempt to transfer waiting blobs
-            producer.processWaitingBlobs(*chunksReadyResponse.MasterObjectList.BucketName, chunksReadyResponse.MasterObjectList.JobId, aggErr)
-        } else {
-            // When no chunks are returned we need to sleep to allow for cache space to
-            // be freed.
-            producer.strategy.BlobStrategy.delay()
+        // If the last operation processed blobs, then wait for something to finish
+        if processedCount > 0 {
+            producer.doneNotifier.Wait()
+        } else if producer.hasMoreToProcess(totalBlobCount) {
+            // nothing could be processed, cache is probably full, wait a bit before trying again
+            time.Sleep(producer.strategy.BlobStrategy.delay())
         }
     }
+    return nil
+}
+
+func (producer *getProducer) hasMoreToProcess(totalBlobCount int64) bool {
+    return producer.processedBlobTracker.NumberOfProcessedBlobs() < totalBlobCount || producer.deferredBlobQueue.Size() > 0
+}
+
+// Returns the number of blobs that have been queued for transfer
+func (producer *getProducer) queueBlobsReadyForTransfer(totalBlobCount int64) (int, error) {
+    // Attempt to transfer waiting blobs
+    processedCount := producer.processWaitingBlobs(*producer.JobMasterObjectList.BucketName, producer.JobMasterObjectList.JobId)
+
+    // Check if we need to query the BP for allocated blobs, or if we already know everything is allocated.
+    if int64(producer.deferredBlobQueue.Size()) + producer.processedBlobTracker.NumberOfProcessedBlobs() >= totalBlobCount {
+        // Everything is already allocated, no need to query BP for allocated chunks
+        return processedCount, nil
+    }
+
+    // Get the list of available chunks that the server can receive. The server may
+    // not be able to receive everything, so not all chunks will necessarily be
+    // returned
+    chunksReady := ds3Models.NewGetJobChunksReadyForClientProcessingSpectraS3Request(producer.JobMasterObjectList.JobId)
+    chunksReadyResponse, err := producer.client.GetJobChunksReadyForClientProcessingSpectraS3(chunksReady)
+    if err != nil {
+        producer.Errorf("unrecoverable error: %v", err)
+        return processedCount, err
+    }
+
+    // Check to see if any chunks can be processed
+    numberOfChunks := len(chunksReadyResponse.MasterObjectList.Objects)
+    if numberOfChunks > 0 {
+        // Loop through all the chunks that are available for processing, and send
+        // the files that are contained within them.
+        for _, curChunk := range chunksReadyResponse.MasterObjectList.Objects {
+            processedCount += producer.processChunk(&curChunk, *chunksReadyResponse.MasterObjectList.BucketName, chunksReadyResponse.MasterObjectList.JobId)
+        }
+    }
+    return processedCount, nil
 }
 
 // Determines the number of blobs to be transferred.

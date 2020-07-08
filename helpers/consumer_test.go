@@ -1,9 +1,9 @@
 package helpers
 
 import (
-    "testing"
-    "sync"
     "github.com/SpectraLogic/ds3_go_sdk/ds3_utils/ds3Testing"
+    "sync"
+    "testing"
 )
 
 func testTransferBuilder(t *testing.T, i int, resultCount *int, resultMux *sync.Mutex) TransferOperation {
@@ -17,6 +17,7 @@ func testTransferBuilder(t *testing.T, i int, resultCount *int, resultMux *sync.
 }
 
 func TestProducerConsumerModel(t *testing.T) {
+    const numOperations = 10
     var wg sync.WaitGroup
     wg.Add(2)
 
@@ -25,7 +26,7 @@ func TestProducerConsumerModel(t *testing.T) {
 
     var producer = func(queue *chan TransferOperation) {
         defer wg.Done()
-        for i := 0; i < 10; i++ {
+        for i := 0; i < numOperations; i++ {
             wg.Add(1)
 
             var transferOf = testTransferBuilder(t, i, &resultCount, &resultMux)
@@ -39,12 +40,15 @@ func TestProducerConsumerModel(t *testing.T) {
 
     queue := make(chan TransferOperation, 5)
 
-    consumer := newConsumer(&queue, &wg, 5)
+    doneNotifier := NewConditionalBool()
+
+    consumer := newConsumer(&queue, &wg, 5, doneNotifier)
 
     go producer(&queue)
     go consumer.run()
 
     wg.Wait()
 
-    ds3Testing.AssertInt(t, "Executed Transfer Operations", 10, resultCount)
+    ds3Testing.AssertInt(t, "Executed Transfer Operations", numOperations, resultCount)
+    ds3Testing.AssertBool(t, "received done notification", true, doneNotifier.Done)
 }
