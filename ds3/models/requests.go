@@ -176,6 +176,13 @@ func NewGetBucketRequest(bucketName string) *GetBucketRequest {
     }
 }
 
+func NewGetBucketRequestWithPrefix(bucketName string, prefix string) *GetBucketRequest {
+    return &GetBucketRequest{
+        BucketName: bucketName,
+        Prefix: &prefix,
+    }
+}
+
 func (getBucketRequest *GetBucketRequest) WithDelimiter(delimiter string) *GetBucketRequest {
     getBucketRequest.Delimiter = &delimiter
     return getBucketRequest
