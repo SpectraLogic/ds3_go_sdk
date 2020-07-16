@@ -60,7 +60,7 @@ func VerifyBookContent(t *testing.T, bookName string, actual io.ReadCloser) {
     verifyContent(t, expected, actual)
 }
 
-func VerifyPartialFile(t *testing.T, filePath string, length int64, offset int64, actual io.ReadCloser) {
+func VerifyPartialFile(t *testing.T, filePath string, length int64, offset int64, actual io.Reader) {
     f, err := os.Open(filePath)
     ds3Testing.AssertNilError(t, err)
 
@@ -73,7 +73,7 @@ func VerifyPartialFile(t *testing.T, filePath string, length int64, offset int64
     verifyPartialContent(t, *expected, actual, length)
 }
 
-func verifyPartialContent(t *testing.T, expected []byte, actual io.ReadCloser, length int64) {
+func verifyPartialContent(t *testing.T, expected []byte, actual io.Reader, length int64) {
     content, err := getNBytesFromReader(actual, length)
     ds3Testing.AssertNilError(t, err)
 
