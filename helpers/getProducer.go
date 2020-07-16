@@ -12,6 +12,8 @@ import (
     "time"
 )
 
+const timesToRetryGettingPartialBlob = 5
+
 type getProducer struct {
     JobMasterObjectList  *ds3Models.MasterObjectList //MOL from put bulk job creation
     GetObjects           *[]helperModels.GetObject
@@ -146,10 +148,13 @@ func (producer *getProducer) transferOperationBuilder(info getObjectInfo) Transf
                 return
             }
             if bytesWritten != info.blob.Length() {
-                err = fmt.Errorf("failed to copy all content of object '%s' at offset '%d': only wrote %d of %d bytes", info.blob.Name(), info.blob.Offset(), bytesWritten, info.blob.Length())
-                producer.strategy.Listeners.Errored(info.blob.Name(), err)
-                info.channelBuilder.SetFatalError(err)
-                producer.Errorf("unable to copy content of object '%s' at offset '%d' from source to destination: %s", info.blob.Name(), info.blob.Offset(), err.Error())
+                producer.Errorf("failed to copy all content of object '%s' at offset '%d': only wrote %d of %d bytes", info.blob.Name(), info.blob.Offset(), bytesWritten, info.blob.Length())
+                err := GetRemainingBlob(producer.client, info.bucketName, info.blob, bytesWritten, writer, producer.Logger)
+                if err != nil {
+                    producer.strategy.Listeners.Errored(info.blob.Name(), err)
+                    info.channelBuilder.SetFatalError(err)
+                    producer.Errorf("unable to copy content of object '%s' at offset '%d' from source to destination: %s", info.blob.Name(), info.blob.Offset(), err.Error())
+                }
             }
             return
         }
@@ -164,6 +169,52 @@ func (producer *getProducer) transferOperationBuilder(info getObjectInfo) Transf
             }
         }
     }
+}
+
+func GetRemainingBlob(client *ds3.Client, bucketName string, blob *helperModels.BlobDescription, amountAlreadyRetrieved int64, writer io.Writer, logger sdk_log.Logger) error {
+    logger.Debugf("starting retry for fetching partial blob '%s' at offset '%d': amount to retrieve %d", blob.Name(), blob.Offset(), blob.Length() - amountAlreadyRetrieved)
+    bytesRetrievedSoFar := amountAlreadyRetrieved
+    timesRetried := 0
+    rangeEnd := blob.Offset() + blob.Length() -1
+    for bytesRetrievedSoFar < blob.Length() && timesRetried < timesToRetryGettingPartialBlob {
+        rangeStart := blob.Offset() + bytesRetrievedSoFar
+        bytesRetrievedThisRound, err := RetryGettingBlobRange(client, bucketName, blob.Name(), blob.Offset(), rangeStart, rangeEnd, writer, logger)
+        if err != nil {
+            logger.Errorf("failed to get object '%s' at offset '%d', range %d=%d attempt %d: %s", blob.Name(), blob.Offset(), rangeStart, rangeEnd, timesRetried, err.Error())
+        }
+        bytesRetrievedSoFar+= bytesRetrievedThisRound
+        timesRetried++
+    }
+
+    if bytesRetrievedSoFar < blob.Length() {
+        return fmt.Errorf("failed to copy all content of object '%s' at offset '%d': only wrote %d of %d bytes", blob.Name(), blob.Offset(), bytesRetrievedSoFar, blob.Length())
+    }
+    return nil
+}
+
+func RetryGettingBlobRange(client *ds3.Client, bucketName string, objectName string, blobOffset int64, rangeStart int64, rangeEnd int64, writer io.Writer, logger sdk_log.Logger) (int64, error) {
+    // perform a naked get call for the rest of the blob that we originally failed to get
+    partOfBlobToFetch := ds3Models.Range{
+        Start: rangeStart,
+        End:   rangeEnd,
+    }
+    getObjRequest := ds3Models.NewGetObjectRequest(bucketName, objectName).
+        WithOffset(blobOffset).
+        WithRanges(partOfBlobToFetch)
+
+    getObjResponse, err := client.GetObject(getObjRequest)
+    if err != nil {
+        return 0, err
+    }
+    defer func() {
+        err := getObjResponse.Content.Close()
+        if err != nil {
+            logger.Warningf("failed to close response body for get object '%s' with range %d-%d: %v", objectName, rangeStart, rangeEnd, err)
+        }
+    }()
+
+    bytesWritten, err := io.Copy(writer, getObjResponse.Content) //copy all content from response reader to destination writer
+    return bytesWritten, err
 }
 
 // Writes a range of a blob to its destination channel
