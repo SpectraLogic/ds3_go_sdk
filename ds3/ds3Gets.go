@@ -23,6 +23,7 @@ func (client *Client) GetObject(request *models.GetObjectRequest) (*models.GetOb
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/" + request.BucketName + "/" + request.ObjectName).
+        WithOptionalVoidQueryParam("cached_only", request.CachedOnly).
         WithOptionalQueryParam("job", request.Job).
         WithOptionalQueryParam("offset", networking.Int64PtrToStrPtr(request.Offset)).
         WithOptionalQueryParam("version_id", request.VersionId).

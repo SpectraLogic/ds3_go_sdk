@@ -1341,6 +1341,7 @@ func (client *Client) RegisterS3TargetSpectraS3(request *models.RegisterS3Target
         WithOptionalQueryParam("proxy_port", networking.IntPtrToStrPtr(request.ProxyPort)).
         WithOptionalQueryParam("proxy_username", request.ProxyUsername).
         WithOptionalQueryParam("region", networking.InterfaceToStrPtr(request.Region)).
+        WithOptionalQueryParam("restricted_access", networking.BoolPtrToStrPtr(request.RestrictedAccess)).
         WithOptionalQueryParam("staged_data_expiration_in_days", networking.IntPtrToStrPtr(request.StagedDataExpirationInDays)).
         Build(client.connectionInfo)
 
