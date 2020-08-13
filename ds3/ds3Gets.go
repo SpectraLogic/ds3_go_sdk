@@ -23,6 +23,7 @@ func (client *Client) GetObject(request *models.GetObjectRequest) (*models.GetOb
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/" + request.BucketName + "/" + request.ObjectName).
+        WithOptionalVoidQueryParam("cached_only", request.CachedOnly).
         WithOptionalQueryParam("job", request.Job).
         WithOptionalQueryParam("offset", networking.Int64PtrToStrPtr(request.Offset)).
         WithOptionalQueryParam("version_id", request.VersionId).
@@ -1800,6 +1801,89 @@ func (client *Client) GetAzureTargetFailureNotificationRegistrationsSpectraS3(re
     return models.NewGetAzureTargetFailureNotificationRegistrationsSpectraS3Response(response)
 }
 
+func (client *Client) GetBucketChangesNotificationRegistrationSpectraS3(request *models.GetBucketChangesNotificationRegistrationSpectraS3Request) (*models.GetBucketChangesNotificationRegistrationSpectraS3Response, error) {
+    // Build the http request
+    httpRequest, err := networking.NewHttpRequestBuilder().
+        WithHttpVerb(HTTP_VERB_GET).
+        WithPath("/_rest_/bucket_changes_notification_registration/" + request.BucketChangesNotificationRegistration).
+        Build(client.connectionInfo)
+
+    if err != nil {
+        return nil, err
+    }
+
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
+    httpRedirectDecorator := networking.NewHttpTempRedirectDecorator(networkRetryDecorator, client.clientPolicy.maxRedirect)
+
+    // Invoke the HTTP request.
+    response, requestErr := httpRedirectDecorator.Invoke(httpRequest)
+    if requestErr != nil {
+        return nil, requestErr
+    }
+
+    // Create a response object based on the result.
+    return models.NewGetBucketChangesNotificationRegistrationSpectraS3Response(response)
+}
+
+func (client *Client) GetBucketChangesNotificationRegistrationsSpectraS3(request *models.GetBucketChangesNotificationRegistrationsSpectraS3Request) (*models.GetBucketChangesNotificationRegistrationsSpectraS3Response, error) {
+    // Build the http request
+    httpRequest, err := networking.NewHttpRequestBuilder().
+        WithHttpVerb(HTTP_VERB_GET).
+        WithPath("/_rest_/bucket_changes_notification_registration").
+        WithOptionalVoidQueryParam("last_page", request.LastPage).
+        WithOptionalQueryParam("page_length", networking.IntPtrToStrPtr(request.PageLength)).
+        WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
+        WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
+        WithOptionalQueryParam("user_id", request.UserId).
+        Build(client.connectionInfo)
+
+    if err != nil {
+        return nil, err
+    }
+
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
+    httpRedirectDecorator := networking.NewHttpTempRedirectDecorator(networkRetryDecorator, client.clientPolicy.maxRedirect)
+
+    // Invoke the HTTP request.
+    response, requestErr := httpRedirectDecorator.Invoke(httpRequest)
+    if requestErr != nil {
+        return nil, requestErr
+    }
+
+    // Create a response object based on the result.
+    return models.NewGetBucketChangesNotificationRegistrationsSpectraS3Response(response)
+}
+
+func (client *Client) GetBucketHistorySpectraS3(request *models.GetBucketHistorySpectraS3Request) (*models.GetBucketHistorySpectraS3Response, error) {
+    // Build the http request
+    httpRequest, err := networking.NewHttpRequestBuilder().
+        WithHttpVerb(HTTP_VERB_GET).
+        WithPath("/_rest_/bucket_history").
+        WithOptionalQueryParam("bucket_id", request.BucketId).
+        WithOptionalVoidQueryParam("last_page", request.LastPage).
+        WithOptionalQueryParam("min_sequence_number", networking.Int64PtrToStrPtr(request.MinSequenceNumber)).
+        WithOptionalQueryParam("page_length", networking.IntPtrToStrPtr(request.PageLength)).
+        WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
+        WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
+        Build(client.connectionInfo)
+
+    if err != nil {
+        return nil, err
+    }
+
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
+    httpRedirectDecorator := networking.NewHttpTempRedirectDecorator(networkRetryDecorator, client.clientPolicy.maxRedirect)
+
+    // Invoke the HTTP request.
+    response, requestErr := httpRedirectDecorator.Invoke(httpRequest)
+    if requestErr != nil {
+        return nil, requestErr
+    }
+
+    // Create a response object based on the result.
+    return models.NewGetBucketHistorySpectraS3Response(response)
+}
+
 func (client *Client) GetDs3TargetFailureNotificationRegistrationSpectraS3(request *models.GetDs3TargetFailureNotificationRegistrationSpectraS3Request) (*models.GetDs3TargetFailureNotificationRegistrationSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
@@ -3209,6 +3293,7 @@ func (client *Client) GetTapeDrivesSpectraS3(request *models.GetTapeDrivesSpectr
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/tape_drive").
         WithOptionalVoidQueryParam("last_page", request.LastPage).
+        WithOptionalQueryParam("minimum_task_priority", networking.InterfaceToStrPtr(request.MinimumTaskPriority)).
         WithOptionalQueryParam("page_length", networking.IntPtrToStrPtr(request.PageLength)).
         WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
@@ -4118,6 +4203,7 @@ func (client *Client) GetS3TargetsSpectraS3(request *models.GetS3TargetsSpectraS
         WithOptionalQueryParam("https", networking.BoolPtrToStrPtr(request.Https)).
         WithOptionalVoidQueryParam("last_page", request.LastPage).
         WithOptionalQueryParam("name", request.Name).
+        WithOptionalQueryParam("naming_mode", networking.InterfaceToStrPtr(request.NamingMode)).
         WithOptionalQueryParam("page_length", networking.IntPtrToStrPtr(request.PageLength)).
         WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).

@@ -46,6 +46,7 @@ func (client *Client) HeadObject(request *models.HeadObjectRequest) (*models.Hea
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_HEAD).
         WithPath("/" + request.BucketName + "/" + request.ObjectName).
+        WithOptionalQueryParam("version_id", request.VersionId).
         Build(client.connectionInfo)
 
     if err != nil {
