@@ -4028,6 +4028,7 @@ const (
     TAPE_DRIVE_TYPE_LTO6 TapeDriveType = 1 + iota
     TAPE_DRIVE_TYPE_LTO7 TapeDriveType = 1 + iota
     TAPE_DRIVE_TYPE_LTO8 TapeDriveType = 1 + iota
+    TAPE_DRIVE_TYPE_LTO9 TapeDriveType = 1 + iota
     TAPE_DRIVE_TYPE_TS1140 TapeDriveType = 1 + iota
     TAPE_DRIVE_TYPE_TS1150 TapeDriveType = 1 + iota
     TAPE_DRIVE_TYPE_TS1155 TapeDriveType = 1 + iota
@@ -4043,6 +4044,7 @@ func (tapeDriveType *TapeDriveType) UnmarshalText(text []byte) error {
         case "LTO6": *tapeDriveType = TAPE_DRIVE_TYPE_LTO6
         case "LTO7": *tapeDriveType = TAPE_DRIVE_TYPE_LTO7
         case "LTO8": *tapeDriveType = TAPE_DRIVE_TYPE_LTO8
+        case "LTO9": *tapeDriveType = TAPE_DRIVE_TYPE_LTO9
         case "TS1140": *tapeDriveType = TAPE_DRIVE_TYPE_TS1140
         case "TS1150": *tapeDriveType = TAPE_DRIVE_TYPE_TS1150
         case "TS1155": *tapeDriveType = TAPE_DRIVE_TYPE_TS1155
@@ -4061,6 +4063,7 @@ func (tapeDriveType TapeDriveType) String() string {
         case TAPE_DRIVE_TYPE_LTO6: return "LTO6"
         case TAPE_DRIVE_TYPE_LTO7: return "LTO7"
         case TAPE_DRIVE_TYPE_LTO8: return "LTO8"
+        case TAPE_DRIVE_TYPE_LTO9: return "LTO9"
         case TAPE_DRIVE_TYPE_TS1140: return "TS1140"
         case TAPE_DRIVE_TYPE_TS1150: return "TS1150"
         case TAPE_DRIVE_TYPE_TS1155: return "TS1155"
@@ -4939,6 +4942,7 @@ type S3Target struct {
     ProxyUsername *string
     Quiesced Quiesced
     Region *S3Region
+    RestrictedAccess bool
     SecretKey *string
     StagedDataExpirationInDays int
     State TargetState
@@ -4989,6 +4993,8 @@ func (s3Target *S3Target) parse(xmlNode *XmlNode, aggErr *AggregateError) {
             parseEnum(child.Content, &s3Target.Quiesced, aggErr)
         case "Region":
             s3Target.Region = newS3RegionFromContent(child.Content, aggErr)
+        case "RestrictedAccess":
+            s3Target.RestrictedAccess = parseBool(child.Content, aggErr)
         case "SecretKey":
             s3Target.SecretKey = parseNullableString(child.Content)
         case "StagedDataExpirationInDays":

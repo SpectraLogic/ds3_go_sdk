@@ -258,6 +258,7 @@ type Range struct {
 type GetObjectRequest struct {
     BucketName string
     ObjectName string
+    CachedOnly bool
     Checksum Checksum
     Job *string
     Metadata map[string]string
@@ -272,6 +273,11 @@ func NewGetObjectRequest(bucketName string, objectName string) *GetObjectRequest
         Checksum: NewNoneChecksum(),
         Metadata: make(map[string]string),
     }
+}
+
+func (getObjectRequest *GetObjectRequest) WithCachedOnly() *GetObjectRequest {
+    getObjectRequest.CachedOnly = true
+    return getObjectRequest
 }
 
 func (getObjectRequest *GetObjectRequest) WithJob(job string) *GetObjectRequest {
@@ -9358,6 +9364,7 @@ type ModifyS3TargetSpectraS3Request struct {
     ProxyUsername *string
     Quiesced Quiesced
     Region S3Region
+    RestrictedAccess *bool
     S3Target string
     SecretKey *string
     StagedDataExpirationInDays *int
@@ -9459,6 +9466,11 @@ func (modifyS3TargetSpectraS3Request *ModifyS3TargetSpectraS3Request) WithRegion
     return modifyS3TargetSpectraS3Request
 }
 
+func (modifyS3TargetSpectraS3Request *ModifyS3TargetSpectraS3Request) WithRestrictedAccess(restrictedAccess bool) *ModifyS3TargetSpectraS3Request {
+    modifyS3TargetSpectraS3Request.RestrictedAccess = &restrictedAccess
+    return modifyS3TargetSpectraS3Request
+}
+
 func (modifyS3TargetSpectraS3Request *ModifyS3TargetSpectraS3Request) WithSecretKey(secretKey string) *ModifyS3TargetSpectraS3Request {
     modifyS3TargetSpectraS3Request.SecretKey = &secretKey
     return modifyS3TargetSpectraS3Request
@@ -9487,6 +9499,7 @@ type RegisterS3TargetSpectraS3Request struct {
     ProxyPort *int
     ProxyUsername *string
     Region S3Region
+    RestrictedAccess *bool
     SecretKey string
     StagedDataExpirationInDays *int
 }
@@ -9571,6 +9584,11 @@ func (registerS3TargetSpectraS3Request *RegisterS3TargetSpectraS3Request) WithPr
 
 func (registerS3TargetSpectraS3Request *RegisterS3TargetSpectraS3Request) WithRegion(region S3Region) *RegisterS3TargetSpectraS3Request {
     registerS3TargetSpectraS3Request.Region = region
+    return registerS3TargetSpectraS3Request
+}
+
+func (registerS3TargetSpectraS3Request *RegisterS3TargetSpectraS3Request) WithRestrictedAccess(restrictedAccess bool) *RegisterS3TargetSpectraS3Request {
+    registerS3TargetSpectraS3Request.RestrictedAccess = &restrictedAccess
     return registerS3TargetSpectraS3Request
 }
 

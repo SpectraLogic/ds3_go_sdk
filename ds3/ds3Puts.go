@@ -2596,6 +2596,7 @@ func (client *Client) ModifyS3TargetSpectraS3(request *models.ModifyS3TargetSpec
         WithOptionalQueryParam("proxy_username", request.ProxyUsername).
         WithOptionalQueryParam("quiesced", networking.InterfaceToStrPtr(request.Quiesced)).
         WithOptionalQueryParam("region", networking.InterfaceToStrPtr(request.Region)).
+        WithOptionalQueryParam("restricted_access", networking.BoolPtrToStrPtr(request.RestrictedAccess)).
         WithOptionalQueryParam("secret_key", request.SecretKey).
         WithOptionalQueryParam("staged_data_expiration_in_days", networking.IntPtrToStrPtr(request.StagedDataExpirationInDays)).
         Build(client.connectionInfo)
