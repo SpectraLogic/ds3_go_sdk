@@ -37,6 +37,25 @@ func NewAbortMultiPartUploadResponse(webResponse WebResponse) (*AbortMultiPartUp
     }
 }
 
+type CompleteBlobResponse struct {
+    
+    Headers *http.Header
+}
+
+
+
+func NewCompleteBlobResponse(webResponse WebResponse) (*CompleteBlobResponse, error) {
+    defer webResponse.Body().Close()
+    expectedStatusCodes := []int { 200 }
+
+    switch code := webResponse.StatusCode(); code {
+    case 200:
+        return &CompleteBlobResponse{Headers: webResponse.Header()}, nil
+    default:
+        return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
+    }
+}
+
 type CompleteMultiPartUploadResponse struct {
     CompleteMultipartUploadResult CompleteMultipartUploadResult
     Headers *http.Header
@@ -3435,6 +3454,32 @@ func NewPutAzureTargetFailureNotificationRegistrationSpectraS3Response(webRespon
     }
 }
 
+type PutBucketChangesNotificationRegistrationSpectraS3Response struct {
+    BucketChangesNotificationRegistration BucketChangesNotificationRegistration
+    Headers *http.Header
+}
+
+func (putBucketChangesNotificationRegistrationSpectraS3Response *PutBucketChangesNotificationRegistrationSpectraS3Response) parse(webResponse WebResponse) error {
+        return parseResponsePayload(webResponse, &putBucketChangesNotificationRegistrationSpectraS3Response.BucketChangesNotificationRegistration)
+}
+
+func NewPutBucketChangesNotificationRegistrationSpectraS3Response(webResponse WebResponse) (*PutBucketChangesNotificationRegistrationSpectraS3Response, error) {
+    defer webResponse.Body().Close()
+    expectedStatusCodes := []int { 201 }
+
+    switch code := webResponse.StatusCode(); code {
+    case 201:
+        var body PutBucketChangesNotificationRegistrationSpectraS3Response
+        if err := body.parse(webResponse); err != nil {
+            return nil, err
+        }
+        body.Headers = webResponse.Header()
+        return &body, nil
+    default:
+        return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
+    }
+}
+
 type PutDs3TargetFailureNotificationRegistrationSpectraS3Response struct {
     Ds3TargetFailureNotificationRegistration Ds3TargetFailureNotificationRegistration
     Headers *http.Header
@@ -3792,6 +3837,25 @@ func NewDeleteAzureTargetFailureNotificationRegistrationSpectraS3Response(webRes
     }
 }
 
+type DeleteBucketChangesNotificationRegistrationSpectraS3Response struct {
+    
+    Headers *http.Header
+}
+
+
+
+func NewDeleteBucketChangesNotificationRegistrationSpectraS3Response(webResponse WebResponse) (*DeleteBucketChangesNotificationRegistrationSpectraS3Response, error) {
+    defer webResponse.Body().Close()
+    expectedStatusCodes := []int { 204 }
+
+    switch code := webResponse.StatusCode(); code {
+    case 204:
+        return &DeleteBucketChangesNotificationRegistrationSpectraS3Response{Headers: webResponse.Header()}, nil
+    default:
+        return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
+    }
+}
+
 type DeleteDs3TargetFailureNotificationRegistrationSpectraS3Response struct {
     
     Headers *http.Header
@@ -4081,6 +4145,84 @@ func NewGetAzureTargetFailureNotificationRegistrationsSpectraS3Response(webRespo
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetAzureTargetFailureNotificationRegistrationsSpectraS3Response
+        if err := body.parse(webResponse); err != nil {
+            return nil, err
+        }
+        body.Headers = webResponse.Header()
+        return &body, nil
+    default:
+        return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
+    }
+}
+
+type GetBucketChangesNotificationRegistrationSpectraS3Response struct {
+    BucketChangesNotificationRegistration BucketChangesNotificationRegistration
+    Headers *http.Header
+}
+
+func (getBucketChangesNotificationRegistrationSpectraS3Response *GetBucketChangesNotificationRegistrationSpectraS3Response) parse(webResponse WebResponse) error {
+        return parseResponsePayload(webResponse, &getBucketChangesNotificationRegistrationSpectraS3Response.BucketChangesNotificationRegistration)
+}
+
+func NewGetBucketChangesNotificationRegistrationSpectraS3Response(webResponse WebResponse) (*GetBucketChangesNotificationRegistrationSpectraS3Response, error) {
+    defer webResponse.Body().Close()
+    expectedStatusCodes := []int { 200 }
+
+    switch code := webResponse.StatusCode(); code {
+    case 200:
+        var body GetBucketChangesNotificationRegistrationSpectraS3Response
+        if err := body.parse(webResponse); err != nil {
+            return nil, err
+        }
+        body.Headers = webResponse.Header()
+        return &body, nil
+    default:
+        return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
+    }
+}
+
+type GetBucketChangesNotificationRegistrationsSpectraS3Response struct {
+    BucketChangesNotificationRegistrationList BucketChangesNotificationRegistrationList
+    Headers *http.Header
+}
+
+func (getBucketChangesNotificationRegistrationsSpectraS3Response *GetBucketChangesNotificationRegistrationsSpectraS3Response) parse(webResponse WebResponse) error {
+        return parseResponsePayload(webResponse, &getBucketChangesNotificationRegistrationsSpectraS3Response.BucketChangesNotificationRegistrationList)
+}
+
+func NewGetBucketChangesNotificationRegistrationsSpectraS3Response(webResponse WebResponse) (*GetBucketChangesNotificationRegistrationsSpectraS3Response, error) {
+    defer webResponse.Body().Close()
+    expectedStatusCodes := []int { 200 }
+
+    switch code := webResponse.StatusCode(); code {
+    case 200:
+        var body GetBucketChangesNotificationRegistrationsSpectraS3Response
+        if err := body.parse(webResponse); err != nil {
+            return nil, err
+        }
+        body.Headers = webResponse.Header()
+        return &body, nil
+    default:
+        return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
+    }
+}
+
+type GetBucketHistorySpectraS3Response struct {
+    BucketHistoryEventList BucketHistoryEventList
+    Headers *http.Header
+}
+
+func (getBucketHistorySpectraS3Response *GetBucketHistorySpectraS3Response) parse(webResponse WebResponse) error {
+        return parseResponsePayload(webResponse, &getBucketHistorySpectraS3Response.BucketHistoryEventList)
+}
+
+func NewGetBucketHistorySpectraS3Response(webResponse WebResponse) (*GetBucketHistorySpectraS3Response, error) {
+    defer webResponse.Body().Close()
+    expectedStatusCodes := []int { 200 }
+
+    switch code := webResponse.StatusCode(); code {
+    case 200:
+        var body GetBucketHistorySpectraS3Response
         if err := body.parse(webResponse); err != nil {
             return nil, err
         }

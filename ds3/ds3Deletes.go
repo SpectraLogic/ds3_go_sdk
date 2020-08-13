@@ -710,6 +710,29 @@ func (client *Client) DeleteAzureTargetFailureNotificationRegistrationSpectraS3(
     return models.NewDeleteAzureTargetFailureNotificationRegistrationSpectraS3Response(response)
 }
 
+func (client *Client) DeleteBucketChangesNotificationRegistrationSpectraS3(request *models.DeleteBucketChangesNotificationRegistrationSpectraS3Request) (*models.DeleteBucketChangesNotificationRegistrationSpectraS3Response, error) {
+    // Build the http request
+    httpRequest, err := networking.NewHttpRequestBuilder().
+        WithHttpVerb(HTTP_VERB_DELETE).
+        WithPath("/_rest_/bucket_changes_notification_registration/" + request.BucketChangesNotificationRegistration).
+        Build(client.connectionInfo)
+
+    if err != nil {
+        return nil, err
+    }
+
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
+
+    // Invoke the HTTP request.
+    response, requestErr := networkRetryDecorator.Invoke(httpRequest)
+    if requestErr != nil {
+        return nil, requestErr
+    }
+
+    // Create a response object based on the result.
+    return models.NewDeleteBucketChangesNotificationRegistrationSpectraS3Response(response)
+}
+
 func (client *Client) DeleteDs3TargetFailureNotificationRegistrationSpectraS3(request *models.DeleteDs3TargetFailureNotificationRegistrationSpectraS3Request) (*models.DeleteDs3TargetFailureNotificationRegistrationSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().

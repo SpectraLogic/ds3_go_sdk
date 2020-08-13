@@ -18,6 +18,34 @@ import (
     "github.com/SpectraLogic/ds3_go_sdk/ds3/networking"
 )
 
+func (client *Client) CompleteBlob(request *models.CompleteBlobRequest) (*models.CompleteBlobResponse, error) {
+    // Build the http request
+    httpRequest, err := networking.NewHttpRequestBuilder().
+        WithHttpVerb(HTTP_VERB_POST).
+        WithPath("/" + request.BucketName + "/" + request.ObjectName).
+        WithQueryParam("blob", request.Blob).
+        WithQueryParam("job", request.Job).
+        WithOptionalQueryParam("size", networking.Int64PtrToStrPtr(request.Size)).
+        WithChecksum(request.Checksum).
+        WithHeaders(request.Metadata).
+        Build(client.connectionInfo)
+
+    if err != nil {
+        return nil, err
+    }
+
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
+
+    // Invoke the HTTP request.
+    response, requestErr := networkRetryDecorator.Invoke(httpRequest)
+    if requestErr != nil {
+        return nil, requestErr
+    }
+
+    // Create a response object based on the result.
+    return models.NewCompleteBlobResponse(response)
+}
+
 func (client *Client) CompleteMultiPartUpload(request *models.CompleteMultiPartUploadRequest) (*models.CompleteMultiPartUploadResponse, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
@@ -568,6 +596,34 @@ func (client *Client) PutAzureTargetFailureNotificationRegistrationSpectraS3(req
 
     // Create a response object based on the result.
     return models.NewPutAzureTargetFailureNotificationRegistrationSpectraS3Response(response)
+}
+
+func (client *Client) PutBucketChangesNotificationRegistrationSpectraS3(request *models.PutBucketChangesNotificationRegistrationSpectraS3Request) (*models.PutBucketChangesNotificationRegistrationSpectraS3Response, error) {
+    // Build the http request
+    httpRequest, err := networking.NewHttpRequestBuilder().
+        WithHttpVerb(HTTP_VERB_POST).
+        WithPath("/_rest_/bucket_changes_notification_registration").
+        WithQueryParam("notification_end_point", request.NotificationEndPoint).
+        WithOptionalQueryParam("bucket_id", request.BucketId).
+        WithOptionalQueryParam("format", networking.InterfaceToStrPtr(request.Format)).
+        WithOptionalQueryParam("naming_convention", networking.InterfaceToStrPtr(request.NamingConvention)).
+        WithOptionalQueryParam("notification_http_method", networking.InterfaceToStrPtr(request.NotificationHttpMethod)).
+        Build(client.connectionInfo)
+
+    if err != nil {
+        return nil, err
+    }
+
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
+
+    // Invoke the HTTP request.
+    response, requestErr := networkRetryDecorator.Invoke(httpRequest)
+    if requestErr != nil {
+        return nil, requestErr
+    }
+
+    // Create a response object based on the result.
+    return models.NewPutBucketChangesNotificationRegistrationSpectraS3Response(response)
 }
 
 func (client *Client) PutDs3TargetFailureNotificationRegistrationSpectraS3(request *models.PutDs3TargetFailureNotificationRegistrationSpectraS3Request) (*models.PutDs3TargetFailureNotificationRegistrationSpectraS3Response, error) {
@@ -1276,6 +1332,7 @@ func (client *Client) RegisterS3TargetSpectraS3(request *models.RegisterS3Target
         WithOptionalQueryParam("data_path_end_point", request.DataPathEndPoint).
         WithOptionalQueryParam("default_read_preference", networking.InterfaceToStrPtr(request.DefaultReadPreference)).
         WithOptionalQueryParam("https", networking.BoolPtrToStrPtr(request.Https)).
+        WithOptionalQueryParam("naming_mode", networking.InterfaceToStrPtr(request.NamingMode)).
         WithOptionalQueryParam("offline_data_staging_window_in_tb", networking.IntPtrToStrPtr(request.OfflineDataStagingWindowInTb)).
         WithOptionalQueryParam("permit_going_out_of_sync", networking.BoolPtrToStrPtr(request.PermitGoingOutOfSync)).
         WithOptionalQueryParam("proxy_domain", request.ProxyDomain).
@@ -1284,6 +1341,7 @@ func (client *Client) RegisterS3TargetSpectraS3(request *models.RegisterS3Target
         WithOptionalQueryParam("proxy_port", networking.IntPtrToStrPtr(request.ProxyPort)).
         WithOptionalQueryParam("proxy_username", request.ProxyUsername).
         WithOptionalQueryParam("region", networking.InterfaceToStrPtr(request.Region)).
+        WithOptionalQueryParam("restricted_access", networking.BoolPtrToStrPtr(request.RestrictedAccess)).
         WithOptionalQueryParam("staged_data_expiration_in_days", networking.IntPtrToStrPtr(request.StagedDataExpirationInDays)).
         Build(client.connectionInfo)
 
@@ -1309,6 +1367,7 @@ func (client *Client) DelegateCreateUserSpectraS3(request *models.DelegateCreate
         WithHttpVerb(HTTP_VERB_POST).
         WithPath("/_rest_/user").
         WithQueryParam("name", request.Name).
+        WithOptionalQueryParam("default_data_policy_id", request.DefaultDataPolicyId).
         WithOptionalQueryParam("id", request.Id).
         WithOptionalQueryParam("max_buckets", networking.IntPtrToStrPtr(request.MaxBuckets)).
         WithOptionalQueryParam("secret_key", request.SecretKey).

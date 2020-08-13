@@ -436,6 +436,53 @@ func (capacitySummaryContainer *CapacitySummaryContainer) parse(xmlNode *XmlNode
     }
 }
 
+type CloudNamingMode Enum
+
+const (
+    CLOUD_NAMING_MODE_BLACK_PEARL CloudNamingMode = 1 + iota
+    CLOUD_NAMING_MODE_AWS_S3 CloudNamingMode = 1 + iota
+)
+
+func (cloudNamingMode *CloudNamingMode) UnmarshalText(text []byte) error {
+    var str string = string(bytes.ToUpper(text))
+    switch str {
+        case "": *cloudNamingMode = UNDEFINED
+        case "BLACK_PEARL": *cloudNamingMode = CLOUD_NAMING_MODE_BLACK_PEARL
+        case "AWS_S3": *cloudNamingMode = CLOUD_NAMING_MODE_AWS_S3
+        default:
+            *cloudNamingMode = UNDEFINED
+            return errors.New(fmt.Sprintf("Cannot marshal '%s' into CloudNamingMode", str))
+    }
+    return nil
+}
+
+func (cloudNamingMode CloudNamingMode) String() string {
+    switch cloudNamingMode {
+        case CLOUD_NAMING_MODE_BLACK_PEARL: return "BLACK_PEARL"
+        case CLOUD_NAMING_MODE_AWS_S3: return "AWS_S3"
+        default:
+            log.Printf("Error: invalid CloudNamingMode represented by '%d'", cloudNamingMode)
+            return ""
+    }
+}
+
+func (cloudNamingMode CloudNamingMode) StringPtr() *string {
+    if cloudNamingMode == UNDEFINED {
+        return nil
+    }
+    result := cloudNamingMode.String()
+    return &result
+}
+
+func newCloudNamingModeFromContent(content []byte, aggErr *AggregateError) *CloudNamingMode {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(CloudNamingMode)
+    parseEnum(content, result, aggErr)
+    return result
+}
 type CompletedJob struct {
     BucketId string
     CachedSizeInBytes int64
@@ -1529,6 +1576,7 @@ const (
     S3_INITIAL_DATA_PLACEMENT_POLICY_REDUCED_REDUNDANCY S3InitialDataPlacementPolicy = 1 + iota
     S3_INITIAL_DATA_PLACEMENT_POLICY_STANDARD_IA S3InitialDataPlacementPolicy = 1 + iota
     S3_INITIAL_DATA_PLACEMENT_POLICY_GLACIER S3InitialDataPlacementPolicy = 1 + iota
+    S3_INITIAL_DATA_PLACEMENT_POLICY_DEEP_ARCHIVE S3InitialDataPlacementPolicy = 1 + iota
 )
 
 func (s3InitialDataPlacementPolicy *S3InitialDataPlacementPolicy) UnmarshalText(text []byte) error {
@@ -1539,6 +1587,7 @@ func (s3InitialDataPlacementPolicy *S3InitialDataPlacementPolicy) UnmarshalText(
         case "REDUCED_REDUNDANCY": *s3InitialDataPlacementPolicy = S3_INITIAL_DATA_PLACEMENT_POLICY_REDUCED_REDUNDANCY
         case "STANDARD_IA": *s3InitialDataPlacementPolicy = S3_INITIAL_DATA_PLACEMENT_POLICY_STANDARD_IA
         case "GLACIER": *s3InitialDataPlacementPolicy = S3_INITIAL_DATA_PLACEMENT_POLICY_GLACIER
+        case "DEEP_ARCHIVE": *s3InitialDataPlacementPolicy = S3_INITIAL_DATA_PLACEMENT_POLICY_DEEP_ARCHIVE
         default:
             *s3InitialDataPlacementPolicy = UNDEFINED
             return errors.New(fmt.Sprintf("Cannot marshal '%s' into S3InitialDataPlacementPolicy", str))
@@ -1552,6 +1601,7 @@ func (s3InitialDataPlacementPolicy S3InitialDataPlacementPolicy) String() string
         case S3_INITIAL_DATA_PLACEMENT_POLICY_REDUCED_REDUNDANCY: return "REDUCED_REDUNDANCY"
         case S3_INITIAL_DATA_PLACEMENT_POLICY_STANDARD_IA: return "STANDARD_IA"
         case S3_INITIAL_DATA_PLACEMENT_POLICY_GLACIER: return "GLACIER"
+        case S3_INITIAL_DATA_PLACEMENT_POLICY_DEEP_ARCHIVE: return "DEEP_ARCHIVE"
         default:
             log.Printf("Error: invalid S3InitialDataPlacementPolicy represented by '%d'", s3InitialDataPlacementPolicy)
             return ""
@@ -1659,9 +1709,11 @@ type S3Region Enum
 const (
     S3_REGION_GOV_CLOUD S3Region = 1 + iota
     S3_REGION_US_EAST_1 S3Region = 1 + iota
+    S3_REGION_US_EAST_2 S3Region = 1 + iota
     S3_REGION_US_WEST_1 S3Region = 1 + iota
     S3_REGION_US_WEST_2 S3Region = 1 + iota
     S3_REGION_EU_WEST_1 S3Region = 1 + iota
+    S3_REGION_EU_WEST_2 S3Region = 1 + iota
     S3_REGION_EU_CENTRAL_1 S3Region = 1 + iota
     S3_REGION_AP_SOUTH_1 S3Region = 1 + iota
     S3_REGION_AP_SOUTHEAST_1 S3Region = 1 + iota
@@ -1670,6 +1722,7 @@ const (
     S3_REGION_AP_NORTHEAST_2 S3Region = 1 + iota
     S3_REGION_SA_EAST_1 S3Region = 1 + iota
     S3_REGION_CN_NORTH_1 S3Region = 1 + iota
+    S3_REGION_CA_CENTRAL_1 S3Region = 1 + iota
 )
 
 func (s3Region *S3Region) UnmarshalText(text []byte) error {
@@ -1678,9 +1731,11 @@ func (s3Region *S3Region) UnmarshalText(text []byte) error {
         case "": *s3Region = UNDEFINED
         case "GOV_CLOUD": *s3Region = S3_REGION_GOV_CLOUD
         case "US_EAST_1": *s3Region = S3_REGION_US_EAST_1
+        case "US_EAST_2": *s3Region = S3_REGION_US_EAST_2
         case "US_WEST_1": *s3Region = S3_REGION_US_WEST_1
         case "US_WEST_2": *s3Region = S3_REGION_US_WEST_2
         case "EU_WEST_1": *s3Region = S3_REGION_EU_WEST_1
+        case "EU_WEST_2": *s3Region = S3_REGION_EU_WEST_2
         case "EU_CENTRAL_1": *s3Region = S3_REGION_EU_CENTRAL_1
         case "AP_SOUTH_1": *s3Region = S3_REGION_AP_SOUTH_1
         case "AP_SOUTHEAST_1": *s3Region = S3_REGION_AP_SOUTHEAST_1
@@ -1689,6 +1744,7 @@ func (s3Region *S3Region) UnmarshalText(text []byte) error {
         case "AP_NORTHEAST_2": *s3Region = S3_REGION_AP_NORTHEAST_2
         case "SA_EAST_1": *s3Region = S3_REGION_SA_EAST_1
         case "CN_NORTH_1": *s3Region = S3_REGION_CN_NORTH_1
+        case "CA_CENTRAL_1": *s3Region = S3_REGION_CA_CENTRAL_1
         default:
             *s3Region = UNDEFINED
             return errors.New(fmt.Sprintf("Cannot marshal '%s' into S3Region", str))
@@ -1700,9 +1756,11 @@ func (s3Region S3Region) String() string {
     switch s3Region {
         case S3_REGION_GOV_CLOUD: return "GOV_CLOUD"
         case S3_REGION_US_EAST_1: return "US_EAST_1"
+        case S3_REGION_US_EAST_2: return "US_EAST_2"
         case S3_REGION_US_WEST_1: return "US_WEST_1"
         case S3_REGION_US_WEST_2: return "US_WEST_2"
         case S3_REGION_EU_WEST_1: return "EU_WEST_1"
+        case S3_REGION_EU_WEST_2: return "EU_WEST_2"
         case S3_REGION_EU_CENTRAL_1: return "EU_CENTRAL_1"
         case S3_REGION_AP_SOUTH_1: return "AP_SOUTH_1"
         case S3_REGION_AP_SOUTHEAST_1: return "AP_SOUTHEAST_1"
@@ -1711,6 +1769,7 @@ func (s3Region S3Region) String() string {
         case S3_REGION_AP_NORTHEAST_2: return "AP_NORTHEAST_2"
         case S3_REGION_SA_EAST_1: return "SA_EAST_1"
         case S3_REGION_CN_NORTH_1: return "CN_NORTH_1"
+        case S3_REGION_CA_CENTRAL_1: return "CA_CENTRAL_1"
         default:
             log.Printf("Error: invalid S3Region represented by '%d'", s3Region)
             return ""
@@ -2341,6 +2400,147 @@ func (azureTargetFailureNotificationRegistration *AzureTargetFailureNotification
     }
 }
 
+type BucketChangesNotificationRegistration struct {
+    BucketId *string
+    CreationDate string
+    Format HttpResponseFormatType
+    Id string
+    LastFailure *string
+    LastHttpResponseCode *int
+    LastNotification *string
+    LastSequenceNumber *int64
+    NamingConvention NamingConventionType
+    NotificationEndPoint *string
+    NotificationHttpMethod RequestType
+    NumberOfFailuresSinceLastSuccess int
+    UserId *string
+}
+
+func (bucketChangesNotificationRegistration *BucketChangesNotificationRegistration) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+
+    // Parse Child Nodes
+    for _, child := range xmlNode.Children {
+        switch child.XMLName.Local {
+        case "BucketId":
+            bucketChangesNotificationRegistration.BucketId = parseNullableString(child.Content)
+        case "CreationDate":
+            bucketChangesNotificationRegistration.CreationDate = parseString(child.Content)
+        case "Format":
+            parseEnum(child.Content, &bucketChangesNotificationRegistration.Format, aggErr)
+        case "Id":
+            bucketChangesNotificationRegistration.Id = parseString(child.Content)
+        case "LastFailure":
+            bucketChangesNotificationRegistration.LastFailure = parseNullableString(child.Content)
+        case "LastHttpResponseCode":
+            bucketChangesNotificationRegistration.LastHttpResponseCode = parseNullableInt(child.Content, aggErr)
+        case "LastNotification":
+            bucketChangesNotificationRegistration.LastNotification = parseNullableString(child.Content)
+        case "LastSequenceNumber":
+            bucketChangesNotificationRegistration.LastSequenceNumber = parseNullableInt64(child.Content, aggErr)
+        case "NamingConvention":
+            parseEnum(child.Content, &bucketChangesNotificationRegistration.NamingConvention, aggErr)
+        case "NotificationEndPoint":
+            bucketChangesNotificationRegistration.NotificationEndPoint = parseNullableString(child.Content)
+        case "NotificationHttpMethod":
+            parseEnum(child.Content, &bucketChangesNotificationRegistration.NotificationHttpMethod, aggErr)
+        case "NumberOfFailuresSinceLastSuccess":
+            bucketChangesNotificationRegistration.NumberOfFailuresSinceLastSuccess = parseInt(child.Content, aggErr)
+        case "UserId":
+            bucketChangesNotificationRegistration.UserId = parseNullableString(child.Content)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing BucketChangesNotificationRegistration.", child.XMLName.Local)
+        }
+    }
+}
+
+type BucketHistoryEvent struct {
+    BucketId string
+    Id string
+    ObjectCreationDate *string
+    ObjectName *string
+    SequenceNumber *int64
+    Type BucketHistoryEventType
+    VersionId string
+}
+
+func (bucketHistoryEvent *BucketHistoryEvent) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+
+    // Parse Child Nodes
+    for _, child := range xmlNode.Children {
+        switch child.XMLName.Local {
+        case "BucketId":
+            bucketHistoryEvent.BucketId = parseString(child.Content)
+        case "Id":
+            bucketHistoryEvent.Id = parseString(child.Content)
+        case "ObjectCreationDate":
+            bucketHistoryEvent.ObjectCreationDate = parseNullableString(child.Content)
+        case "ObjectName":
+            bucketHistoryEvent.ObjectName = parseNullableString(child.Content)
+        case "SequenceNumber":
+            bucketHistoryEvent.SequenceNumber = parseNullableInt64(child.Content, aggErr)
+        case "Type":
+            parseEnum(child.Content, &bucketHistoryEvent.Type, aggErr)
+        case "VersionId":
+            bucketHistoryEvent.VersionId = parseString(child.Content)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing BucketHistoryEvent.", child.XMLName.Local)
+        }
+    }
+}
+
+type BucketHistoryEventType Enum
+
+const (
+    BUCKET_HISTORY_EVENT_TYPE_DELETE BucketHistoryEventType = 1 + iota
+    BUCKET_HISTORY_EVENT_TYPE_MARK_LATEST BucketHistoryEventType = 1 + iota
+    BUCKET_HISTORY_EVENT_TYPE_UNMARK_LATEST BucketHistoryEventType = 1 + iota
+    BUCKET_HISTORY_EVENT_TYPE_CREATE BucketHistoryEventType = 1 + iota
+)
+
+func (bucketHistoryEventType *BucketHistoryEventType) UnmarshalText(text []byte) error {
+    var str string = string(bytes.ToUpper(text))
+    switch str {
+        case "": *bucketHistoryEventType = UNDEFINED
+        case "DELETE": *bucketHistoryEventType = BUCKET_HISTORY_EVENT_TYPE_DELETE
+        case "MARK_LATEST": *bucketHistoryEventType = BUCKET_HISTORY_EVENT_TYPE_MARK_LATEST
+        case "UNMARK_LATEST": *bucketHistoryEventType = BUCKET_HISTORY_EVENT_TYPE_UNMARK_LATEST
+        case "CREATE": *bucketHistoryEventType = BUCKET_HISTORY_EVENT_TYPE_CREATE
+        default:
+            *bucketHistoryEventType = UNDEFINED
+            return errors.New(fmt.Sprintf("Cannot marshal '%s' into BucketHistoryEventType", str))
+    }
+    return nil
+}
+
+func (bucketHistoryEventType BucketHistoryEventType) String() string {
+    switch bucketHistoryEventType {
+        case BUCKET_HISTORY_EVENT_TYPE_DELETE: return "DELETE"
+        case BUCKET_HISTORY_EVENT_TYPE_MARK_LATEST: return "MARK_LATEST"
+        case BUCKET_HISTORY_EVENT_TYPE_UNMARK_LATEST: return "UNMARK_LATEST"
+        case BUCKET_HISTORY_EVENT_TYPE_CREATE: return "CREATE"
+        default:
+            log.Printf("Error: invalid BucketHistoryEventType represented by '%d'", bucketHistoryEventType)
+            return ""
+    }
+}
+
+func (bucketHistoryEventType BucketHistoryEventType) StringPtr() *string {
+    if bucketHistoryEventType == UNDEFINED {
+        return nil
+    }
+    result := bucketHistoryEventType.String()
+    return &result
+}
+
+func newBucketHistoryEventTypeFromContent(content []byte, aggErr *AggregateError) *BucketHistoryEventType {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(BucketHistoryEventType)
+    parseEnum(content, result, aggErr)
+    return result
+}
 type Ds3TargetFailureNotificationRegistration struct {
     CreationDate string
     Format HttpResponseFormatType
@@ -3718,6 +3918,7 @@ type TapeDrive struct {
     Id string
     LastCleaned *string
     MfgSerialNumber *string
+    MinimumTaskPriority *Priority
     PartitionId string
     Quiesced Quiesced
     ReservedTaskType ReservedTaskType
@@ -3744,6 +3945,8 @@ func (tapeDrive *TapeDrive) parse(xmlNode *XmlNode, aggErr *AggregateError) {
             tapeDrive.LastCleaned = parseNullableString(child.Content)
         case "MfgSerialNumber":
             tapeDrive.MfgSerialNumber = parseNullableString(child.Content)
+        case "MinimumTaskPriority":
+            tapeDrive.MinimumTaskPriority = newPriorityFromContent(child.Content, aggErr)
         case "PartitionId":
             tapeDrive.PartitionId = parseString(child.Content)
         case "Quiesced":
@@ -3825,9 +4028,11 @@ const (
     TAPE_DRIVE_TYPE_LTO6 TapeDriveType = 1 + iota
     TAPE_DRIVE_TYPE_LTO7 TapeDriveType = 1 + iota
     TAPE_DRIVE_TYPE_LTO8 TapeDriveType = 1 + iota
+    TAPE_DRIVE_TYPE_LTO9 TapeDriveType = 1 + iota
     TAPE_DRIVE_TYPE_TS1140 TapeDriveType = 1 + iota
     TAPE_DRIVE_TYPE_TS1150 TapeDriveType = 1 + iota
     TAPE_DRIVE_TYPE_TS1155 TapeDriveType = 1 + iota
+    TAPE_DRIVE_TYPE_TS1160 TapeDriveType = 1 + iota
 )
 
 func (tapeDriveType *TapeDriveType) UnmarshalText(text []byte) error {
@@ -3839,9 +4044,11 @@ func (tapeDriveType *TapeDriveType) UnmarshalText(text []byte) error {
         case "LTO6": *tapeDriveType = TAPE_DRIVE_TYPE_LTO6
         case "LTO7": *tapeDriveType = TAPE_DRIVE_TYPE_LTO7
         case "LTO8": *tapeDriveType = TAPE_DRIVE_TYPE_LTO8
+        case "LTO9": *tapeDriveType = TAPE_DRIVE_TYPE_LTO9
         case "TS1140": *tapeDriveType = TAPE_DRIVE_TYPE_TS1140
         case "TS1150": *tapeDriveType = TAPE_DRIVE_TYPE_TS1150
         case "TS1155": *tapeDriveType = TAPE_DRIVE_TYPE_TS1155
+        case "TS1160": *tapeDriveType = TAPE_DRIVE_TYPE_TS1160
         default:
             *tapeDriveType = UNDEFINED
             return errors.New(fmt.Sprintf("Cannot marshal '%s' into TapeDriveType", str))
@@ -3856,9 +4063,11 @@ func (tapeDriveType TapeDriveType) String() string {
         case TAPE_DRIVE_TYPE_LTO6: return "LTO6"
         case TAPE_DRIVE_TYPE_LTO7: return "LTO7"
         case TAPE_DRIVE_TYPE_LTO8: return "LTO8"
+        case TAPE_DRIVE_TYPE_LTO9: return "LTO9"
         case TAPE_DRIVE_TYPE_TS1140: return "TS1140"
         case TAPE_DRIVE_TYPE_TS1150: return "TS1150"
         case TAPE_DRIVE_TYPE_TS1155: return "TS1155"
+        case TAPE_DRIVE_TYPE_TS1160: return "TS1160"
         default:
             log.Printf("Error: invalid TapeDriveType represented by '%d'", tapeDriveType)
             return ""
@@ -4395,6 +4604,7 @@ type AzureTarget struct {
     Id string
     LastFullyVerified *string
     Name *string
+    NamingMode CloudNamingMode
     PermitGoingOutOfSync bool
     Quiesced Quiesced
     State TargetState
@@ -4425,6 +4635,8 @@ func (azureTarget *AzureTarget) parse(xmlNode *XmlNode, aggErr *AggregateError) 
             azureTarget.LastFullyVerified = parseNullableString(child.Content)
         case "Name":
             azureTarget.Name = parseNullableString(child.Content)
+        case "NamingMode":
+            parseEnum(child.Content, &azureTarget.NamingMode, aggErr)
         case "PermitGoingOutOfSync":
             azureTarget.PermitGoingOutOfSync = parseBool(child.Content, aggErr)
         case "Quiesced":
@@ -4720,6 +4932,7 @@ type S3Target struct {
     Id string
     LastFullyVerified *string
     Name *string
+    NamingMode CloudNamingMode
     OfflineDataStagingWindowInTb int
     PermitGoingOutOfSync bool
     ProxyDomain *string
@@ -4729,6 +4942,7 @@ type S3Target struct {
     ProxyUsername *string
     Quiesced Quiesced
     Region *S3Region
+    RestrictedAccess bool
     SecretKey *string
     StagedDataExpirationInDays int
     State TargetState
@@ -4759,6 +4973,8 @@ func (s3Target *S3Target) parse(xmlNode *XmlNode, aggErr *AggregateError) {
             s3Target.LastFullyVerified = parseNullableString(child.Content)
         case "Name":
             s3Target.Name = parseNullableString(child.Content)
+        case "NamingMode":
+            parseEnum(child.Content, &s3Target.NamingMode, aggErr)
         case "OfflineDataStagingWindowInTb":
             s3Target.OfflineDataStagingWindowInTb = parseInt(child.Content, aggErr)
         case "PermitGoingOutOfSync":
@@ -4777,6 +4993,8 @@ func (s3Target *S3Target) parse(xmlNode *XmlNode, aggErr *AggregateError) {
             parseEnum(child.Content, &s3Target.Quiesced, aggErr)
         case "Region":
             s3Target.Region = newS3RegionFromContent(child.Content, aggErr)
+        case "RestrictedAccess":
+            s3Target.RestrictedAccess = parseBool(child.Content, aggErr)
         case "SecretKey":
             s3Target.SecretKey = parseNullableString(child.Content)
         case "StagedDataExpirationInDays":
@@ -7318,6 +7536,44 @@ func (azureTargetFailureNotificationRegistrationList *AzureTargetFailureNotifica
             azureTargetFailureNotificationRegistrationList.AzureTargetFailureNotificationRegistrations = append(azureTargetFailureNotificationRegistrationList.AzureTargetFailureNotificationRegistrations, model)
         default:
             log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing AzureTargetFailureNotificationRegistrationList.", child.XMLName.Local)
+        }
+    }
+}
+
+type BucketChangesNotificationRegistrationList struct {
+    BucketChangesNotificationRegistrations []BucketChangesNotificationRegistration
+}
+
+func (bucketChangesNotificationRegistrationList *BucketChangesNotificationRegistrationList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+
+    // Parse Child Nodes
+    for _, child := range xmlNode.Children {
+        switch child.XMLName.Local {
+        case "BucketChangesNotificationRegistration":
+            var model BucketChangesNotificationRegistration
+            model.parse(&child, aggErr)
+            bucketChangesNotificationRegistrationList.BucketChangesNotificationRegistrations = append(bucketChangesNotificationRegistrationList.BucketChangesNotificationRegistrations, model)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing BucketChangesNotificationRegistrationList.", child.XMLName.Local)
+        }
+    }
+}
+
+type BucketHistoryEventList struct {
+    BucketHistoryEvents []BucketHistoryEvent
+}
+
+func (bucketHistoryEventList *BucketHistoryEventList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+
+    // Parse Child Nodes
+    for _, child := range xmlNode.Children {
+        switch child.XMLName.Local {
+        case "BucketHistoryEvent":
+            var model BucketHistoryEvent
+            model.parse(&child, aggErr)
+            bucketHistoryEventList.BucketHistoryEvents = append(bucketHistoryEventList.BucketHistoryEvents, model)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing BucketHistoryEventList.", child.XMLName.Local)
         }
     }
 }
