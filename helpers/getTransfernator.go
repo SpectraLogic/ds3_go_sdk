@@ -1,6 +1,7 @@
 package helpers
 
 import (
+    "fmt"
     "github.com/SpectraLogic/ds3_go_sdk/ds3"
     ds3Models "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
     helperModels "github.com/SpectraLogic/ds3_go_sdk/helpers/models"
@@ -86,8 +87,10 @@ func (transceiver *getTransceiver) createBulkGetJob() (*ds3Models.GetBulkJobSpec
     for _, obj := range *transceiver.ReadObjects {
         _, err := transceiver.Client.HeadObject(ds3Models.NewHeadObjectRequest(transceiver.BucketName, obj.Name))
         if err != nil {
-            //mark file as having a fatal error
-            obj.ChannelBuilder.SetFatalError(err)
+            // mark file as having a fatal error
+            readableErr := fmt.Errorf("failed HeadObject call on %s: %v", obj.Name, err)
+            obj.ChannelBuilder.SetFatalError(readableErr)
+            transceiver.Strategy.Listeners.Errored(obj.Name, readableErr)
         } else {
             objectsThatExist = append(objectsThatExist, obj)
         }

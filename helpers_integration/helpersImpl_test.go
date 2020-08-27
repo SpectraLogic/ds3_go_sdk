@@ -16,6 +16,7 @@ import (
     "log"
     "os"
     "sync"
+    "sync/atomic"
     "testing"
     "time"
 )
@@ -629,10 +630,17 @@ func TestRetryGetObjectsWhenSomeObjectsDoNotExist(t *testing.T) {
 
     helper := helpers.NewHelpers(client)
 
+    perObjectErrCount := int64(0)
+    errListener := helpers.ListenerStrategy{
+        ErrorCallback: func(objectName string, err error) {
+            atomic.AddInt64(&perObjectErrCount, 1)
+        },
+    }
+
     strategy := helpers.ReadTransferStrategy{
         Options: helpers.ReadBulkJobOptions{}, // use default job options
         BlobStrategy: newTestBlobStrategy(),
-        Listeners: newErrorOnErrorListenerStrategy(t),
+        Listeners: errListener,
     }
 
     file0, err := ioutil.TempFile(os.TempDir(), "goTest")
@@ -687,7 +695,13 @@ func TestRetryGetObjectsWhenSomeObjectsDoNotExist(t *testing.T) {
     utils.VerifyBookContent(testutils.BookTitles[2], file2)
     utils.VerifyBookContent(testutils.BookTitles[3], file3)
 
+    ds3Testing.AssertInt64(t, "per-object error count", 2, perObjectErrCount)
+
     doesNotExistStat, err := os.Stat(doesNotExist1.Name())
+    ds3Testing.AssertNilError(t, err)
+    ds3Testing.AssertInt64(t, "size of file", 0, doesNotExistStat.Size())
+
+    doesNotExistStat, err = os.Stat(doesNotExist2.Name())
     ds3Testing.AssertNilError(t, err)
     ds3Testing.AssertInt64(t, "size of file", 0, doesNotExistStat.Size())
 
