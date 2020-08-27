@@ -4,6 +4,7 @@ import (
     "github.com/SpectraLogic/ds3_go_sdk/ds3"
     ds3Models "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
     helperModels "github.com/SpectraLogic/ds3_go_sdk/helpers/models"
+    "net/http"
     "sync"
 )
 
@@ -66,11 +67,45 @@ func createPartialGetObjects(getObject helperModels.GetObject) []ds3Models.Ds3Ge
     return partialObjects
 }
 
+func (transceiver *getTransceiver) createBulkGetJob() (*ds3Models.GetBulkJobSpectraS3Response, *[]helperModels.GetObject, error) {
+    // attempt to create a bulk get of all objects
+    bulkGet := newBulkGetRequest(transceiver.BucketName, transceiver.ReadObjects, transceiver.Strategy.Options)
+    bulkGetResponse, err := transceiver.Client.GetBulkJobSpectraS3(bulkGet)
+    if err == nil {
+        return bulkGetResponse, transceiver.ReadObjects, nil
+    }
+
+    badStatusErr, ok := err.(*ds3Models.BadStatusCodeError)
+    if !ok || badStatusErr.ActualStatusCode != http.StatusNotFound{
+        // failed to create bulk get for reason other than 404
+        return nil, nil, err
+    }
+
+    // head each item and try again for all objects that exist in the bucket
+    var objectsThatExist []helperModels.GetObject
+    for _, obj := range *transceiver.ReadObjects {
+        _, err := transceiver.Client.HeadObject(ds3Models.NewHeadObjectRequest(transceiver.BucketName, obj.Name))
+        if err != nil {
+            //mark file as having a fatal error
+            obj.ChannelBuilder.SetFatalError(err)
+        } else {
+            objectsThatExist = append(objectsThatExist, obj)
+        }
+    }
+
+    // create bulk get job for all objects that exist in the bucket
+    bulkGet = newBulkGetRequest(transceiver.BucketName, &objectsThatExist, transceiver.Strategy.Options)
+    bulkGetResponse, err = transceiver.Client.GetBulkJobSpectraS3(bulkGet)
+    if err != nil {
+        return nil, nil, err
+    } else {
+        return bulkGetResponse, &objectsThatExist, nil
+    }
+}
+
 func (transceiver *getTransceiver) transfer() (string, error) {
     // create bulk get job
-    bulkGet := newBulkGetRequest(transceiver.BucketName, transceiver.ReadObjects, transceiver.Strategy.Options)
-
-    bulkGetResponse, err := transceiver.Client.GetBulkJobSpectraS3(bulkGet)
+    bulkGetResponse, objectsToRetrieve, err := transceiver.createBulkGetJob()
     if err != nil {
         return "", err
     }
@@ -81,7 +116,7 @@ func (transceiver *getTransceiver) transfer() (string, error) {
     doneNotifier := NewConditionalBool()
 
     queue := newOperationQueue(transceiver.Strategy.BlobStrategy.maxWaitingTransfers(), transceiver.Client.Logger)
-    producer := newGetProducer(&bulkGetResponse.MasterObjectList, transceiver.ReadObjects, &queue, transceiver.Strategy, transceiver.Client, &waitGroup, doneNotifier)
+    producer := newGetProducer(&bulkGetResponse.MasterObjectList, objectsToRetrieve, &queue, transceiver.Strategy, transceiver.Client, &waitGroup, doneNotifier)
     consumer := newConsumer(&queue, &waitGroup, transceiver.Strategy.BlobStrategy.maxConcurrentTransfers(), doneNotifier)
 
     // Wait for completion of producer-consumer goroutines

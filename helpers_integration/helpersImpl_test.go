@@ -621,3 +621,76 @@ func TestGetRemainingBlob(t *testing.T) {
         t.Fatalf("didn't verify any blobs")
     }
 }
+
+func TestRetryGetObjectsWhenSomeObjectsDoNotExist(t *testing.T) {
+    defer testutils.DeleteBucketContents(client, testBucket)
+    err := testutils.PutTestBooks(client, testBucket)
+    ds3Testing.AssertNilError(t, err)
+
+    helper := helpers.NewHelpers(client)
+
+    strategy := helpers.ReadTransferStrategy{
+        Options: helpers.ReadBulkJobOptions{}, // use default job options
+        BlobStrategy: newTestBlobStrategy(),
+        Listeners: newErrorOnErrorListenerStrategy(t),
+    }
+
+    file0, err := ioutil.TempFile(os.TempDir(), "goTest")
+    ds3Testing.AssertNilError(t, err)
+    defer file0.Close()
+    defer os.Remove(file0.Name())
+
+    file1, err := ioutil.TempFile(os.TempDir(), "goTest")
+    ds3Testing.AssertNilError(t, err)
+    defer file1.Close()
+    defer os.Remove(file1.Name())
+
+    file2, err := ioutil.TempFile(os.TempDir(), "goTest")
+    ds3Testing.AssertNilError(t, err)
+    defer file2.Close()
+    defer os.Remove(file2.Name())
+
+    file3, err := ioutil.TempFile(os.TempDir(), "goTest")
+    ds3Testing.AssertNilError(t, err)
+    defer file3.Close()
+    defer os.Remove(file3.Name())
+
+    doesNotExist1, err := ioutil.TempFile(os.TempDir(), "goTest")
+    ds3Testing.AssertNilError(t, err)
+    ds3Testing.AssertNilError(t, doesNotExist1.Close())
+    defer os.Remove(doesNotExist1.Name())
+
+    doesNotExist2, err := ioutil.TempFile(os.TempDir(), "goTest")
+    ds3Testing.AssertNilError(t, err)
+    ds3Testing.AssertNilError(t, doesNotExist2.Close())
+    defer os.Remove(doesNotExist2.Name())
+
+    doesNotExistChannelBuilder1 := channels.NewWriteChannelBuilder(doesNotExist1.Name())
+    doesNotExistChannelBuilder2 := channels.NewWriteChannelBuilder(doesNotExist2.Name())
+    readObjects := []helperModels.GetObject {
+        {Name: testutils.BookTitles[0], ChannelBuilder: channels.NewWriteChannelBuilder(file0.Name())},
+        {Name: testutils.BookTitles[1], ChannelBuilder: channels.NewWriteChannelBuilder(file1.Name())},
+        {Name: testutils.BookTitles[2], ChannelBuilder: channels.NewWriteChannelBuilder(file2.Name())},
+        {Name: testutils.BookTitles[3], ChannelBuilder: channels.NewWriteChannelBuilder(file3.Name())},
+        {Name: "doesNotExist1", ChannelBuilder: doesNotExistChannelBuilder1},
+        {Name: "doesNotExist2", ChannelBuilder: doesNotExistChannelBuilder2},
+    }
+
+    jobId, err := helper.GetObjects(testBucket, readObjects, strategy)
+    ds3Testing.AssertNilError(t, err)
+    if jobId == "" {
+        t.Error("expected to get a BP job ID, but instead got nothing")
+    }
+
+    utils.VerifyBookContent(testutils.BookTitles[0], file0)
+    utils.VerifyBookContent(testutils.BookTitles[1], file1)
+    utils.VerifyBookContent(testutils.BookTitles[2], file2)
+    utils.VerifyBookContent(testutils.BookTitles[3], file3)
+
+    doesNotExistStat, err := os.Stat(doesNotExist1.Name())
+    ds3Testing.AssertNilError(t, err)
+    ds3Testing.AssertInt64(t, "size of file", 0, doesNotExistStat.Size())
+
+    ds3Testing.AssertBool(t, "has fatal error", true, doesNotExistChannelBuilder1.HasFatalError())
+    ds3Testing.AssertBool(t, "has fatal error", true, doesNotExistChannelBuilder2.HasFatalError())
+}

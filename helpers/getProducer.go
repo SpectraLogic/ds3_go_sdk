@@ -16,7 +16,6 @@ const timesToRetryGettingPartialBlob = 5
 
 type getProducer struct {
     JobMasterObjectList  *ds3Models.MasterObjectList //MOL from put bulk job creation
-    GetObjects           *[]helperModels.GetObject
     queue                *chan TransferOperation
     strategy             *ReadTransferStrategy
     client               *ds3.Client
@@ -42,7 +41,6 @@ func newGetProducer(
 
     return &getProducer{
         JobMasterObjectList:  jobMasterObjectList,
-        GetObjects:           getObjects,
         queue:                queue,
         strategy:             strategy,
         client:               client,
