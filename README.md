@@ -1,6 +1,8 @@
 Spectra S3 Go SDK
 -----------------
 
+[![Build
+Status](https://travis-ci.com/SpectraLogic/ds3_go_sdk.svg)](https://travis-ci.com/SpectraLogic/ds3_go_sdk)
 [![Apache V2 License](http://img.shields.io/badge/license-Apache%20V2-blue.svg)](https://github.com/SpectraLogic/ds3_go_sdk/blob/master/LICENSE.md)
 
 An SDK conforming to Spectra S3 for Golang 1.10
