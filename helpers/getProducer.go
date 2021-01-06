@@ -236,7 +236,18 @@ func (producer *getProducer) queueBlobForTransfer(blob *helperModels.BlobDescrip
         return false // already been processed
     }
 
-    curReadObj := producer.readObjectMap[blob.Name()]
+    curReadObj, ok := producer.readObjectMap[blob.Name()]
+    if !ok {
+        producer.Errorf("failed to find object associated with blob in object map: %s offset=%d length=%d", blob.Name(), blob.Offset(), blob.Length())
+        producer.processedBlobTracker.MarkProcessed(*blob)
+        return false // not actually transferring this blob
+    }
+
+    if curReadObj.ChannelBuilder == nil {
+        producer.Errorf("failed to transfer object, it does not have a channel builder: %s", curReadObj.Name)
+        producer.processedBlobTracker.MarkProcessed(*blob)
+        return false // not actually transferring this blob
+    }
 
     if curReadObj.ChannelBuilder.HasFatalError() {
         // a fatal error happened on a previous blob for this file, skip processing
