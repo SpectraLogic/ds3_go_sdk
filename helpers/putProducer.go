@@ -1,6 +1,7 @@
 package helpers
 
 import (
+    "fmt"
     "github.com/SpectraLogic/ds3_go_sdk/ds3"
     ds3Models "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
     helperModels "github.com/SpectraLogic/ds3_go_sdk/helpers/models"
@@ -136,7 +137,7 @@ func (producer *putProducer) metadataFrom(info putObjectInfo) map[string]string 
 // Processes all the blobs in a chunk and attempts to add them to the transfer queue.
 // If a blob is not ready for transfer, then it is added to the waiting to be transferred queue.
 // Returns the number of  blobs added to queue.
-func (producer *putProducer) processChunk(curChunk *ds3Models.Objects, bucketName string, jobId string) int {
+func (producer *putProducer) processChunk(curChunk *ds3Models.Objects, bucketName string, jobId string) (int, error) {
     processedCount := 0
     producer.Debugf("begin chunk processing %s", curChunk.ChunkId)
 
@@ -144,17 +145,21 @@ func (producer *putProducer) processChunk(curChunk *ds3Models.Objects, bucketNam
     for _, curObj := range curChunk.Objects {
         producer.Debugf("queuing object in waiting to be processed %s offset=%d length=%d", *curObj.Name, curObj.Offset, curObj.Length)
         blob := helperModels.NewBlobDescription(*curObj.Name, curObj.Offset, curObj.Length)
-        if producer.queueBlobForTransfer(&blob, bucketName, jobId) {
+        blobQueued, err := producer.queueBlobForTransfer(&blob, bucketName, jobId)
+        if err != nil {
+            return 0, err
+        }
+        if blobQueued {
             processedCount++
         }
     }
-    return processedCount
+    return processedCount, nil
 }
 
 // Iterates through blobs that are waiting to be transferred and attempts to transfer.
 // If successful, blob is removed from queue. Else, it is re-queued.
 // Returns the number of blobs added to queue.
-func (producer *putProducer) processWaitingBlobs(bucketName string, jobId string) int {
+func (producer *putProducer) processWaitingBlobs(bucketName string, jobId string) (int, error) {
     processedCount := 0
 
     // attempt to process all blobs in waiting to be transferred
@@ -168,47 +173,53 @@ func (producer *putProducer) processWaitingBlobs(bucketName string, jobId string
             break
         }
         producer.Debugf("attempting to process %s offset=%d length=%d", curBlob.Name(), curBlob.Offset(), curBlob.Length())
-        if producer.queueBlobForTransfer(curBlob, bucketName, jobId) {
+        blobQueued, err := producer.queueBlobForTransfer(curBlob, bucketName, jobId)
+        if err != nil {
+            return 0, err
+        }
+        if blobQueued {
             processedCount++
         }
     }
 
-    return processedCount
+    return processedCount, nil
 }
 
 // Attempts to transfer a single blob. If the blob is not ready for transfer,
 // it is added to the waiting to transfer queue.
 // Returns whether or not the blob was queued for transfer.
-func (producer *putProducer) queueBlobForTransfer(blob *helperModels.BlobDescription, bucketName string, jobId string) bool {
+func (producer *putProducer) queueBlobForTransfer(blob *helperModels.BlobDescription, bucketName string, jobId string) (bool, error) {
     if producer.processedBlobTracker.IsProcessed(*blob) {
-        return false // this was already processed
+        return false, nil // this was already processed
     }
 
     curWriteObj, ok := producer.writeObjectMap[blob.Name()]
     if !ok {
-        producer.Errorf("failed to find object associated with blob in object map: %s offset=%d length=%d", blob.Name(), blob.Offset(), blob.Length())
+        err := fmt.Errorf("failed to find object associated with blob in object map: %s offset=%d length=%d", blob.Name(), blob.Offset(), blob.Length())
+        producer.Errorf("unrecoverable error: %v", err)
         producer.processedBlobTracker.MarkProcessed(*blob)
-        return false // not actually transferring this blob
+        return false, err // fatal error occurred
     }
 
     if curWriteObj.ChannelBuilder == nil {
-        producer.Errorf("failed to transfer object, it does not have a channel builder: %s", curWriteObj.PutObject.Name)
+        err := fmt.Errorf("failed to transfer object, it does not have a channel builder: %s", curWriteObj.PutObject.Name)
+        producer.Errorf("unrecoverable error: %v", err)
         producer.processedBlobTracker.MarkProcessed(*blob)
-        return false // not actually transferring this blob
+        return false, err // fatal error occurred
     }
 
     if curWriteObj.ChannelBuilder.HasFatalError() {
         // a fatal error happened on a previous blob for this file, skip processing
         producer.Warningf("fatal error occurred while transferring previous blob on this file, skipping blob %s offset=%d length=%d", blob.Name(), blob.Offset(), blob.Length())
         producer.processedBlobTracker.MarkProcessed(*blob)
-        return false // not actually transferring this blob
+        return false, nil // not actually transferring this blob
     }
 
     if !curWriteObj.ChannelBuilder.IsChannelAvailable(blob.Offset()) {
         producer.Debugf("channel is not currently available for blob %s offset=%d length=%d", blob.Name(), blob.Offset(), blob.Length())
         // Not ready to be transferred
         producer.deferredBlobQueue.Push(blob)
-        return false // not ready to be sent
+        return false, nil // not ready to be sent
     }
 
     producer.Debugf("channel is available for blob %s offset=%d length=%d", curWriteObj.PutObject.Name, blob.Offset(), blob.Length())
@@ -222,7 +233,7 @@ func (producer *putProducer) queueBlobForTransfer(blob *helperModels.BlobDescrip
         jobId:          jobId,
     }
 
-    var transfer TransferOperation = producer.transferOperationBuilder(objInfo)
+    transfer := producer.transferOperationBuilder(objInfo)
 
     // Increment wait group, and enqueue transfer operation
     producer.waitGroup.Add(1)
@@ -231,7 +242,7 @@ func (producer *putProducer) queueBlobForTransfer(blob *helperModels.BlobDescrip
     // Mark blob as processed
     producer.processedBlobTracker.MarkProcessed(*blob)
 
-    return true
+    return true, nil
 }
 
 // This initiates the production of the transfer operations which will be consumed by a consumer running in a separate go routine.
@@ -241,7 +252,7 @@ func (producer *putProducer) run() error {
     defer close(*producer.queue)
 
     // determine number of blobs to be processed
-    var totalBlobCount int64 = producer.totalBlobCount()
+    totalBlobCount := producer.totalBlobCount()
     producer.Debugf("job status totalBlobs=%d processedBlobs=%d", totalBlobCount, producer.processedBlobTracker.NumberOfProcessedBlobs())
 
     // process all chunks and make sure all blobs are queued for transfer
@@ -270,7 +281,10 @@ func (producer *putProducer) hasMoreToProcess(totalBlobCount int64) bool {
 // Returns the number of items queued for work.
 func (producer *putProducer) queueBlobsReadyForTransfer(totalBlobCount int64) (int, error) {
     // Attempt to transfer waiting blobs
-    processedCount := producer.processWaitingBlobs(*producer.JobMasterObjectList.BucketName, producer.JobMasterObjectList.JobId)
+    processedCount, err := producer.processWaitingBlobs(*producer.JobMasterObjectList.BucketName, producer.JobMasterObjectList.JobId)
+    if err != nil {
+        return 0, err
+    }
 
     // Check if we need to query the BP for allocated blobs, or if we already know everything is allocated.
     if int64(producer.deferredBlobQueue.Size()) + producer.processedBlobTracker.NumberOfProcessedBlobs() >= totalBlobCount {
@@ -294,7 +308,11 @@ func (producer *putProducer) queueBlobsReadyForTransfer(totalBlobCount int64) (i
         // Loop through all the chunks that are available for processing, and send
         // the files that are contained within them.
         for _, curChunk := range chunksReadyResponse.MasterObjectList.Objects {
-            processedCount += producer.processChunk(&curChunk, *chunksReadyResponse.MasterObjectList.BucketName, chunksReadyResponse.MasterObjectList.JobId)
+            justProcessedCount, err := producer.processChunk(&curChunk, *chunksReadyResponse.MasterObjectList.BucketName, chunksReadyResponse.MasterObjectList.JobId)
+            if err != nil {
+                return 0, err
+            }
+            processedCount += justProcessedCount
         }
     }
     return processedCount, nil
