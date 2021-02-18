@@ -17,7 +17,7 @@ import (
 )
 
 func TestBuildAuthHeaderValue(t *testing.T) {
-    expected := "AWS access:1JbBTxv5KRFKbvju7w27c2J6bKk="
+    expected := "AWS access:gmW4yg/tw02UYleIqGn5ebvKbr8="
 
     fields := signatureFields{
         Verb:"PUT",
