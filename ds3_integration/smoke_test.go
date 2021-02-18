@@ -176,8 +176,8 @@ func TestDeleteBucketNonEmpty(t *testing.T) {
     putObjErr := testutils.PutObjectLogError(t, client, bucketName, beowulf, book)
     ds3Testing.AssertNilError(t, putObjErr)
 
-    //Attempt to delete non-empty bucket
-    deleteErr := testutils.DeleteBucket(client, bucketName)
+    //Attempt to delete non-empty bucket without force
+    _, deleteErr := client.DeleteBucketSpectraS3(models.NewDeleteBucketSpectraS3Request(bucketName))
     ds3Testing.AssertBadStatusCodeError(t, 409, deleteErr)
 }
 
@@ -544,7 +544,11 @@ func TestPuttingZeroLengthObject(t *testing.T) {
 
     zeroBytes := make([]byte, 0)
 
-    putObjectRequest := models.NewPutObjectRequest(bucketName, objectName, ds3.BuildByteReaderWithSizeDecorator(zeroBytes))
+    putObjectRequest := models.NewPutObjectRequest(bucketName, objectName, ds3.BuildByteReaderWithSizeDecorator(zeroBytes)).
+        WithMetaData("_c", "C").
+        WithMetaData("d", "D").
+        WithMetaData("_a", "A").
+        WithMetaData("b", "B")
 
     _, err = client.PutObject(putObjectRequest)
 
