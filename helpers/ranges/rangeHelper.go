@@ -101,7 +101,7 @@ func (rangeFinder *BlobRangeFinderImpl) GetRanges(name string, offset int64, len
     objectRanges := rangeFinder.rangeMap[name]
 
     // get the subset of ranges that intersect the blob boundary
-    blobRanges := []ds3Models.Range{}
+    var blobRanges []ds3Models.Range
     for _, r := range objectRanges {
         if rangeFinder.isIntersection(r, offset, length) {
             blobRanges = append(blobRanges, rangeFinder.getIntersection(r, offset, length))

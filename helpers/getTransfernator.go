@@ -56,7 +56,7 @@ func newBulkGetRequest(bucketName string, readObjects *[]helperModels.GetObject,
 func createPartialGetObjects(getObject helperModels.GetObject) []ds3Models.Ds3GetObject {
     // handle getting the entire object
     if len(getObject.Ranges) == 0 {
-        return []ds3Models.Ds3GetObject { { Name:getObject.Name }, }
+        return []ds3Models.Ds3GetObject { { Name:getObject.Name } }
     }
     // handle partial object retrieval
     var partialObjects []ds3Models.Ds3GetObject
@@ -123,11 +123,10 @@ func (transceiver *getTransceiver) transfer() (string, error) {
     consumer := newConsumer(&queue, &waitGroup, transceiver.Strategy.BlobStrategy.maxConcurrentTransfers(), doneNotifier)
 
     // Wait for completion of producer-consumer goroutines
-    var aggErr ds3Models.AggregateError
     waitGroup.Add(1)  // adding producer and consumer goroutines to wait group
     go consumer.run()
     err = producer.run() // producer will add to waitGroup for every blob retrieval added to queue, and each transfer performed will decrement from waitGroup
     waitGroup.Wait()
 
-    return bulkGetResponse.MasterObjectList.JobId, aggErr.GetErrors()
+    return bulkGetResponse.MasterObjectList.JobId, nil
 }
