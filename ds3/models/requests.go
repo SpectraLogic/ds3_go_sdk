@@ -7717,6 +7717,16 @@ func (inspectTapeSpectraS3Request *InspectTapeSpectraS3Request) WithTaskPriority
     return inspectTapeSpectraS3Request
 }
 
+type MarkTapeForCompactionSpectraS3Request struct {
+    TapeId string
+}
+
+func NewMarkTapeForCompactionSpectraS3Request(tapeId string) *MarkTapeForCompactionSpectraS3Request {
+    return &MarkTapeForCompactionSpectraS3Request{
+        TapeId: tapeId,
+    }
+}
+
 type ModifyAllTapePartitionsSpectraS3Request struct {
     Quiesced Quiesced
 }
@@ -7728,6 +7738,7 @@ func NewModifyAllTapePartitionsSpectraS3Request(quiesced Quiesced) *ModifyAllTap
 }
 
 type ModifyTapeDriveSpectraS3Request struct {
+    MaxFailedTapes *int
     MinimumTaskPriority Priority
     Quiesced Quiesced
     ReservedTaskType ReservedTaskType
@@ -7738,6 +7749,11 @@ func NewModifyTapeDriveSpectraS3Request(tapeDriveId string) *ModifyTapeDriveSpec
     return &ModifyTapeDriveSpectraS3Request{
         TapeDriveId: tapeDriveId,
     }
+}
+
+func (modifyTapeDriveSpectraS3Request *ModifyTapeDriveSpectraS3Request) WithMaxFailedTapes(maxFailedTapes int) *ModifyTapeDriveSpectraS3Request {
+    modifyTapeDriveSpectraS3Request.MaxFailedTapes = &maxFailedTapes
+    return modifyTapeDriveSpectraS3Request
 }
 
 func (modifyTapeDriveSpectraS3Request *ModifyTapeDriveSpectraS3Request) WithMinimumTaskPriority(minimumTaskPriority Priority) *ModifyTapeDriveSpectraS3Request {
@@ -7757,6 +7773,8 @@ func (modifyTapeDriveSpectraS3Request *ModifyTapeDriveSpectraS3Request) WithRese
 
 type ModifyTapePartitionSpectraS3Request struct {
     AutoCompactionEnabled *bool
+    AutoQuiesceEnabled *bool
+    DriveIdleTimeoutInMinutes *int
     MinimumReadReservedDrives *int
     MinimumWriteReservedDrives *int
     Quiesced Quiesced
@@ -7772,6 +7790,16 @@ func NewModifyTapePartitionSpectraS3Request(tapePartition string) *ModifyTapePar
 
 func (modifyTapePartitionSpectraS3Request *ModifyTapePartitionSpectraS3Request) WithAutoCompactionEnabled(autoCompactionEnabled bool) *ModifyTapePartitionSpectraS3Request {
     modifyTapePartitionSpectraS3Request.AutoCompactionEnabled = &autoCompactionEnabled
+    return modifyTapePartitionSpectraS3Request
+}
+
+func (modifyTapePartitionSpectraS3Request *ModifyTapePartitionSpectraS3Request) WithAutoQuiesceEnabled(autoQuiesceEnabled bool) *ModifyTapePartitionSpectraS3Request {
+    modifyTapePartitionSpectraS3Request.AutoQuiesceEnabled = &autoQuiesceEnabled
+    return modifyTapePartitionSpectraS3Request
+}
+
+func (modifyTapePartitionSpectraS3Request *ModifyTapePartitionSpectraS3Request) WithDriveIdleTimeoutInMinutes(driveIdleTimeoutInMinutes int) *ModifyTapePartitionSpectraS3Request {
+    modifyTapePartitionSpectraS3Request.DriveIdleTimeoutInMinutes = &driveIdleTimeoutInMinutes
     return modifyTapePartitionSpectraS3Request
 }
 

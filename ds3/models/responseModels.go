@@ -3917,6 +3917,7 @@ type TapeDrive struct {
     ForceTapeRemoval bool
     Id string
     LastCleaned *string
+    MaxFailedTapes *int
     MfgSerialNumber *string
     MinimumTaskPriority *Priority
     PartitionId string
@@ -3943,6 +3944,8 @@ func (tapeDrive *TapeDrive) parse(xmlNode *XmlNode, aggErr *AggregateError) {
             tapeDrive.Id = parseString(child.Content)
         case "LastCleaned":
             tapeDrive.LastCleaned = parseNullableString(child.Content)
+        case "MaxFailedTapes":
+            tapeDrive.MaxFailedTapes = parseNullableInt(child.Content, aggErr)
         case "MfgSerialNumber":
             tapeDrive.MfgSerialNumber = parseNullableString(child.Content)
         case "MinimumTaskPriority":
@@ -4135,13 +4138,17 @@ const (
     TAPE_FAILURE_TYPE_DELAYED_OWNERSHIP_FAILURE TapeFailureType = 1 + iota
     TAPE_FAILURE_TYPE_DRIVE_CLEAN_FAILED TapeFailureType = 1 + iota
     TAPE_FAILURE_TYPE_DRIVE_CLEANED TapeFailureType = 1 + iota
+    TAPE_FAILURE_TYPE_ENCRYPTION_ERROR TapeFailureType = 1 + iota
     TAPE_FAILURE_TYPE_FORMAT_FAILED TapeFailureType = 1 + iota
     TAPE_FAILURE_TYPE_GET_TAPE_INFORMATION_FAILED TapeFailureType = 1 + iota
+    TAPE_FAILURE_TYPE_HARDWARE_ERROR TapeFailureType = 1 + iota
     TAPE_FAILURE_TYPE_IMPORT_FAILED TapeFailureType = 1 + iota
     TAPE_FAILURE_TYPE_IMPORT_INCOMPLETE TapeFailureType = 1 + iota
     TAPE_FAILURE_TYPE_IMPORT_FAILED_DUE_TO_TAKE_OWNERSHIP_FAILURE TapeFailureType = 1 + iota
     TAPE_FAILURE_TYPE_IMPORT_FAILED_DUE_TO_DATA_INTEGRITY TapeFailureType = 1 + iota
+    TAPE_FAILURE_TYPE_INCOMPATIBLE TapeFailureType = 1 + iota
     TAPE_FAILURE_TYPE_INSPECT_FAILED TapeFailureType = 1 + iota
+    TAPE_FAILURE_TYPE_QUIESCING_DRIVE TapeFailureType = 1 + iota
     TAPE_FAILURE_TYPE_READ_FAILED TapeFailureType = 1 + iota
     TAPE_FAILURE_TYPE_REIMPORT_REQUIRED TapeFailureType = 1 + iota
     TAPE_FAILURE_TYPE_SERIAL_NUMBER_MISMATCH TapeFailureType = 1 + iota
@@ -4162,13 +4169,17 @@ func (tapeFailureType *TapeFailureType) UnmarshalText(text []byte) error {
         case "DELAYED_OWNERSHIP_FAILURE": *tapeFailureType = TAPE_FAILURE_TYPE_DELAYED_OWNERSHIP_FAILURE
         case "DRIVE_CLEAN_FAILED": *tapeFailureType = TAPE_FAILURE_TYPE_DRIVE_CLEAN_FAILED
         case "DRIVE_CLEANED": *tapeFailureType = TAPE_FAILURE_TYPE_DRIVE_CLEANED
+        case "ENCRYPTION_ERROR": *tapeFailureType = TAPE_FAILURE_TYPE_ENCRYPTION_ERROR
         case "FORMAT_FAILED": *tapeFailureType = TAPE_FAILURE_TYPE_FORMAT_FAILED
         case "GET_TAPE_INFORMATION_FAILED": *tapeFailureType = TAPE_FAILURE_TYPE_GET_TAPE_INFORMATION_FAILED
+        case "HARDWARE_ERROR": *tapeFailureType = TAPE_FAILURE_TYPE_HARDWARE_ERROR
         case "IMPORT_FAILED": *tapeFailureType = TAPE_FAILURE_TYPE_IMPORT_FAILED
         case "IMPORT_INCOMPLETE": *tapeFailureType = TAPE_FAILURE_TYPE_IMPORT_INCOMPLETE
         case "IMPORT_FAILED_DUE_TO_TAKE_OWNERSHIP_FAILURE": *tapeFailureType = TAPE_FAILURE_TYPE_IMPORT_FAILED_DUE_TO_TAKE_OWNERSHIP_FAILURE
         case "IMPORT_FAILED_DUE_TO_DATA_INTEGRITY": *tapeFailureType = TAPE_FAILURE_TYPE_IMPORT_FAILED_DUE_TO_DATA_INTEGRITY
+        case "INCOMPATIBLE": *tapeFailureType = TAPE_FAILURE_TYPE_INCOMPATIBLE
         case "INSPECT_FAILED": *tapeFailureType = TAPE_FAILURE_TYPE_INSPECT_FAILED
+        case "QUIESCING_DRIVE": *tapeFailureType = TAPE_FAILURE_TYPE_QUIESCING_DRIVE
         case "READ_FAILED": *tapeFailureType = TAPE_FAILURE_TYPE_READ_FAILED
         case "REIMPORT_REQUIRED": *tapeFailureType = TAPE_FAILURE_TYPE_REIMPORT_REQUIRED
         case "SERIAL_NUMBER_MISMATCH": *tapeFailureType = TAPE_FAILURE_TYPE_SERIAL_NUMBER_MISMATCH
@@ -4192,13 +4203,17 @@ func (tapeFailureType TapeFailureType) String() string {
         case TAPE_FAILURE_TYPE_DELAYED_OWNERSHIP_FAILURE: return "DELAYED_OWNERSHIP_FAILURE"
         case TAPE_FAILURE_TYPE_DRIVE_CLEAN_FAILED: return "DRIVE_CLEAN_FAILED"
         case TAPE_FAILURE_TYPE_DRIVE_CLEANED: return "DRIVE_CLEANED"
+        case TAPE_FAILURE_TYPE_ENCRYPTION_ERROR: return "ENCRYPTION_ERROR"
         case TAPE_FAILURE_TYPE_FORMAT_FAILED: return "FORMAT_FAILED"
         case TAPE_FAILURE_TYPE_GET_TAPE_INFORMATION_FAILED: return "GET_TAPE_INFORMATION_FAILED"
+        case TAPE_FAILURE_TYPE_HARDWARE_ERROR: return "HARDWARE_ERROR"
         case TAPE_FAILURE_TYPE_IMPORT_FAILED: return "IMPORT_FAILED"
         case TAPE_FAILURE_TYPE_IMPORT_INCOMPLETE: return "IMPORT_INCOMPLETE"
         case TAPE_FAILURE_TYPE_IMPORT_FAILED_DUE_TO_TAKE_OWNERSHIP_FAILURE: return "IMPORT_FAILED_DUE_TO_TAKE_OWNERSHIP_FAILURE"
         case TAPE_FAILURE_TYPE_IMPORT_FAILED_DUE_TO_DATA_INTEGRITY: return "IMPORT_FAILED_DUE_TO_DATA_INTEGRITY"
+        case TAPE_FAILURE_TYPE_INCOMPATIBLE: return "INCOMPATIBLE"
         case TAPE_FAILURE_TYPE_INSPECT_FAILED: return "INSPECT_FAILED"
+        case TAPE_FAILURE_TYPE_QUIESCING_DRIVE: return "QUIESCING_DRIVE"
         case TAPE_FAILURE_TYPE_READ_FAILED: return "READ_FAILED"
         case TAPE_FAILURE_TYPE_REIMPORT_REQUIRED: return "REIMPORT_REQUIRED"
         case TAPE_FAILURE_TYPE_SERIAL_NUMBER_MISMATCH: return "SERIAL_NUMBER_MISMATCH"
@@ -4255,6 +4270,8 @@ func (tapeLibrary *TapeLibrary) parse(xmlNode *XmlNode, aggErr *AggregateError) 
 
 type TapePartition struct {
     AutoCompactionEnabled bool
+    AutoQuiesceEnabled bool
+    DriveIdleTimeoutInMinutes *int
     DriveType *TapeDriveType
     ErrorMessage *string
     Id string
@@ -4275,6 +4292,10 @@ func (tapePartition *TapePartition) parse(xmlNode *XmlNode, aggErr *AggregateErr
         switch child.XMLName.Local {
         case "AutoCompactionEnabled":
             tapePartition.AutoCompactionEnabled = parseBool(child.Content, aggErr)
+        case "AutoQuiesceEnabled":
+            tapePartition.AutoQuiesceEnabled = parseBool(child.Content, aggErr)
+        case "DriveIdleTimeoutInMinutes":
+            tapePartition.DriveIdleTimeoutInMinutes = parseNullableInt(child.Content, aggErr)
         case "DriveType":
             tapePartition.DriveType = newTapeDriveTypeFromContent(child.Content, aggErr)
         case "ErrorMessage":
@@ -5183,6 +5204,7 @@ const (
     TARGET_FAILURE_TYPE_READ_FAILED TargetFailureType = 1 + iota
     TARGET_FAILURE_TYPE_READ_INITIATE_FAILED TargetFailureType = 1 + iota
     TARGET_FAILURE_TYPE_VERIFY_FAILED TargetFailureType = 1 + iota
+    TARGET_FAILURE_TYPE_VERIFY_COMPLETE TargetFailureType = 1 + iota
 )
 
 func (targetFailureType *TargetFailureType) UnmarshalText(text []byte) error {
@@ -5197,6 +5219,7 @@ func (targetFailureType *TargetFailureType) UnmarshalText(text []byte) error {
         case "READ_FAILED": *targetFailureType = TARGET_FAILURE_TYPE_READ_FAILED
         case "READ_INITIATE_FAILED": *targetFailureType = TARGET_FAILURE_TYPE_READ_INITIATE_FAILED
         case "VERIFY_FAILED": *targetFailureType = TARGET_FAILURE_TYPE_VERIFY_FAILED
+        case "VERIFY_COMPLETE": *targetFailureType = TARGET_FAILURE_TYPE_VERIFY_COMPLETE
         default:
             *targetFailureType = UNDEFINED
             return errors.New(fmt.Sprintf("Cannot marshal '%s' into TargetFailureType", str))
@@ -5214,6 +5237,7 @@ func (targetFailureType TargetFailureType) String() string {
         case TARGET_FAILURE_TYPE_READ_FAILED: return "READ_FAILED"
         case TARGET_FAILURE_TYPE_READ_INITIATE_FAILED: return "READ_INITIATE_FAILED"
         case TARGET_FAILURE_TYPE_VERIFY_FAILED: return "VERIFY_FAILED"
+        case TARGET_FAILURE_TYPE_VERIFY_COMPLETE: return "VERIFY_COMPLETE"
         default:
             log.Printf("Error: invalid TargetFailureType represented by '%d'", targetFailureType)
             return ""
@@ -5633,6 +5657,7 @@ type CacheFilesystemInformation struct {
     AvailableCapacityInBytes int64
     CacheFilesystem CacheFilesystem
     Entries []CacheEntryInformation
+    JobLockedCacheInBytes int64
     Summary *string
     TotalCapacityInBytes int64
     UnavailableCapacityInBytes int64
@@ -5652,6 +5677,8 @@ func (cacheFilesystemInformation *CacheFilesystemInformation) parse(xmlNode *Xml
             var model CacheEntryInformation
             model.parse(&child, aggErr)
             cacheFilesystemInformation.Entries = append(cacheFilesystemInformation.Entries, model)
+        case "JobLockedCacheInBytes":
+            cacheFilesystemInformation.JobLockedCacheInBytes = parseInt64(child.Content, aggErr)
         case "Summary":
             cacheFilesystemInformation.Summary = parseNullableString(child.Content)
         case "TotalCapacityInBytes":
@@ -5871,6 +5898,8 @@ func (deleteResult *DeleteResult) parse(xmlNode *XmlNode, aggErr *AggregateError
 
 type DetailedTapePartition struct {
     AutoCompactionEnabled bool
+    AutoQuiesceEnabled bool
+    DriveIdleTimeoutInMinutes *int
     DriveType *TapeDriveType
     DriveTypes []TapeDriveType
     ErrorMessage *string
@@ -5893,6 +5922,10 @@ func (detailedTapePartition *DetailedTapePartition) parse(xmlNode *XmlNode, aggE
         switch child.XMLName.Local {
         case "AutoCompactionEnabled":
             detailedTapePartition.AutoCompactionEnabled = parseBool(child.Content, aggErr)
+        case "AutoQuiesceEnabled":
+            detailedTapePartition.AutoQuiesceEnabled = parseBool(child.Content, aggErr)
+        case "DriveIdleTimeoutInMinutes":
+            detailedTapePartition.DriveIdleTimeoutInMinutes = parseNullableInt(child.Content, aggErr)
         case "DriveType":
             detailedTapePartition.DriveType = newTapeDriveTypeFromContent(child.Content, aggErr)
         case "DriveTypes":
@@ -6622,6 +6655,8 @@ func (healthVerificationResult *HealthVerificationResult) parse(xmlNode *XmlNode
 
 type NamedDetailedTapePartition struct {
     AutoCompactionEnabled bool
+    AutoQuiesceEnabled bool
+    DriveIdleTimeoutInMinutes *int
     DriveType *TapeDriveType
     DriveTypes []TapeDriveType
     ErrorMessage *string
@@ -6644,6 +6679,10 @@ func (namedDetailedTapePartition *NamedDetailedTapePartition) parse(xmlNode *Xml
         switch child.XMLName.Local {
         case "AutoCompactionEnabled":
             namedDetailedTapePartition.AutoCompactionEnabled = parseBool(child.Content, aggErr)
+        case "AutoQuiesceEnabled":
+            namedDetailedTapePartition.AutoQuiesceEnabled = parseBool(child.Content, aggErr)
+        case "DriveIdleTimeoutInMinutes":
+            namedDetailedTapePartition.DriveIdleTimeoutInMinutes = parseNullableInt(child.Content, aggErr)
         case "DriveType":
             namedDetailedTapePartition.DriveType = newTapeDriveTypeFromContent(child.Content, aggErr)
         case "DriveTypes":
@@ -6735,6 +6774,7 @@ const (
     REST_OPERATION_TYPE_GET_PHYSICAL_PLACEMENT RestOperationType = 1 + iota
     REST_OPERATION_TYPE_IMPORT RestOperationType = 1 + iota
     REST_OPERATION_TYPE_INSPECT RestOperationType = 1 + iota
+    REST_OPERATION_TYPE_MARK_FOR_COMPACTION RestOperationType = 1 + iota
     REST_OPERATION_TYPE_ONLINE RestOperationType = 1 + iota
     REST_OPERATION_TYPE_PAIR_BACK RestOperationType = 1 + iota
     REST_OPERATION_TYPE_REGENERATE_SECRET_KEY RestOperationType = 1 + iota
@@ -6765,6 +6805,7 @@ func (restOperationType *RestOperationType) UnmarshalText(text []byte) error {
         case "GET_PHYSICAL_PLACEMENT": *restOperationType = REST_OPERATION_TYPE_GET_PHYSICAL_PLACEMENT
         case "IMPORT": *restOperationType = REST_OPERATION_TYPE_IMPORT
         case "INSPECT": *restOperationType = REST_OPERATION_TYPE_INSPECT
+        case "MARK_FOR_COMPACTION": *restOperationType = REST_OPERATION_TYPE_MARK_FOR_COMPACTION
         case "ONLINE": *restOperationType = REST_OPERATION_TYPE_ONLINE
         case "PAIR_BACK": *restOperationType = REST_OPERATION_TYPE_PAIR_BACK
         case "REGENERATE_SECRET_KEY": *restOperationType = REST_OPERATION_TYPE_REGENERATE_SECRET_KEY
@@ -6798,6 +6839,7 @@ func (restOperationType RestOperationType) String() string {
         case REST_OPERATION_TYPE_GET_PHYSICAL_PLACEMENT: return "GET_PHYSICAL_PLACEMENT"
         case REST_OPERATION_TYPE_IMPORT: return "IMPORT"
         case REST_OPERATION_TYPE_INSPECT: return "INSPECT"
+        case REST_OPERATION_TYPE_MARK_FOR_COMPACTION: return "MARK_FOR_COMPACTION"
         case REST_OPERATION_TYPE_ONLINE: return "ONLINE"
         case REST_OPERATION_TYPE_PAIR_BACK: return "PAIR_BACK"
         case REST_OPERATION_TYPE_REGENERATE_SECRET_KEY: return "REGENERATE_SECRET_KEY"

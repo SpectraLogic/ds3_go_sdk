@@ -2011,6 +2011,30 @@ func (client *Client) InspectTapeSpectraS3(request *models.InspectTapeSpectraS3R
     return models.NewInspectTapeSpectraS3Response(response)
 }
 
+func (client *Client) MarkTapeForCompactionSpectraS3(request *models.MarkTapeForCompactionSpectraS3Request) (*models.MarkTapeForCompactionSpectraS3Response, error) {
+    // Build the http request
+    httpRequest, err := networking.NewHttpRequestBuilder().
+        WithHttpVerb(HTTP_VERB_PUT).
+        WithPath("/_rest_/tape/" + request.TapeId).
+        WithQueryParam("operation", "mark_for_compaction").
+        Build(client.connectionInfo)
+
+    if err != nil {
+        return nil, err
+    }
+
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
+
+    // Invoke the HTTP request.
+    response, requestErr := networkRetryDecorator.Invoke(httpRequest)
+    if requestErr != nil {
+        return nil, requestErr
+    }
+
+    // Create a response object based on the result.
+    return models.NewMarkTapeForCompactionSpectraS3Response(response)
+}
+
 func (client *Client) ModifyAllTapePartitionsSpectraS3(request *models.ModifyAllTapePartitionsSpectraS3Request) (*models.ModifyAllTapePartitionsSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
@@ -2040,6 +2064,7 @@ func (client *Client) ModifyTapeDriveSpectraS3(request *models.ModifyTapeDriveSp
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_PUT).
         WithPath("/_rest_/tape_drive/" + request.TapeDriveId).
+        WithOptionalQueryParam("max_failed_tapes", networking.IntPtrToStrPtr(request.MaxFailedTapes)).
         WithOptionalQueryParam("minimum_task_priority", networking.InterfaceToStrPtr(request.MinimumTaskPriority)).
         WithOptionalQueryParam("quiesced", networking.InterfaceToStrPtr(request.Quiesced)).
         WithOptionalQueryParam("reserved_task_type", networking.InterfaceToStrPtr(request.ReservedTaskType)).
@@ -2067,6 +2092,8 @@ func (client *Client) ModifyTapePartitionSpectraS3(request *models.ModifyTapePar
         WithHttpVerb(HTTP_VERB_PUT).
         WithPath("/_rest_/tape_partition/" + request.TapePartition).
         WithOptionalQueryParam("auto_compaction_enabled", networking.BoolPtrToStrPtr(request.AutoCompactionEnabled)).
+        WithOptionalQueryParam("auto_quiesce_enabled", networking.BoolPtrToStrPtr(request.AutoQuiesceEnabled)).
+        WithOptionalQueryParam("drive_idle_timeout_in_minutes", networking.IntPtrToStrPtr(request.DriveIdleTimeoutInMinutes)).
         WithOptionalQueryParam("minimum_read_reserved_drives", networking.IntPtrToStrPtr(request.MinimumReadReservedDrives)).
         WithOptionalQueryParam("minimum_write_reserved_drives", networking.IntPtrToStrPtr(request.MinimumWriteReservedDrives)).
         WithOptionalQueryParam("quiesced", networking.InterfaceToStrPtr(request.Quiesced)).
