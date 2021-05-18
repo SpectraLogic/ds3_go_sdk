@@ -7361,6 +7361,32 @@ func NewInspectTapeSpectraS3Response(webResponse WebResponse) (*InspectTapeSpect
     }
 }
 
+type MarkTapeForCompactionSpectraS3Response struct {
+    Tape Tape
+    Headers *http.Header
+}
+
+func (markTapeForCompactionSpectraS3Response *MarkTapeForCompactionSpectraS3Response) parse(webResponse WebResponse) error {
+        return parseResponsePayload(webResponse, &markTapeForCompactionSpectraS3Response.Tape)
+}
+
+func NewMarkTapeForCompactionSpectraS3Response(webResponse WebResponse) (*MarkTapeForCompactionSpectraS3Response, error) {
+    defer webResponse.Body().Close()
+    expectedStatusCodes := []int { 200 }
+
+    switch code := webResponse.StatusCode(); code {
+    case 200:
+        var body MarkTapeForCompactionSpectraS3Response
+        if err := body.parse(webResponse); err != nil {
+            return nil, err
+        }
+        body.Headers = webResponse.Header()
+        return &body, nil
+    default:
+        return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
+    }
+}
+
 type ModifyAllTapePartitionsSpectraS3Response struct {
     
     Headers *http.Header
