@@ -602,8 +602,10 @@ type DataPathBackend struct {
     DefaultVerifyDataPriorToImport bool
     Id string
     InstanceId string
+    IomCacheLimitationPercent float64
     IomEnabled bool
     LastHeartbeat string
+    MaxAggregatedBlobsPerChunk int
     PartiallyVerifyLastPercentOfTapes *int
     UnavailableMediaPolicy UnavailableMediaUsagePolicy
     UnavailablePoolMaxJobRetryInMins int
@@ -633,10 +635,14 @@ func (dataPathBackend *DataPathBackend) parse(xmlNode *XmlNode, aggErr *Aggregat
             dataPathBackend.Id = parseString(child.Content)
         case "InstanceId":
             dataPathBackend.InstanceId = parseString(child.Content)
+        case "IomCacheLimitationPercent":
+            dataPathBackend.IomCacheLimitationPercent = parseFloat64(child.Content, aggErr)
         case "IomEnabled":
             dataPathBackend.IomEnabled = parseBool(child.Content, aggErr)
         case "LastHeartbeat":
             dataPathBackend.LastHeartbeat = parseString(child.Content)
+        case "MaxAggregatedBlobsPerChunk":
+            dataPathBackend.MaxAggregatedBlobsPerChunk = parseInt(child.Content, aggErr)
         case "PartiallyVerifyLastPercentOfTapes":
             dataPathBackend.PartiallyVerifyLastPercentOfTapes = parseNullableInt(child.Content, aggErr)
         case "UnavailableMediaPolicy":

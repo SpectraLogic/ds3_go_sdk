@@ -1032,7 +1032,9 @@ type ModifyDataPathBackendSpectraS3Request struct {
     CacheAvailableRetryAfterInSeconds *int
     DefaultVerifyDataAfterImport Priority
     DefaultVerifyDataPriorToImport *bool
+    IomCacheLimitationPercent *float64
     IomEnabled *bool
+    MaxAggregatedBlobsPerChunk *int
     PartiallyVerifyLastPercentOfTapes *int
     UnavailableMediaPolicy UnavailableMediaUsagePolicy
     UnavailablePoolMaxJobRetryInMins *int
@@ -1079,8 +1081,18 @@ func (modifyDataPathBackendSpectraS3Request *ModifyDataPathBackendSpectraS3Reque
     return modifyDataPathBackendSpectraS3Request
 }
 
+func (modifyDataPathBackendSpectraS3Request *ModifyDataPathBackendSpectraS3Request) WithIomCacheLimitationPercent(iomCacheLimitationPercent float64) *ModifyDataPathBackendSpectraS3Request {
+    modifyDataPathBackendSpectraS3Request.IomCacheLimitationPercent = &iomCacheLimitationPercent
+    return modifyDataPathBackendSpectraS3Request
+}
+
 func (modifyDataPathBackendSpectraS3Request *ModifyDataPathBackendSpectraS3Request) WithIomEnabled(iomEnabled bool) *ModifyDataPathBackendSpectraS3Request {
     modifyDataPathBackendSpectraS3Request.IomEnabled = &iomEnabled
+    return modifyDataPathBackendSpectraS3Request
+}
+
+func (modifyDataPathBackendSpectraS3Request *ModifyDataPathBackendSpectraS3Request) WithMaxAggregatedBlobsPerChunk(maxAggregatedBlobsPerChunk int) *ModifyDataPathBackendSpectraS3Request {
+    modifyDataPathBackendSpectraS3Request.MaxAggregatedBlobsPerChunk = &maxAggregatedBlobsPerChunk
     return modifyDataPathBackendSpectraS3Request
 }
 
