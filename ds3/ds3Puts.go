@@ -184,7 +184,9 @@ func (client *Client) ModifyDataPathBackendSpectraS3(request *models.ModifyDataP
         WithOptionalQueryParam("cache_available_retry_after_in_seconds", networking.IntPtrToStrPtr(request.CacheAvailableRetryAfterInSeconds)).
         WithOptionalQueryParam("default_verify_data_after_import", networking.InterfaceToStrPtr(request.DefaultVerifyDataAfterImport)).
         WithOptionalQueryParam("default_verify_data_prior_to_import", networking.BoolPtrToStrPtr(request.DefaultVerifyDataPriorToImport)).
+        WithOptionalQueryParam("iom_cache_limitation_percent", networking.Float64PtrToStrPtr(request.IomCacheLimitationPercent)).
         WithOptionalQueryParam("iom_enabled", networking.BoolPtrToStrPtr(request.IomEnabled)).
+        WithOptionalQueryParam("max_aggregated_blobs_per_chunk", networking.IntPtrToStrPtr(request.MaxAggregatedBlobsPerChunk)).
         WithOptionalQueryParam("partially_verify_last_percent_of_tapes", networking.IntPtrToStrPtr(request.PartiallyVerifyLastPercentOfTapes)).
         WithOptionalQueryParam("unavailable_media_policy", networking.InterfaceToStrPtr(request.UnavailableMediaPolicy)).
         WithOptionalQueryParam("unavailable_pool_max_job_retry_in_mins", networking.IntPtrToStrPtr(request.UnavailablePoolMaxJobRetryInMins)).
