@@ -6478,6 +6478,32 @@ func NewCancelOnlineTapeSpectraS3Response(webResponse WebResponse) (*CancelOnlin
     }
 }
 
+type CancelTestTapeDriveSpectraS3Response struct {
+    TapeDrive TapeDrive
+    Headers *http.Header
+}
+
+func (cancelTestTapeDriveSpectraS3Response *CancelTestTapeDriveSpectraS3Response) parse(webResponse WebResponse) error {
+        return parseResponsePayload(webResponse, &cancelTestTapeDriveSpectraS3Response.TapeDrive)
+}
+
+func NewCancelTestTapeDriveSpectraS3Response(webResponse WebResponse) (*CancelTestTapeDriveSpectraS3Response, error) {
+    defer webResponse.Body().Close()
+    expectedStatusCodes := []int { 200 }
+
+    switch code := webResponse.StatusCode(); code {
+    case 200:
+        var body CancelTestTapeDriveSpectraS3Response
+        if err := body.parse(webResponse); err != nil {
+            return nil, err
+        }
+        body.Headers = webResponse.Header()
+        return &body, nil
+    default:
+        return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
+    }
+}
+
 type CancelVerifyOnAllTapesSpectraS3Response struct {
     TapeFailureList *TapeFailureList
     Headers *http.Header
@@ -6548,6 +6574,32 @@ func NewCleanTapeDriveSpectraS3Response(webResponse WebResponse) (*CleanTapeDriv
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body CleanTapeDriveSpectraS3Response
+        if err := body.parse(webResponse); err != nil {
+            return nil, err
+        }
+        body.Headers = webResponse.Header()
+        return &body, nil
+    default:
+        return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
+    }
+}
+
+type PutDriveDumpSpectraS3Response struct {
+    TapeDrive TapeDrive
+    Headers *http.Header
+}
+
+func (putDriveDumpSpectraS3Response *PutDriveDumpSpectraS3Response) parse(webResponse WebResponse) error {
+        return parseResponsePayload(webResponse, &putDriveDumpSpectraS3Response.TapeDrive)
+}
+
+func NewPutDriveDumpSpectraS3Response(webResponse WebResponse) (*PutDriveDumpSpectraS3Response, error) {
+    defer webResponse.Body().Close()
+    expectedStatusCodes := []int { 200 }
+
+    switch code := webResponse.StatusCode(); code {
+    case 200:
+        var body PutDriveDumpSpectraS3Response
         if err := body.parse(webResponse); err != nil {
             return nil, err
         }
@@ -7573,6 +7625,32 @@ func NewRawImportTapeSpectraS3Response(webResponse WebResponse) (*RawImportTapeS
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body RawImportTapeSpectraS3Response
+        if err := body.parse(webResponse); err != nil {
+            return nil, err
+        }
+        body.Headers = webResponse.Header()
+        return &body, nil
+    default:
+        return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
+    }
+}
+
+type TestTapeDriveSpectraS3Response struct {
+    TapeDrive TapeDrive
+    Headers *http.Header
+}
+
+func (testTapeDriveSpectraS3Response *TestTapeDriveSpectraS3Response) parse(webResponse WebResponse) error {
+        return parseResponsePayload(webResponse, &testTapeDriveSpectraS3Response.TapeDrive)
+}
+
+func NewTestTapeDriveSpectraS3Response(webResponse WebResponse) (*TestTapeDriveSpectraS3Response, error) {
+    defer webResponse.Body().Close()
+    expectedStatusCodes := []int { 200 }
+
+    switch code := webResponse.StatusCode(); code {
+    case 200:
+        var body TestTapeDriveSpectraS3Response
         if err := body.parse(webResponse); err != nil {
             return nil, err
         }
