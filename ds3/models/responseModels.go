@@ -233,6 +233,7 @@ type Bucket struct {
     LastPreferredChunkSizeInBytes *int64
     LogicalUsedCapacity *int64
     Name *string
+    Protected bool
     UserId string
 }
 
@@ -255,6 +256,8 @@ func (bucket *Bucket) parse(xmlNode *XmlNode, aggErr *AggregateError) {
             bucket.LogicalUsedCapacity = parseNullableInt64(child.Content, aggErr)
         case "Name":
             bucket.Name = parseNullableString(child.Content)
+        case "Protected":
+            bucket.Protected = parseBool(child.Content, aggErr)
         case "UserId":
             bucket.UserId = parseString(child.Content)
         default:
@@ -607,9 +610,11 @@ type DataPathBackend struct {
     LastHeartbeat string
     MaxAggregatedBlobsPerChunk int
     PartiallyVerifyLastPercentOfTapes *int
+    PoolSafetyEnabled bool
     UnavailableMediaPolicy UnavailableMediaUsagePolicy
     UnavailablePoolMaxJobRetryInMins int
     UnavailableTapePartitionMaxJobRetryInMins int
+    VerifyCheckpointBeforeRead bool
 }
 
 func (dataPathBackend *DataPathBackend) parse(xmlNode *XmlNode, aggErr *AggregateError) {
@@ -645,12 +650,16 @@ func (dataPathBackend *DataPathBackend) parse(xmlNode *XmlNode, aggErr *Aggregat
             dataPathBackend.MaxAggregatedBlobsPerChunk = parseInt(child.Content, aggErr)
         case "PartiallyVerifyLastPercentOfTapes":
             dataPathBackend.PartiallyVerifyLastPercentOfTapes = parseNullableInt(child.Content, aggErr)
+        case "PoolSafetyEnabled":
+            dataPathBackend.PoolSafetyEnabled = parseBool(child.Content, aggErr)
         case "UnavailableMediaPolicy":
             parseEnum(child.Content, &dataPathBackend.UnavailableMediaPolicy, aggErr)
         case "UnavailablePoolMaxJobRetryInMins":
             dataPathBackend.UnavailablePoolMaxJobRetryInMins = parseInt(child.Content, aggErr)
         case "UnavailableTapePartitionMaxJobRetryInMins":
             dataPathBackend.UnavailableTapePartitionMaxJobRetryInMins = parseInt(child.Content, aggErr)
+        case "VerifyCheckpointBeforeRead":
+            dataPathBackend.VerifyCheckpointBeforeRead = parseBool(child.Content, aggErr)
         default:
             log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing DataPathBackend.", child.XMLName.Local)
         }
@@ -1138,6 +1147,7 @@ type ActiveJob struct {
     Name *string
     OriginalSizeInBytes int64
     Priority Priority
+    Protected bool
     Rechunked *string
     Replicating bool
     RequestType JobRequestType
@@ -1183,6 +1193,8 @@ func (activeJob *ActiveJob) parse(xmlNode *XmlNode, aggErr *AggregateError) {
             activeJob.OriginalSizeInBytes = parseInt64(child.Content, aggErr)
         case "Priority":
             parseEnum(child.Content, &activeJob.Priority, aggErr)
+        case "Protected":
+            activeJob.Protected = parseBool(child.Content, aggErr)
         case "Rechunked":
             activeJob.Rechunked = parseNullableString(child.Content)
         case "Replicating":
@@ -3171,6 +3183,7 @@ type CacheFilesystem struct {
     AutoReclaimInitiateThreshold float64
     AutoReclaimTerminateThreshold float64
     BurstThreshold float64
+    CacheSafetyEnabled bool
     Id string
     MaxCapacityInBytes *int64
     MaxPercentUtilizationOfFilesystem *float64
@@ -3189,6 +3202,8 @@ func (cacheFilesystem *CacheFilesystem) parse(xmlNode *XmlNode, aggErr *Aggregat
             cacheFilesystem.AutoReclaimTerminateThreshold = parseFloat64(child.Content, aggErr)
         case "BurstThreshold":
             cacheFilesystem.BurstThreshold = parseFloat64(child.Content, aggErr)
+        case "CacheSafetyEnabled":
+            cacheFilesystem.CacheSafetyEnabled = parseBool(child.Content, aggErr)
         case "Id":
             cacheFilesystem.Id = parseString(child.Content)
         case "MaxCapacityInBytes":
@@ -3665,6 +3680,7 @@ type ReservedTaskType Enum
 
 const (
     RESERVED_TASK_TYPE_ANY ReservedTaskType = 1 + iota
+    RESERVED_TASK_TYPE_MAINTENANCE ReservedTaskType = 1 + iota
     RESERVED_TASK_TYPE_READ ReservedTaskType = 1 + iota
     RESERVED_TASK_TYPE_WRITE ReservedTaskType = 1 + iota
 )
@@ -3674,6 +3690,7 @@ func (reservedTaskType *ReservedTaskType) UnmarshalText(text []byte) error {
     switch str {
         case "": *reservedTaskType = UNDEFINED
         case "ANY": *reservedTaskType = RESERVED_TASK_TYPE_ANY
+        case "MAINTENANCE": *reservedTaskType = RESERVED_TASK_TYPE_MAINTENANCE
         case "READ": *reservedTaskType = RESERVED_TASK_TYPE_READ
         case "WRITE": *reservedTaskType = RESERVED_TASK_TYPE_WRITE
         default:
@@ -3686,6 +3703,7 @@ func (reservedTaskType *ReservedTaskType) UnmarshalText(text []byte) error {
 func (reservedTaskType ReservedTaskType) String() string {
     switch reservedTaskType {
         case RESERVED_TASK_TYPE_ANY: return "ANY"
+        case RESERVED_TASK_TYPE_MAINTENANCE: return "MAINTENANCE"
         case RESERVED_TASK_TYPE_READ: return "READ"
         case RESERVED_TASK_TYPE_WRITE: return "WRITE"
         default:
@@ -3803,6 +3821,7 @@ type Tape struct {
     PartiallyVerifiedEndOfTape *string
     PartitionId *string
     PreviousState *TapeState
+    Role TapeRole
     SerialNumber *string
     State TapeState
     StorageDomainMemberId *string
@@ -3854,6 +3873,8 @@ func (tape *Tape) parse(xmlNode *XmlNode, aggErr *AggregateError) {
             tape.PartitionId = parseNullableString(child.Content)
         case "PreviousState":
             tape.PreviousState = newTapeStateFromContent(child.Content, aggErr)
+        case "Role":
+            parseEnum(child.Content, &tape.Role, aggErr)
         case "SerialNumber":
             tape.SerialNumber = parseNullableString(child.Content)
         case "State":
@@ -4138,12 +4159,18 @@ const (
     TAPE_FAILURE_TYPE_BAR_CODE_CHANGED TapeFailureType = 1 + iota
     TAPE_FAILURE_TYPE_BAR_CODE_DUPLICATE TapeFailureType = 1 + iota
     TAPE_FAILURE_TYPE_BLOB_READ_FAILED TapeFailureType = 1 + iota
+    TAPE_FAILURE_TYPE_CLEANING_TAPE_EXPIRED TapeFailureType = 1 + iota
     TAPE_FAILURE_TYPE_DATA_CHECKPOINT_FAILURE TapeFailureType = 1 + iota
     TAPE_FAILURE_TYPE_DATA_CHECKPOINT_FAILURE_DUE_TO_READ_ONLY TapeFailureType = 1 + iota
     TAPE_FAILURE_TYPE_DATA_CHECKPOINT_MISSING TapeFailureType = 1 + iota
     TAPE_FAILURE_TYPE_DELAYED_OWNERSHIP_FAILURE TapeFailureType = 1 + iota
     TAPE_FAILURE_TYPE_DRIVE_CLEAN_FAILED TapeFailureType = 1 + iota
     TAPE_FAILURE_TYPE_DRIVE_CLEANED TapeFailureType = 1 + iota
+    TAPE_FAILURE_TYPE_DRIVE_TEST_FAILED TapeFailureType = 1 + iota
+    TAPE_FAILURE_TYPE_DRIVE_TEST_FAILED_ALL_WRITES_TOO_SLOW TapeFailureType = 1 + iota
+    TAPE_FAILURE_TYPE_DRIVE_TEST_FAILED_FORWARD_WRITES_TOO_SLOW TapeFailureType = 1 + iota
+    TAPE_FAILURE_TYPE_DRIVE_TEST_FAILED_REVERSE_WRITES_TOO_SLOW TapeFailureType = 1 + iota
+    TAPE_FAILURE_TYPE_DRIVE_TEST_SUCCEEDED TapeFailureType = 1 + iota
     TAPE_FAILURE_TYPE_ENCRYPTION_ERROR TapeFailureType = 1 + iota
     TAPE_FAILURE_TYPE_FORMAT_FAILED TapeFailureType = 1 + iota
     TAPE_FAILURE_TYPE_GET_TAPE_INFORMATION_FAILED TapeFailureType = 1 + iota
@@ -4169,12 +4196,18 @@ func (tapeFailureType *TapeFailureType) UnmarshalText(text []byte) error {
         case "BAR_CODE_CHANGED": *tapeFailureType = TAPE_FAILURE_TYPE_BAR_CODE_CHANGED
         case "BAR_CODE_DUPLICATE": *tapeFailureType = TAPE_FAILURE_TYPE_BAR_CODE_DUPLICATE
         case "BLOB_READ_FAILED": *tapeFailureType = TAPE_FAILURE_TYPE_BLOB_READ_FAILED
+        case "CLEANING_TAPE_EXPIRED": *tapeFailureType = TAPE_FAILURE_TYPE_CLEANING_TAPE_EXPIRED
         case "DATA_CHECKPOINT_FAILURE": *tapeFailureType = TAPE_FAILURE_TYPE_DATA_CHECKPOINT_FAILURE
         case "DATA_CHECKPOINT_FAILURE_DUE_TO_READ_ONLY": *tapeFailureType = TAPE_FAILURE_TYPE_DATA_CHECKPOINT_FAILURE_DUE_TO_READ_ONLY
         case "DATA_CHECKPOINT_MISSING": *tapeFailureType = TAPE_FAILURE_TYPE_DATA_CHECKPOINT_MISSING
         case "DELAYED_OWNERSHIP_FAILURE": *tapeFailureType = TAPE_FAILURE_TYPE_DELAYED_OWNERSHIP_FAILURE
         case "DRIVE_CLEAN_FAILED": *tapeFailureType = TAPE_FAILURE_TYPE_DRIVE_CLEAN_FAILED
         case "DRIVE_CLEANED": *tapeFailureType = TAPE_FAILURE_TYPE_DRIVE_CLEANED
+        case "DRIVE_TEST_FAILED": *tapeFailureType = TAPE_FAILURE_TYPE_DRIVE_TEST_FAILED
+        case "DRIVE_TEST_FAILED_ALL_WRITES_TOO_SLOW": *tapeFailureType = TAPE_FAILURE_TYPE_DRIVE_TEST_FAILED_ALL_WRITES_TOO_SLOW
+        case "DRIVE_TEST_FAILED_FORWARD_WRITES_TOO_SLOW": *tapeFailureType = TAPE_FAILURE_TYPE_DRIVE_TEST_FAILED_FORWARD_WRITES_TOO_SLOW
+        case "DRIVE_TEST_FAILED_REVERSE_WRITES_TOO_SLOW": *tapeFailureType = TAPE_FAILURE_TYPE_DRIVE_TEST_FAILED_REVERSE_WRITES_TOO_SLOW
+        case "DRIVE_TEST_SUCCEEDED": *tapeFailureType = TAPE_FAILURE_TYPE_DRIVE_TEST_SUCCEEDED
         case "ENCRYPTION_ERROR": *tapeFailureType = TAPE_FAILURE_TYPE_ENCRYPTION_ERROR
         case "FORMAT_FAILED": *tapeFailureType = TAPE_FAILURE_TYPE_FORMAT_FAILED
         case "GET_TAPE_INFORMATION_FAILED": *tapeFailureType = TAPE_FAILURE_TYPE_GET_TAPE_INFORMATION_FAILED
@@ -4203,12 +4236,18 @@ func (tapeFailureType TapeFailureType) String() string {
         case TAPE_FAILURE_TYPE_BAR_CODE_CHANGED: return "BAR_CODE_CHANGED"
         case TAPE_FAILURE_TYPE_BAR_CODE_DUPLICATE: return "BAR_CODE_DUPLICATE"
         case TAPE_FAILURE_TYPE_BLOB_READ_FAILED: return "BLOB_READ_FAILED"
+        case TAPE_FAILURE_TYPE_CLEANING_TAPE_EXPIRED: return "CLEANING_TAPE_EXPIRED"
         case TAPE_FAILURE_TYPE_DATA_CHECKPOINT_FAILURE: return "DATA_CHECKPOINT_FAILURE"
         case TAPE_FAILURE_TYPE_DATA_CHECKPOINT_FAILURE_DUE_TO_READ_ONLY: return "DATA_CHECKPOINT_FAILURE_DUE_TO_READ_ONLY"
         case TAPE_FAILURE_TYPE_DATA_CHECKPOINT_MISSING: return "DATA_CHECKPOINT_MISSING"
         case TAPE_FAILURE_TYPE_DELAYED_OWNERSHIP_FAILURE: return "DELAYED_OWNERSHIP_FAILURE"
         case TAPE_FAILURE_TYPE_DRIVE_CLEAN_FAILED: return "DRIVE_CLEAN_FAILED"
         case TAPE_FAILURE_TYPE_DRIVE_CLEANED: return "DRIVE_CLEANED"
+        case TAPE_FAILURE_TYPE_DRIVE_TEST_FAILED: return "DRIVE_TEST_FAILED"
+        case TAPE_FAILURE_TYPE_DRIVE_TEST_FAILED_ALL_WRITES_TOO_SLOW: return "DRIVE_TEST_FAILED_ALL_WRITES_TOO_SLOW"
+        case TAPE_FAILURE_TYPE_DRIVE_TEST_FAILED_FORWARD_WRITES_TOO_SLOW: return "DRIVE_TEST_FAILED_FORWARD_WRITES_TOO_SLOW"
+        case TAPE_FAILURE_TYPE_DRIVE_TEST_FAILED_REVERSE_WRITES_TOO_SLOW: return "DRIVE_TEST_FAILED_REVERSE_WRITES_TOO_SLOW"
+        case TAPE_FAILURE_TYPE_DRIVE_TEST_SUCCEEDED: return "DRIVE_TEST_SUCCEEDED"
         case TAPE_FAILURE_TYPE_ENCRYPTION_ERROR: return "ENCRYPTION_ERROR"
         case TAPE_FAILURE_TYPE_FORMAT_FAILED: return "FORMAT_FAILED"
         case TAPE_FAILURE_TYPE_GET_TAPE_INFORMATION_FAILED: return "GET_TAPE_INFORMATION_FAILED"
@@ -4362,6 +4401,7 @@ func (tapePartitionFailure *TapePartitionFailure) parse(xmlNode *XmlNode, aggErr
 type TapePartitionFailureType Enum
 
 const (
+    TAPE_PARTITION_FAILURE_TYPE_AUTO_QUIESCED TapePartitionFailureType = 1 + iota
     TAPE_PARTITION_FAILURE_TYPE_CLEANING_TAPE_REQUIRED TapePartitionFailureType = 1 + iota
     TAPE_PARTITION_FAILURE_TYPE_DUPLICATE_TAPE_BAR_CODES_DETECTED TapePartitionFailureType = 1 + iota
     TAPE_PARTITION_FAILURE_TYPE_EJECT_STALLED_DUE_TO_OFFLINE_TAPES TapePartitionFailureType = 1 + iota
@@ -4372,6 +4412,7 @@ const (
     TAPE_PARTITION_FAILURE_TYPE_ONLINE_STALLED_DUE_TO_NO_STORAGE_SLOTS TapePartitionFailureType = 1 + iota
     TAPE_PARTITION_FAILURE_TYPE_TAPE_DRIVE_IN_ERROR TapePartitionFailureType = 1 + iota
     TAPE_PARTITION_FAILURE_TYPE_TAPE_DRIVE_MISSING TapePartitionFailureType = 1 + iota
+    TAPE_PARTITION_FAILURE_TYPE_TAPE_DRIVE_NOT_CLEANED TapePartitionFailureType = 1 + iota
     TAPE_PARTITION_FAILURE_TYPE_TAPE_DRIVE_QUIESCED TapePartitionFailureType = 1 + iota
     TAPE_PARTITION_FAILURE_TYPE_TAPE_DRIVE_TYPE_MISMATCH TapePartitionFailureType = 1 + iota
     TAPE_PARTITION_FAILURE_TYPE_TAPE_EJECTION_BY_OPERATOR_REQUIRED TapePartitionFailureType = 1 + iota
@@ -4384,6 +4425,7 @@ func (tapePartitionFailureType *TapePartitionFailureType) UnmarshalText(text []b
     var str string = string(bytes.ToUpper(text))
     switch str {
         case "": *tapePartitionFailureType = UNDEFINED
+        case "AUTO_QUIESCED": *tapePartitionFailureType = TAPE_PARTITION_FAILURE_TYPE_AUTO_QUIESCED
         case "CLEANING_TAPE_REQUIRED": *tapePartitionFailureType = TAPE_PARTITION_FAILURE_TYPE_CLEANING_TAPE_REQUIRED
         case "DUPLICATE_TAPE_BAR_CODES_DETECTED": *tapePartitionFailureType = TAPE_PARTITION_FAILURE_TYPE_DUPLICATE_TAPE_BAR_CODES_DETECTED
         case "EJECT_STALLED_DUE_TO_OFFLINE_TAPES": *tapePartitionFailureType = TAPE_PARTITION_FAILURE_TYPE_EJECT_STALLED_DUE_TO_OFFLINE_TAPES
@@ -4394,6 +4436,7 @@ func (tapePartitionFailureType *TapePartitionFailureType) UnmarshalText(text []b
         case "ONLINE_STALLED_DUE_TO_NO_STORAGE_SLOTS": *tapePartitionFailureType = TAPE_PARTITION_FAILURE_TYPE_ONLINE_STALLED_DUE_TO_NO_STORAGE_SLOTS
         case "TAPE_DRIVE_IN_ERROR": *tapePartitionFailureType = TAPE_PARTITION_FAILURE_TYPE_TAPE_DRIVE_IN_ERROR
         case "TAPE_DRIVE_MISSING": *tapePartitionFailureType = TAPE_PARTITION_FAILURE_TYPE_TAPE_DRIVE_MISSING
+        case "TAPE_DRIVE_NOT_CLEANED": *tapePartitionFailureType = TAPE_PARTITION_FAILURE_TYPE_TAPE_DRIVE_NOT_CLEANED
         case "TAPE_DRIVE_QUIESCED": *tapePartitionFailureType = TAPE_PARTITION_FAILURE_TYPE_TAPE_DRIVE_QUIESCED
         case "TAPE_DRIVE_TYPE_MISMATCH": *tapePartitionFailureType = TAPE_PARTITION_FAILURE_TYPE_TAPE_DRIVE_TYPE_MISMATCH
         case "TAPE_EJECTION_BY_OPERATOR_REQUIRED": *tapePartitionFailureType = TAPE_PARTITION_FAILURE_TYPE_TAPE_EJECTION_BY_OPERATOR_REQUIRED
@@ -4409,6 +4452,7 @@ func (tapePartitionFailureType *TapePartitionFailureType) UnmarshalText(text []b
 
 func (tapePartitionFailureType TapePartitionFailureType) String() string {
     switch tapePartitionFailureType {
+        case TAPE_PARTITION_FAILURE_TYPE_AUTO_QUIESCED: return "AUTO_QUIESCED"
         case TAPE_PARTITION_FAILURE_TYPE_CLEANING_TAPE_REQUIRED: return "CLEANING_TAPE_REQUIRED"
         case TAPE_PARTITION_FAILURE_TYPE_DUPLICATE_TAPE_BAR_CODES_DETECTED: return "DUPLICATE_TAPE_BAR_CODES_DETECTED"
         case TAPE_PARTITION_FAILURE_TYPE_EJECT_STALLED_DUE_TO_OFFLINE_TAPES: return "EJECT_STALLED_DUE_TO_OFFLINE_TAPES"
@@ -4419,6 +4463,7 @@ func (tapePartitionFailureType TapePartitionFailureType) String() string {
         case TAPE_PARTITION_FAILURE_TYPE_ONLINE_STALLED_DUE_TO_NO_STORAGE_SLOTS: return "ONLINE_STALLED_DUE_TO_NO_STORAGE_SLOTS"
         case TAPE_PARTITION_FAILURE_TYPE_TAPE_DRIVE_IN_ERROR: return "TAPE_DRIVE_IN_ERROR"
         case TAPE_PARTITION_FAILURE_TYPE_TAPE_DRIVE_MISSING: return "TAPE_DRIVE_MISSING"
+        case TAPE_PARTITION_FAILURE_TYPE_TAPE_DRIVE_NOT_CLEANED: return "TAPE_DRIVE_NOT_CLEANED"
         case TAPE_PARTITION_FAILURE_TYPE_TAPE_DRIVE_QUIESCED: return "TAPE_DRIVE_QUIESCED"
         case TAPE_PARTITION_FAILURE_TYPE_TAPE_DRIVE_TYPE_MISMATCH: return "TAPE_DRIVE_TYPE_MISMATCH"
         case TAPE_PARTITION_FAILURE_TYPE_TAPE_EJECTION_BY_OPERATOR_REQUIRED: return "TAPE_EJECTION_BY_OPERATOR_REQUIRED"
@@ -4495,6 +4540,53 @@ func newTapePartitionStateFromContent(content []byte, aggErr *AggregateError) *T
         return nil
     }
     result := new(TapePartitionState)
+    parseEnum(content, result, aggErr)
+    return result
+}
+type TapeRole Enum
+
+const (
+    TAPE_ROLE_NORMAL TapeRole = 1 + iota
+    TAPE_ROLE_TEST TapeRole = 1 + iota
+)
+
+func (tapeRole *TapeRole) UnmarshalText(text []byte) error {
+    var str string = string(bytes.ToUpper(text))
+    switch str {
+        case "": *tapeRole = UNDEFINED
+        case "NORMAL": *tapeRole = TAPE_ROLE_NORMAL
+        case "TEST": *tapeRole = TAPE_ROLE_TEST
+        default:
+            *tapeRole = UNDEFINED
+            return errors.New(fmt.Sprintf("Cannot marshal '%s' into TapeRole", str))
+    }
+    return nil
+}
+
+func (tapeRole TapeRole) String() string {
+    switch tapeRole {
+        case TAPE_ROLE_NORMAL: return "NORMAL"
+        case TAPE_ROLE_TEST: return "TEST"
+        default:
+            log.Printf("Error: invalid TapeRole represented by '%d'", tapeRole)
+            return ""
+    }
+}
+
+func (tapeRole TapeRole) StringPtr() *string {
+    if tapeRole == UNDEFINED {
+        return nil
+    }
+    result := tapeRole.String()
+    return &result
+}
+
+func newTapeRoleFromContent(content []byte, aggErr *AggregateError) *TapeRole {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(TapeRole)
     parseEnum(content, result, aggErr)
     return result
 }
@@ -6771,10 +6863,12 @@ const (
     REST_OPERATION_TYPE_CANCEL_FORMAT RestOperationType = 1 + iota
     REST_OPERATION_TYPE_CANCEL_IMPORT RestOperationType = 1 + iota
     REST_OPERATION_TYPE_CANCEL_ONLINE RestOperationType = 1 + iota
+    REST_OPERATION_TYPE_CANCEL_TEST RestOperationType = 1 + iota
     REST_OPERATION_TYPE_CANCEL_VERIFY RestOperationType = 1 + iota
     REST_OPERATION_TYPE_CLEAN RestOperationType = 1 + iota
     REST_OPERATION_TYPE_COMPACT RestOperationType = 1 + iota
     REST_OPERATION_TYPE_DEALLOCATE RestOperationType = 1 + iota
+    REST_OPERATION_TYPE_DUMP RestOperationType = 1 + iota
     REST_OPERATION_TYPE_EJECT RestOperationType = 1 + iota
     REST_OPERATION_TYPE_FORMAT RestOperationType = 1 + iota
     REST_OPERATION_TYPE_GET_PHYSICAL_PLACEMENT RestOperationType = 1 + iota
@@ -6788,6 +6882,7 @@ const (
     REST_OPERATION_TYPE_START_BULK_PUT RestOperationType = 1 + iota
     REST_OPERATION_TYPE_START_BULK_STAGE RestOperationType = 1 + iota
     REST_OPERATION_TYPE_START_BULK_VERIFY RestOperationType = 1 + iota
+    REST_OPERATION_TYPE_TEST RestOperationType = 1 + iota
     REST_OPERATION_TYPE_VERIFY RestOperationType = 1 + iota
     REST_OPERATION_TYPE_VERIFY_SAFE_TO_START_BULK_PUT RestOperationType = 1 + iota
     REST_OPERATION_TYPE_VERIFY_PHYSICAL_PLACEMENT RestOperationType = 1 + iota
@@ -6802,10 +6897,12 @@ func (restOperationType *RestOperationType) UnmarshalText(text []byte) error {
         case "CANCEL_FORMAT": *restOperationType = REST_OPERATION_TYPE_CANCEL_FORMAT
         case "CANCEL_IMPORT": *restOperationType = REST_OPERATION_TYPE_CANCEL_IMPORT
         case "CANCEL_ONLINE": *restOperationType = REST_OPERATION_TYPE_CANCEL_ONLINE
+        case "CANCEL_TEST": *restOperationType = REST_OPERATION_TYPE_CANCEL_TEST
         case "CANCEL_VERIFY": *restOperationType = REST_OPERATION_TYPE_CANCEL_VERIFY
         case "CLEAN": *restOperationType = REST_OPERATION_TYPE_CLEAN
         case "COMPACT": *restOperationType = REST_OPERATION_TYPE_COMPACT
         case "DEALLOCATE": *restOperationType = REST_OPERATION_TYPE_DEALLOCATE
+        case "DUMP": *restOperationType = REST_OPERATION_TYPE_DUMP
         case "EJECT": *restOperationType = REST_OPERATION_TYPE_EJECT
         case "FORMAT": *restOperationType = REST_OPERATION_TYPE_FORMAT
         case "GET_PHYSICAL_PLACEMENT": *restOperationType = REST_OPERATION_TYPE_GET_PHYSICAL_PLACEMENT
@@ -6819,6 +6916,7 @@ func (restOperationType *RestOperationType) UnmarshalText(text []byte) error {
         case "START_BULK_PUT": *restOperationType = REST_OPERATION_TYPE_START_BULK_PUT
         case "START_BULK_STAGE": *restOperationType = REST_OPERATION_TYPE_START_BULK_STAGE
         case "START_BULK_VERIFY": *restOperationType = REST_OPERATION_TYPE_START_BULK_VERIFY
+        case "TEST": *restOperationType = REST_OPERATION_TYPE_TEST
         case "VERIFY": *restOperationType = REST_OPERATION_TYPE_VERIFY
         case "VERIFY_SAFE_TO_START_BULK_PUT": *restOperationType = REST_OPERATION_TYPE_VERIFY_SAFE_TO_START_BULK_PUT
         case "VERIFY_PHYSICAL_PLACEMENT": *restOperationType = REST_OPERATION_TYPE_VERIFY_PHYSICAL_PLACEMENT
@@ -6836,10 +6934,12 @@ func (restOperationType RestOperationType) String() string {
         case REST_OPERATION_TYPE_CANCEL_FORMAT: return "CANCEL_FORMAT"
         case REST_OPERATION_TYPE_CANCEL_IMPORT: return "CANCEL_IMPORT"
         case REST_OPERATION_TYPE_CANCEL_ONLINE: return "CANCEL_ONLINE"
+        case REST_OPERATION_TYPE_CANCEL_TEST: return "CANCEL_TEST"
         case REST_OPERATION_TYPE_CANCEL_VERIFY: return "CANCEL_VERIFY"
         case REST_OPERATION_TYPE_CLEAN: return "CLEAN"
         case REST_OPERATION_TYPE_COMPACT: return "COMPACT"
         case REST_OPERATION_TYPE_DEALLOCATE: return "DEALLOCATE"
+        case REST_OPERATION_TYPE_DUMP: return "DUMP"
         case REST_OPERATION_TYPE_EJECT: return "EJECT"
         case REST_OPERATION_TYPE_FORMAT: return "FORMAT"
         case REST_OPERATION_TYPE_GET_PHYSICAL_PLACEMENT: return "GET_PHYSICAL_PLACEMENT"
@@ -6853,6 +6953,7 @@ func (restOperationType RestOperationType) String() string {
         case REST_OPERATION_TYPE_START_BULK_PUT: return "START_BULK_PUT"
         case REST_OPERATION_TYPE_START_BULK_STAGE: return "START_BULK_STAGE"
         case REST_OPERATION_TYPE_START_BULK_VERIFY: return "START_BULK_VERIFY"
+        case REST_OPERATION_TYPE_TEST: return "TEST"
         case REST_OPERATION_TYPE_VERIFY: return "VERIFY"
         case REST_OPERATION_TYPE_VERIFY_SAFE_TO_START_BULK_PUT: return "VERIFY_SAFE_TO_START_BULK_PUT"
         case REST_OPERATION_TYPE_VERIFY_PHYSICAL_PLACEMENT: return "VERIFY_PHYSICAL_PLACEMENT"

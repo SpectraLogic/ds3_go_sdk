@@ -662,6 +662,7 @@ type PutBucketSpectraS3Request struct {
     DataPolicyId *string
     Id *string
     Name string
+    Protected *bool
     UserId *string
 }
 
@@ -678,6 +679,11 @@ func (putBucketSpectraS3Request *PutBucketSpectraS3Request) WithDataPolicyId(dat
 
 func (putBucketSpectraS3Request *PutBucketSpectraS3Request) WithId(id string) *PutBucketSpectraS3Request {
     putBucketSpectraS3Request.Id = &id
+    return putBucketSpectraS3Request
+}
+
+func (putBucketSpectraS3Request *PutBucketSpectraS3Request) WithProtected(protected bool) *PutBucketSpectraS3Request {
+    putBucketSpectraS3Request.Protected = &protected
     return putBucketSpectraS3Request
 }
 
@@ -765,6 +771,7 @@ func (getBucketsSpectraS3Request *GetBucketsSpectraS3Request) WithUserId(userId 
 type ModifyBucketSpectraS3Request struct {
     BucketName string
     DataPolicyId *string
+    Protected *bool
     UserId *string
 }
 
@@ -776,6 +783,11 @@ func NewModifyBucketSpectraS3Request(bucketName string) *ModifyBucketSpectraS3Re
 
 func (modifyBucketSpectraS3Request *ModifyBucketSpectraS3Request) WithDataPolicyId(dataPolicyId string) *ModifyBucketSpectraS3Request {
     modifyBucketSpectraS3Request.DataPolicyId = &dataPolicyId
+    return modifyBucketSpectraS3Request
+}
+
+func (modifyBucketSpectraS3Request *ModifyBucketSpectraS3Request) WithProtected(protected bool) *ModifyBucketSpectraS3Request {
+    modifyBucketSpectraS3Request.Protected = &protected
     return modifyBucketSpectraS3Request
 }
 
@@ -853,6 +865,7 @@ type ModifyCacheFilesystemSpectraS3Request struct {
     AutoReclaimTerminateThreshold *float64
     BurstThreshold *float64
     CacheFilesystem string
+    CacheSafetyEnabled *bool
     MaxCapacityInBytes *int64
 }
 
@@ -874,6 +887,11 @@ func (modifyCacheFilesystemSpectraS3Request *ModifyCacheFilesystemSpectraS3Reque
 
 func (modifyCacheFilesystemSpectraS3Request *ModifyCacheFilesystemSpectraS3Request) WithBurstThreshold(burstThreshold float64) *ModifyCacheFilesystemSpectraS3Request {
     modifyCacheFilesystemSpectraS3Request.BurstThreshold = &burstThreshold
+    return modifyCacheFilesystemSpectraS3Request
+}
+
+func (modifyCacheFilesystemSpectraS3Request *ModifyCacheFilesystemSpectraS3Request) WithCacheSafetyEnabled(cacheSafetyEnabled bool) *ModifyCacheFilesystemSpectraS3Request {
+    modifyCacheFilesystemSpectraS3Request.CacheSafetyEnabled = &cacheSafetyEnabled
     return modifyCacheFilesystemSpectraS3Request
 }
 
@@ -1036,9 +1054,11 @@ type ModifyDataPathBackendSpectraS3Request struct {
     IomEnabled *bool
     MaxAggregatedBlobsPerChunk *int
     PartiallyVerifyLastPercentOfTapes *int
+    PoolSafetyEnabled *bool
     UnavailableMediaPolicy UnavailableMediaUsagePolicy
     UnavailablePoolMaxJobRetryInMins *int
     UnavailableTapePartitionMaxJobRetryInMins *int
+    VerifyCheckpointBeforeRead *bool
 }
 
 func NewModifyDataPathBackendSpectraS3Request() *ModifyDataPathBackendSpectraS3Request {
@@ -1101,6 +1121,11 @@ func (modifyDataPathBackendSpectraS3Request *ModifyDataPathBackendSpectraS3Reque
     return modifyDataPathBackendSpectraS3Request
 }
 
+func (modifyDataPathBackendSpectraS3Request *ModifyDataPathBackendSpectraS3Request) WithPoolSafetyEnabled(poolSafetyEnabled bool) *ModifyDataPathBackendSpectraS3Request {
+    modifyDataPathBackendSpectraS3Request.PoolSafetyEnabled = &poolSafetyEnabled
+    return modifyDataPathBackendSpectraS3Request
+}
+
 func (modifyDataPathBackendSpectraS3Request *ModifyDataPathBackendSpectraS3Request) WithUnavailableMediaPolicy(unavailableMediaPolicy UnavailableMediaUsagePolicy) *ModifyDataPathBackendSpectraS3Request {
     modifyDataPathBackendSpectraS3Request.UnavailableMediaPolicy = unavailableMediaPolicy
     return modifyDataPathBackendSpectraS3Request
@@ -1113,6 +1138,11 @@ func (modifyDataPathBackendSpectraS3Request *ModifyDataPathBackendSpectraS3Reque
 
 func (modifyDataPathBackendSpectraS3Request *ModifyDataPathBackendSpectraS3Request) WithUnavailableTapePartitionMaxJobRetryInMins(unavailableTapePartitionMaxJobRetryInMins int) *ModifyDataPathBackendSpectraS3Request {
     modifyDataPathBackendSpectraS3Request.UnavailableTapePartitionMaxJobRetryInMins = &unavailableTapePartitionMaxJobRetryInMins
+    return modifyDataPathBackendSpectraS3Request
+}
+
+func (modifyDataPathBackendSpectraS3Request *ModifyDataPathBackendSpectraS3Request) WithVerifyCheckpointBeforeRead(verifyCheckpointBeforeRead bool) *ModifyDataPathBackendSpectraS3Request {
+    modifyDataPathBackendSpectraS3Request.VerifyCheckpointBeforeRead = &verifyCheckpointBeforeRead
     return modifyDataPathBackendSpectraS3Request
 }
 
@@ -3062,10 +3092,12 @@ type GetBulkJobSpectraS3Request struct {
     BucketName string
     Aggregating *bool
     ChunkClientProcessingOrderGuarantee JobChunkClientProcessingOrderGuarantee
+    DeadJobCleanupAllowed *bool
     ImplicitJobIdResolution *bool
     Name *string
     Objects []Ds3GetObject
     Priority Priority
+    Protected *bool
 }
 
 func NewGetBulkJobSpectraS3Request(bucketName string, objectNames []string) *GetBulkJobSpectraS3Request {
@@ -3094,6 +3126,11 @@ func (getBulkJobSpectraS3Request *GetBulkJobSpectraS3Request) WithChunkClientPro
     return getBulkJobSpectraS3Request
 }
 
+func (getBulkJobSpectraS3Request *GetBulkJobSpectraS3Request) WithDeadJobCleanupAllowed(deadJobCleanupAllowed bool) *GetBulkJobSpectraS3Request {
+    getBulkJobSpectraS3Request.DeadJobCleanupAllowed = &deadJobCleanupAllowed
+    return getBulkJobSpectraS3Request
+}
+
 func (getBulkJobSpectraS3Request *GetBulkJobSpectraS3Request) WithImplicitJobIdResolution(implicitJobIdResolution bool) *GetBulkJobSpectraS3Request {
     getBulkJobSpectraS3Request.ImplicitJobIdResolution = &implicitJobIdResolution
     return getBulkJobSpectraS3Request
@@ -3109,9 +3146,15 @@ func (getBulkJobSpectraS3Request *GetBulkJobSpectraS3Request) WithPriority(prior
     return getBulkJobSpectraS3Request
 }
 
+func (getBulkJobSpectraS3Request *GetBulkJobSpectraS3Request) WithProtected(protected bool) *GetBulkJobSpectraS3Request {
+    getBulkJobSpectraS3Request.Protected = &protected
+    return getBulkJobSpectraS3Request
+}
+
 type PutBulkJobSpectraS3Request struct {
     BucketName string
     Aggregating *bool
+    DeadJobCleanupAllowed *bool
     Force bool
     IgnoreNamingConflicts bool
     ImplicitJobIdResolution *bool
@@ -3121,6 +3164,7 @@ type PutBulkJobSpectraS3Request struct {
     Objects []Ds3PutObject
     PreAllocateJobSpace bool
     Priority Priority
+    Protected *bool
     VerifyAfterWrite *bool
 }
 
@@ -3133,6 +3177,11 @@ func NewPutBulkJobSpectraS3Request(bucketName string, objects []Ds3PutObject) *P
 
 func (putBulkJobSpectraS3Request *PutBulkJobSpectraS3Request) WithAggregating(aggregating bool) *PutBulkJobSpectraS3Request {
     putBulkJobSpectraS3Request.Aggregating = &aggregating
+    return putBulkJobSpectraS3Request
+}
+
+func (putBulkJobSpectraS3Request *PutBulkJobSpectraS3Request) WithDeadJobCleanupAllowed(deadJobCleanupAllowed bool) *PutBulkJobSpectraS3Request {
+    putBulkJobSpectraS3Request.DeadJobCleanupAllowed = &deadJobCleanupAllowed
     return putBulkJobSpectraS3Request
 }
 
@@ -3173,6 +3222,11 @@ func (putBulkJobSpectraS3Request *PutBulkJobSpectraS3Request) WithPreAllocateJob
 
 func (putBulkJobSpectraS3Request *PutBulkJobSpectraS3Request) WithPriority(priority Priority) *PutBulkJobSpectraS3Request {
     putBulkJobSpectraS3Request.Priority = priority
+    return putBulkJobSpectraS3Request
+}
+
+func (putBulkJobSpectraS3Request *PutBulkJobSpectraS3Request) WithProtected(protected bool) *PutBulkJobSpectraS3Request {
+    putBulkJobSpectraS3Request.Protected = &protected
     return putBulkJobSpectraS3Request
 }
 
@@ -3587,8 +3641,10 @@ func (getJobsSpectraS3Request *GetJobsSpectraS3Request) WithFullDetails() *GetJo
 type ModifyActiveJobSpectraS3Request struct {
     ActiveJobId string
     CreatedAt *string
+    DeadJobCleanupAllowed *bool
     Name *string
     Priority Priority
+    Protected *bool
 }
 
 func NewModifyActiveJobSpectraS3Request(activeJobId string) *ModifyActiveJobSpectraS3Request {
@@ -3602,6 +3658,11 @@ func (modifyActiveJobSpectraS3Request *ModifyActiveJobSpectraS3Request) WithCrea
     return modifyActiveJobSpectraS3Request
 }
 
+func (modifyActiveJobSpectraS3Request *ModifyActiveJobSpectraS3Request) WithDeadJobCleanupAllowed(deadJobCleanupAllowed bool) *ModifyActiveJobSpectraS3Request {
+    modifyActiveJobSpectraS3Request.DeadJobCleanupAllowed = &deadJobCleanupAllowed
+    return modifyActiveJobSpectraS3Request
+}
+
 func (modifyActiveJobSpectraS3Request *ModifyActiveJobSpectraS3Request) WithName(name string) *ModifyActiveJobSpectraS3Request {
     modifyActiveJobSpectraS3Request.Name = &name
     return modifyActiveJobSpectraS3Request
@@ -3612,11 +3673,18 @@ func (modifyActiveJobSpectraS3Request *ModifyActiveJobSpectraS3Request) WithPrio
     return modifyActiveJobSpectraS3Request
 }
 
+func (modifyActiveJobSpectraS3Request *ModifyActiveJobSpectraS3Request) WithProtected(protected bool) *ModifyActiveJobSpectraS3Request {
+    modifyActiveJobSpectraS3Request.Protected = &protected
+    return modifyActiveJobSpectraS3Request
+}
+
 type ModifyJobSpectraS3Request struct {
     CreatedAt *string
+    DeadJobCleanupAllowed *bool
     JobId string
     Name *string
     Priority Priority
+    Protected *bool
 }
 
 func NewModifyJobSpectraS3Request(jobId string) *ModifyJobSpectraS3Request {
@@ -3630,6 +3698,11 @@ func (modifyJobSpectraS3Request *ModifyJobSpectraS3Request) WithCreatedAt(create
     return modifyJobSpectraS3Request
 }
 
+func (modifyJobSpectraS3Request *ModifyJobSpectraS3Request) WithDeadJobCleanupAllowed(deadJobCleanupAllowed bool) *ModifyJobSpectraS3Request {
+    modifyJobSpectraS3Request.DeadJobCleanupAllowed = &deadJobCleanupAllowed
+    return modifyJobSpectraS3Request
+}
+
 func (modifyJobSpectraS3Request *ModifyJobSpectraS3Request) WithName(name string) *ModifyJobSpectraS3Request {
     modifyJobSpectraS3Request.Name = &name
     return modifyJobSpectraS3Request
@@ -3637,6 +3710,11 @@ func (modifyJobSpectraS3Request *ModifyJobSpectraS3Request) WithName(name string
 
 func (modifyJobSpectraS3Request *ModifyJobSpectraS3Request) WithPriority(priority Priority) *ModifyJobSpectraS3Request {
     modifyJobSpectraS3Request.Priority = priority
+    return modifyJobSpectraS3Request
+}
+
+func (modifyJobSpectraS3Request *ModifyJobSpectraS3Request) WithProtected(protected bool) *ModifyJobSpectraS3Request {
+    modifyJobSpectraS3Request.Protected = &protected
     return modifyJobSpectraS3Request
 }
 
@@ -6719,6 +6797,16 @@ func NewCancelOnlineTapeSpectraS3Request(tapeId string) *CancelOnlineTapeSpectra
     }
 }
 
+type CancelTestTapeDriveSpectraS3Request struct {
+    TapeDriveId string
+}
+
+func NewCancelTestTapeDriveSpectraS3Request(tapeDriveId string) *CancelTestTapeDriveSpectraS3Request {
+    return &CancelTestTapeDriveSpectraS3Request{
+        TapeDriveId: tapeDriveId,
+    }
+}
+
 type CancelVerifyOnAllTapesSpectraS3Request struct {
 }
 
@@ -6743,6 +6831,16 @@ type CleanTapeDriveSpectraS3Request struct {
 
 func NewCleanTapeDriveSpectraS3Request(tapeDriveId string) *CleanTapeDriveSpectraS3Request {
     return &CleanTapeDriveSpectraS3Request{
+        TapeDriveId: tapeDriveId,
+    }
+}
+
+type PutDriveDumpSpectraS3Request struct {
+    TapeDriveId string
+}
+
+func NewPutDriveDumpSpectraS3Request(tapeDriveId string) *PutDriveDumpSpectraS3Request {
+    return &PutDriveDumpSpectraS3Request{
         TapeDriveId: tapeDriveId,
     }
 }
@@ -7838,6 +7936,7 @@ func (modifyTapePartitionSpectraS3Request *ModifyTapePartitionSpectraS3Request) 
 type ModifyTapeSpectraS3Request struct {
     EjectLabel *string
     EjectLocation *string
+    Role TapeRole
     State TapeState
     TapeId string
 }
@@ -7855,6 +7954,11 @@ func (modifyTapeSpectraS3Request *ModifyTapeSpectraS3Request) WithEjectLabel(eje
 
 func (modifyTapeSpectraS3Request *ModifyTapeSpectraS3Request) WithEjectLocation(ejectLocation string) *ModifyTapeSpectraS3Request {
     modifyTapeSpectraS3Request.EjectLocation = &ejectLocation
+    return modifyTapeSpectraS3Request
+}
+
+func (modifyTapeSpectraS3Request *ModifyTapeSpectraS3Request) WithRole(role TapeRole) *ModifyTapeSpectraS3Request {
+    modifyTapeSpectraS3Request.Role = role
     return modifyTapeSpectraS3Request
 }
 
@@ -7925,6 +8029,28 @@ func (rawImportTapeSpectraS3Request *RawImportTapeSpectraS3Request) WithStorageD
 func (rawImportTapeSpectraS3Request *RawImportTapeSpectraS3Request) WithTaskPriority(taskPriority Priority) *RawImportTapeSpectraS3Request {
     rawImportTapeSpectraS3Request.TaskPriority = taskPriority
     return rawImportTapeSpectraS3Request
+}
+
+type TestTapeDriveSpectraS3Request struct {
+    SkipClean bool
+    TapeDriveId string
+    TapeId *string
+}
+
+func NewTestTapeDriveSpectraS3Request(tapeDriveId string) *TestTapeDriveSpectraS3Request {
+    return &TestTapeDriveSpectraS3Request{
+        TapeDriveId: tapeDriveId,
+    }
+}
+
+func (testTapeDriveSpectraS3Request *TestTapeDriveSpectraS3Request) WithSkipClean() *TestTapeDriveSpectraS3Request {
+    testTapeDriveSpectraS3Request.SkipClean = true
+    return testTapeDriveSpectraS3Request
+}
+
+func (testTapeDriveSpectraS3Request *TestTapeDriveSpectraS3Request) WithTapeId(tapeId string) *TestTapeDriveSpectraS3Request {
+    testTapeDriveSpectraS3Request.TapeId = &tapeId
+    return testTapeDriveSpectraS3Request
 }
 
 type VerifyAllTapesSpectraS3Request struct {

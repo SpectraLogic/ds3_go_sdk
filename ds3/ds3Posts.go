@@ -328,6 +328,7 @@ func (client *Client) PutBucketSpectraS3(request *models.PutBucketSpectraS3Reque
         WithQueryParam("name", request.Name).
         WithOptionalQueryParam("data_policy_id", request.DataPolicyId).
         WithOptionalQueryParam("id", request.Id).
+        WithOptionalQueryParam("protected", networking.BoolPtrToStrPtr(request.Protected)).
         WithOptionalQueryParam("user_id", request.UserId).
         Build(client.connectionInfo)
 

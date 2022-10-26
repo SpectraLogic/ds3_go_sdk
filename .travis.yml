@@ -2,7 +2,7 @@ language: go
 
 go:
   - 1.10.x
-  - master
+  - 1.19.x
 
 go_import_path: github.com/SpectraLogic/ds3_go_sdk
 
