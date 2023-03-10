@@ -15,6 +15,7 @@ import (
     "io/ioutil"
     "log"
     "os"
+    "strings"
     "sync"
     "sync/atomic"
     "testing"
@@ -76,7 +77,7 @@ func TestPutBulkBlobSpanningChunksRandomAccess(t *testing.T) {
 
     strategy := newTestTransferStrategy(t)
 
-    writeObj, err := getTestWriteObjectRandomAccess(LargeBookTitle, LargeBookPath + LargeBookTitle)
+    writeObj, err := getTestWriteObjectRandomAccess(LargeBookTitle, LargeBookPath+LargeBookTitle)
 
     var writeObjects []helperModels.PutObject
     writeObjects = append(writeObjects, *writeObj)
@@ -89,8 +90,7 @@ func TestPutBulkBlobSpanningChunksRandomAccess(t *testing.T) {
         t.Error("expected to get a BP job ID, but instead got nothing")
     }
 
-
-    testutils.VerifyFilesOnBP(t, testBucket, []string {LargeBookTitle}, LargeBookPath, client)
+    testutils.VerifyFilesOnBP(t, testBucket, []string{LargeBookTitle}, LargeBookPath, client)
 }
 
 func TestPutBulkBlobSpanningChunksStreamAccess(t *testing.T) {
@@ -100,7 +100,7 @@ func TestPutBulkBlobSpanningChunksStreamAccess(t *testing.T) {
 
     strategy := newTestTransferStrategy(t)
 
-    writeObj, err := getTestWriteObjectStreamAccess(LargeBookTitle, LargeBookPath + LargeBookTitle)
+    writeObj, err := getTestWriteObjectStreamAccess(LargeBookTitle, LargeBookPath+LargeBookTitle)
 
     var writeObjects []helperModels.PutObject
     writeObjects = append(writeObjects, *writeObj)
@@ -113,7 +113,7 @@ func TestPutBulkBlobSpanningChunksStreamAccess(t *testing.T) {
         t.Error("expected to get a BP job ID, but instead got nothing")
     }
 
-    testutils.VerifyFilesOnBP(t, testBucket, []string {LargeBookTitle}, LargeBookPath, client)
+    testutils.VerifyFilesOnBP(t, testBucket, []string{LargeBookTitle}, LargeBookPath, client)
 }
 
 // GOSDK-26: On archive helpers can hang indefinitely using streaming strategy if blob fails.
@@ -136,13 +136,13 @@ func TestPutBulkBlobSpanningChunksStreamAccessDoesNotExist(t *testing.T) {
     strategy := helpers.WriteTransferStrategy{
         BlobStrategy: newTestBlobStrategy(),
         Options:      helpers.WriteBulkJobOptions{MaxUploadSize: &helpers.MinUploadSize},
-        Listeners:    helpers.ListenerStrategy{ErrorCallback:errorCallback},
+        Listeners:    helpers.ListenerStrategy{ErrorCallback: errorCallback},
     }
 
     // open a file but lie that its bigger than it is
     f, err := os.Open(testutils.BookPath + testutils.BookTitles[0])
     writeObj := helperModels.PutObject{
-        PutObject: ds3Models.Ds3PutObject{Name: LargeBookTitle, Size: 20*1024*1024},
+        PutObject:      ds3Models.Ds3PutObject{Name: LargeBookTitle, Size: 20 * 1024 * 1024},
         ChannelBuilder: &testStreamAccessReadChannelBuilder{f: f},
     }
 
@@ -164,9 +164,9 @@ func TestGetBulk(t *testing.T) {
     helper := helpers.NewHelpers(client)
 
     strategy := helpers.ReadTransferStrategy{
-        Options: helpers.ReadBulkJobOptions{}, // use default job options
+        Options:      helpers.ReadBulkJobOptions{}, // use default job options
         BlobStrategy: newTestBlobStrategy(),
-        Listeners: newErrorOnErrorListenerStrategy(t),
+        Listeners:    newErrorOnErrorListenerStrategy(t),
     }
 
     file0, err := ioutil.TempFile(os.TempDir(), "goTest")
@@ -189,7 +189,7 @@ func TestGetBulk(t *testing.T) {
     defer file3.Close()
     defer os.Remove(file3.Name())
 
-    readObjects := []helperModels.GetObject {
+    readObjects := []helperModels.GetObject{
         {Name: testutils.BookTitles[0], ChannelBuilder: channels.NewWriteChannelBuilder(file0.Name())},
         {Name: testutils.BookTitles[1], ChannelBuilder: channels.NewWriteChannelBuilder(file1.Name())},
         {Name: testutils.BookTitles[2], ChannelBuilder: channels.NewWriteChannelBuilder(file2.Name())},
@@ -216,9 +216,9 @@ func TestGetBulkBlobSpanningChunksRandomAccess(t *testing.T) {
     helper := helpers.NewHelpers(client)
 
     strategy := helpers.ReadTransferStrategy{
-        Options: helpers.ReadBulkJobOptions{}, // use default job options
+        Options:      helpers.ReadBulkJobOptions{}, // use default job options
         BlobStrategy: newTestBlobStrategy(),
-        Listeners: newErrorOnErrorListenerStrategy(t),
+        Listeners:    newErrorOnErrorListenerStrategy(t),
     }
 
     file, err := ioutil.TempFile(os.TempDir(), "goTest")
@@ -248,9 +248,9 @@ func TestGetBulkBlobSpanningChunksStreaming(t *testing.T) {
     helper := helpers.NewHelpers(client)
 
     strategy := helpers.ReadTransferStrategy{
-        Options: helpers.ReadBulkJobOptions{}, // use default job options
+        Options:      helpers.ReadBulkJobOptions{}, // use default job options
         BlobStrategy: newTestBlobStrategy(),
-        Listeners: newErrorOnErrorListenerStrategy(t),
+        Listeners:    newErrorOnErrorListenerStrategy(t),
     }
 
     file, err := ioutil.TempFile(os.TempDir(), "goTest")
@@ -258,7 +258,7 @@ func TestGetBulkBlobSpanningChunksStreaming(t *testing.T) {
     defer file.Close()
     defer os.Remove(file.Name())
 
-    fileWriter, err := os.OpenFile(file.Name(), os.O_WRONLY | os.O_CREATE, os.ModePerm)
+    fileWriter, err := os.OpenFile(file.Name(), os.O_WRONLY|os.O_CREATE, os.ModePerm)
     defer fileWriter.Close()
 
     readObjects := []helperModels.GetObject{
@@ -293,7 +293,7 @@ func TestGetBulkBlobSpanningChunksStreamingFailBlob(t *testing.T) {
     }
 
     strategy := helpers.ReadTransferStrategy{
-        Options: helpers.ReadBulkJobOptions{}, // use default job options
+        Options:      helpers.ReadBulkJobOptions{}, // use default job options
         BlobStrategy: newTestBlobStrategy(),
         Listeners: helpers.ListenerStrategy{
             ErrorCallback: errorCallback,
@@ -322,9 +322,9 @@ func TestGetBulkPartialObjectRandomAccess(t *testing.T) {
     helper := helpers.NewHelpers(client)
 
     strategy := helpers.ReadTransferStrategy{
-        Options: helpers.ReadBulkJobOptions{}, // use default job options
+        Options:      helpers.ReadBulkJobOptions{}, // use default job options
         BlobStrategy: newTestBlobStrategy(),
-        Listeners: newErrorOnErrorListenerStrategy(t),
+        Listeners:    newErrorOnErrorListenerStrategy(t),
     }
 
     file, err := ioutil.TempFile(os.TempDir(), "goTest")
@@ -332,7 +332,7 @@ func TestGetBulkPartialObjectRandomAccess(t *testing.T) {
     defer file.Close()
     defer os.Remove(file.Name())
 
-    ranges := []ds3Models.Range {
+    ranges := []ds3Models.Range{
         {0, 100},
         {200, 300},
         {301, 400},
@@ -350,9 +350,9 @@ func TestGetBulkPartialObjectRandomAccess(t *testing.T) {
     }
 
     file.Seek(0, io.SeekStart)
-    testutils.VerifyPartialFile(t, LargeBookPath + LargeBookTitle, 101, 0, file)
-    testutils.VerifyPartialFile(t, LargeBookPath + LargeBookTitle, 201, 200, file)
-    testutils.VerifyPartialFile(t, LargeBookPath + LargeBookTitle, 101, 500, file)
+    testutils.VerifyPartialFile(t, LargeBookPath+LargeBookTitle, 101, 0, file)
+    testutils.VerifyPartialFile(t, LargeBookPath+LargeBookTitle, 201, 200, file)
+    testutils.VerifyPartialFile(t, LargeBookPath+LargeBookTitle, 101, 500, file)
 }
 
 func TestPutObjectDoesNotExist(t *testing.T) {
@@ -374,16 +374,16 @@ func TestPutObjectDoesNotExist(t *testing.T) {
     strategy := helpers.WriteTransferStrategy{
         BlobStrategy: newTestBlobStrategy(),
         Options:      helpers.WriteBulkJobOptions{MaxUploadSize: &helpers.MinUploadSize},
-        Listeners:    helpers.ListenerStrategy{ErrorCallback:errorCallback},
+        Listeners:    helpers.ListenerStrategy{ErrorCallback: errorCallback},
     }
 
     channelBuilder := channels.NewReadChannelBuilder(testObjectName)
     nonExistentPutObj := helperModels.PutObject{
-        PutObject:      ds3Models.Ds3PutObject{Name:testObjectName,Size:10},
+        PutObject:      ds3Models.Ds3PutObject{Name: testObjectName, Size: 10},
         ChannelBuilder: channelBuilder,
     }
 
-    writeObjects := []helperModels.PutObject { nonExistentPutObj }
+    writeObjects := []helperModels.PutObject{nonExistentPutObj}
 
     _, err := helper.PutObjects(testBucket, writeObjects, strategy)
     ds3Testing.AssertNilError(t, err)
@@ -416,7 +416,7 @@ func (builder *emptyReadChannelBuilder) OnDone(reader io.ReadCloser) {
     reader.Close()
 }
 
-type emptyWriteCloser struct {}
+type emptyWriteCloser struct{}
 
 func (writer *emptyWriteCloser) Write(p []byte) (n int, err error) {
     return len(p), nil
@@ -458,7 +458,7 @@ func TestBulkPutAndGetLotsOfFiles(t *testing.T) {
     for i := 0; i < numObjects; i++ {
         objName := fmt.Sprintf("file-%d.txt", i)
         curWriteObj := helperModels.PutObject{
-            PutObject:      ds3Models.Ds3PutObject{Name:objName, Size:0},
+            PutObject:      ds3Models.Ds3PutObject{Name: objName, Size: 0},
             ChannelBuilder: &emptyReadChannelBuilder{},
         }
         writeObjects = append(writeObjects, curWriteObj)
@@ -466,8 +466,8 @@ func TestBulkPutAndGetLotsOfFiles(t *testing.T) {
 
     writeStrategy := helpers.WriteTransferStrategy{
         BlobStrategy: &helpers.SimpleBlobStrategy{
-            Delay:time.Second * 30,
-            MaxConcurrentTransfers:10,
+            Delay:                  time.Second * 30,
+            MaxConcurrentTransfers: 10,
         },
         Options:   helpers.WriteBulkJobOptions{MaxUploadSize: &helpers.MinUploadSize},
         Listeners: newErrorOnErrorListenerStrategy(t),
@@ -492,8 +492,8 @@ func TestBulkPutAndGetLotsOfFiles(t *testing.T) {
     readStrategy := helpers.ReadTransferStrategy{
         Options: helpers.ReadBulkJobOptions{}, // use default job options
         BlobStrategy: &helpers.SimpleBlobStrategy{
-            Delay:time.Second * 30,
-            MaxConcurrentTransfers:10,
+            Delay:                  time.Second * 30,
+            MaxConcurrentTransfers: 10,
         },
         Listeners: newErrorOnErrorListenerStrategy(t),
     }
@@ -543,8 +543,8 @@ func TestRetryGettingBlobRange(t *testing.T) {
                 }()
 
                 // get a range of the blob
-                startRange := blob.Offset+10 // retrieve subset of blob
-                endRange := blob.Length+blob.Offset-1
+                startRange := blob.Offset + 10 // retrieve subset of blob
+                endRange := blob.Length + blob.Offset - 1
                 bytesWritten, err := helpers.RetryGettingBlobRange(client, testBucket, writeObj.PutObject.Name, blob.Offset, startRange, endRange, tempFile, client.Logger)
                 ds3Testing.AssertNilError(t, err)
                 ds3Testing.AssertInt64(t, "bytes written", endRange-startRange+1, bytesWritten)
@@ -554,7 +554,7 @@ func TestRetryGettingBlobRange(t *testing.T) {
                 ds3Testing.AssertNilError(t, err)
 
                 tempFile.Seek(0, 0)
-                length := endRange-startRange
+                length := endRange - startRange
                 testutils.VerifyPartialFile(t, bigFilePath, length, startRange, tempFile)
             }()
             blobsChecked++
@@ -638,9 +638,9 @@ func TestRetryGetObjectsWhenSomeObjectsDoNotExist(t *testing.T) {
     }
 
     strategy := helpers.ReadTransferStrategy{
-        Options: helpers.ReadBulkJobOptions{}, // use default job options
+        Options:      helpers.ReadBulkJobOptions{}, // use default job options
         BlobStrategy: newTestBlobStrategy(),
-        Listeners: errListener,
+        Listeners:    errListener,
     }
 
     file0, err := ioutil.TempFile(os.TempDir(), "goTest")
@@ -675,7 +675,7 @@ func TestRetryGetObjectsWhenSomeObjectsDoNotExist(t *testing.T) {
 
     doesNotExistChannelBuilder1 := channels.NewWriteChannelBuilder(doesNotExist1.Name())
     doesNotExistChannelBuilder2 := channels.NewWriteChannelBuilder(doesNotExist2.Name())
-    readObjects := []helperModels.GetObject {
+    readObjects := []helperModels.GetObject{
         {Name: testutils.BookTitles[0], ChannelBuilder: channels.NewWriteChannelBuilder(file0.Name())},
         {Name: testutils.BookTitles[1], ChannelBuilder: channels.NewWriteChannelBuilder(file1.Name())},
         {Name: testutils.BookTitles[2], ChannelBuilder: channels.NewWriteChannelBuilder(file2.Name())},
@@ -707,4 +707,50 @@ func TestRetryGetObjectsWhenSomeObjectsDoNotExist(t *testing.T) {
 
     ds3Testing.AssertBool(t, "has fatal error", true, doesNotExistChannelBuilder1.HasFatalError())
     ds3Testing.AssertBool(t, "has fatal error", true, doesNotExistChannelBuilder2.HasFatalError())
+}
+
+func TestRetryGetObjectsWhenNoObjectExist(t *testing.T) {
+    defer testutils.DeleteBucketContents(client, testBucket)
+    err := testutils.PutTestBooks(client, testBucket)
+    ds3Testing.AssertNilError(t, err)
+
+    helper := helpers.NewHelpers(client)
+
+    perObjectErrCount := int64(0)
+    errListener := helpers.ListenerStrategy{
+        ErrorCallback: func(objectName string, err error) {
+            atomic.AddInt64(&perObjectErrCount, 1)
+        },
+    }
+
+    strategy := helpers.ReadTransferStrategy{
+        Options:      helpers.ReadBulkJobOptions{}, // use default job options
+        BlobStrategy: newTestBlobStrategy(),
+        Listeners:    errListener,
+    }
+
+    doesNotExist1, err := ioutil.TempFile(os.TempDir(), "goTest")
+    ds3Testing.AssertNilError(t, err)
+    ds3Testing.AssertNilError(t, doesNotExist1.Close())
+    defer os.Remove(doesNotExist1.Name())
+
+    doesNotExistChannelBuilder1 := channels.NewWriteChannelBuilder(doesNotExist1.Name())
+    readObjects := []helperModels.GetObject{
+        {Name: "doesNotExist1", ChannelBuilder: doesNotExistChannelBuilder1},
+    }
+
+    _, err = helper.GetObjects(testBucket, readObjects, strategy)
+    if err == nil {
+        t.Fatalf("expected error when creating GET job")
+    } else if !strings.Contains(err.Error(), "Could not find requested blobs for") {
+        t.Fatalf("expected '404 Could not find requested blobs' error but got %v", err)
+    }
+
+    ds3Testing.AssertInt64(t, "per-object error count", 1, perObjectErrCount)
+
+    doesNotExistStat, err := os.Stat(doesNotExist1.Name())
+    ds3Testing.AssertNilError(t, err)
+    ds3Testing.AssertInt64(t, "size of file", 0, doesNotExistStat.Size())
+
+    ds3Testing.AssertBool(t, "has fatal error", true, doesNotExistChannelBuilder1.HasFatalError())
 }

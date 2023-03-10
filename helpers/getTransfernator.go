@@ -95,6 +95,9 @@ func (transceiver *getTransceiver) createBulkGetJob() (*ds3Models.GetBulkJobSpec
             objectsThatExist = append(objectsThatExist, obj)
         }
     }
+    if len(objectsThatExist) <= 0 {
+        return nil, nil, err
+    }
 
     // create bulk get job for all objects that exist in the bucket
     bulkGet = newBulkGetRequest(transceiver.BucketName, &objectsThatExist, transceiver.Strategy.Options)
