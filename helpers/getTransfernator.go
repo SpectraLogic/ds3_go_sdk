@@ -131,5 +131,5 @@ func (transceiver *getTransceiver) transfer() (string, error) {
     err = producer.run() // producer will add to waitGroup for every blob retrieval added to queue, and each transfer performed will decrement from waitGroup
     waitGroup.Wait()
 
-    return bulkGetResponse.MasterObjectList.JobId, nil
+    return bulkGetResponse.MasterObjectList.JobId, err
 }
