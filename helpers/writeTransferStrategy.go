@@ -24,6 +24,7 @@ type WriteBulkJobOptions struct {
     Name *string
     Force *bool
     IgnoreNamingConflicts *bool
+    Protected *bool
 }
 
 // Strategy for how to blob objects for writing
