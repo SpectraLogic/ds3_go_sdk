@@ -58,6 +58,9 @@ func newBulkPutRequest(bucketName string, writeObjects *[]helperModels.PutObject
     if options.IgnoreNamingConflicts != nil && *options.IgnoreNamingConflicts {
         bulkPut = bulkPut.WithIgnoreNamingConflicts()
     }
+    if options.Protected != nil {
+        bulkPut = bulkPut.WithProtected(*options.Protected)
+    }
     return bulkPut
 }
 
