@@ -45,7 +45,7 @@ func getBucketObjects(client *ds3.Client, args *Arguments) ([]models.Ds3PutObjec
         remainingKeys -= len(response.ListBucketResult.Objects)
 
         // Take note of the next marker to get.
-        //marker = *response.ListBucketResult.NextMarker
+        marker = *response.ListBucketResult.NextMarker
 
         // Take care of the do...while.
         if response.ListBucketResult.Truncated == false || remainingKeys <= 0 {
