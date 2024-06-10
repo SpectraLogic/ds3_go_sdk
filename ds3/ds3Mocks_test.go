@@ -56,7 +56,7 @@ func (mockedNet *mockedNet) Returning(statusCode int, response string, headers *
     var url url.URL
     var endpointUrl, _ = url.Parse("/")
     return &Client{
-        sendNetwork: mockedNet,
+        SendNetwork:  mockedNet,
         clientPolicy: &ClientPolicy{5, 5},
         connectionInfo: &networking.ConnectionInfo{
             Endpoint: endpointUrl,

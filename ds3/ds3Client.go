@@ -2,8 +2,8 @@ package ds3
 
 import (
     "github.com/SpectraLogic/ds3_go_sdk/ds3/networking"
-    "net/url"
     "github.com/SpectraLogic/ds3_go_sdk/sdk_log"
+    "net/url"
 )
 
 const (
@@ -16,8 +16,8 @@ const (
 )
 
 type Client struct {
-    sendNetwork    networking.Network
-    clientPolicy   *ClientPolicy
+    SendNetwork  networking.Network
+    clientPolicy *ClientPolicy
     connectionInfo *networking.ConnectionInfo
 
     // Logger where all messages will be logged to
@@ -81,7 +81,7 @@ func (clientBuilder *ClientBuilder) BuildClient() *Client {
     }
 
     return &Client{
-        sendNetwork:    networking.NewSendNetwork(clientBuilder.connectionInfo),
+        SendNetwork:    networking.NewSendNetwork(clientBuilder.connectionInfo),
         clientPolicy:   clientBuilder.clientPolicy,
         connectionInfo: clientBuilder.connectionInfo,
         Logger:         clientBuilder.logger,
