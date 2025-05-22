@@ -2840,6 +2840,25 @@ func NewVerifyBulkJobSpectraS3Response(webResponse WebResponse) (*VerifyBulkJobS
     }
 }
 
+type DeleteJobCreationFailureSpectraS3Response struct {
+    
+    Headers *http.Header
+}
+
+
+
+func NewDeleteJobCreationFailureSpectraS3Response(webResponse WebResponse) (*DeleteJobCreationFailureSpectraS3Response, error) {
+    defer webResponse.Body().Close()
+    expectedStatusCodes := []int { 204 }
+
+    switch code := webResponse.StatusCode(); code {
+    case 204:
+        return &DeleteJobCreationFailureSpectraS3Response{Headers: webResponse.Header()}, nil
+    default:
+        return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
+    }
+}
+
 type GetActiveJobSpectraS3Response struct {
     ActiveJob ActiveJob
     Headers *http.Header
@@ -3064,6 +3083,32 @@ func NewGetJobChunksReadyForClientProcessingSpectraS3Response(webResponse WebRes
     switch code := webResponse.StatusCode(); code {
     case 200:
         var body GetJobChunksReadyForClientProcessingSpectraS3Response
+        if err := body.parse(webResponse); err != nil {
+            return nil, err
+        }
+        body.Headers = webResponse.Header()
+        return &body, nil
+    default:
+        return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
+    }
+}
+
+type GetJobCreationFailuresSpectraS3Response struct {
+    JobCreationFailedList JobCreationFailedList
+    Headers *http.Header
+}
+
+func (getJobCreationFailuresSpectraS3Response *GetJobCreationFailuresSpectraS3Response) parse(webResponse WebResponse) error {
+        return parseResponsePayload(webResponse, &getJobCreationFailuresSpectraS3Response.JobCreationFailedList)
+}
+
+func NewGetJobCreationFailuresSpectraS3Response(webResponse WebResponse) (*GetJobCreationFailuresSpectraS3Response, error) {
+    defer webResponse.Body().Close()
+    expectedStatusCodes := []int { 200 }
+
+    switch code := webResponse.StatusCode(); code {
+    case 200:
+        var body GetJobCreationFailuresSpectraS3Response
         if err := body.parse(webResponse); err != nil {
             return nil, err
         }

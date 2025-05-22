@@ -867,6 +867,7 @@ type ModifyCacheFilesystemSpectraS3Request struct {
     CacheFilesystem string
     CacheSafetyEnabled *bool
     MaxCapacityInBytes *int64
+    NeedsReconcile *bool
 }
 
 func NewModifyCacheFilesystemSpectraS3Request(cacheFilesystem string) *ModifyCacheFilesystemSpectraS3Request {
@@ -897,6 +898,11 @@ func (modifyCacheFilesystemSpectraS3Request *ModifyCacheFilesystemSpectraS3Reque
 
 func (modifyCacheFilesystemSpectraS3Request *ModifyCacheFilesystemSpectraS3Request) WithMaxCapacityInBytes(maxCapacityInBytes int64) *ModifyCacheFilesystemSpectraS3Request {
     modifyCacheFilesystemSpectraS3Request.MaxCapacityInBytes = &maxCapacityInBytes
+    return modifyCacheFilesystemSpectraS3Request
+}
+
+func (modifyCacheFilesystemSpectraS3Request *ModifyCacheFilesystemSpectraS3Request) WithNeedsReconcile(needsReconcile bool) *ModifyCacheFilesystemSpectraS3Request {
+    modifyCacheFilesystemSpectraS3Request.NeedsReconcile = &needsReconcile
     return modifyCacheFilesystemSpectraS3Request
 }
 
@@ -1053,6 +1059,7 @@ type ModifyDataPathBackendSpectraS3Request struct {
     IomCacheLimitationPercent *float64
     IomEnabled *bool
     MaxAggregatedBlobsPerChunk *int
+    MaxNumberOfConcurrentJobs *int
     PartiallyVerifyLastPercentOfTapes *int
     PoolSafetyEnabled *bool
     UnavailableMediaPolicy UnavailableMediaUsagePolicy
@@ -1113,6 +1120,11 @@ func (modifyDataPathBackendSpectraS3Request *ModifyDataPathBackendSpectraS3Reque
 
 func (modifyDataPathBackendSpectraS3Request *ModifyDataPathBackendSpectraS3Request) WithMaxAggregatedBlobsPerChunk(maxAggregatedBlobsPerChunk int) *ModifyDataPathBackendSpectraS3Request {
     modifyDataPathBackendSpectraS3Request.MaxAggregatedBlobsPerChunk = &maxAggregatedBlobsPerChunk
+    return modifyDataPathBackendSpectraS3Request
+}
+
+func (modifyDataPathBackendSpectraS3Request *ModifyDataPathBackendSpectraS3Request) WithMaxNumberOfConcurrentJobs(maxNumberOfConcurrentJobs int) *ModifyDataPathBackendSpectraS3Request {
+    modifyDataPathBackendSpectraS3Request.MaxNumberOfConcurrentJobs = &maxNumberOfConcurrentJobs
     return modifyDataPathBackendSpectraS3Request
 }
 
@@ -3274,6 +3286,16 @@ func (verifyBulkJobSpectraS3Request *VerifyBulkJobSpectraS3Request) WithPriority
     return verifyBulkJobSpectraS3Request
 }
 
+type DeleteJobCreationFailureSpectraS3Request struct {
+    JobCreationFailed string
+}
+
+func NewDeleteJobCreationFailureSpectraS3Request(jobCreationFailed string) *DeleteJobCreationFailureSpectraS3Request {
+    return &DeleteJobCreationFailureSpectraS3Request{
+        JobCreationFailed: jobCreationFailed,
+    }
+}
+
 type GetActiveJobSpectraS3Request struct {
     ActiveJobId string
 }
@@ -3596,6 +3618,56 @@ func (getJobChunksReadyForClientProcessingSpectraS3Request *GetJobChunksReadyFor
 func (getJobChunksReadyForClientProcessingSpectraS3Request *GetJobChunksReadyForClientProcessingSpectraS3Request) WithPreferredNumberOfChunks(preferredNumberOfChunks int) *GetJobChunksReadyForClientProcessingSpectraS3Request {
     getJobChunksReadyForClientProcessingSpectraS3Request.PreferredNumberOfChunks = &preferredNumberOfChunks
     return getJobChunksReadyForClientProcessingSpectraS3Request
+}
+
+type GetJobCreationFailuresSpectraS3Request struct {
+    Date *string
+    ErrorMessage *string
+    LastPage bool
+    PageLength *int
+    PageOffset *int
+    PageStartMarker *string
+    UserName *string
+}
+
+func NewGetJobCreationFailuresSpectraS3Request() *GetJobCreationFailuresSpectraS3Request {
+    return &GetJobCreationFailuresSpectraS3Request{
+    }
+}
+
+func (getJobCreationFailuresSpectraS3Request *GetJobCreationFailuresSpectraS3Request) WithDate(date string) *GetJobCreationFailuresSpectraS3Request {
+    getJobCreationFailuresSpectraS3Request.Date = &date
+    return getJobCreationFailuresSpectraS3Request
+}
+
+func (getJobCreationFailuresSpectraS3Request *GetJobCreationFailuresSpectraS3Request) WithErrorMessage(errorMessage string) *GetJobCreationFailuresSpectraS3Request {
+    getJobCreationFailuresSpectraS3Request.ErrorMessage = &errorMessage
+    return getJobCreationFailuresSpectraS3Request
+}
+
+func (getJobCreationFailuresSpectraS3Request *GetJobCreationFailuresSpectraS3Request) WithLastPage() *GetJobCreationFailuresSpectraS3Request {
+    getJobCreationFailuresSpectraS3Request.LastPage = true
+    return getJobCreationFailuresSpectraS3Request
+}
+
+func (getJobCreationFailuresSpectraS3Request *GetJobCreationFailuresSpectraS3Request) WithPageLength(pageLength int) *GetJobCreationFailuresSpectraS3Request {
+    getJobCreationFailuresSpectraS3Request.PageLength = &pageLength
+    return getJobCreationFailuresSpectraS3Request
+}
+
+func (getJobCreationFailuresSpectraS3Request *GetJobCreationFailuresSpectraS3Request) WithPageOffset(pageOffset int) *GetJobCreationFailuresSpectraS3Request {
+    getJobCreationFailuresSpectraS3Request.PageOffset = &pageOffset
+    return getJobCreationFailuresSpectraS3Request
+}
+
+func (getJobCreationFailuresSpectraS3Request *GetJobCreationFailuresSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetJobCreationFailuresSpectraS3Request {
+    getJobCreationFailuresSpectraS3Request.PageStartMarker = &pageStartMarker
+    return getJobCreationFailuresSpectraS3Request
+}
+
+func (getJobCreationFailuresSpectraS3Request *GetJobCreationFailuresSpectraS3Request) WithUserName(userName string) *GetJobCreationFailuresSpectraS3Request {
+    getJobCreationFailuresSpectraS3Request.UserName = &userName
+    return getJobCreationFailuresSpectraS3Request
 }
 
 type GetJobSpectraS3Request struct {
@@ -7568,6 +7640,7 @@ func NewGetTapeSpectraS3Request(tapeId string) *GetTapeSpectraS3Request {
 }
 
 type GetTapesSpectraS3Request struct {
+    Bucket *string
     AssignedToStorageDomain *bool
     AvailableRawCapacity *int64
     BarCode *string
@@ -7581,11 +7654,13 @@ type GetTapesSpectraS3Request struct {
     PageOffset *int
     PageStartMarker *string
     PartiallyVerifiedEndOfTape *string
+    Partition *string
     PartitionId *string
     PreviousState TapeState
     SerialNumber *string
     SortBy *string
     State TapeState
+    StorageDomain *string
     StorageDomainMemberId *string
     String *string
     VerifyPending Priority
@@ -7609,6 +7684,11 @@ func (getTapesSpectraS3Request *GetTapesSpectraS3Request) WithAvailableRawCapaci
 
 func (getTapesSpectraS3Request *GetTapesSpectraS3Request) WithBarCode(barCode string) *GetTapesSpectraS3Request {
     getTapesSpectraS3Request.BarCode = &barCode
+    return getTapesSpectraS3Request
+}
+
+func (getTapesSpectraS3Request *GetTapesSpectraS3Request) WithBucket(bucket string) *GetTapesSpectraS3Request {
+    getTapesSpectraS3Request.Bucket = &bucket
     return getTapesSpectraS3Request
 }
 
@@ -7662,6 +7742,11 @@ func (getTapesSpectraS3Request *GetTapesSpectraS3Request) WithPartiallyVerifiedE
     return getTapesSpectraS3Request
 }
 
+func (getTapesSpectraS3Request *GetTapesSpectraS3Request) WithPartition(partition string) *GetTapesSpectraS3Request {
+    getTapesSpectraS3Request.Partition = &partition
+    return getTapesSpectraS3Request
+}
+
 func (getTapesSpectraS3Request *GetTapesSpectraS3Request) WithPartitionId(partitionId string) *GetTapesSpectraS3Request {
     getTapesSpectraS3Request.PartitionId = &partitionId
     return getTapesSpectraS3Request
@@ -7684,6 +7769,11 @@ func (getTapesSpectraS3Request *GetTapesSpectraS3Request) WithSortBy(sortBy stri
 
 func (getTapesSpectraS3Request *GetTapesSpectraS3Request) WithState(state TapeState) *GetTapesSpectraS3Request {
     getTapesSpectraS3Request.State = state
+    return getTapesSpectraS3Request
+}
+
+func (getTapesSpectraS3Request *GetTapesSpectraS3Request) WithStorageDomain(storageDomain string) *GetTapesSpectraS3Request {
+    getTapesSpectraS3Request.StorageDomain = &storageDomain
     return getTapesSpectraS3Request
 }
 

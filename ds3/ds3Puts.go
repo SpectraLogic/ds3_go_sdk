@@ -156,6 +156,7 @@ func (client *Client) ModifyCacheFilesystemSpectraS3(request *models.ModifyCache
 		WithOptionalQueryParam("burst_threshold", networking.Float64PtrToStrPtr(request.BurstThreshold)).
 		WithOptionalQueryParam("cache_safety_enabled", networking.BoolPtrToStrPtr(request.CacheSafetyEnabled)).
 		WithOptionalQueryParam("max_capacity_in_bytes", networking.Int64PtrToStrPtr(request.MaxCapacityInBytes)).
+		WithOptionalQueryParam("needs_reconcile", networking.BoolPtrToStrPtr(request.NeedsReconcile)).
 		Build(client.connectionInfo)
 
 	if err != nil {
@@ -189,6 +190,7 @@ func (client *Client) ModifyDataPathBackendSpectraS3(request *models.ModifyDataP
 		WithOptionalQueryParam("iom_cache_limitation_percent", networking.Float64PtrToStrPtr(request.IomCacheLimitationPercent)).
 		WithOptionalQueryParam("iom_enabled", networking.BoolPtrToStrPtr(request.IomEnabled)).
 		WithOptionalQueryParam("max_aggregated_blobs_per_chunk", networking.IntPtrToStrPtr(request.MaxAggregatedBlobsPerChunk)).
+		WithOptionalQueryParam("max_number_of_concurrent_jobs", networking.IntPtrToStrPtr(request.MaxNumberOfConcurrentJobs)).
 		WithOptionalQueryParam("partially_verify_last_percent_of_tapes", networking.IntPtrToStrPtr(request.PartiallyVerifyLastPercentOfTapes)).
 		WithOptionalQueryParam("pool_safety_enabled", networking.BoolPtrToStrPtr(request.PoolSafetyEnabled)).
 		WithOptionalQueryParam("unavailable_media_policy", networking.InterfaceToStrPtr(request.UnavailableMediaPolicy)).

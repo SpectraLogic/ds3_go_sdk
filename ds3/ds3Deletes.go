@@ -591,6 +591,29 @@ func (client *Client) ClearAllCompletedJobsSpectraS3(request *models.ClearAllCom
     return models.NewClearAllCompletedJobsSpectraS3Response(response)
 }
 
+func (client *Client) DeleteJobCreationFailureSpectraS3(request *models.DeleteJobCreationFailureSpectraS3Request) (*models.DeleteJobCreationFailureSpectraS3Response, error) {
+    // Build the http request
+    httpRequest, err := networking.NewHttpRequestBuilder().
+        WithHttpVerb(HTTP_VERB_DELETE).
+        WithPath("/_rest_/job_creation_failed/" + request.JobCreationFailed).
+        Build(client.connectionInfo)
+
+    if err != nil {
+        return nil, err
+    }
+
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
+
+    // Invoke the HTTP request.
+    response, requestErr := networkRetryDecorator.Invoke(httpRequest)
+    if requestErr != nil {
+        return nil, requestErr
+    }
+
+    // Create a response object based on the result.
+    return models.NewDeleteJobCreationFailureSpectraS3Response(response)
+}
+
 func (client *Client) TruncateActiveJobSpectraS3(request *models.TruncateActiveJobSpectraS3Request) (*models.TruncateActiveJobSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().

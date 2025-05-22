@@ -609,6 +609,7 @@ type DataPathBackend struct {
     IomEnabled bool
     LastHeartbeat string
     MaxAggregatedBlobsPerChunk int
+    MaxNumberOfConcurrentJobs int
     PartiallyVerifyLastPercentOfTapes *int
     PoolSafetyEnabled bool
     UnavailableMediaPolicy UnavailableMediaUsagePolicy
@@ -648,6 +649,8 @@ func (dataPathBackend *DataPathBackend) parse(xmlNode *XmlNode, aggErr *Aggregat
             dataPathBackend.LastHeartbeat = parseString(child.Content)
         case "MaxAggregatedBlobsPerChunk":
             dataPathBackend.MaxAggregatedBlobsPerChunk = parseInt(child.Content, aggErr)
+        case "MaxNumberOfConcurrentJobs":
+            dataPathBackend.MaxNumberOfConcurrentJobs = parseInt(child.Content, aggErr)
         case "PartiallyVerifyLastPercentOfTapes":
             dataPathBackend.PartiallyVerifyLastPercentOfTapes = parseNullableInt(child.Content, aggErr)
         case "PoolSafetyEnabled":
@@ -1361,6 +1364,82 @@ func newJobChunkClientProcessingOrderGuaranteeFromContent(content []byte, aggErr
         return nil
     }
     result := new(JobChunkClientProcessingOrderGuarantee)
+    parseEnum(content, result, aggErr)
+    return result
+}
+type JobCreationFailed struct {
+    Date string
+    ErrorMessage *string
+    Id string
+    TapeBarCodes *string
+    Type JobCreationFailedType
+    UserName *string
+}
+
+func (jobCreationFailed *JobCreationFailed) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+
+    // Parse Child Nodes
+    for _, child := range xmlNode.Children {
+        switch child.XMLName.Local {
+        case "Date":
+            jobCreationFailed.Date = parseString(child.Content)
+        case "ErrorMessage":
+            jobCreationFailed.ErrorMessage = parseNullableString(child.Content)
+        case "Id":
+            jobCreationFailed.Id = parseString(child.Content)
+        case "TapeBarCodes":
+            jobCreationFailed.TapeBarCodes = parseNullableString(child.Content)
+        case "Type":
+            parseEnum(child.Content, &jobCreationFailed.Type, aggErr)
+        case "UserName":
+            jobCreationFailed.UserName = parseNullableString(child.Content)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing JobCreationFailed.", child.XMLName.Local)
+        }
+    }
+}
+
+type JobCreationFailedType Enum
+
+const (
+    JOB_CREATION_FAILED_TYPE_TAPES_MUST_BE_ONLINED JobCreationFailedType = 1 + iota
+)
+
+func (jobCreationFailedType *JobCreationFailedType) UnmarshalText(text []byte) error {
+    var str string = string(bytes.ToUpper(text))
+    switch str {
+        case "": *jobCreationFailedType = UNDEFINED
+        case "TAPES_MUST_BE_ONLINED": *jobCreationFailedType = JOB_CREATION_FAILED_TYPE_TAPES_MUST_BE_ONLINED
+        default:
+            *jobCreationFailedType = UNDEFINED
+            return errors.New(fmt.Sprintf("Cannot marshal '%s' into JobCreationFailedType", str))
+    }
+    return nil
+}
+
+func (jobCreationFailedType JobCreationFailedType) String() string {
+    switch jobCreationFailedType {
+        case JOB_CREATION_FAILED_TYPE_TAPES_MUST_BE_ONLINED: return "TAPES_MUST_BE_ONLINED"
+        default:
+            log.Printf("Error: invalid JobCreationFailedType represented by '%d'", jobCreationFailedType)
+            return ""
+    }
+}
+
+func (jobCreationFailedType JobCreationFailedType) StringPtr() *string {
+    if jobCreationFailedType == UNDEFINED {
+        return nil
+    }
+    result := jobCreationFailedType.String()
+    return &result
+}
+
+func newJobCreationFailedTypeFromContent(content []byte, aggErr *AggregateError) *JobCreationFailedType {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(JobCreationFailedType)
     parseEnum(content, result, aggErr)
     return result
 }
@@ -3179,6 +3258,53 @@ func (tapePartitionFailureNotificationRegistration *TapePartitionFailureNotifica
     }
 }
 
+type CacheEntryState Enum
+
+const (
+    CACHE_ENTRY_STATE_ALLOCATED CacheEntryState = 1 + iota
+    CACHE_ENTRY_STATE_IN_CACHE CacheEntryState = 1 + iota
+)
+
+func (cacheEntryState *CacheEntryState) UnmarshalText(text []byte) error {
+    var str string = string(bytes.ToUpper(text))
+    switch str {
+        case "": *cacheEntryState = UNDEFINED
+        case "ALLOCATED": *cacheEntryState = CACHE_ENTRY_STATE_ALLOCATED
+        case "IN_CACHE": *cacheEntryState = CACHE_ENTRY_STATE_IN_CACHE
+        default:
+            *cacheEntryState = UNDEFINED
+            return errors.New(fmt.Sprintf("Cannot marshal '%s' into CacheEntryState", str))
+    }
+    return nil
+}
+
+func (cacheEntryState CacheEntryState) String() string {
+    switch cacheEntryState {
+        case CACHE_ENTRY_STATE_ALLOCATED: return "ALLOCATED"
+        case CACHE_ENTRY_STATE_IN_CACHE: return "IN_CACHE"
+        default:
+            log.Printf("Error: invalid CacheEntryState represented by '%d'", cacheEntryState)
+            return ""
+    }
+}
+
+func (cacheEntryState CacheEntryState) StringPtr() *string {
+    if cacheEntryState == UNDEFINED {
+        return nil
+    }
+    result := cacheEntryState.String()
+    return &result
+}
+
+func newCacheEntryStateFromContent(content []byte, aggErr *AggregateError) *CacheEntryState {
+    if len(content) == 0 {
+        // no value
+        return nil
+    }
+    result := new(CacheEntryState)
+    parseEnum(content, result, aggErr)
+    return result
+}
 type CacheFilesystem struct {
     AutoReclaimInitiateThreshold float64
     AutoReclaimTerminateThreshold float64
@@ -3187,6 +3313,7 @@ type CacheFilesystem struct {
     Id string
     MaxCapacityInBytes *int64
     MaxPercentUtilizationOfFilesystem *float64
+    NeedsReconcile bool
     NodeId string
     Path *string
 }
@@ -3210,6 +3337,8 @@ func (cacheFilesystem *CacheFilesystem) parse(xmlNode *XmlNode, aggErr *Aggregat
             cacheFilesystem.MaxCapacityInBytes = parseNullableInt64(child.Content, aggErr)
         case "MaxPercentUtilizationOfFilesystem":
             cacheFilesystem.MaxPercentUtilizationOfFilesystem = parseNullableFloat64(child.Content, aggErr)
+        case "NeedsReconcile":
+            cacheFilesystem.NeedsReconcile = parseBool(child.Content, aggErr)
         case "NodeId":
             cacheFilesystem.NodeId = parseString(child.Content)
         case "Path":
@@ -4059,10 +4188,12 @@ const (
     TAPE_DRIVE_TYPE_LTO7 TapeDriveType = 1 + iota
     TAPE_DRIVE_TYPE_LTO8 TapeDriveType = 1 + iota
     TAPE_DRIVE_TYPE_LTO9 TapeDriveType = 1 + iota
+    TAPE_DRIVE_TYPE_LTO10 TapeDriveType = 1 + iota
     TAPE_DRIVE_TYPE_TS1140 TapeDriveType = 1 + iota
     TAPE_DRIVE_TYPE_TS1150 TapeDriveType = 1 + iota
     TAPE_DRIVE_TYPE_TS1155 TapeDriveType = 1 + iota
     TAPE_DRIVE_TYPE_TS1160 TapeDriveType = 1 + iota
+    TAPE_DRIVE_TYPE_TS1170 TapeDriveType = 1 + iota
 )
 
 func (tapeDriveType *TapeDriveType) UnmarshalText(text []byte) error {
@@ -4075,10 +4206,12 @@ func (tapeDriveType *TapeDriveType) UnmarshalText(text []byte) error {
         case "LTO7": *tapeDriveType = TAPE_DRIVE_TYPE_LTO7
         case "LTO8": *tapeDriveType = TAPE_DRIVE_TYPE_LTO8
         case "LTO9": *tapeDriveType = TAPE_DRIVE_TYPE_LTO9
+        case "LTO10": *tapeDriveType = TAPE_DRIVE_TYPE_LTO10
         case "TS1140": *tapeDriveType = TAPE_DRIVE_TYPE_TS1140
         case "TS1150": *tapeDriveType = TAPE_DRIVE_TYPE_TS1150
         case "TS1155": *tapeDriveType = TAPE_DRIVE_TYPE_TS1155
         case "TS1160": *tapeDriveType = TAPE_DRIVE_TYPE_TS1160
+        case "TS1170": *tapeDriveType = TAPE_DRIVE_TYPE_TS1170
         default:
             *tapeDriveType = UNDEFINED
             return errors.New(fmt.Sprintf("Cannot marshal '%s' into TapeDriveType", str))
@@ -4094,10 +4227,12 @@ func (tapeDriveType TapeDriveType) String() string {
         case TAPE_DRIVE_TYPE_LTO7: return "LTO7"
         case TAPE_DRIVE_TYPE_LTO8: return "LTO8"
         case TAPE_DRIVE_TYPE_LTO9: return "LTO9"
+        case TAPE_DRIVE_TYPE_LTO10: return "LTO10"
         case TAPE_DRIVE_TYPE_TS1140: return "TS1140"
         case TAPE_DRIVE_TYPE_TS1150: return "TS1150"
         case TAPE_DRIVE_TYPE_TS1155: return "TS1155"
         case TAPE_DRIVE_TYPE_TS1160: return "TS1160"
+        case TAPE_DRIVE_TYPE_TS1170: return "TS1170"
         default:
             log.Printf("Error: invalid TapeDriveType represented by '%d'", tapeDriveType)
             return ""
@@ -4181,6 +4316,7 @@ const (
     TAPE_FAILURE_TYPE_IMPORT_FAILED_DUE_TO_DATA_INTEGRITY TapeFailureType = 1 + iota
     TAPE_FAILURE_TYPE_INCOMPATIBLE TapeFailureType = 1 + iota
     TAPE_FAILURE_TYPE_INSPECT_FAILED TapeFailureType = 1 + iota
+    TAPE_FAILURE_TYPE_MOVE_FAILED TapeFailureType = 1 + iota
     TAPE_FAILURE_TYPE_QUIESCING_DRIVE TapeFailureType = 1 + iota
     TAPE_FAILURE_TYPE_READ_FAILED TapeFailureType = 1 + iota
     TAPE_FAILURE_TYPE_REIMPORT_REQUIRED TapeFailureType = 1 + iota
@@ -4218,6 +4354,7 @@ func (tapeFailureType *TapeFailureType) UnmarshalText(text []byte) error {
         case "IMPORT_FAILED_DUE_TO_DATA_INTEGRITY": *tapeFailureType = TAPE_FAILURE_TYPE_IMPORT_FAILED_DUE_TO_DATA_INTEGRITY
         case "INCOMPATIBLE": *tapeFailureType = TAPE_FAILURE_TYPE_INCOMPATIBLE
         case "INSPECT_FAILED": *tapeFailureType = TAPE_FAILURE_TYPE_INSPECT_FAILED
+        case "MOVE_FAILED": *tapeFailureType = TAPE_FAILURE_TYPE_MOVE_FAILED
         case "QUIESCING_DRIVE": *tapeFailureType = TAPE_FAILURE_TYPE_QUIESCING_DRIVE
         case "READ_FAILED": *tapeFailureType = TAPE_FAILURE_TYPE_READ_FAILED
         case "REIMPORT_REQUIRED": *tapeFailureType = TAPE_FAILURE_TYPE_REIMPORT_REQUIRED
@@ -4258,6 +4395,7 @@ func (tapeFailureType TapeFailureType) String() string {
         case TAPE_FAILURE_TYPE_IMPORT_FAILED_DUE_TO_DATA_INTEGRITY: return "IMPORT_FAILED_DUE_TO_DATA_INTEGRITY"
         case TAPE_FAILURE_TYPE_INCOMPATIBLE: return "INCOMPATIBLE"
         case TAPE_FAILURE_TYPE_INSPECT_FAILED: return "INSPECT_FAILED"
+        case TAPE_FAILURE_TYPE_MOVE_FAILED: return "MOVE_FAILED"
         case TAPE_FAILURE_TYPE_QUIESCING_DRIVE: return "QUIESCING_DRIVE"
         case TAPE_FAILURE_TYPE_READ_FAILED: return "READ_FAILED"
         case TAPE_FAILURE_TYPE_REIMPORT_REQUIRED: return "REIMPORT_REQUIRED"
@@ -5704,53 +5842,6 @@ func (cacheEntryInformation *CacheEntryInformation) parse(xmlNode *XmlNode, aggE
     }
 }
 
-type CacheEntryState Enum
-
-const (
-    CACHE_ENTRY_STATE_ALLOCATED CacheEntryState = 1 + iota
-    CACHE_ENTRY_STATE_IN_CACHE CacheEntryState = 1 + iota
-)
-
-func (cacheEntryState *CacheEntryState) UnmarshalText(text []byte) error {
-    var str string = string(bytes.ToUpper(text))
-    switch str {
-        case "": *cacheEntryState = UNDEFINED
-        case "ALLOCATED": *cacheEntryState = CACHE_ENTRY_STATE_ALLOCATED
-        case "IN_CACHE": *cacheEntryState = CACHE_ENTRY_STATE_IN_CACHE
-        default:
-            *cacheEntryState = UNDEFINED
-            return errors.New(fmt.Sprintf("Cannot marshal '%s' into CacheEntryState", str))
-    }
-    return nil
-}
-
-func (cacheEntryState CacheEntryState) String() string {
-    switch cacheEntryState {
-        case CACHE_ENTRY_STATE_ALLOCATED: return "ALLOCATED"
-        case CACHE_ENTRY_STATE_IN_CACHE: return "IN_CACHE"
-        default:
-            log.Printf("Error: invalid CacheEntryState represented by '%d'", cacheEntryState)
-            return ""
-    }
-}
-
-func (cacheEntryState CacheEntryState) StringPtr() *string {
-    if cacheEntryState == UNDEFINED {
-        return nil
-    }
-    result := cacheEntryState.String()
-    return &result
-}
-
-func newCacheEntryStateFromContent(content []byte, aggErr *AggregateError) *CacheEntryState {
-    if len(content) == 0 {
-        // no value
-        return nil
-    }
-    result := new(CacheEntryState)
-    parseEnum(content, result, aggErr)
-    return result
-}
 type CacheFilesystemInformation struct {
     AvailableCapacityInBytes int64
     CacheFilesystem CacheFilesystem
@@ -5997,6 +6088,7 @@ func (deleteResult *DeleteResult) parse(xmlNode *XmlNode, aggErr *AggregateError
 type DetailedTapePartition struct {
     AutoCompactionEnabled bool
     AutoQuiesceEnabled bool
+    AvailableStorageCapacity int64
     DriveIdleTimeoutInMinutes *int
     DriveType *TapeDriveType
     DriveTypes []TapeDriveType
@@ -6010,7 +6102,12 @@ type DetailedTapePartition struct {
     Quiesced Quiesced
     SerialNumber *string
     State TapePartitionState
+    TapeCount int
+    TapeStateSummaries []TapeStateSummaryApiBean
+    TapeTypeSummaries []TapeTypeSummaryApiBean
     TapeTypes []string
+    TotalStorageCapacity int64
+    UsedStorageCapacity int64
 }
 
 func (detailedTapePartition *DetailedTapePartition) parse(xmlNode *XmlNode, aggErr *AggregateError) {
@@ -6022,6 +6119,8 @@ func (detailedTapePartition *DetailedTapePartition) parse(xmlNode *XmlNode, aggE
             detailedTapePartition.AutoCompactionEnabled = parseBool(child.Content, aggErr)
         case "AutoQuiesceEnabled":
             detailedTapePartition.AutoQuiesceEnabled = parseBool(child.Content, aggErr)
+        case "AvailableStorageCapacity":
+            detailedTapePartition.AvailableStorageCapacity = parseInt64(child.Content, aggErr)
         case "DriveIdleTimeoutInMinutes":
             detailedTapePartition.DriveIdleTimeoutInMinutes = parseNullableInt(child.Content, aggErr)
         case "DriveType":
@@ -6050,9 +6149,19 @@ func (detailedTapePartition *DetailedTapePartition) parse(xmlNode *XmlNode, aggE
             detailedTapePartition.SerialNumber = parseNullableString(child.Content)
         case "State":
             parseEnum(child.Content, &detailedTapePartition.State, aggErr)
+        case "TapeCount":
+            detailedTapePartition.TapeCount = parseInt(child.Content, aggErr)
+        case "TapeStateSummaries":
+            detailedTapePartition.TapeStateSummaries = parseTapeStateSummaryApiBeanSlice("TapeStateSummary", child.Children, aggErr)
+        case "TapeTypeSummaries":
+            detailedTapePartition.TapeTypeSummaries = parseTapeTypeSummaryApiBeanSlice("TapeTypeSummary", child.Children, aggErr)
         case "TapeTypes":
             var str = parseString(child.Content)
             detailedTapePartition.TapeTypes = append(detailedTapePartition.TapeTypes, str)
+        case "TotalStorageCapacity":
+            detailedTapePartition.TotalStorageCapacity = parseInt64(child.Content, aggErr)
+        case "UsedStorageCapacity":
+            detailedTapePartition.UsedStorageCapacity = parseInt64(child.Content, aggErr)
         default:
             log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing DetailedTapePartition.", child.XMLName.Local)
         }
@@ -6621,6 +6730,116 @@ func (s3ObjectToDelete *S3ObjectToDelete) parse(xmlNode *XmlNode, aggErr *Aggreg
     }
 }
 
+type TapeStateSummaryApiBean struct {
+    Count int
+    FullOfData int
+    TapeState TapeState
+    TypeCounts []TypeTypeCountApiBean
+}
+
+func (tapeStateSummaryApiBean *TapeStateSummaryApiBean) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+
+    // Parse Child Nodes
+    for _, child := range xmlNode.Children {
+        switch child.XMLName.Local {
+        case "Count":
+            tapeStateSummaryApiBean.Count = parseInt(child.Content, aggErr)
+        case "FullOfData":
+            tapeStateSummaryApiBean.FullOfData = parseInt(child.Content, aggErr)
+        case "TapeState":
+            parseEnum(child.Content, &tapeStateSummaryApiBean.TapeState, aggErr)
+        case "TypeCounts":
+            var model TypeTypeCountApiBean
+            model.parse(&child, aggErr)
+            tapeStateSummaryApiBean.TypeCounts = append(tapeStateSummaryApiBean.TypeCounts, model)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing TapeStateSummaryApiBean.", child.XMLName.Local)
+        }
+    }
+}
+
+
+func parseTapeStateSummaryApiBeanSlice(tagName string, xmlNodes []XmlNode, aggErr *AggregateError) []TapeStateSummaryApiBean {
+    var result []TapeStateSummaryApiBean
+    for _, curXmlNode := range xmlNodes {
+        if curXmlNode.XMLName.Local == tagName {
+            var curResult TapeStateSummaryApiBean
+            curResult.parse(&curXmlNode, aggErr)
+            result = append(result, curResult)
+        } else {
+            log.Printf("WARNING: Discovered unexpected xml tag '%s' when expected tag '%s' when parsing TapeStateSummaryApiBean struct.\n", curXmlNode.XMLName.Local, tagName)
+        }
+    }
+    return result
+}
+
+type TapeTypeSummaryApiBean struct {
+    AvailableStorageCapacity int64
+    Count int
+    TotalStorageCapacity int64
+    Type string
+    UsedStorageCapacity int64
+}
+
+func (tapeTypeSummaryApiBean *TapeTypeSummaryApiBean) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+
+    // Parse Child Nodes
+    for _, child := range xmlNode.Children {
+        switch child.XMLName.Local {
+        case "AvailableStorageCapacity":
+            tapeTypeSummaryApiBean.AvailableStorageCapacity = parseInt64(child.Content, aggErr)
+        case "Count":
+            tapeTypeSummaryApiBean.Count = parseInt(child.Content, aggErr)
+        case "TotalStorageCapacity":
+            tapeTypeSummaryApiBean.TotalStorageCapacity = parseInt64(child.Content, aggErr)
+        case "Type":
+            tapeTypeSummaryApiBean.Type = parseString(child.Content)
+        case "UsedStorageCapacity":
+            tapeTypeSummaryApiBean.UsedStorageCapacity = parseInt64(child.Content, aggErr)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing TapeTypeSummaryApiBean.", child.XMLName.Local)
+        }
+    }
+}
+
+
+func parseTapeTypeSummaryApiBeanSlice(tagName string, xmlNodes []XmlNode, aggErr *AggregateError) []TapeTypeSummaryApiBean {
+    var result []TapeTypeSummaryApiBean
+    for _, curXmlNode := range xmlNodes {
+        if curXmlNode.XMLName.Local == tagName {
+            var curResult TapeTypeSummaryApiBean
+            curResult.parse(&curXmlNode, aggErr)
+            result = append(result, curResult)
+        } else {
+            log.Printf("WARNING: Discovered unexpected xml tag '%s' when expected tag '%s' when parsing TapeTypeSummaryApiBean struct.\n", curXmlNode.XMLName.Local, tagName)
+        }
+    }
+    return result
+}
+
+type TypeTypeCountApiBean struct {
+    Count int
+    FullOfData int
+    Type string
+}
+
+func (typeTypeCountApiBean *TypeTypeCountApiBean) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+
+    // Parse Child Nodes
+    for _, child := range xmlNode.Children {
+        switch child.XMLName.Local {
+        case "Count":
+            typeTypeCountApiBean.Count = parseInt(child.Content, aggErr)
+        case "FullOfData":
+            typeTypeCountApiBean.FullOfData = parseInt(child.Content, aggErr)
+        case "Type":
+            typeTypeCountApiBean.Type = parseString(child.Content)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing TypeTypeCountApiBean.", child.XMLName.Local)
+        }
+    }
+}
+
 type User struct {
     DisplayName *string
     Id string
@@ -6754,6 +6973,7 @@ func (healthVerificationResult *HealthVerificationResult) parse(xmlNode *XmlNode
 type NamedDetailedTapePartition struct {
     AutoCompactionEnabled bool
     AutoQuiesceEnabled bool
+    AvailableStorageCapacity int64
     DriveIdleTimeoutInMinutes *int
     DriveType *TapeDriveType
     DriveTypes []TapeDriveType
@@ -6767,7 +6987,12 @@ type NamedDetailedTapePartition struct {
     Quiesced Quiesced
     SerialNumber *string
     State TapePartitionState
+    TapeCount int
+    TapeStateSummaries []TapeStateSummaryApiBean
+    TapeTypeSummaries []TapeTypeSummaryApiBean
     TapeTypes []string
+    TotalStorageCapacity int64
+    UsedStorageCapacity int64
 }
 
 func (namedDetailedTapePartition *NamedDetailedTapePartition) parse(xmlNode *XmlNode, aggErr *AggregateError) {
@@ -6779,6 +7004,8 @@ func (namedDetailedTapePartition *NamedDetailedTapePartition) parse(xmlNode *Xml
             namedDetailedTapePartition.AutoCompactionEnabled = parseBool(child.Content, aggErr)
         case "AutoQuiesceEnabled":
             namedDetailedTapePartition.AutoQuiesceEnabled = parseBool(child.Content, aggErr)
+        case "AvailableStorageCapacity":
+            namedDetailedTapePartition.AvailableStorageCapacity = parseInt64(child.Content, aggErr)
         case "DriveIdleTimeoutInMinutes":
             namedDetailedTapePartition.DriveIdleTimeoutInMinutes = parseNullableInt(child.Content, aggErr)
         case "DriveType":
@@ -6807,9 +7034,19 @@ func (namedDetailedTapePartition *NamedDetailedTapePartition) parse(xmlNode *Xml
             namedDetailedTapePartition.SerialNumber = parseNullableString(child.Content)
         case "State":
             parseEnum(child.Content, &namedDetailedTapePartition.State, aggErr)
+        case "TapeCount":
+            namedDetailedTapePartition.TapeCount = parseInt(child.Content, aggErr)
+        case "TapeStateSummaries":
+            namedDetailedTapePartition.TapeStateSummaries = parseTapeStateSummaryApiBeanSlice("TapeStateSummary", child.Children, aggErr)
+        case "TapeTypeSummaries":
+            namedDetailedTapePartition.TapeTypeSummaries = parseTapeTypeSummaryApiBeanSlice("TapeTypeSummary", child.Children, aggErr)
         case "TapeTypes":
             var str = parseString(child.Content)
             namedDetailedTapePartition.TapeTypes = append(namedDetailedTapePartition.TapeTypes, str)
+        case "TotalStorageCapacity":
+            namedDetailedTapePartition.TotalStorageCapacity = parseInt64(child.Content, aggErr)
+        case "UsedStorageCapacity":
+            namedDetailedTapePartition.UsedStorageCapacity = parseInt64(child.Content, aggErr)
         default:
             log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing NamedDetailedTapePartition.", child.XMLName.Local)
         }
@@ -7647,6 +7884,25 @@ func (completedJobList *CompletedJobList) parse(xmlNode *XmlNode, aggErr *Aggreg
             completedJobList.CompletedJobs = append(completedJobList.CompletedJobs, model)
         default:
             log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing CompletedJobList.", child.XMLName.Local)
+        }
+    }
+}
+
+type JobCreationFailedList struct {
+    JobCreationFaileds []JobCreationFailed
+}
+
+func (jobCreationFailedList *JobCreationFailedList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+
+    // Parse Child Nodes
+    for _, child := range xmlNode.Children {
+        switch child.XMLName.Local {
+        case "JobCreationFailed":
+            var model JobCreationFailed
+            model.parse(&child, aggErr)
+            jobCreationFailedList.JobCreationFaileds = append(jobCreationFailedList.JobCreationFaileds, model)
+        default:
+            log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing JobCreationFailedList.", child.XMLName.Local)
         }
     }
 }
