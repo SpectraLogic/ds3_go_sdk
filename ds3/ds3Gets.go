@@ -1621,6 +1621,37 @@ func (client *Client) GetJobChunksReadyForClientProcessingSpectraS3(request *mod
     return models.NewGetJobChunksReadyForClientProcessingSpectraS3Response(response)
 }
 
+func (client *Client) GetJobCreationFailuresSpectraS3(request *models.GetJobCreationFailuresSpectraS3Request) (*models.GetJobCreationFailuresSpectraS3Response, error) {
+    // Build the http request
+    httpRequest, err := networking.NewHttpRequestBuilder().
+        WithHttpVerb(HTTP_VERB_GET).
+        WithPath("/_rest_/job_creation_failed").
+        WithOptionalQueryParam("date", request.Date).
+        WithOptionalQueryParam("error_message", request.ErrorMessage).
+        WithOptionalVoidQueryParam("last_page", request.LastPage).
+        WithOptionalQueryParam("page_length", networking.IntPtrToStrPtr(request.PageLength)).
+        WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
+        WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
+        WithOptionalQueryParam("user_name", request.UserName).
+        Build(client.connectionInfo)
+
+    if err != nil {
+        return nil, err
+    }
+
+    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
+    httpRedirectDecorator := networking.NewHttpTempRedirectDecorator(networkRetryDecorator, client.clientPolicy.maxRedirect)
+
+    // Invoke the HTTP request.
+    response, requestErr := httpRedirectDecorator.Invoke(httpRequest)
+    if requestErr != nil {
+        return nil, requestErr
+    }
+
+    // Create a response object based on the result.
+    return models.NewGetJobCreationFailuresSpectraS3Response(response)
+}
+
 func (client *Client) GetJobSpectraS3(request *models.GetJobSpectraS3Request) (*models.GetJobSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
@@ -3589,6 +3620,7 @@ func (client *Client) GetTapesSpectraS3(request *models.GetTapesSpectraS3Request
         WithOptionalQueryParam("assigned_to_storage_domain", networking.BoolPtrToStrPtr(request.AssignedToStorageDomain)).
         WithOptionalQueryParam("available_raw_capacity", networking.Int64PtrToStrPtr(request.AvailableRawCapacity)).
         WithOptionalQueryParam("bar_code", request.BarCode).
+        WithOptionalQueryParam("bucket", request.Bucket).
         WithOptionalQueryParam("bucket_id", request.BucketId).
         WithOptionalQueryParam("eject_label", request.EjectLabel).
         WithOptionalQueryParam("eject_location", request.EjectLocation).
@@ -3599,11 +3631,13 @@ func (client *Client) GetTapesSpectraS3(request *models.GetTapesSpectraS3Request
         WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
         WithOptionalQueryParam("partially_verified_end_of_tape", request.PartiallyVerifiedEndOfTape).
+        WithOptionalQueryParam("partition", request.Partition).
         WithOptionalQueryParam("partition_id", request.PartitionId).
         WithOptionalQueryParam("previous_state", networking.InterfaceToStrPtr(request.PreviousState)).
         WithOptionalQueryParam("serial_number", request.SerialNumber).
         WithOptionalQueryParam("sort_by", request.SortBy).
         WithOptionalQueryParam("state", networking.InterfaceToStrPtr(request.State)).
+        WithOptionalQueryParam("storage_domain", request.StorageDomain).
         WithOptionalQueryParam("storage_domain_member_id", request.StorageDomainMemberId).
         WithOptionalQueryParam("type", request.String).
         WithOptionalQueryParam("verify_pending", networking.InterfaceToStrPtr(request.VerifyPending)).
