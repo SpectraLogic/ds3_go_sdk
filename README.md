@@ -60,26 +60,25 @@ All examples are listed in the [samples](samples/) module. All samples can be ru
 * [How to use bulk put to send multiple files to the BP efficiently](samples/functions/putBulkSample.go)
 * [How to use bulk get to retrieve multiple files from the BP efficiently](samples/functions/getBulkSample.go)
 
-Running Tests with GB
----------------------
+Running Tests
+-------------
 
-There are unit tests in the `ds3` package, and integration tests in the `ds3_integration` package. To run tests, cd to
-the Go SDK's main folder `ds3_go_sdk`.
+There are unit tests in the `ds3` package, and integration tests in the `ds3_integration` package. Run from the repo root.
 
-In order to run the integration tests the following environment variables must be used to configure which DS3 appliance 
+In order to run the integration tests the following environment variables must be used to configure which DS3 appliance
 to run the tests against: `DS3_ENDPOINT`, `DS3_ACCESS_KEY`, and `DS3_SECRET_KEY`.
 
 Run all tests (unit and integration) with test output:
 ```bash
-gb test -v
+go test -v ./...
 ```
 
 Run unit tests with test output:
 ```bash
-gb test -v ds3
+go test -v ./ds3/...
 ```
 
 Run integration tests with test output:
 ```bash
-gb test -v ds3_integration
+go test -v ./ds3_integration/...
 ```
