@@ -1,6 +1,7 @@
 package commands
 
 import (
+    "context"
     "fmt"
     "github.com/SpectraLogic/ds3_go_sdk/ds3"
 )
@@ -16,8 +17,8 @@ func getMinInt(a, b int) int {
     }
 }
 
-func getBucket(client *ds3.Client, args *Arguments) error {
-    objects, err := getBucketObjects(client, args)
+func getBucket(ctx context.Context, client *ds3.Client, args *Arguments) error {
+    objects, err := getBucketObjects(ctx, client, args)
     if err != nil {
         return err
     }

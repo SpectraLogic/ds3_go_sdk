@@ -7,14 +7,14 @@ import (
     "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
 )
 
-func putBucket(client *ds3.Client, args *Arguments) error {
+func putBucket(ctx context.Context, client *ds3.Client, args *Arguments) error {
     // Validate arguments.
     if args.Bucket == "" {
         return errors.New("Must specify a bucket name when doing put_bucket.")
     }
 
     // Run request.
-    _, err := client.PutBucket(context.Background(), models.NewPutBucketRequest(args.Bucket))
+    _, err := client.PutBucket(ctx, models.NewPutBucketRequest(args.Bucket))
     return err
 }
 

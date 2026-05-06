@@ -206,7 +206,7 @@ func TestRetrievingObjectLargerThanCacheInOrder(t *testing.T) {
 		},
 	}
 
-	_, err = helperWrapper.PutObjects(bucketName, []models.PutObject{putObject}, writeStrategy)
+	_, err = helperWrapper.PutObjects(context.Background(), bucketName, []models.PutObject{putObject}, writeStrategy)
 	ds3Testing.AssertNilError(t, err)
 
 	defer func() {
@@ -253,7 +253,7 @@ func TestRetrievingObjectLargerThanCacheInOrder(t *testing.T) {
 					FatalErrorHandler: channels.FatalErrorHandler{},
 				},
 			}
-			getJobIds, err := helperWrapper.GetObjectsSpanningJobs(bucketName, []models.GetObject{getObject}, readStrategy)
+			getJobIds, err := helperWrapper.GetObjectsSpanningJobs(context.Background(), bucketName, []models.GetObject{getObject}, readStrategy)
 			ds3Testing.AssertNilError(t, err)
 
 			// verify amount of data retrieved

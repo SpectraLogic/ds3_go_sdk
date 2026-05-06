@@ -29,6 +29,12 @@ func (networkRetryDecorator *NetworkRetryDecorator) Invoke(httpRequest *http.Req
     // Handle as many Network related retries as we're allowed.
     var lastErr error
     for i := 0; i <= networkRetryDecorator.policy.maxRetries; i++ {
+        // Bail early if the request's context has been cancelled or its deadline exceeded
+        // — otherwise we'd keep slamming attempts at an already-dead context.
+        if err := httpRequest.Context().Err(); err != nil {
+            return nil, err
+        }
+
         ds3Response, err := networkRetryDecorator.network.Invoke(httpRequest)
 
         // If request was performed successfully then return response.

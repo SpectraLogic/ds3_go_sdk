@@ -10,14 +10,14 @@ import (
     "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
 )
 
-func bulkGet(client *ds3.Client, args *Arguments) error {
+func bulkGet(ctx context.Context, client *ds3.Client, args *Arguments) error {
     // Validate arguments.
     if args.Bucket == "" {
         return errors.New("Must specify a bucket name when doing a bulk_get.")
     }
 
     // Determine the objects that we need to queue a bulk get for.
-    objects, err := getBucketObjects(client, args)
+    objects, err := getBucketObjects(ctx, client, args)
     if err != nil {
         return err
     }
@@ -28,20 +28,20 @@ func bulkGet(client *ds3.Client, args *Arguments) error {
     }
 
     // Run request.
-    response, err := client.GetBulkJobSpectraS3(context.Background(), models.NewGetBulkJobSpectraS3RequestWithPartialObjects(args.Bucket, ds3GetObjects))
+    response, err := client.GetBulkJobSpectraS3(ctx, models.NewGetBulkJobSpectraS3RequestWithPartialObjects(args.Bucket, ds3GetObjects))
     if err != nil {
         return err
     }
 
     // Handle the responses in parallel
-    return handleBulkResponse(response.MasterObjectList.Objects, buildBulkHandler(client, args.Bucket))
+    return handleBulkResponse(response.MasterObjectList.Objects, buildBulkHandler(ctx, client, args.Bucket))
 }
 
 // Returns a function that gets an object from a bulk get.
-func buildBulkHandler(client *ds3.Client, bucketName string) bulkHandler {
+func buildBulkHandler(ctx context.Context, client *ds3.Client, bucketName string) bulkHandler {
     return func(obj models.BulkObject) error {
         // Perform the request.
-        response, requestErr := client.GetObject(context.Background(), models.NewGetObjectRequest(bucketName, *obj.Name))
+        response, requestErr := client.GetObject(ctx, models.NewGetObjectRequest(bucketName, *obj.Name))
         if requestErr != nil {
             return requestErr
         }

@@ -9,18 +9,18 @@ import (
 )
 
 type putTransceiver struct {
-    BucketName string
+    BucketName   string
     WriteObjects *[]helperModels.PutObject
-    Strategy *WriteTransferStrategy
-    Client *ds3.Client
+    Strategy     *WriteTransferStrategy
+    Client       *ds3.Client
 }
 
 func newPutTransceiver(bucketName string, writeObjects *[]helperModels.PutObject, strategy *WriteTransferStrategy, client *ds3.Client) *putTransceiver {
     return &putTransceiver{
-        BucketName:bucketName,
-        WriteObjects:writeObjects,
-        Strategy:strategy,
-        Client:client,
+        BucketName:   bucketName,
+        WriteObjects: writeObjects,
+        Strategy:     strategy,
+        Client:       client,
     }
 }
 
@@ -65,11 +65,11 @@ func newBulkPutRequest(bucketName string, writeObjects *[]helperModels.PutObject
     return bulkPut
 }
 
-func (transceiver *putTransceiver) transfer() (string, error) {
+func (transceiver *putTransceiver) transfer(ctx context.Context) (string, error) {
     // create bulk put job
     bulkPut := newBulkPutRequest(transceiver.BucketName, transceiver.WriteObjects, transceiver.Strategy.Options)
 
-    bulkPutResponse, err := transceiver.Client.PutBulkJobSpectraS3(context.Background(), bulkPut)
+    bulkPutResponse, err := transceiver.Client.PutBulkJobSpectraS3(ctx, bulkPut)
     if err != nil {
         return "", err
     }
@@ -80,7 +80,7 @@ func (transceiver *putTransceiver) transfer() (string, error) {
     doneNotifier := NewConditionalBool()
 
     queue := newOperationQueue(transceiver.Strategy.BlobStrategy.maxWaitingTransfers(), transceiver.Client.Logger)
-    producer := newPutProducer(&bulkPutResponse.MasterObjectList, transceiver.WriteObjects, &queue, transceiver.Strategy, transceiver.Client, &waitGroup, doneNotifier)
+    producer := newPutProducer(ctx, &bulkPutResponse.MasterObjectList, transceiver.WriteObjects, &queue, transceiver.Strategy, transceiver.Client, &waitGroup, doneNotifier)
     consumer := newConsumer(&queue, &waitGroup, transceiver.Strategy.BlobStrategy.maxConcurrentTransfers(), doneNotifier)
 
     // Wait for completion of producer-consumer goroutines

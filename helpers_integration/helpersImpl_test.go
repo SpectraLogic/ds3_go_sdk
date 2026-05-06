@@ -52,7 +52,7 @@ func TestPutBulk(t *testing.T) {
     writeObjects, err := getTestBooksAsWriteObjects()
     ds3Testing.AssertNilError(t, err)
 
-    jobId, err := helper.PutObjects(testBucket, *writeObjects, strategy)
+    jobId, err := helper.PutObjects(context.Background(), testBucket, *writeObjects, strategy)
     ds3Testing.AssertNilError(t, err)
     if jobId == "" {
         t.Error("expected to get a BP job ID, but instead got nothing")
@@ -85,7 +85,7 @@ func TestPutBulkBlobSpanningChunksRandomAccess(t *testing.T) {
 
     ds3Testing.AssertNilError(t, err)
 
-    jobId, err := helper.PutObjects(testBucket, writeObjects, strategy)
+    jobId, err := helper.PutObjects(context.Background(), testBucket, writeObjects, strategy)
     ds3Testing.AssertNilError(t, err)
     if jobId == "" {
         t.Error("expected to get a BP job ID, but instead got nothing")
@@ -108,7 +108,7 @@ func TestPutBulkBlobSpanningChunksStreamAccess(t *testing.T) {
 
     ds3Testing.AssertNilError(t, err)
 
-    jobId, err := helper.PutObjects(testBucket, writeObjects, strategy)
+    jobId, err := helper.PutObjects(context.Background(), testBucket, writeObjects, strategy)
     ds3Testing.AssertNilError(t, err)
     if jobId == "" {
         t.Error("expected to get a BP job ID, but instead got nothing")
@@ -152,7 +152,7 @@ func TestPutBulkBlobSpanningChunksStreamAccessDoesNotExist(t *testing.T) {
 
     ds3Testing.AssertNilError(t, err)
 
-    _, err = helper.PutObjects(testBucket, writeObjects, strategy)
+    _, err = helper.PutObjects(context.Background(), testBucket, writeObjects, strategy)
     ds3Testing.AssertNilError(t, err)
     ds3Testing.AssertBool(t, "error callback called", true, errorCallbackCalled)
 }
@@ -197,7 +197,7 @@ func TestGetBulk(t *testing.T) {
         {Name: testutils.BookTitles[3], ChannelBuilder: channels.NewWriteChannelBuilder(file3.Name())},
     }
 
-    jobId, err := helper.GetObjects(testBucket, readObjects, strategy)
+    jobId, err := helper.GetObjects(context.Background(), testBucket, readObjects, strategy)
     ds3Testing.AssertNilError(t, err)
     if jobId == "" {
         t.Error("expected to get a BP job ID, but instead got nothing")
@@ -231,7 +231,7 @@ func TestGetBulkBlobSpanningChunksRandomAccess(t *testing.T) {
         {Name: LargeBookTitle, ChannelBuilder: channels.NewWriteChannelBuilder(file.Name())},
     }
 
-    jobId, err := helper.GetObjects(testBucket, readObjects, strategy)
+    jobId, err := helper.GetObjects(context.Background(), testBucket, readObjects, strategy)
     ds3Testing.AssertNilError(t, err)
     if jobId == "" {
         t.Error("expected to get a BP job ID, but instead got nothing")
@@ -266,7 +266,7 @@ func TestGetBulkBlobSpanningChunksStreaming(t *testing.T) {
         {Name: LargeBookTitle, ChannelBuilder: &testStreamAccessWriteChannelBuilder{f: fileWriter}},
     }
 
-    jobId, err := helper.GetObjects(testBucket, readObjects, strategy)
+    jobId, err := helper.GetObjects(context.Background(), testBucket, readObjects, strategy)
     ds3Testing.AssertNilError(t, err)
     if jobId == "" {
         t.Error("expected to get a BP job ID, but instead got nothing")
@@ -310,7 +310,7 @@ func TestGetBulkBlobSpanningChunksStreamingFailBlob(t *testing.T) {
         {Name: LargeBookTitle, ChannelBuilder: &testStreamAccessWriteFailOnFirstBlob{}},
     }
 
-    _, err = helper.GetObjects(testBucket, readObjects, strategy)
+    _, err = helper.GetObjects(context.Background(), testBucket, readObjects, strategy)
     ds3Testing.AssertNilError(t, err)
     ds3Testing.AssertBool(t, "error callback called", true, errorCallbackCalled)
 }
@@ -344,7 +344,7 @@ func TestGetBulkPartialObjectRandomAccess(t *testing.T) {
         {Name: LargeBookTitle, ChannelBuilder: channels.NewPartialObjectChannelBuilder(file.Name(), ranges), Ranges: ranges},
     }
 
-    jobId, err := helper.GetObjects(testBucket, readObjects, strategy)
+    jobId, err := helper.GetObjects(context.Background(), testBucket, readObjects, strategy)
     ds3Testing.AssertNilError(t, err)
     if jobId == "" {
         t.Error("expected to get a BP job ID, but instead got nothing")
@@ -386,7 +386,7 @@ func TestPutObjectDoesNotExist(t *testing.T) {
 
     writeObjects := []helperModels.PutObject{nonExistentPutObj}
 
-    _, err := helper.PutObjects(testBucket, writeObjects, strategy)
+    _, err := helper.PutObjects(context.Background(), testBucket, writeObjects, strategy)
     ds3Testing.AssertNilError(t, err)
 
     ds3Testing.AssertBool(t, "error callback was called", true, errorCallbackCalled)
@@ -474,7 +474,7 @@ func TestBulkPutAndGetLotsOfFiles(t *testing.T) {
         Listeners: newErrorOnErrorListenerStrategy(t),
     }
 
-    jobId, err := helper.PutObjects(testBucket, writeObjects, writeStrategy)
+    jobId, err := helper.PutObjects(context.Background(), testBucket, writeObjects, writeStrategy)
     ds3Testing.AssertNilError(t, err)
     if jobId == "" {
         t.Error("expected to get a BP job ID, but instead got nothing")
@@ -499,7 +499,7 @@ func TestBulkPutAndGetLotsOfFiles(t *testing.T) {
         Listeners: newErrorOnErrorListenerStrategy(t),
     }
 
-    jobId, err = helper.GetObjects(testBucket, readObjects, readStrategy)
+    jobId, err = helper.GetObjects(context.Background(), testBucket, readObjects, readStrategy)
     ds3Testing.AssertNilError(t, err)
 
     if jobId == "" {
@@ -521,7 +521,7 @@ func TestRetryGettingBlobRange(t *testing.T) {
     var writeObjects []helperModels.PutObject
     writeObjects = append(writeObjects, *writeObj)
 
-    putJobId, err := helper.PutObjects(testBucket, writeObjects, strategy)
+    putJobId, err := helper.PutObjects(context.Background(), testBucket, writeObjects, strategy)
     ds3Testing.AssertNilError(t, err)
     if putJobId == "" {
         t.Error("expected to get a BP job ID, but instead got nothing")
@@ -546,7 +546,7 @@ func TestRetryGettingBlobRange(t *testing.T) {
                 // get a range of the blob
                 startRange := blob.Offset + 10 // retrieve subset of blob
                 endRange := blob.Length + blob.Offset - 1
-                bytesWritten, err := helpers.RetryGettingBlobRange(client, testBucket, writeObj.PutObject.Name, blob.Offset, startRange, endRange, tempFile, client.Logger)
+                bytesWritten, err := helpers.RetryGettingBlobRange(context.Background(), client, testBucket, writeObj.PutObject.Name, blob.Offset, startRange, endRange, tempFile, client.Logger)
                 ds3Testing.AssertNilError(t, err)
                 ds3Testing.AssertInt64(t, "bytes written", endRange-startRange+1, bytesWritten)
 
@@ -580,7 +580,7 @@ func TestGetRemainingBlob(t *testing.T) {
     var writeObjects []helperModels.PutObject
     writeObjects = append(writeObjects, *writeObj)
 
-    putJobId, err := helper.PutObjects(testBucket, writeObjects, strategy)
+    putJobId, err := helper.PutObjects(context.Background(), testBucket, writeObjects, strategy)
     ds3Testing.AssertNilError(t, err)
     if putJobId == "" {
         t.Error("expected to get a BP job ID, but instead got nothing")
@@ -605,7 +605,7 @@ func TestGetRemainingBlob(t *testing.T) {
                 // get the remainder of the blob after skipping some bytes
                 blob := helperModels.NewBlobDescription(*blob.Name, blob.Offset, blob.Length)
                 var amountToSkip int64 = 10
-                err = helpers.GetRemainingBlob(client, testBucket, &blob, amountToSkip, tempFile, client.Logger)
+                err = helpers.GetRemainingBlob(context.Background(), client, testBucket, &blob, amountToSkip, tempFile, client.Logger)
                 ds3Testing.AssertNilError(t, err)
 
                 // verify that retrieved partial blob is correct
@@ -685,7 +685,7 @@ func TestRetryGetObjectsWhenSomeObjectsDoNotExist(t *testing.T) {
         {Name: "doesNotExist2", ChannelBuilder: doesNotExistChannelBuilder2},
     }
 
-    jobId, err := helper.GetObjects(testBucket, readObjects, strategy)
+    jobId, err := helper.GetObjects(context.Background(), testBucket, readObjects, strategy)
     ds3Testing.AssertNilError(t, err)
     if jobId == "" {
         t.Error("expected to get a BP job ID, but instead got nothing")
@@ -740,7 +740,7 @@ func TestRetryGetObjectsWhenNoObjectExist(t *testing.T) {
         {Name: "doesNotExist1", ChannelBuilder: doesNotExistChannelBuilder1},
     }
 
-    _, err = helper.GetObjects(testBucket, readObjects, strategy)
+    _, err = helper.GetObjects(context.Background(), testBucket, readObjects, strategy)
     if err == nil {
         t.Fatalf("expected error when creating GET job")
     } else if !strings.Contains(err.Error(), "Could not find requested blobs for") {
