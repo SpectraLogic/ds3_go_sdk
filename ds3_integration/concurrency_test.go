@@ -1,6 +1,7 @@
 package ds3_integration
 
 import (
+    "context"
     "testing"
     "sync"
     "log"
@@ -20,7 +21,7 @@ func putFileWithClient(name string, offset int64, jobId string, content *[]byte,
     defer group.Done()
     log.Printf("Putting file %s", name)
 
-    _, err := client.PutObject(models.NewPutObjectRequest(testBucket, name, ds3.BuildByteReaderWithSizeDecorator(*content)).
+    _, err := client.PutObject(context.Background(), models.NewPutObjectRequest(testBucket, name, ds3.BuildByteReaderWithSizeDecorator(*content)).
         WithOffset(offset).
         WithJob(jobId))
 
@@ -47,7 +48,7 @@ func TestConcurrentClientUsage(t *testing.T) {
         ds3Objects = append(ds3Objects, models.Ds3PutObject{ Name:fmt.Sprintf("file%d", i), Size:size })
     }
 
-    bulkPut, err := client.PutBulkJobSpectraS3(models.NewPutBulkJobSpectraS3Request(testBucket, ds3Objects))
+    bulkPut, err := client.PutBulkJobSpectraS3(context.Background(), models.NewPutBulkJobSpectraS3Request(testBucket, ds3Objects))
     ds3Testing.AssertNilError(t, err)
 
     // launch go routines to put files concurrently
@@ -55,7 +56,7 @@ func TestConcurrentClientUsage(t *testing.T) {
     group.Add(n)
 
     for _, chunk := range bulkPut.MasterObjectList.Objects {
-        allocateChunk, allocateErr := client.AllocateJobChunkSpectraS3(models.NewAllocateJobChunkSpectraS3Request(chunk.ChunkId))
+        allocateChunk, allocateErr := client.AllocateJobChunkSpectraS3(context.Background(), models.NewAllocateJobChunkSpectraS3Request(chunk.ChunkId))
         ds3Testing.AssertNilError(t, allocateErr)
         for _, obj := range allocateChunk.Objects.Objects {
             go putFileWithClient(*obj.Name, obj.Offset, bulkPut.MasterObjectList.JobId, &content, &group, t)
@@ -77,7 +78,7 @@ func putFileWithSendNetwork(name string, offset int64, jobId string, content *[]
         WithReader(ds3.BuildByteReaderWithSizeDecorator(*content)).
         WithChecksum(models.NewNoneChecksum()).
         WithHeaders(make(map[string]string)).
-        Build(info)
+        Build(context.Background(), info)
 
     //networkRetryDecorator := networking.NewNetworkRetryDecorator(network, 5)
     t.Logf("Created request to for file '%s' to url '%s'", name, httpRequest.URL.String())
@@ -112,7 +113,7 @@ func TestConcurrentSendNetworkUsage(t *testing.T) {
         ds3Objects = append(ds3Objects, models.Ds3PutObject{ Name:fmt.Sprintf("file%d", i), Size:size })
     }
 
-    bulkPut, err := client.PutBulkJobSpectraS3(models.NewPutBulkJobSpectraS3Request(testBucket, ds3Objects))
+    bulkPut, err := client.PutBulkJobSpectraS3(context.Background(), models.NewPutBulkJobSpectraS3Request(testBucket, ds3Objects))
     ds3Testing.AssertNilError(t, err)
 
     // launch go routines to put files concurrently
@@ -135,7 +136,7 @@ func TestConcurrentSendNetworkUsage(t *testing.T) {
 
     for _, chunk := range bulkPut.MasterObjectList.Objects {
         //TODO Try get available job chunks ready for client processing instead
-        allocateChunk, allocateErr := client.AllocateJobChunkSpectraS3(models.NewAllocateJobChunkSpectraS3Request(chunk.ChunkId))
+        allocateChunk, allocateErr := client.AllocateJobChunkSpectraS3(context.Background(), models.NewAllocateJobChunkSpectraS3Request(chunk.ChunkId))
         ds3Testing.AssertNilError(t, allocateErr)
         for _, obj := range allocateChunk.Objects.Objects {
             go putFileWithSendNetwork(*obj.Name, obj.Offset, bulkPut.MasterObjectList.JobId, &content, testBucket, &group, t, network, &info)

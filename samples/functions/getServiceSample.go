@@ -12,6 +12,7 @@
 package functions
 
 import (
+    "context"
     "log"
     "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
     "github.com/SpectraLogic/ds3_go_sdk/ds3/buildclient"
@@ -32,7 +33,7 @@ func GetServiceSample() {
     request := models.NewGetServiceRequest()
 
     // Perform the Get Service call by using the client and invoking the desired command.
-    response, err := client.GetService(request)
+    response, err := client.GetService(context.Background(), request)
     if err != nil {
         log.Fatal(err)
     }

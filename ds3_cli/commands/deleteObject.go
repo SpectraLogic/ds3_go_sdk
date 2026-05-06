@@ -1,6 +1,7 @@
 package commands
 
 import (
+    "context"
     "errors"
     "github.com/SpectraLogic/ds3_go_sdk/ds3"
     "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
@@ -16,7 +17,7 @@ func deleteObject(client *ds3.Client, args *Arguments) error {
     }
 
     // Run request.
-    _, err := client.DeleteObject(models.NewDeleteObjectRequest(args.Bucket, args.Key))
+    _, err := client.DeleteObject(context.Background(), models.NewDeleteObjectRequest(args.Bucket, args.Key))
     return err
 }
 

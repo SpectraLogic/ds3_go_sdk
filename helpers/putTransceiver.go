@@ -1,6 +1,7 @@
 package helpers
 
 import (
+    "context"
     "github.com/SpectraLogic/ds3_go_sdk/ds3"
     ds3Models "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
     helperModels "github.com/SpectraLogic/ds3_go_sdk/helpers/models"
@@ -68,7 +69,7 @@ func (transceiver *putTransceiver) transfer() (string, error) {
     // create bulk put job
     bulkPut := newBulkPutRequest(transceiver.BucketName, transceiver.WriteObjects, transceiver.Strategy.Options)
 
-    bulkPutResponse, err := transceiver.Client.PutBulkJobSpectraS3(bulkPut)
+    bulkPutResponse, err := transceiver.Client.PutBulkJobSpectraS3(context.Background(), bulkPut)
     if err != nil {
         return "", err
     }

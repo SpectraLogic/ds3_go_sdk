@@ -1,6 +1,7 @@
 package helpers
 
 import (
+    "context"
     "fmt"
     "github.com/SpectraLogic/ds3_go_sdk/ds3"
     ds3Models "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
@@ -71,7 +72,7 @@ func createPartialGetObjects(getObject helperModels.GetObject) []ds3Models.Ds3Ge
 func (transceiver *getTransceiver) createBulkGetJob() (*ds3Models.GetBulkJobSpectraS3Response, *[]helperModels.GetObject, error) {
     // attempt to create a bulk get of all objects
     bulkGet := newBulkGetRequest(transceiver.BucketName, transceiver.ReadObjects, transceiver.Strategy.Options)
-    bulkGetResponse, err := transceiver.Client.GetBulkJobSpectraS3(bulkGet)
+    bulkGetResponse, err := transceiver.Client.GetBulkJobSpectraS3(context.Background(), bulkGet)
     if err == nil {
         return bulkGetResponse, transceiver.ReadObjects, nil
     }
@@ -85,7 +86,7 @@ func (transceiver *getTransceiver) createBulkGetJob() (*ds3Models.GetBulkJobSpec
     // head each item and try again for all objects that exist in the bucket
     var objectsThatExist []helperModels.GetObject
     for _, obj := range *transceiver.ReadObjects {
-        _, err := transceiver.Client.HeadObject(ds3Models.NewHeadObjectRequest(transceiver.BucketName, obj.Name))
+        _, err := transceiver.Client.HeadObject(context.Background(), ds3Models.NewHeadObjectRequest(transceiver.BucketName, obj.Name))
         if err != nil {
             // mark file as having a fatal error
             readableErr := fmt.Errorf("failed HeadObject call on %s: %v", obj.Name, err)
@@ -101,7 +102,7 @@ func (transceiver *getTransceiver) createBulkGetJob() (*ds3Models.GetBulkJobSpec
 
     // create bulk get job for all objects that exist in the bucket
     bulkGet = newBulkGetRequest(transceiver.BucketName, &objectsThatExist, transceiver.Strategy.Options)
-    bulkGetResponse, err = transceiver.Client.GetBulkJobSpectraS3(bulkGet)
+    bulkGetResponse, err = transceiver.Client.GetBulkJobSpectraS3(context.Background(), bulkGet)
     if err != nil {
         return nil, nil, err
     } else {

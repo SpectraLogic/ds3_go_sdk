@@ -1,6 +1,7 @@
 package helpers
 
 import (
+    "context"
     "fmt"
     "github.com/SpectraLogic/ds3_go_sdk/ds3"
     ds3Models "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
@@ -120,7 +121,7 @@ func (producer *getProducer) transferOperationBuilder(info getObjectInfo) Transf
             getObjRequest = getObjRequest.WithRanges(blobRanges...)
         }
 
-        getObjResponse, err := producer.client.GetObject(getObjRequest)
+        getObjResponse, err := producer.client.GetObject(context.Background(), getObjRequest)
         if err != nil {
             producer.strategy.Listeners.Errored(info.blob.Name(), err)
             info.channelBuilder.SetFatalError(err)
@@ -205,7 +206,7 @@ func RetryGettingBlobRange(client *ds3.Client, bucketName string, objectName str
         WithOffset(blobOffset).
         WithRanges(partOfBlobToFetch)
 
-    getObjResponse, err := client.GetObject(getObjRequest)
+    getObjResponse, err := client.GetObject(context.Background(), getObjRequest)
     if err != nil {
         return 0, err
     }
@@ -369,7 +370,7 @@ func (producer *getProducer) queueBlobsReadyForTransfer(totalBlobCount int64) (i
     // not be able to receive everything, so not all chunks will necessarily be
     // returned
     chunksReady := ds3Models.NewGetJobChunksReadyForClientProcessingSpectraS3Request(producer.JobMasterObjectList.JobId)
-    chunksReadyResponse, err := producer.client.GetJobChunksReadyForClientProcessingSpectraS3(chunksReady)
+    chunksReadyResponse, err := producer.client.GetJobChunksReadyForClientProcessingSpectraS3(context.Background(), chunksReady)
     if err != nil {
         producer.Errorf("unrecoverable error: %v", err)
         return processedCount, err

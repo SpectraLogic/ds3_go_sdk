@@ -12,6 +12,7 @@
 package functions
 
 import (
+    "context"
     "github.com/SpectraLogic/ds3_go_sdk/ds3/buildclient"
     "log"
     "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
@@ -32,7 +33,7 @@ func GetBulkSample() {
     }
 
     // Get a list of all objects in the target bucket.
-    bucketResponse, err := client.GetBucket(models.NewGetBucketRequest(utils.BucketName))
+    bucketResponse, err := client.GetBucket(context.Background(), models.NewGetBucketRequest(utils.BucketName))
     if err != nil {
         log.Fatal(err)
     }
@@ -50,7 +51,7 @@ func GetBulkSample() {
 
     // Send the bulk get request to the server. Note that this creates the bulk get job,
     // but does not retrieve the objects.
-    bulkGetResponse, err := client.GetBulkJobSpectraS3(bulkGetRequest)
+    bulkGetResponse, err := client.GetBulkJobSpectraS3(context.Background(), bulkGetRequest)
     if err != nil {
         log.Fatal(err)
     }
@@ -63,7 +64,7 @@ func GetBulkSample() {
         // Get the chunks that the server can send. The server may need to retrieve
         // objects into cache from the tape.
         chunksReady := models.NewGetJobChunksReadyForClientProcessingSpectraS3Request(bulkGetResponse.MasterObjectList.JobId)
-        chunksReadyResponse, err := client.GetJobChunksReadyForClientProcessingSpectraS3(chunksReady)
+        chunksReadyResponse, err := client.GetJobChunksReadyForClientProcessingSpectraS3(context.Background(), chunksReady)
         if err != nil {
             log.Fatal(err)
         }
@@ -81,7 +82,7 @@ func GetBulkSample() {
                         WithJob(bulkGetResponse.MasterObjectList.JobId).
                         WithOffset(curObj.Offset)
 
-                    getObjResponse, err := client.GetObject(getObjRequest)
+                    getObjResponse, err := client.GetObject(context.Background(), getObjRequest)
                     if err != nil {
                         log.Fatal(err)
                     }

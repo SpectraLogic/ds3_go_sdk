@@ -1,6 +1,7 @@
 package helpers
 
 import (
+    "context"
     "fmt"
     "github.com/SpectraLogic/ds3_go_sdk/ds3"
     ds3Models "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
@@ -99,7 +100,7 @@ func (producer *putProducer) transferOperationBuilder(info putObjectInfo) Transf
 
 		producer.maybeAddMetadata(info, putObjRequest)
 
-        _, err = producer.client.PutObject(putObjRequest)
+        _, err = producer.client.PutObject(context.Background(), putObjRequest)
         if err != nil {
             producer.strategy.Listeners.Errored(info.blob.Name(), err)
 
@@ -296,7 +297,7 @@ func (producer *putProducer) queueBlobsReadyForTransfer(totalBlobCount int64) (i
     // not be able to receive everything, so not all chunks will necessarily be
     // returned
     chunksReady := ds3Models.NewGetJobChunksReadyForClientProcessingSpectraS3Request(producer.JobMasterObjectList.JobId)
-    chunksReadyResponse, err := producer.client.GetJobChunksReadyForClientProcessingSpectraS3(chunksReady)
+    chunksReadyResponse, err := producer.client.GetJobChunksReadyForClientProcessingSpectraS3(context.Background(), chunksReady)
     if err != nil {
         producer.Errorf("unrecoverable error: %v", err)
         return processedCount, err

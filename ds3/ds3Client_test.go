@@ -12,6 +12,7 @@
 package ds3
 
 import (
+    "context"
     "testing"
     "strconv"
     "net/url"
@@ -55,7 +56,7 @@ func TestGetService(t *testing.T) {
     response, err := mockedClient(t).
         Expecting(HTTP_VERB_GET, "/", &url.Values{}, &http.Header{}, nil).
         Returning(200, stringResponse, nil).
-        GetService(models.NewGetServiceRequest())
+        GetService(context.Background(), models.NewGetServiceRequest())
 
     // Validate the error contents.
     ds3Testing.AssertNilError(t, err)
@@ -81,7 +82,7 @@ func TestGetBadService(t *testing.T) {
     response, err := mockedClient(t).
         Expecting(HTTP_VERB_GET, "/", &url.Values{}, &http.Header{}, nil).
         Returning(400, "", nil).
-        GetService(models.NewGetServiceRequest())
+        GetService(context.Background(), models.NewGetServiceRequest())
 
     // Check the response.
     if response != nil {
@@ -119,7 +120,7 @@ func TestGetBucket(t *testing.T) {
     response, err := mockedClient(t).
         Expecting(HTTP_VERB_GET, "/remoteTest16", &url.Values{}, &http.Header{}, nil).
         Returning(200, stringResponse, nil).
-        GetBucket(models.NewGetBucketRequest("remoteTest16"))
+        GetBucket(context.Background(), models.NewGetBucketRequest("remoteTest16"))
 
     // Check the error result.
     ds3Testing.AssertNilError(t, err)
@@ -173,7 +174,7 @@ func TestGetBucketWithCommonPrefixes(t *testing.T) {
     response, err := mockedClient(t).
         Expecting(HTTP_VERB_GET, "/" + bucketName, queryParams, &http.Header{}, nil).
         Returning(200, stringResponse, nil).
-        GetBucket(models.NewGetBucketRequest(bucketName).WithDelimiter(delimiter))
+        GetBucket(context.Background(), models.NewGetBucketRequest(bucketName).WithDelimiter(delimiter))
 
     // Check the error result.
     ds3Testing.AssertNilError(t, err)
@@ -214,7 +215,7 @@ func TestPutBucket(t *testing.T) {
     response, err := mockedClient(t).
         Expecting(HTTP_VERB_PUT, "/bucketName", &url.Values{}, &http.Header{}, nil).
         Returning(200, "", nil).
-        PutBucket(models.NewPutBucketRequest("bucketName"))
+        PutBucket(context.Background(), models.NewPutBucketRequest("bucketName"))
 
     // Check the error result.
     ds3Testing.AssertNilError(t, err)
@@ -230,7 +231,7 @@ func TestDeleteBucket(t *testing.T) {
     response, err := mockedClient(t).
         Expecting(HTTP_VERB_DELETE, "/bucketName", &url.Values{}, &http.Header{}, nil).
         Returning(204, "", nil).
-        DeleteBucket(models.NewDeleteBucketRequest("bucketName"))
+        DeleteBucket(context.Background(), models.NewDeleteBucketRequest("bucketName"))
 
     // Check the error result.
     ds3Testing.AssertNilError(t, err)
@@ -250,7 +251,7 @@ func TestDeleteFolderRecursivelySpectraS3(t *testing.T) {
     response, err := mockedClient(t).
             Expecting(HTTP_VERB_DELETE, "/_rest_/folder/FolderName", queryParams, &http.Header{}, nil).
             Returning(204, "", nil).
-            DeleteFolderRecursivelySpectraS3(models.NewDeleteFolderRecursivelySpectraS3Request(bucketId, folderName))
+            DeleteFolderRecursivelySpectraS3(context.Background(), models.NewDeleteFolderRecursivelySpectraS3Request(bucketId, folderName))
 
     // Check the error result.
     ds3Testing.AssertNilError(t, err)
@@ -266,7 +267,7 @@ func TestDeleteObject(t *testing.T) {
     response, err := mockedClient(t).
         Expecting(HTTP_VERB_DELETE, "/bucketName/my/file.txt", &url.Values{}, &http.Header{}, nil).
         Returning(204, "", nil).
-        DeleteObject(models.NewDeleteObjectRequest("bucketName", "my/file.txt"))
+        DeleteObject(context.Background(), models.NewDeleteObjectRequest("bucketName", "my/file.txt"))
 
     // Check the error result.
     ds3Testing.AssertNilError(t, err)
@@ -282,7 +283,7 @@ func TestGetBadBucket(t *testing.T) {
     response, err := mockedClient(t).
         Expecting(HTTP_VERB_GET, "/remoteTest16", &url.Values{}, &http.Header{}, nil).
         Returning(400, "", nil).
-        GetBucket(models.NewGetBucketRequest("remoteTest16"))
+        GetBucket(context.Background(), models.NewGetBucketRequest("remoteTest16"))
 
     // Check the error result.
     if err == nil {
@@ -305,7 +306,7 @@ func TestGetObject(t *testing.T) {
     response, err := mockedClient(t).
         Expecting(HTTP_VERB_GET, "/bucketName/object", &url.Values{}, &http.Header{}, nil).
         Returning(200, stringResponse, nil).
-        GetObject(models.NewGetObjectRequest("bucketName", "object"))
+        GetObject(context.Background(), models.NewGetObjectRequest("bucketName", "object"))
 
     // Check the error result.
     ds3Testing.AssertNilError(t, err)
@@ -333,7 +334,7 @@ func TestGetPartialObject(t *testing.T) {
     response, err := mockedClient(t).
         Expecting(HTTP_VERB_GET, "/bucketName/object", &url.Values{}, requestHeaders, nil).
         Returning(206, stringResponse, nil).
-        GetObject(models.NewGetObjectRequest("bucketName", "object").
+        GetObject(context.Background(), models.NewGetObjectRequest("bucketName", "object").
             WithRanges(
                 models.Range{Start: 1, End: 5},
                 models.Range{Start: 7, End: 8},
@@ -366,7 +367,7 @@ func TestGetObjectRange(t *testing.T) {
     response, err := mockedClient(t).
         Expecting(HTTP_VERB_GET, "/bucketName/object", &url.Values{}, requestHeaders, nil).
         Returning(200, stringResponse, &http.Header{"Range": []string{"bytes=20-179"}}).
-        GetObject(request)
+        GetObject(context.Background(), request)
 
     // Check the error result.
     ds3Testing.AssertNilError(t, err)
@@ -399,7 +400,7 @@ func TestGetObjectsDetailsSpectraS3(t *testing.T) {
     response, err := mockedClient(t).
             Expecting(HTTP_VERB_GET, "/_rest_/object", queryParams, &http.Header{}, nil).
             Returning(200, stringResponse, responseHeaders).
-            GetObjectsDetailsSpectraS3(request)
+            GetObjectsDetailsSpectraS3(context.Background(), request)
 
     // Check the error result.
     ds3Testing.AssertNilError(t, err)
@@ -441,7 +442,7 @@ func TestGetJobToReplicateSpectraS3(t *testing.T) {
     response, err := mockedClient(t).
         Expecting(HTTP_VERB_GET, "/_rest_/job/23a876ec-2fac-4dc8-b8e6-98d6026e7f4a", expectedParams, &http.Header{}, nil).
         Returning(200, stringResponse, nil).
-        GetJobToReplicateSpectraS3(request)
+        GetJobToReplicateSpectraS3(context.Background(), request)
 
     // Check the error result.
     ds3Testing.AssertNilError(t, err)
@@ -460,7 +461,7 @@ func TestPutObject(t *testing.T) {
     response, err := mockedClient(t).
         Expecting(HTTP_VERB_PUT, "/bucketName/object", &url.Values{}, &http.Header{}, nil).
         Returning(200, "", nil).
-        PutObject(models.NewPutObjectRequest(
+        PutObject(context.Background(), models.NewPutObjectRequest(
             "bucketName",
             "object",
             BuildByteReaderWithSizeDecorator([]byte(stringResponse)),
@@ -497,7 +498,7 @@ func TestPutObjectWithMetaData(t *testing.T) {
     response, err := mockedClient(t).
             Expecting(HTTP_VERB_PUT, "/bucketName/object", &url.Values{}, expectedMetaData, nil).
             Returning(200, "", nil).
-            PutObject(request)
+            PutObject(context.Background(), request)
 
     // Check the error result.
     ds3Testing.AssertNilError(t, err)
@@ -513,7 +514,7 @@ func TestBulkPut(t *testing.T) {
         t,
         "start_bulk_put",
         func(client *Client, objects []models.Ds3PutObject) ([]models.Objects, error) {
-            request, err := client.PutBulkJobSpectraS3(models.NewPutBulkJobSpectraS3Request("bucketName", objects))
+            request, err := client.PutBulkJobSpectraS3(context.Background(), models.NewPutBulkJobSpectraS3Request("bucketName", objects))
             return request.MasterObjectList.Objects, err
         },
     )
@@ -579,7 +580,7 @@ func TestBulkGetWithSimpleDs3GetObjets(t *testing.T) {
         "start_bulk_get",
         &stringRequest,
         func(client *Client) ([]models.Objects, error) {
-            request, err := client.GetBulkJobSpectraS3(models.NewGetBulkJobSpectraS3RequestWithPartialObjects("bucketName", objects))
+            request, err := client.GetBulkJobSpectraS3(context.Background(), models.NewGetBulkJobSpectraS3RequestWithPartialObjects("bucketName", objects))
             return request.MasterObjectList.Objects, err
         },
     )
@@ -599,7 +600,7 @@ func TestBulkGetWithPartialDs3GetObjects(t *testing.T) {
         "start_bulk_get",
         &stringRequest,
         func(client *Client) ([]models.Objects, error) {
-            request, err := client.GetBulkJobSpectraS3(models.NewGetBulkJobSpectraS3RequestWithPartialObjects("bucketName", objects))
+            request, err := client.GetBulkJobSpectraS3(context.Background(), models.NewGetBulkJobSpectraS3RequestWithPartialObjects("bucketName", objects))
             return request.MasterObjectList.Objects, err
         },
     )
@@ -615,7 +616,7 @@ func TestBulkGetWithObjectNames(t *testing.T) {
         "start_bulk_get",
         &stringRequest,
         func(client *Client) ([]models.Objects, error) {
-            request, err := client.GetBulkJobSpectraS3(models.NewGetBulkJobSpectraS3Request("bucketName", objects))
+            request, err := client.GetBulkJobSpectraS3(context.Background(), models.NewGetBulkJobSpectraS3Request("bucketName", objects))
             return request.MasterObjectList.Objects, err
         },
     )
@@ -635,7 +636,7 @@ func TestBulkVerifyWithPartialDs3GetObjects(t *testing.T) {
         "start_bulk_verify",
         &stringRequest,
         func(client *Client) ([]models.Objects, error) {
-            request, err := client.VerifyBulkJobSpectraS3(models.NewVerifyBulkJobSpectraS3RequestWithPartialObjects("bucketName", objects))
+            request, err := client.VerifyBulkJobSpectraS3(context.Background(), models.NewVerifyBulkJobSpectraS3RequestWithPartialObjects("bucketName", objects))
             return request.MasterObjectList.Objects, err
         },
     )
@@ -651,7 +652,7 @@ func TestBulkVerifyWithObjectNames(t *testing.T) {
         "start_bulk_verify",
         &stringRequest,
         func(client *Client) ([]models.Objects, error) {
-            request, err := client.VerifyBulkJobSpectraS3(models.NewVerifyBulkJobSpectraS3Request("bucketName", objects))
+            request, err := client.VerifyBulkJobSpectraS3(context.Background(), models.NewVerifyBulkJobSpectraS3Request("bucketName", objects))
             return request.MasterObjectList.Objects, err
         },
     )
@@ -704,7 +705,7 @@ func TestInitiateMultipart(t *testing.T) {
     response, err := mockedClient(t).
         Expecting(HTTP_VERB_POST, "/bucketName/object", qs, &http.Header{}, nil).
         Returning(200, stringResponse, nil).
-        InitiateMultiPartUpload(models.NewInitiateMultiPartUploadRequest(
+        InitiateMultiPartUpload(context.Background(), models.NewInitiateMultiPartUploadRequest(
             "bucketName",
             "object",
         ))
@@ -738,7 +739,7 @@ func TestPutPart(t *testing.T) {
     response, err := mockedClient(t).
         Expecting(HTTP_VERB_PUT, "/bucketName/object", qs, &http.Header{}, &content).
         Returning(200, "", responseHeaders).
-        PutMultiPartUploadPart(models.NewPutMultiPartUploadPartRequest(
+        PutMultiPartUploadPart(context.Background(), models.NewPutMultiPartUploadPartRequest(
             "bucketName",
             "object",
             BuildByteReaderWithSizeDecorator([]byte(content)),
@@ -773,7 +774,7 @@ func TestCompleteMultipart(t *testing.T) {
     response, err := mockedClient(t).
         Expecting(HTTP_VERB_POST, "/bucketName/object", qs, &http.Header{}, &expectedRequest).
         Returning(200, expectedResponse, &http.Header{"etag": []string{etag}}).
-        CompleteMultiPartUpload(models.NewCompleteMultiPartUploadRequest(
+        CompleteMultiPartUpload(context.Background(), models.NewCompleteMultiPartUploadRequest(
             bucket,
             key,
             []models.Part{
@@ -825,7 +826,7 @@ func TestDeleteObjects(t *testing.T) {
     response, err := mockedClient(t).
         Expecting(HTTP_VERB_POST, "/bucketName", qs, &http.Header{}, &expectedRequest).
         Returning(200, expectedResponse, &http.Header{}).
-        DeleteObjects(models.NewDeleteObjectsRequest(bucket, objectNames))
+        DeleteObjects(context.Background(), models.NewDeleteObjectsRequest(bucket, objectNames))
 
     // Check the error result.
     ds3Testing.AssertNilError(t, err)
@@ -870,7 +871,7 @@ func TestAllocateJobChunkSpectraS3(t *testing.T) {
     response, err := mockedClient(t).
             Expecting(HTTP_VERB_PUT, "/_rest_/job_chunk/203f6886-b058-4f7c-a012-8779176453b1", qp, &http.Header{}, nil).
             Returning(200, responseString, nil).
-            AllocateJobChunkSpectraS3(request)
+            AllocateJobChunkSpectraS3(context.Background(), request)
 
     // Check the error result.
     ds3Testing.AssertNilError(t, err)
@@ -1000,7 +1001,7 @@ func TestGetJobChunksReadyForClientProcessingSpectraS3(t *testing.T) {
     response, err := mockedClient(t).
             Expecting(HTTP_VERB_GET, "/_rest_/job_chunk", qp, &http.Header{}, nil).
             Returning(200, test_master_object_list_xml, nil).
-            GetJobChunksReadyForClientProcessingSpectraS3(request)
+            GetJobChunksReadyForClientProcessingSpectraS3(context.Background(), request)
 
     // Check the error result.
     ds3Testing.AssertNilError(t, err)
@@ -1017,7 +1018,7 @@ func TestGetJobSpectraS3(t *testing.T) {
     response, err := mockedClient(t).
             Expecting(HTTP_VERB_GET, "/_rest_/job/1a85e743-ec8f-4789-afec-97e587a26936", &url.Values{}, &http.Header{}, nil).
             Returning(200, test_master_object_list_xml, nil).
-            GetJobSpectraS3(request)
+            GetJobSpectraS3(context.Background(), request)
 
     // Check the error result.
     ds3Testing.AssertNilError(t, err)
@@ -1035,7 +1036,7 @@ func TestModifyJobSpectraS3(t *testing.T) {
     response, err := mockedClient(t).
             Expecting(HTTP_VERB_PUT, "/_rest_/job/1a85e743-ec8f-4789-afec-97e587a26936", &url.Values{}, &http.Header{}, nil).
             Returning(200, test_master_object_list_xml, nil).
-            ModifyJobSpectraS3(request)
+            ModifyJobSpectraS3(context.Background(), request)
 
     // Check the error result.
     ds3Testing.AssertNilError(t, err)
@@ -1065,7 +1066,7 @@ func TestGetJobsSpectraS3(t *testing.T) {
     response, err := mockedClient(t).
             Expecting(HTTP_VERB_GET, "/_rest_/job", &url.Values{}, &http.Header{}, nil).
             Returning(200, responseString, nil).
-            GetJobsSpectraS3(models.NewGetJobsSpectraS3Request())
+            GetJobsSpectraS3(context.Background(), models.NewGetJobsSpectraS3Request())
 
     // Check the error result.
     ds3Testing.AssertNilError(t, err)
@@ -1148,7 +1149,7 @@ func TestCancelJobSpectraS3(t *testing.T) {
     response, err := mockedClient(t).
             Expecting(HTTP_VERB_DELETE, "/_rest_/job/1a85e743-ec8f-4789-afec-97e587a26936", qp, &http.Header{}, nil).
             Returning(204, "", nil).
-            CancelJobSpectraS3(request)
+            CancelJobSpectraS3(context.Background(), request)
 
     // Check the error result.
     ds3Testing.AssertNilError(t, err)
@@ -1166,7 +1167,7 @@ func TestDeleteTapeDriveSpectraS3(t *testing.T) {
     response, err := mockedClient(t).
             Expecting(HTTP_VERB_DELETE, "/_rest_/tape_drive/1a85e743-ec8f-4789-afec-97e587a26936", &url.Values{}, &http.Header{}, nil).
             Returning(204, "", nil).
-            DeleteTapeDriveSpectraS3(request)
+            DeleteTapeDriveSpectraS3(context.Background(), request)
 
     // Check the error result.
     ds3Testing.AssertNilError(t, err)
@@ -1184,7 +1185,7 @@ func TestDeleteTapePartitionSpectraS3(t *testing.T) {
     response, err := mockedClient(t).
             Expecting(HTTP_VERB_DELETE, "/_rest_/tape_partition/1a85e743-ec8f-4789-afec-97e587a26936", &url.Values{}, &http.Header{}, nil).
             Returning(204, "", nil).
-            DeleteTapePartitionSpectraS3(request)
+            DeleteTapePartitionSpectraS3(context.Background(), request)
 
     // Check the error result.
     ds3Testing.AssertNilError(t, err)
@@ -1200,7 +1201,7 @@ func TestVerifySystemHealthSpectraS3(t *testing.T) {
     response, err := mockedClient(t).
             Expecting(HTTP_VERB_GET, "/_rest_/system_health", &url.Values{}, &http.Header{}, nil).
             Returning(200, responsePayload, nil).
-            VerifySystemHealthSpectraS3(models.NewVerifySystemHealthSpectraS3Request())
+            VerifySystemHealthSpectraS3(context.Background(), models.NewVerifySystemHealthSpectraS3Request())
 
     // Check the error result.
     ds3Testing.AssertNilError(t, err)
@@ -1221,7 +1222,7 @@ func TestGetSystemInformationSpectraS3(t *testing.T) {
     response, err := mockedClient(t).
             Expecting(HTTP_VERB_GET, "/_rest_/system_information", &url.Values{}, &http.Header{}, nil).
             Returning(200, responsePayload, nil).
-            GetSystemInformationSpectraS3(models.NewGetSystemInformationSpectraS3Request())
+            GetSystemInformationSpectraS3(context.Background(), models.NewGetSystemInformationSpectraS3Request())
 
     // Check the error result.
     ds3Testing.AssertNilError(t, err)
@@ -1247,7 +1248,7 @@ func TestGetTapeLibrariesSpectraS3(t *testing.T) {
     response, err := mockedClient(t).
             Expecting(HTTP_VERB_GET, "/_rest_/tape_library", &url.Values{}, &http.Header{}, nil).
             Returning(200, responsePayload, responseHeaders).
-            GetTapeLibrariesSpectraS3(models.NewGetTapeLibrariesSpectraS3Request())
+            GetTapeLibrariesSpectraS3(context.Background(), models.NewGetTapeLibrariesSpectraS3Request())
 
     // Check the error result.
     ds3Testing.AssertNilError(t, err)
@@ -1285,7 +1286,7 @@ func TestGetTapeLibrarySpectraS3(t *testing.T) {
     response, err := mockedClient(t).
             Expecting(HTTP_VERB_GET, "/_rest_/tape_library/" + id, &url.Values{}, &http.Header{}, nil).
             Returning(200, responsePayload, nil).
-            GetTapeLibrarySpectraS3(models.NewGetTapeLibrarySpectraS3Request(id))
+            GetTapeLibrarySpectraS3(context.Background(), models.NewGetTapeLibrarySpectraS3Request(id))
 
     // Check the error result.
     ds3Testing.AssertNilError(t, err)
@@ -1310,7 +1311,7 @@ func TestGetTapeDriveSpectraS3(t *testing.T) {
     response, err := mockedClient(t).
             Expecting(HTTP_VERB_GET, "/_rest_/tape_drive/" + id, &url.Values{}, &http.Header{}, nil).
             Returning(200, responsePayload, nil).
-            GetTapeDriveSpectraS3(models.NewGetTapeDriveSpectraS3Request(id))
+            GetTapeDriveSpectraS3(context.Background(), models.NewGetTapeDriveSpectraS3Request(id))
 
     // Check the error result.
     ds3Testing.AssertNilError(t, err)
@@ -1363,7 +1364,7 @@ func TestGetTapesSpectraS3(t *testing.T) {
     response, err := mockedClient(t).
             Expecting(HTTP_VERB_GET, "/_rest_/tape", &url.Values{}, &http.Header{}, nil).
             Returning(200, responsePayload, responseHeaders).
-            GetTapesSpectraS3(models.NewGetTapesSpectraS3Request())
+            GetTapesSpectraS3(context.Background(), models.NewGetTapesSpectraS3Request())
 
     // Check the error result.
     ds3Testing.AssertNilError(t, err)
@@ -1414,7 +1415,7 @@ func TestDeletePermanentlyLostTapeSpectraS3(t *testing.T) {
     response, err := mockedClient(t).
         Expecting(HTTP_VERB_DELETE, "/_rest_/tape/" + id, &url.Values{}, &http.Header{}, nil).
         Returning(204, "", nil).
-        DeletePermanentlyLostTapeSpectraS3(request)
+        DeletePermanentlyLostTapeSpectraS3(context.Background(), request)
 
     // Check the error result.
     ds3Testing.AssertNilError(t, err)
@@ -1433,7 +1434,7 @@ func TestGetTapeSpectraS3(t *testing.T) {
     response, err := mockedClient(t).
         Expecting(HTTP_VERB_GET, "/_rest_/tape/" + id, &url.Values{}, &http.Header{}, nil).
         Returning(200, responsePayload, nil).
-        GetTapeSpectraS3(request)
+        GetTapeSpectraS3(context.Background(), request)
 
     // Check the error result.
     ds3Testing.AssertNilError(t, err)
@@ -1479,7 +1480,7 @@ func TestClearSuspectBlobAzureTargetsSpectraS3(t *testing.T) {
     response, err := mockedClient(t).
         Expecting(HTTP_VERB_DELETE, "/_rest_/suspect_blob_azure_target", &url.Values{}, &http.Header{}, &expectedRequest).
         Returning(204, "", nil).
-        ClearSuspectBlobAzureTargetsSpectraS3(models.NewClearSuspectBlobAzureTargetsSpectraS3Request(ids))
+        ClearSuspectBlobAzureTargetsSpectraS3(context.Background(), models.NewClearSuspectBlobAzureTargetsSpectraS3Request(ids))
 
     // Check the error result.
     ds3Testing.AssertNilError(t, err)
@@ -1499,7 +1500,7 @@ func TestClearSuspectBlobPoolsSpectraS3(t *testing.T) {
     response, err := mockedClient(t).
         Expecting(HTTP_VERB_DELETE, "/_rest_/suspect_blob_pool", &url.Values{}, &http.Header{}, &expectedRequest).
         Returning(204, "", nil).
-        ClearSuspectBlobPoolsSpectraS3(models.NewClearSuspectBlobPoolsSpectraS3Request(ids))
+        ClearSuspectBlobPoolsSpectraS3(context.Background(), models.NewClearSuspectBlobPoolsSpectraS3Request(ids))
 
     // Check the error result.
     ds3Testing.AssertNilError(t, err)
@@ -1519,7 +1520,7 @@ func TestClearSuspectBlobS3TargetsSpectraS3(t *testing.T) {
     response, err := mockedClient(t).
         Expecting(HTTP_VERB_DELETE, "/_rest_/suspect_blob_s3_target", &url.Values{}, &http.Header{}, &expectedRequest).
         Returning(204, "", nil).
-        ClearSuspectBlobS3TargetsSpectraS3(models.NewClearSuspectBlobS3TargetsSpectraS3Request(ids))
+        ClearSuspectBlobS3TargetsSpectraS3(context.Background(), models.NewClearSuspectBlobS3TargetsSpectraS3Request(ids))
 
     // Check the error result.
     ds3Testing.AssertNilError(t, err)
@@ -1540,7 +1541,7 @@ func TestClearSuspectBlobDs3TargetsSpectraS3(t *testing.T) {
     response, err := mockedClient(t).
         Expecting(HTTP_VERB_DELETE, "/_rest_/suspect_blob_ds3_target", &url.Values{}, &http.Header{}, &expectedRequest).
         Returning(204, "", nil).
-        ClearSuspectBlobDs3TargetsSpectraS3(models.NewClearSuspectBlobDs3TargetsSpectraS3Request(ids))
+        ClearSuspectBlobDs3TargetsSpectraS3(context.Background(), models.NewClearSuspectBlobDs3TargetsSpectraS3Request(ids))
 
     // Check the error result.
     ds3Testing.AssertNilError(t, err)
@@ -1560,7 +1561,7 @@ func TestClearSuspectBlobTapesSpectraS3(t *testing.T) {
     response, err := mockedClient(t).
         Expecting(HTTP_VERB_DELETE, "/_rest_/suspect_blob_tape", &url.Values{}, &http.Header{}, &expectedRequest).
         Returning(204, "", nil).
-        ClearSuspectBlobTapesSpectraS3(models.NewClearSuspectBlobTapesSpectraS3Request(ids))
+        ClearSuspectBlobTapesSpectraS3(context.Background(), models.NewClearSuspectBlobTapesSpectraS3Request(ids))
 
     // Check the error result.
     ds3Testing.AssertNilError(t, err)
@@ -1589,7 +1590,7 @@ func TestEjectStorageDomainBlobsSpectraS3(t *testing.T) {
     response, err := mockedClient(t).
         Expecting(HTTP_VERB_PUT, "/_rest_/tape", qp, &http.Header{}, &expectedRequest).
         Returning(204, "", nil).
-        EjectStorageDomainBlobsSpectraS3(models.NewEjectStorageDomainBlobsSpectraS3Request(bucketId, storageDomainId, objectNames))
+        EjectStorageDomainBlobsSpectraS3(context.Background(), models.NewEjectStorageDomainBlobsSpectraS3Request(bucketId, storageDomainId, objectNames))
 
     // Check the error result.
     ds3Testing.AssertNilError(t, err)
@@ -1606,7 +1607,7 @@ func TestGetBlobsOnAzureTargetSpectraS3(t *testing.T) {
         t,
         "/_rest_/azure_target/" + target,
         func(client *Client) (models.BulkObjectList, error) {
-            request, err := client.GetBlobsOnAzureTargetSpectraS3(models.NewGetBlobsOnAzureTargetSpectraS3Request(target))
+            request, err := client.GetBlobsOnAzureTargetSpectraS3(context.Background(), models.NewGetBlobsOnAzureTargetSpectraS3Request(target))
             return request.BulkObjectList, err
         },
     )
@@ -1618,7 +1619,7 @@ func TestGetBlobsOnDs3TargetSpectraS3(t *testing.T) {
         t,
         "/_rest_/ds3_target/" + target,
         func(client *Client) (models.BulkObjectList, error) {
-            request, err := client.GetBlobsOnDs3TargetSpectraS3(models.NewGetBlobsOnDs3TargetSpectraS3Request(target))
+            request, err := client.GetBlobsOnDs3TargetSpectraS3(context.Background(), models.NewGetBlobsOnDs3TargetSpectraS3Request(target))
             return request.BulkObjectList, err
         },
     )
@@ -1630,7 +1631,7 @@ func TestGetBlobsOnPoolSpectraS3(t *testing.T) {
         t,
         "/_rest_/pool/" + target,
         func(client *Client) (models.BulkObjectList, error) {
-            request, err := client.GetBlobsOnPoolSpectraS3(models.NewGetBlobsOnPoolSpectraS3Request(target))
+            request, err := client.GetBlobsOnPoolSpectraS3(context.Background(), models.NewGetBlobsOnPoolSpectraS3Request(target))
             return request.BulkObjectList, err
         },
     )
@@ -1642,7 +1643,7 @@ func TestGetBlobsOnS3TargetSpectraS3(t *testing.T) {
         t,
         "/_rest_/s3_target/" + target,
         func(client *Client) (models.BulkObjectList, error) {
-            request, err := client.GetBlobsOnS3TargetSpectraS3(models.NewGetBlobsOnS3TargetSpectraS3Request(target))
+            request, err := client.GetBlobsOnS3TargetSpectraS3(context.Background(), models.NewGetBlobsOnS3TargetSpectraS3Request(target))
             return request.BulkObjectList, err
         },
     )
@@ -1654,7 +1655,7 @@ func TestGetBlobsOnTapeSpectraS3(t *testing.T) {
         t,
         "/_rest_/tape/" + target,
         func(client *Client) (models.BulkObjectList, error) {
-            request, err := client.GetBlobsOnTapeSpectraS3(models.NewGetBlobsOnTapeSpectraS3Request(target))
+            request, err := client.GetBlobsOnTapeSpectraS3(context.Background(), models.NewGetBlobsOnTapeSpectraS3Request(target))
             return request.BulkObjectList, err
         },
     )
@@ -1715,7 +1716,7 @@ func TestGetPhysicalPlacementForObjectsSpectraS3(t *testing.T) {
     response, err := mockedClient(t).
         Expecting(HTTP_VERB_PUT, "/_rest_/bucket/" + bucketName, qp, &http.Header{}, &expectedRequest).
         Returning(200, responsePayload, nil).
-        GetPhysicalPlacementForObjectsSpectraS3(models.NewGetPhysicalPlacementForObjectsSpectraS3Request(bucketName, objectNames))
+        GetPhysicalPlacementForObjectsSpectraS3(context.Background(), models.NewGetPhysicalPlacementForObjectsSpectraS3Request(bucketName, objectNames))
 
     // Check the error result.
     ds3Testing.AssertNilError(t, err)
@@ -1742,7 +1743,7 @@ func TestGetPhysicalPlacementForObjectsWithFullDetailsSpectraS3(t *testing.T) {
     response, err := mockedClient(t).
         Expecting(HTTP_VERB_PUT, "/_rest_/bucket/" + bucketName, qp, &http.Header{}, &expectedRequest).
         Returning(200, responsePayload, nil).
-        GetPhysicalPlacementForObjectsWithFullDetailsSpectraS3(models.NewGetPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request(bucketName, objectNames))
+        GetPhysicalPlacementForObjectsWithFullDetailsSpectraS3(context.Background(), models.NewGetPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request(bucketName, objectNames))
 
     // Check the error result.
     ds3Testing.AssertNilError(t, err)
@@ -1758,7 +1759,7 @@ func TestMarkSuspectBlobAzureTargetsAsDegradedSpectraS3(t *testing.T) {
         t,
         "/_rest_/suspect_blob_azure_target",
         func(client *Client, ids []string) error {
-            _, err := client.MarkSuspectBlobAzureTargetsAsDegradedSpectraS3(models.NewMarkSuspectBlobAzureTargetsAsDegradedSpectraS3Request(ids))
+            _, err := client.MarkSuspectBlobAzureTargetsAsDegradedSpectraS3(context.Background(), models.NewMarkSuspectBlobAzureTargetsAsDegradedSpectraS3Request(ids))
             return err
         },
     )
@@ -1769,7 +1770,7 @@ func TestMarkSuspectBlobDs3TargetsAsDegradedSpectraS3(t *testing.T) {
         t,
         "/_rest_/suspect_blob_ds3_target",
         func(client *Client, ids []string) error {
-            _, err := client.MarkSuspectBlobDs3TargetsAsDegradedSpectraS3(models.NewMarkSuspectBlobDs3TargetsAsDegradedSpectraS3Request(ids))
+            _, err := client.MarkSuspectBlobDs3TargetsAsDegradedSpectraS3(context.Background(), models.NewMarkSuspectBlobDs3TargetsAsDegradedSpectraS3Request(ids))
             return err
         },
     )
@@ -1780,7 +1781,7 @@ func TestMarkSuspectBlobPoolsAsDegradedSpectraS3(t *testing.T) {
         t,
         "/_rest_/suspect_blob_pool",
         func(client *Client, ids []string) error {
-            _, err := client.MarkSuspectBlobPoolsAsDegradedSpectraS3(models.NewMarkSuspectBlobPoolsAsDegradedSpectraS3Request(ids))
+            _, err := client.MarkSuspectBlobPoolsAsDegradedSpectraS3(context.Background(), models.NewMarkSuspectBlobPoolsAsDegradedSpectraS3Request(ids))
             return err
         },
     )
@@ -1791,7 +1792,7 @@ func TestMarkSuspectBlobS3TargetsAsDegradedSpectraS3(t *testing.T) {
         t,
         "/_rest_/suspect_blob_s3_target",
         func(client *Client, ids []string) error {
-            _, err := client.MarkSuspectBlobS3TargetsAsDegradedSpectraS3(models.NewMarkSuspectBlobS3TargetsAsDegradedSpectraS3Request(ids))
+            _, err := client.MarkSuspectBlobS3TargetsAsDegradedSpectraS3(context.Background(), models.NewMarkSuspectBlobS3TargetsAsDegradedSpectraS3Request(ids))
             return err
         },
     )
@@ -1802,7 +1803,7 @@ func TestMarkSuspectBlobTapesAsDegradedSpectraS3(t *testing.T) {
         t,
         "/_rest_/suspect_blob_tape",
         func(client *Client, ids []string) error {
-            _, err := client.MarkSuspectBlobTapesAsDegradedSpectraS3(models.NewMarkSuspectBlobTapesAsDegradedSpectraS3Request(ids))
+            _, err := client.MarkSuspectBlobTapesAsDegradedSpectraS3(context.Background(), models.NewMarkSuspectBlobTapesAsDegradedSpectraS3Request(ids))
             return err
         },
     )
@@ -1839,7 +1840,7 @@ func TestVerifyPhysicalPlacementForObjectsSpectraS3(t *testing.T) {
     response, err := mockedClient(t).
         Expecting(HTTP_VERB_GET, "/_rest_/bucket/" + bucketName, qp, &http.Header{}, &expectedRequest).
         Returning(200, responsePayload, nil).
-        VerifyPhysicalPlacementForObjectsSpectraS3(models.NewVerifyPhysicalPlacementForObjectsSpectraS3Request(bucketName, objectNames))
+        VerifyPhysicalPlacementForObjectsSpectraS3(context.Background(), models.NewVerifyPhysicalPlacementForObjectsSpectraS3Request(bucketName, objectNames))
 
     // Check the error result.
     ds3Testing.AssertNilError(t, err)
@@ -1867,7 +1868,7 @@ func TestVerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3(t *testing.T)
     response, err := mockedClient(t).
         Expecting(HTTP_VERB_GET, "/_rest_/bucket/" + bucketName, qp, &http.Header{}, &expectedRequest).
         Returning(200, responsePayload, nil).
-        VerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3(models.NewVerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request(bucketName, objectNames))
+        VerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3(context.Background(), models.NewVerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request(bucketName, objectNames))
 
     // Check the error result.
     ds3Testing.AssertNilError(t, err)
@@ -1946,7 +1947,7 @@ func TestHeadObject(t *testing.T) {
     response, err := mockedClient(t).
         Expecting(HTTP_VERB_HEAD, "/" + bucketName + "/" + objectName, &url.Values{}, &http.Header{}, nil).
         Returning(200, "", responseHeaders).
-        HeadObject(models.NewHeadObjectRequest(bucketName, objectName))
+        HeadObject(context.Background(), models.NewHeadObjectRequest(bucketName, objectName))
 
     ds3Testing.AssertNilError(t, err)
 
@@ -1977,7 +1978,7 @@ func TestStageObjectsJob(t *testing.T) {
     response, err := mockedClient(t).
         Expecting(HTTP_VERB_PUT, "/_rest_/bucket/" + bucketName, qp, &http.Header{}, &expectedRequest).
         Returning(200, responsePayload, nil).
-        StageObjectsJobSpectraS3(models.NewStageObjectsJobSpectraS3RequestWithPartialObjects(bucketName, objects))
+        StageObjectsJobSpectraS3(context.Background(), models.NewStageObjectsJobSpectraS3RequestWithPartialObjects(bucketName, objects))
 
     // Check the error result.
     ds3Testing.AssertNilError(t, err)

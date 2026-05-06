@@ -1,6 +1,7 @@
 package helpers
 
 import (
+    "context"
     "fmt"
     "github.com/SpectraLogic/ds3_go_sdk/ds3"
     "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
@@ -97,7 +98,7 @@ func (helper *HelperImpl) isCannotPreAllocateError(err error) bool {
 
 func (helper *HelperImpl) retrieveIndividualFile(bucketName string, getObject helperModels.GetObject, strategy ReadTransferStrategy) []string {
     // Get the blob offsets
-    headObject, err := helper.client.HeadObject(models.NewHeadObjectRequest(bucketName, getObject.Name))
+    headObject, err := helper.client.HeadObject(context.Background(), models.NewHeadObjectRequest(bucketName, getObject.Name))
     if err != nil {
         getObject.ChannelBuilder.SetFatalError(err)
         return nil
@@ -113,6 +114,7 @@ func (helper *HelperImpl) retrieveIndividualFile(bucketName string, getObject he
 
     // Get the object size
     objectsDetails, err := helper.client.GetObjectsWithFullDetailsSpectraS3(
+        context.Background(),
         models.NewGetObjectsWithFullDetailsSpectraS3Request().
             WithBucketId(bucketName).WithName(getObject.Name).
             WithLatest(true))

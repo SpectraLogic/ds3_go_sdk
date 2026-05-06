@@ -2,6 +2,7 @@ package helpers_integration
 
 import (
     "bytes"
+    "context"
     "fmt"
     "github.com/SpectraLogic/ds3_go_sdk/ds3"
     ds3Models "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
@@ -58,7 +59,7 @@ func TestPutBulk(t *testing.T) {
     }
 
     // verify all books are on BP
-    getBucket, getBucketErr := client.GetBucket(ds3Models.NewGetBucketRequest(testBucket))
+    getBucket, getBucketErr := client.GetBucket(context.Background(), ds3Models.NewGetBucketRequest(testBucket))
     ds3Testing.AssertNilError(t, getBucketErr)
     if len(getBucket.ListBucketResult.Objects) != len(*writeObjects) {
         t.Fatalf("Expected '%d' objects in bucket '%s', but found '%d'.", len(*writeObjects), testBucket, len(getBucket.ListBucketResult.Objects))
@@ -527,7 +528,7 @@ func TestRetryGettingBlobRange(t *testing.T) {
     }
 
     // Try to get some data from each blob
-    getJob, err := client.GetJobSpectraS3(ds3Models.NewGetJobSpectraS3Request(putJobId))
+    getJob, err := client.GetJobSpectraS3(context.Background(), ds3Models.NewGetJobSpectraS3Request(putJobId))
     ds3Testing.AssertNilError(t, err)
 
     blobsChecked := 0
@@ -586,7 +587,7 @@ func TestGetRemainingBlob(t *testing.T) {
     }
 
     // Try to get some data from each blob
-    getJob, err := client.GetJobSpectraS3(ds3Models.NewGetJobSpectraS3Request(putJobId))
+    getJob, err := client.GetJobSpectraS3(context.Background(), ds3Models.NewGetJobSpectraS3Request(putJobId))
     ds3Testing.AssertNilError(t, err)
 
     blobsChecked := 0

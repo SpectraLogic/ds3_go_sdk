@@ -1,6 +1,7 @@
 package helpers
 
 import (
+	"context"
 	"crypto/rand"
 	"crypto/sha256"
 	"fmt"
@@ -142,7 +143,7 @@ func TestRetrievingObjectLargerThanCacheInOrder(t *testing.T) {
 	ds3Testing.AssertNilError(t, err)
 
 	// Ensure the cache is set to minimum of 1 GB
-	getCacheResp, err := simClient.GetCacheFilesystemsSpectraS3(ds3Models.NewGetCacheFilesystemsSpectraS3Request())
+	getCacheResp, err := simClient.GetCacheFilesystemsSpectraS3(context.Background(), ds3Models.NewGetCacheFilesystemsSpectraS3Request())
 	ds3Testing.AssertNilError(t, err)
 
 	t.Logf("CACHE:")
@@ -150,20 +151,20 @@ func TestRetrievingObjectLargerThanCacheInOrder(t *testing.T) {
 		t.Logf("%d) %s, (%v)", i, curCache.Id, curCache.MaxCapacityInBytes)
 
 		req := ds3Models.NewModifyCacheFilesystemSpectraS3Request(curCache.Id).WithMaxCapacityInBytes(minCache)
-		modifyResp, err := simClient.ModifyCacheFilesystemSpectraS3(req)
+		modifyResp, err := simClient.ModifyCacheFilesystemSpectraS3(context.Background(), req)
 		ds3Testing.AssertNilError(t, err)
 		t.Logf("modified: %s, (%v)", modifyResp.CacheFilesystem.Id, modifyResp.CacheFilesystem.MaxCapacityInBytes)
 	}
 
 	// Make sure that our test bucket exists with a file in it
-	_, err = simClient.GetBucketSpectraS3(ds3Models.NewGetBucketSpectraS3Request(bucketName))
+	_, err = simClient.GetBucketSpectraS3(context.Background(), ds3Models.NewGetBucketSpectraS3Request(bucketName))
 	if err != nil {
 		t.Logf("Creating bucket: %s", bucketName)
-		_, err := simClient.PutBucket(ds3Models.NewPutBucketRequest(bucketName))
+		_, err := simClient.PutBucket(context.Background(), ds3Models.NewPutBucketRequest(bucketName))
 		ds3Testing.AssertNilError(t, err)
 
 		defer func() {
-			_, err := simClient.DeleteBucketSpectraS3(ds3Models.NewDeleteBucketSpectraS3Request(bucketName).WithForce())
+			_, err := simClient.DeleteBucketSpectraS3(context.Background(), ds3Models.NewDeleteBucketSpectraS3Request(bucketName).WithForce())
 			if err != nil {
 				t.Errorf("failed to delete bucket with force '%s': %v", bucketName, err)
 			}
@@ -209,7 +210,7 @@ func TestRetrievingObjectLargerThanCacheInOrder(t *testing.T) {
 	ds3Testing.AssertNilError(t, err)
 
 	defer func() {
-		_, err := simClient.DeleteObject(ds3Models.NewDeleteObjectRequest(bucketName, objectName))
+		_, err := simClient.DeleteObject(context.Background(), ds3Models.NewDeleteObjectRequest(bucketName, objectName))
 		if err != nil {
 			t.Errorf("failed to delete object %s: %v", objectName, err)
 		}
@@ -226,7 +227,7 @@ func TestRetrievingObjectLargerThanCacheInOrder(t *testing.T) {
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
 			// reclaim cache since simulator doesn't seem to do it on its own
-			_, err := simClient.ForceFullCacheReclaimSpectraS3(ds3Models.NewForceFullCacheReclaimSpectraS3Request())
+			_, err := simClient.ForceFullCacheReclaimSpectraS3(context.Background(), ds3Models.NewForceFullCacheReclaimSpectraS3Request())
 			ds3Testing.AssertNilError(t, err)
 
 			readStrategy := ReadTransferStrategy{

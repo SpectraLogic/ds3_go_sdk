@@ -1,6 +1,7 @@
 package commands
 
 import (
+    "context"
     "errors"
     "github.com/SpectraLogic/ds3_go_sdk/ds3"
     "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
@@ -29,7 +30,7 @@ func getBucketObjects(client *ds3.Client, args *Arguments) ([]models.Ds3PutObjec
         request := buildRequest(args, remainingKeys, marker)
 
         // Send the request.
-        response, err := client.GetBucket(request)
+        response, err := client.GetBucket(context.Background(), request)
         if err != nil {
             return nil, err
         }

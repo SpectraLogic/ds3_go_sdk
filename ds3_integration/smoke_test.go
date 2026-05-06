@@ -13,6 +13,7 @@ package ds3_integration
 
 import (
     "bytes"
+    "context"
     "fmt"
     "github.com/SpectraLogic/ds3_go_sdk/ds3"
     "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
@@ -46,7 +47,7 @@ func TestMain(m *testing.M) {
 }
 
 func TestGetService(t *testing.T) {
-    response, err := client.GetService(models.NewGetServiceRequest())
+    response, err := client.GetService(context.Background(), models.NewGetServiceRequest())
     ds3Testing.AssertNilError(t, err)
     if response == nil {
         t.Fatal("Received an unexpected nil response.")
@@ -177,7 +178,7 @@ func TestDeleteBucketNonEmpty(t *testing.T) {
     ds3Testing.AssertNilError(t, putObjErr)
 
     //Attempt to delete non-empty bucket without force
-    _, deleteErr := client.DeleteBucketSpectraS3(models.NewDeleteBucketSpectraS3Request(bucketName))
+    _, deleteErr := client.DeleteBucketSpectraS3(context.Background(), models.NewDeleteBucketSpectraS3Request(bucketName))
     ds3Testing.AssertBadStatusCodeError(t, 409, deleteErr)
 }
 
@@ -194,13 +195,13 @@ func TestGetBucketNonexistent(t *testing.T) {
 }
 
 func TestHeadBucket(t *testing.T) {
-    _, err := client.HeadBucket(models.NewHeadBucketRequest(testBucket))
+    _, err := client.HeadBucket(context.Background(), models.NewHeadBucketRequest(testBucket))
     ds3Testing.AssertNilError(t, err)
 }
 
 func TestHeadBucketNonExistent(t *testing.T) {
     bucketName := "not-here"
-    _, err := client.HeadBucket(models.NewHeadBucketRequest(bucketName))
+    _, err := client.HeadBucket(context.Background(), models.NewHeadBucketRequest(bucketName))
     ds3Testing.AssertBadStatusCodeError(t, 404, err)
 }
 
@@ -218,7 +219,7 @@ func TestGetBucketPagination(t *testing.T) {
     ds3Testing.AssertNilError(t, err)
 
     //Test files indexed 0-4
-    result1, err := client.GetBucket(models.NewGetBucketRequest(testBucket).WithMaxKeys(5))
+    result1, err := client.GetBucket(context.Background(), models.NewGetBucketRequest(testBucket).WithMaxKeys(5))
     ds3Testing.AssertNilError(t, err)
     ds3Testing.AssertInt(t, "Number of Objects", 5, len(result1.ListBucketResult.Objects))
     if result1.ListBucketResult.NextMarker == nil {
@@ -230,6 +231,7 @@ func TestGetBucketPagination(t *testing.T) {
 
     // Test files indexed 5-9
     result2, err := client.GetBucket(
+        context.Background(),
         models.NewGetBucketRequest(testBucket).
             WithMaxKeys(5).
             WithMarker(*result1.ListBucketResult.NextMarker))
@@ -245,6 +247,7 @@ func TestGetBucketPagination(t *testing.T) {
 
     // Test files indexed 10-14
     result3, err := client.GetBucket(
+        context.Background(),
         models.NewGetBucketRequest(testBucket).
             WithMaxKeys(5).
             WithMarker(*result2.ListBucketResult.NextMarker))
@@ -278,7 +281,7 @@ func TestGetBucketDelimiter(t *testing.T) {
     ds3Testing.AssertNilError(t, err)
 
     //Test files indexed 0-4
-    result, err := client.GetBucket(models.NewGetBucketRequest(testBucket).WithDelimiter("/"))
+    result, err := client.GetBucket(context.Background(), models.NewGetBucketRequest(testBucket).WithDelimiter("/"))
     ds3Testing.AssertNilError(t, err)
     ds3Testing.AssertInt(t, "Number of Objects", 10, len(result.ListBucketResult.Objects))
     ds3Testing.AssertInt(t, "Number of Common Prefixes", 1, len(result.ListBucketResult.CommonPrefixes))
@@ -295,15 +298,15 @@ func TestBulkPut(t *testing.T) {
     ds3Testing.AssertNilError(t, objErr)
 
     // Create bulk put job
-    bulkPut, bulkPutErr := client.PutBulkJobSpectraS3(models.NewPutBulkJobSpectraS3Request(testBucket, ds3Objects))
+    bulkPut, bulkPutErr := client.PutBulkJobSpectraS3(context.Background(), models.NewPutBulkJobSpectraS3Request(testBucket, ds3Objects))
     ds3Testing.AssertNilError(t, bulkPutErr)
 
     for _, chunk := range bulkPut.MasterObjectList.Objects {
-        allocateChunk, allocateErr := client.AllocateJobChunkSpectraS3(models.NewAllocateJobChunkSpectraS3Request(chunk.ChunkId))
+        allocateChunk, allocateErr := client.AllocateJobChunkSpectraS3(context.Background(), models.NewAllocateJobChunkSpectraS3Request(chunk.ChunkId))
         ds3Testing.AssertNilError(t, allocateErr)
         for _, obj := range allocateChunk.Objects.Objects {
             content := books[*obj.Name]
-            _, putObjErr := client.PutObject(models.NewPutObjectRequest(testBucket, *obj.Name, content).
+            _, putObjErr := client.PutObject(context.Background(), models.NewPutObjectRequest(testBucket, *obj.Name, content).
                 WithOffset(obj.Offset).
                 WithJob(bulkPut.MasterObjectList.JobId))
 
@@ -312,7 +315,7 @@ func TestBulkPut(t *testing.T) {
     }
 
     // Verify books are in the bucket
-    getBucket, getBucketErr := client.GetBucket(models.NewGetBucketRequest(testBucket))
+    getBucket, getBucketErr := client.GetBucket(context.Background(), models.NewGetBucketRequest(testBucket))
     ds3Testing.AssertNilError(t, getBucketErr)
     if len(getBucket.ListBucketResult.Objects) != len(books) {
         t.Fatalf("Expected '%d' objects in bucket '%s', but found '%d'.", len(books), testBucket, len(getBucket.ListBucketResult.Objects))
@@ -329,21 +332,21 @@ func TestBulkGet(t *testing.T) {
     ds3Testing.AssertNilError(t, bookErr)
 
     // Create bulk get job
-    bucketContents, bucketErr := client.GetBucket(models.NewGetBucketRequest(testBucket))
+    bucketContents, bucketErr := client.GetBucket(context.Background(), models.NewGetBucketRequest(testBucket))
     ds3Testing.AssertNilError(t, bucketErr)
     ds3Testing.AssertInt(t, "Number of Objects on BP", 4, len(bucketContents.ListBucketResult.Objects))
 
     objectNames := testutils.ConvertObjectsIntoObjectNameList(bucketContents.ListBucketResult.Objects)
-    bulkGet, bulkGetErr := client.GetBulkJobSpectraS3(models.NewGetBulkJobSpectraS3Request(testBucket, objectNames))
+    bulkGet, bulkGetErr := client.GetBulkJobSpectraS3(context.Background(), models.NewGetBulkJobSpectraS3Request(testBucket, objectNames))
     ds3Testing.AssertNilError(t, bulkGetErr)
 
-    availableChunks, chunksErr := client.GetJobChunkSpectraS3(models.NewGetJobChunkSpectraS3Request(bulkGet.MasterObjectList.JobId))
+    availableChunks, chunksErr := client.GetJobChunkSpectraS3(context.Background(), models.NewGetJobChunkSpectraS3Request(bulkGet.MasterObjectList.JobId))
     ds3Testing.AssertNilError(t, chunksErr)
 
     // Get all objects and verify content
     for _, obj := range availableChunks.Objects.Objects {
         func() {
-            getObj, objErr := client.GetObject(models.NewGetObjectRequest(testBucket, *obj.Name))
+            getObj, objErr := client.GetObject(context.Background(), models.NewGetObjectRequest(testBucket, *obj.Name))
             ds3Testing.AssertNilError(t, objErr)
 
             defer getObj.Content.Close()
@@ -390,11 +393,11 @@ func TestSettingDefaultDataPolicy(t *testing.T) {
     getDataPolicyResponse, getErr := testutils.GetDataPolicyLogError(t, client, dataPolicyName)
     ds3Testing.AssertNilError(t, getErr)
 
-    modifyResponse, modifyErr := client.ModifyUserSpectraS3(models.NewModifyUserSpectraS3Request(user.Id).
+    modifyResponse, modifyErr := client.ModifyUserSpectraS3(context.Background(), models.NewModifyUserSpectraS3Request(user.Id).
         WithDefaultDataPolicyId(getDataPolicyResponse.DataPolicy.Id))
     ds3Testing.AssertNilError(t, modifyErr)
 
-    defer client.ModifyUserSpectraS3(models.NewModifyUserSpectraS3Request(user.Id).
+    defer client.ModifyUserSpectraS3(context.Background(), models.NewModifyUserSpectraS3Request(user.Id).
         WithDefaultDataPolicyId(*curDataPolicy))
 
     ds3Testing.AssertNonNilStringPtr(t, "Name", defaultUser, modifyResponse.SpectraUser.Name)
@@ -405,10 +408,10 @@ func TestStorageDomain(t *testing.T) {
     storageDomainName := "GoTestStorageDomain"
 
     // Create storage domain
-    putResponse, putErr := client.PutStorageDomainSpectraS3(models.NewPutStorageDomainSpectraS3Request(storageDomainName))
+    putResponse, putErr := client.PutStorageDomainSpectraS3(context.Background(), models.NewPutStorageDomainSpectraS3Request(storageDomainName))
     ds3Testing.AssertNilError(t, putErr)
 
-    defer client.DeleteStorageDomainSpectraS3(models.NewDeleteStorageDomainSpectraS3Request(storageDomainName))
+    defer client.DeleteStorageDomainSpectraS3(context.Background(), models.NewDeleteStorageDomainSpectraS3Request(storageDomainName))
 
     ds3Testing.AssertNonNilStringPtr(t, "Name", storageDomainName, putResponse.StorageDomain.Name)
 }
@@ -417,10 +420,10 @@ func TestPoolPartition(t *testing.T) {
     poolPartitionName := "GoTestPoolPartition"
 
     // Create pool partition
-    putResponse, putErr := client.PutPoolPartitionSpectraS3(models.NewPutPoolPartitionSpectraS3Request(poolPartitionName, models.POOL_TYPE_ONLINE))
+    putResponse, putErr := client.PutPoolPartitionSpectraS3(context.Background(), models.NewPutPoolPartitionSpectraS3Request(poolPartitionName, models.POOL_TYPE_ONLINE))
     ds3Testing.AssertNilError(t, putErr)
 
-    defer client.DeletePoolPartitionSpectraS3(models.NewDeletePoolPartitionSpectraS3Request(poolPartitionName))
+    defer client.DeletePoolPartitionSpectraS3(context.Background(), models.NewDeletePoolPartitionSpectraS3Request(poolPartitionName))
 
     ds3Testing.AssertNonNilStringPtr(t, "Name", poolPartitionName, putResponse.PoolPartition.Name)
     if putResponse.PoolPartition.Type != models.POOL_TYPE_ONLINE {
@@ -432,24 +435,24 @@ func TestStorageDomainMember(t *testing.T) {
     varTestName := "GoTestStorageDomainMember"
 
     // Create storage domain
-    storageDomainResponse, storageDomainErr := client.PutStorageDomainSpectraS3(models.NewPutStorageDomainSpectraS3Request(varTestName))
+    storageDomainResponse, storageDomainErr := client.PutStorageDomainSpectraS3(context.Background(), models.NewPutStorageDomainSpectraS3Request(varTestName))
     ds3Testing.AssertNilError(t, storageDomainErr)
 
-    defer client.DeleteStorageDomainSpectraS3(models.NewDeleteStorageDomainSpectraS3Request(varTestName))
+    defer client.DeleteStorageDomainSpectraS3(context.Background(), models.NewDeleteStorageDomainSpectraS3Request(varTestName))
 
     // Create pool partition
-    poolPartitionResponse, poolPartitionErr := client.PutPoolPartitionSpectraS3(models.NewPutPoolPartitionSpectraS3Request(varTestName, models.POOL_TYPE_ONLINE))
+    poolPartitionResponse, poolPartitionErr := client.PutPoolPartitionSpectraS3(context.Background(), models.NewPutPoolPartitionSpectraS3Request(varTestName, models.POOL_TYPE_ONLINE))
     ds3Testing.AssertNilError(t, poolPartitionErr)
 
-    defer client.DeletePoolPartitionSpectraS3(models.NewDeletePoolPartitionSpectraS3Request(varTestName))
+    defer client.DeletePoolPartitionSpectraS3(context.Background(), models.NewDeletePoolPartitionSpectraS3Request(varTestName))
 
     // Create storage domain member linking pool partition to storage domain
-    response, err := client.PutPoolStorageDomainMemberSpectraS3(models.NewPutPoolStorageDomainMemberSpectraS3Request(
+    response, err := client.PutPoolStorageDomainMemberSpectraS3(context.Background(), models.NewPutPoolStorageDomainMemberSpectraS3Request(
         poolPartitionResponse.PoolPartition.Id,
         storageDomainResponse.StorageDomain.Id))
     ds3Testing.AssertNilError(t, err)
 
-    defer client.DeleteStorageDomainMemberSpectraS3(models.NewDeleteStorageDomainMemberSpectraS3Request(response.StorageDomainMember.Id))
+    defer client.DeleteStorageDomainMemberSpectraS3(context.Background(), models.NewDeleteStorageDomainMemberSpectraS3Request(response.StorageDomainMember.Id))
 
     ds3Testing.AssertNonNilStringPtr(t, "PoolPartitionId", poolPartitionResponse.PoolPartition.Id, response.StorageDomainMember.PoolPartitionId)
     ds3Testing.AssertString(t, "StorageDomainId", storageDomainResponse.StorageDomain.Id, response.StorageDomainMember.StorageDomainId)
@@ -467,34 +470,34 @@ func TestDataPersistenceRule(t *testing.T) {
     defer testutils.DeleteDataPolicyLogError(t, client, varTestName)
 
     // Create storage domain
-    storageDomainResponse, storageDomainErr := client.PutStorageDomainSpectraS3(models.NewPutStorageDomainSpectraS3Request(varTestName))
+    storageDomainResponse, storageDomainErr := client.PutStorageDomainSpectraS3(context.Background(), models.NewPutStorageDomainSpectraS3Request(varTestName))
     ds3Testing.AssertNilError(t, storageDomainErr)
 
-    defer client.DeleteStorageDomainSpectraS3(models.NewDeleteStorageDomainSpectraS3Request(varTestName))
+    defer client.DeleteStorageDomainSpectraS3(context.Background(), models.NewDeleteStorageDomainSpectraS3Request(varTestName))
 
     // Create pool partition
-    poolPartitionResponse, poolPartitionErr := client.PutPoolPartitionSpectraS3(models.NewPutPoolPartitionSpectraS3Request(varTestName, models.POOL_TYPE_ONLINE))
+    poolPartitionResponse, poolPartitionErr := client.PutPoolPartitionSpectraS3(context.Background(), models.NewPutPoolPartitionSpectraS3Request(varTestName, models.POOL_TYPE_ONLINE))
     ds3Testing.AssertNilError(t, poolPartitionErr)
 
-    defer client.DeletePoolPartitionSpectraS3(models.NewDeletePoolPartitionSpectraS3Request(varTestName))
+    defer client.DeletePoolPartitionSpectraS3(context.Background(), models.NewDeletePoolPartitionSpectraS3Request(varTestName))
 
     // Create storage domain member linking pool partition to storage domain
-    memberResponse, memberErr := client.PutPoolStorageDomainMemberSpectraS3(models.NewPutPoolStorageDomainMemberSpectraS3Request(
+    memberResponse, memberErr := client.PutPoolStorageDomainMemberSpectraS3(context.Background(), models.NewPutPoolStorageDomainMemberSpectraS3Request(
         poolPartitionResponse.PoolPartition.Id,
         storageDomainResponse.StorageDomain.Id))
     ds3Testing.AssertNilError(t, memberErr)
 
-    defer client.DeleteStorageDomainMemberSpectraS3(models.NewDeleteStorageDomainMemberSpectraS3Request(memberResponse.StorageDomainMember.Id))
+    defer client.DeleteStorageDomainMemberSpectraS3(context.Background(), models.NewDeleteStorageDomainMemberSpectraS3Request(memberResponse.StorageDomainMember.Id))
 
     // Create data persistence rule linking data policy and storage domain
-    response, err := client.PutDataPersistenceRuleSpectraS3(models.NewPutDataPersistenceRuleSpectraS3Request(
+    response, err := client.PutDataPersistenceRuleSpectraS3(context.Background(), models.NewPutDataPersistenceRuleSpectraS3Request(
         dataPersistenceRuleType,
         putDataPolicyResponse.DataPolicy.Id,
         dataIsolationLevel,
         storageDomainResponse.StorageDomain.Id))
     ds3Testing.AssertNilError(t, err)
 
-    defer client.DeleteDataPersistenceRuleSpectraS3(models.NewDeleteDataPersistenceRuleSpectraS3Request(response.DataPersistenceRule.Id))
+    defer client.DeleteDataPersistenceRuleSpectraS3(context.Background(), models.NewDeleteDataPersistenceRuleSpectraS3Request(response.DataPersistenceRule.Id))
 
     ds3Testing.AssertString(t, "DataPolicyId", putDataPolicyResponse.DataPolicy.Id, response.DataPersistenceRule.DataPolicyId)
     ds3Testing.AssertString(t, "StorageDomainId", storageDomainResponse.StorageDomain.Id, response.DataPersistenceRule.StorageDomainId)
@@ -517,11 +520,11 @@ func TestPuttingFolder(t *testing.T) {
 
     readSizer := newNilReadSizer(nil, 0)
     putObjectRequest := models.NewPutObjectRequest(bucketName, folderPath, &readSizer)
-    _, err = client.PutObject(putObjectRequest)
+    _, err = client.PutObject(context.Background(), putObjectRequest)
     ds3Testing.AssertNilError(t, err)
 
     getBucketRequest := models.NewGetBucketRequest(bucketName)
-    getBucketResponse, err := client.GetBucket(getBucketRequest)
+    getBucketResponse, err := client.GetBucket(context.Background(), getBucketRequest)
     ds3Testing.AssertNilError(t, err)
 
     ds3Testing.AssertInt(t, "Number of objects in bucket", 1, len(getBucketResponse.ListBucketResult.Objects))
@@ -550,12 +553,12 @@ func TestPuttingZeroLengthObject(t *testing.T) {
         WithMetaData("_a", "A").
         WithMetaData("b", "B")
 
-    _, err = client.PutObject(putObjectRequest)
+    _, err = client.PutObject(context.Background(), putObjectRequest)
 
     ds3Testing.AssertNilError(t, err)
 
     getBucketRequest := models.NewGetBucketRequest(bucketName)
-    getBucketResponse, err := client.GetBucket(getBucketRequest)
+    getBucketResponse, err := client.GetBucket(context.Background(), getBucketRequest)
     ds3Testing.AssertNilError(t, err)
 
     ds3Testing.AssertInt(t, "Number of objects in bucket", 1, len(getBucketResponse.ListBucketResult.Objects))
@@ -575,7 +578,7 @@ func TestDeleteObjects(t *testing.T) {
     testutils.PutTestBooks(client, bucketName)
 
     // list all objects in the bucket
-    getBucket, err := client.GetBucket(models.NewGetBucketRequest(bucketName))
+    getBucket, err := client.GetBucket(context.Background(), models.NewGetBucketRequest(bucketName))
 
     ds3Testing.AssertInt(t, "number of objects to delete", 4, len(getBucket.ListBucketResult.Objects))
 
@@ -585,6 +588,6 @@ func TestDeleteObjects(t *testing.T) {
     }
 
     deleteObjs := models.NewDeleteObjectsRequest(bucketName, names)
-    _, err = client.DeleteObjects(deleteObjs)
+    _, err = client.DeleteObjects(context.Background(), deleteObjs)
     ds3Testing.AssertNilError(t, err)
 }

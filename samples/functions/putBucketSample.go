@@ -12,6 +12,7 @@
 package functions
 
 import (
+    "context"
     "fmt"
     "github.com/SpectraLogic/ds3_go_sdk/ds3/buildclient"
     "log"
@@ -39,7 +40,7 @@ func PutBucketSample() {
     bucket1Request := models.NewPutBucketRequest(bucket1Name)
 
     // Perform the put bucket call by using the client and invoking the command
-    _, err = client.PutBucket(bucket1Request)
+    _, err = client.PutBucket(context.Background(), bucket1Request)
     if err != nil {
         log.Fatal(err)
     }
@@ -55,7 +56,7 @@ func PutBucketSample() {
     bucket2Request := models.NewPutBucketSpectraS3Request(bucket2Name).WithDataPolicyId(dataPolicyName)
 
     // Perform the spectra S3 put bucket call by using the client and invoking the command
-    _, err = client.PutBucketSpectraS3(bucket2Request)
+    _, err = client.PutBucketSpectraS3(context.Background(), bucket2Request)
     if err != nil {
         log.Fatal(err)
     }

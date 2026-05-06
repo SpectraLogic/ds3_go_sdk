@@ -1,6 +1,7 @@
 package commands
 
 import (
+    "context"
     "os"
     "io"
     "errors"
@@ -29,7 +30,7 @@ func getObject(client *ds3.Client, args *Arguments) error {
     }
 
     // Perform the request.
-    response, requestErr := client.GetObject(request)
+    response, requestErr := client.GetObject(context.Background(), request)
     if requestErr != nil {
         return requestErr
     }

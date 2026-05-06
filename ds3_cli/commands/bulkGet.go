@@ -1,6 +1,7 @@
 package commands
 
 import (
+    "context"
     "io"
     "os"
     "path"
@@ -27,7 +28,7 @@ func bulkGet(client *ds3.Client, args *Arguments) error {
     }
 
     // Run request.
-    response, err := client.GetBulkJobSpectraS3(models.NewGetBulkJobSpectraS3RequestWithPartialObjects(args.Bucket, ds3GetObjects))
+    response, err := client.GetBulkJobSpectraS3(context.Background(), models.NewGetBulkJobSpectraS3RequestWithPartialObjects(args.Bucket, ds3GetObjects))
     if err != nil {
         return err
     }
@@ -40,7 +41,7 @@ func bulkGet(client *ds3.Client, args *Arguments) error {
 func buildBulkHandler(client *ds3.Client, bucketName string) bulkHandler {
     return func(obj models.BulkObject) error {
         // Perform the request.
-        response, requestErr := client.GetObject(models.NewGetObjectRequest(bucketName, *obj.Name))
+        response, requestErr := client.GetObject(context.Background(), models.NewGetObjectRequest(bucketName, *obj.Name))
         if requestErr != nil {
             return requestErr
         }

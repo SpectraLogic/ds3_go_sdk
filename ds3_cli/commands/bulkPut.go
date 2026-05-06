@@ -1,6 +1,7 @@
 package commands
 
 import (
+    "context"
     "errors"
     "io/ioutil"
     "github.com/SpectraLogic/ds3_go_sdk/ds3"
@@ -29,7 +30,7 @@ func bulkPut(client *ds3.Client, args *Arguments) error {
     }
 
     // Run request.
-    response, err := client.PutBulkJobSpectraS3(models.NewPutBulkJobSpectraS3Request(args.Bucket, objects))
+    response, err := client.PutBulkJobSpectraS3(context.Background(), models.NewPutBulkJobSpectraS3Request(args.Bucket, objects))
     if err != nil {
         return err
     }
@@ -48,7 +49,7 @@ func buildFilePutter(client *ds3.Client, bucketName string) bulkHandler {
         }
 
         // Submit the put object request.
-        _, putErr := client.PutObject(models.NewPutObjectRequest(
+        _, putErr := client.PutObject(context.Background(), models.NewPutObjectRequest(
             bucketName,
             *obj.Name,
             sizeReadCloser,

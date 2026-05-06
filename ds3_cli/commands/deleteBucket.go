@@ -1,6 +1,7 @@
 package commands
 
 import (
+    "context"
     "errors"
     "github.com/SpectraLogic/ds3_go_sdk/ds3"
     "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
@@ -13,7 +14,7 @@ func deleteBucket(client *ds3.Client, args *Arguments) error {
     }
 
     // Run request.
-    _, err := client.DeleteBucket(models.NewDeleteBucketRequest(args.Bucket))
+    _, err := client.DeleteBucket(context.Background(), models.NewDeleteBucketRequest(args.Bucket))
     return err
 }
 
