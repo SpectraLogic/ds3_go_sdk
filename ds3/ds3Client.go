@@ -3,6 +3,7 @@ package ds3
 import (
     "github.com/SpectraLogic/ds3_go_sdk/ds3/networking"
     "net/url"
+    "time"
     "github.com/SpectraLogic/ds3_go_sdk/sdk_log"
 )
 
@@ -72,6 +73,16 @@ func (clientBuilder *ClientBuilder) WithIgnoreServerCertificate(ignoreServerCert
 
 func (clientBuilder *ClientBuilder) WithLogger(logger sdk_log.Logger) *ClientBuilder {
     clientBuilder.logger = logger
+    return clientBuilder
+}
+
+func (clientBuilder *ClientBuilder) WithMaxIdleConnsPerHost(count int) *ClientBuilder {
+    clientBuilder.connectionInfo.MaxIdleConnsPerHost = count
+    return clientBuilder
+}
+
+func (clientBuilder *ClientBuilder) WithIdleConnTimeout(timeout time.Duration) *ClientBuilder {
+    clientBuilder.connectionInfo.IdleConnTimeout = timeout
     return clientBuilder
 }
 
