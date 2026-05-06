@@ -23,25 +23,22 @@ Documentation
 -------------
 The latest documentation is located at [Go SDK Documentation](https://spectralogic.github.io/ds3_go_sdk/index.html).
 
-Installing with GB
-------------------
+Installing
+----------
 
-The Go SDK must be installed under `$GOPATH/src/github.com/SpectraLogic`, where `$GOPATH` denotes the location of the Go workspace, and `src` denotes the location of source files within the workspace.
-For information regarding Go workspace, see [Golang Workspaces](https://golang.org/doc/code.html#Workspaces).
-
-Install the latest version of the Go SDK in the `src/github.com/SpectraLogic` folder.  You can clone it with the following command:
+The Go SDK is a Go module. Add it to your project with:
 ```bash
-cd $GOPATH/src/github.com/SpectraLogic
+go get github.com/SpectraLogic/ds3_go_sdk
+```
+
+To build the SDK from source, clone the repo anywhere and run:
+```bash
 git clone https://github.com/SpectraLogic/ds3_go_sdk.git
-```
-
-Install the latest version of [GB](https://getgb.io/docs/install/). Make sure to compiled the GB project.
-
-Compile the Go SDK using GB with the commands:
-```bash
 cd ds3_go_sdk
-gb build all
+go build ./...
 ```
+
+Requires Go 1.23 or later.
 
 Client
 ---------
@@ -63,26 +60,25 @@ All examples are listed in the [samples](samples/) module. All samples can be ru
 * [How to use bulk put to send multiple files to the BP efficiently](samples/functions/putBulkSample.go)
 * [How to use bulk get to retrieve multiple files from the BP efficiently](samples/functions/getBulkSample.go)
 
-Running Tests with GB
----------------------
+Running Tests
+-------------
 
-There are unit tests in the `ds3` package, and integration tests in the `ds3_integration` package. To run tests, cd to
-the Go SDK's main folder `ds3_go_sdk`.
+There are unit tests in the `ds3` package, and integration tests in the `ds3_integration` package. Run from the repo root.
 
-In order to run the integration tests the following environment variables must be used to configure which DS3 appliance 
+In order to run the integration tests the following environment variables must be used to configure which DS3 appliance
 to run the tests against: `DS3_ENDPOINT`, `DS3_ACCESS_KEY`, and `DS3_SECRET_KEY`.
 
 Run all tests (unit and integration) with test output:
 ```bash
-gb test -v
+go test -v ./...
 ```
 
 Run unit tests with test output:
 ```bash
-gb test -v ds3
+go test -v ./ds3/...
 ```
 
 Run integration tests with test output:
 ```bash
-gb test -v ds3_integration
+go test -v ./ds3_integration/...
 ```
