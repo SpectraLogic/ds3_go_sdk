@@ -1,8 +1,8 @@
 package channels
 
 import (
-	"io"
 	"github.com/SpectraLogic/ds3_go_sdk/helpers/models"
+	"io"
 )
 
 type ObjectReadChannelDecorator struct {
@@ -11,7 +11,7 @@ type ObjectReadChannelDecorator struct {
 }
 
 func NewObjectReadChannelDecorator(reader io.Reader) models.ReadChannelBuilder {
-	return &ObjectReadChannelDecorator { readCloser: NewDs3ObjectReadCloserDecorator(reader) }
+	return &ObjectReadChannelDecorator{readCloser: NewDs3ObjectReadCloserDecorator(reader)}
 }
 
 func (readChannelDecorator *ObjectReadChannelDecorator) IsChannelAvailable(offset int64) bool {

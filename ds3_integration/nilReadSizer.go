@@ -14,12 +14,12 @@ package ds3_integration
 import "io"
 
 type nilReadSizer struct {
-	reader io.Reader
+	reader   io.Reader
 	fileSize int64
 }
 
 func newNilReadSizer(reader io.Reader, fileSize int64) nilReadSizer {
-	return nilReadSizer { reader: reader, fileSize: fileSize }
+	return nilReadSizer{reader: reader, fileSize: fileSize}
 }
 
 func (readSizer *nilReadSizer) Read(p []byte) (n int, err error) {

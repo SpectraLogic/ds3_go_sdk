@@ -20,12 +20,12 @@ import (
 )
 
 type randomDataReader struct {
-	curRead int
-	maxRead int
-	mutex sync.Mutex
+	curRead       int
+	maxRead       int
+	mutex         sync.Mutex
 	totalFileHash hash.Hash
-	rangesHash hash.Hash
-	ranges []ds3Models.Range
+	rangesHash    hash.Hash
+	ranges        []ds3Models.Range
 }
 
 func (reader *randomDataReader) Read(p []byte) (int, error) {
@@ -78,7 +78,7 @@ type randomDataReadChannelBuilder struct {
 }
 
 func (builder *randomDataReadChannelBuilder) IsChannelAvailable(offset int64) bool {
-	 return int64(builder.randomDataReader.curRead) == offset
+	return int64(builder.randomDataReader.curRead) == offset
 }
 
 func (builder *randomDataReadChannelBuilder) GetChannel(_ int64) (io.ReadCloser, error) {
@@ -90,8 +90,8 @@ func (builder *randomDataReadChannelBuilder) OnDone(reader io.ReadCloser) {
 }
 
 type consumeWriter struct {
-	size int64
-	hash hash.Hash
+	size  int64
+	hash  hash.Hash
 	mutex sync.Mutex
 }
 
@@ -134,7 +134,7 @@ func TestRetrievingObjectLargerThanCacheInOrder(t *testing.T) {
 	const minCache = 1073741824
 	const objectSize = minCache + 100
 
-	testRanges := []ds3Models.Range{{Start: 2, End: 10}, {Start: 30, End: 40}, {Start: 50, End: 60}, {Start: 80, End: objectSize-1}}
+	testRanges := []ds3Models.Range{{Start: 2, End: 10}, {Start: 30, End: 40}, {Start: 50, End: 60}, {Start: 80, End: objectSize - 1}}
 
 	bucketName := fmt.Sprintf("testBucket-%d", time.Now().UnixNano())
 	objectName := fmt.Sprintf("testObject-%d", time.Now().UnixNano())
@@ -178,11 +178,11 @@ func TestRetrievingObjectLargerThanCacheInOrder(t *testing.T) {
 
 	objReader := randomDataReader{
 		maxRead: objectSize,
-		ranges: testRanges,
+		ranges:  testRanges,
 	}
 
 	putObject := models.PutObject{
-		PutObject:      ds3Models.Ds3PutObject{
+		PutObject: ds3Models.Ds3PutObject{
 			Name: objectName,
 			Size: int64(objectSize),
 		},
@@ -194,12 +194,12 @@ func TestRetrievingObjectLargerThanCacheInOrder(t *testing.T) {
 
 	writeStrategy := WriteTransferStrategy{
 		BlobStrategy: &SimpleBlobStrategy{
-			Delay: time.Millisecond * 10,
+			Delay:                  time.Millisecond * 10,
 			MaxConcurrentTransfers: 5,
-			MaxWaitingTransfers: 1,
+			MaxWaitingTransfers:    1,
 		},
-		Options:      WriteBulkJobOptions{MaxUploadSize: &MinUploadSize},
-		Listeners:    ListenerStrategy{
+		Options: WriteBulkJobOptions{MaxUploadSize: &MinUploadSize},
+		Listeners: ListenerStrategy{
 			ErrorCallback: func(objectName string, err error) {
 				t.Errorf("unexpected error on '%s': %v", objectName, err)
 			},
@@ -216,12 +216,12 @@ func TestRetrievingObjectLargerThanCacheInOrder(t *testing.T) {
 		}
 	}()
 
-	testCases := []struct{
-		name string
+	testCases := []struct {
+		name   string
 		ranges []ds3Models.Range
-	} {
-		{ name: "retrieve entire file", ranges: nil },
-		{ name: "retrieve ranges", ranges: testRanges},
+	}{
+		{name: "retrieve entire file", ranges: nil},
+		{name: "retrieve ranges", ranges: testRanges},
 	}
 
 	for _, testCase := range testCases {
@@ -232,12 +232,12 @@ func TestRetrievingObjectLargerThanCacheInOrder(t *testing.T) {
 
 			readStrategy := ReadTransferStrategy{
 				BlobStrategy: &SimpleBlobStrategy{
-					Delay: time.Millisecond * 10,
+					Delay:                  time.Millisecond * 10,
 					MaxConcurrentTransfers: 5,
-					MaxWaitingTransfers: 1,
+					MaxWaitingTransfers:    1,
 				},
-				Options:      ReadBulkJobOptions{ChunkClientProcessingOrderGuarantee: ds3Models.JOB_CHUNK_CLIENT_PROCESSING_ORDER_GUARANTEE_IN_ORDER},
-				Listeners:    ListenerStrategy{
+				Options: ReadBulkJobOptions{ChunkClientProcessingOrderGuarantee: ds3Models.JOB_CHUNK_CLIENT_PROCESSING_ORDER_GUARANTEE_IN_ORDER},
+				Listeners: ListenerStrategy{
 					ErrorCallback: func(objectName string, err error) {
 						t.Errorf("unexpected error on '%s': %v", objectName, err)
 					},
@@ -249,7 +249,7 @@ func TestRetrievingObjectLargerThanCacheInOrder(t *testing.T) {
 				Name:   objectName,
 				Ranges: testCase.ranges,
 				ChannelBuilder: &consumerWriteChannelBuilder{
-					writer: &objWriter,
+					writer:            &objWriter,
 					FatalErrorHandler: channels.FatalErrorHandler{},
 				},
 			}

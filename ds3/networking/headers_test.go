@@ -12,25 +12,25 @@
 package networking
 
 import (
-    "testing"
-    "github.com/SpectraLogic/ds3_go_sdk/ds3_utils/ds3Testing"
+	"github.com/SpectraLogic/ds3_go_sdk/ds3_utils/ds3Testing"
+	"testing"
 )
 
 func TestBuildAuthHeaderValue(t *testing.T) {
-    expected := "AWS access:gmW4yg/tw02UYleIqGn5ebvKbr8="
+	expected := "AWS access:gmW4yg/tw02UYleIqGn5ebvKbr8="
 
-    fields := signatureFields{
-        Verb:"PUT",
-        Date:"Tue, 31 Jul 2018 17:23:50 +0000",
-        Path:"abc/1+2+3/e f g/aÀˠϠૐ༺ᎀ",
-    }
+	fields := signatureFields{
+		Verb: "PUT",
+		Date: "Tue, 31 Jul 2018 17:23:50 +0000",
+		Path: "abc/1+2+3/e f g/aÀˠϠૐ༺ᎀ",
+	}
 
-    credentials := Credentials{
-        AccessId:"access",
-        Key:"key",
-    }
+	credentials := Credentials{
+		AccessId: "access",
+		Key:      "key",
+	}
 
-    result := fields.BuildAuthHeaderValue(&credentials)
+	result := fields.BuildAuthHeaderValue(&credentials)
 
-    ds3Testing.AssertString(t, "authorization header", expected, result)
+	ds3Testing.AssertString(t, "authorization header", expected, result)
 }

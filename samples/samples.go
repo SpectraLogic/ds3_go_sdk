@@ -16,27 +16,27 @@ import "github.com/SpectraLogic/ds3_go_sdk/samples/functions"
 // Runs the various sample code. Each sample is self contained and can be run separately.
 func main() {
 
-    // Lists all existing buckets on the BP.
-    // Source code: getServiceSample.go
-    functions.GetServiceSample()
+	// Lists all existing buckets on the BP.
+	// Source code: getServiceSample.go
+	functions.GetServiceSample()
 
-    // Creates a bucket on the BP and puts sample files in the bucket.
-    // Source code: putBulkSample.go
-    functions.PutBulkSample()
+	// Creates a bucket on the BP and puts sample files in the bucket.
+	// Source code: putBulkSample.go
+	functions.PutBulkSample()
 
-    // Gets a list of S3 objects in a bucket.
-    // Source code: getBucketSample.go
-    functions.GetBucketSample()
+	// Gets a list of S3 objects in a bucket.
+	// Source code: getBucketSample.go
+	functions.GetBucketSample()
 
-    // Retrieve an object from a bucket.
-    // Source code: getObjectSample.go
-    functions.GetObjectSample()
+	// Retrieve an object from a bucket.
+	// Source code: getObjectSample.go
+	functions.GetObjectSample()
 
-    // Retrieves several objects from a bucket on the BP.
-    // Source code: getBulkSample.go
-    functions.GetBulkSample()
+	// Retrieves several objects from a bucket on the BP.
+	// Source code: getBulkSample.go
+	functions.GetBulkSample()
 
-    // Creates some buckets on the BP
-    // Source code: putBucketSample.go
-    functions.PutBucketSample()
+	// Creates some buckets on the BP
+	// Source code: putBucketSample.go
+	functions.PutBucketSample()
 }

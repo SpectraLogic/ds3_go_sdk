@@ -1,31 +1,31 @@
 package helpers
 
 import (
-    helperModels"github.com/SpectraLogic/ds3_go_sdk/helpers/models"
+	helperModels "github.com/SpectraLogic/ds3_go_sdk/helpers/models"
 )
 
 type blobTracker struct {
-    blobMap map[helperModels.BlobDescription]bool
-    blobCount int64
+	blobMap   map[helperModels.BlobDescription]bool
+	blobCount int64
 }
 
 func newProcessedBlobTracker() blobTracker {
-    return blobTracker{
-        blobMap: make(map[helperModels.BlobDescription]bool),
-        blobCount: 0,
-    }
+	return blobTracker{
+		blobMap:   make(map[helperModels.BlobDescription]bool),
+		blobCount: 0,
+	}
 }
 
 // Determines if a blob has been processed
 func (tracker *blobTracker) IsProcessed(blob helperModels.BlobDescription) bool {
-    return tracker.blobMap[blob]
+	return tracker.blobMap[blob]
 }
 
 func (tracker *blobTracker) MarkProcessed(blob helperModels.BlobDescription) {
-    tracker.blobMap[blob] = true
-    tracker.blobCount++
+	tracker.blobMap[blob] = true
+	tracker.blobCount++
 }
 
 func (tracker *blobTracker) NumberOfProcessedBlobs() int64 {
-    return tracker.blobCount
+	return tracker.blobCount
 }

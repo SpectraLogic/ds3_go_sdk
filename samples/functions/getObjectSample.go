@@ -12,34 +12,34 @@
 package functions
 
 import (
-    "context"
-    "log"
-    "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
-    "github.com/SpectraLogic/ds3_go_sdk/ds3/buildclient"
-    "github.com/SpectraLogic/ds3_go_sdk/samples/utils"
-    "fmt"
+	"context"
+	"fmt"
+	"github.com/SpectraLogic/ds3_go_sdk/ds3/buildclient"
+	"github.com/SpectraLogic/ds3_go_sdk/ds3/models"
+	"github.com/SpectraLogic/ds3_go_sdk/samples/utils"
+	"log"
 )
 
 // Demonstrates how to get an object within a bucket. Assumes that the
 // target bucket already exists and has the specified file.
 // i.e. run putBulkSample.go first.
 func GetObjectSample() {
-    fmt.Println("---- Get Object Sample ----")
+	fmt.Println("---- Get Object Sample ----")
 
-    // Create the client from environment variables.
-    client, err := buildclient.FromEnv()
-    if err != nil {
-        log.Fatal(err)
-    }
+	// Create the client from environment variables.
+	client, err := buildclient.FromEnv()
+	if err != nil {
+		log.Fatal(err)
+	}
 
-    // Grab the first book defined in utils.BookNames
-    getObjRequest := models.NewGetObjectRequest(utils.BucketName, utils.BookNames[0])
-    getObjResponse, err := client.GetObject(context.Background(), getObjRequest)
-    if err != nil {
-        log.Fatal(err)
-    }
+	// Grab the first book defined in utils.BookNames
+	getObjRequest := models.NewGetObjectRequest(utils.BucketName, utils.BookNames[0])
+	getObjResponse, err := client.GetObject(context.Background(), getObjRequest)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-    // Verify that the contents of the book were retrieved correctly.
-    utils.VerifyBookContent(utils.BookNames[0], getObjResponse.Content)
-    fmt.Printf("Retrieved: %s\n", utils.BookNames[0])
+	// Verify that the contents of the book were retrieved correctly.
+	utils.VerifyBookContent(utils.BookNames[0], getObjResponse.Content)
+	fmt.Printf("Retrieved: %s\n", utils.BookNames[0])
 }

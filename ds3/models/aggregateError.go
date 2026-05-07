@@ -12,46 +12,46 @@
 package models
 
 import (
-    "fmt"
-    "sync"
+	"fmt"
+	"sync"
 )
 
 // AggregateError is an error that aggregates multiple errors and is multi thread safe.
 type AggregateError struct {
-    Errors []error
-    mux sync.RWMutex
+	Errors []error
+	mux    sync.RWMutex
 }
 
 func (aggregateError *AggregateError) Error() string {
-    aggregateError.mux.RLock()
-    defer aggregateError.mux.RUnlock()
+	aggregateError.mux.RLock()
+	defer aggregateError.mux.RUnlock()
 
-    msg := fmt.Sprintf("%d error(s) occurred:\n", len(aggregateError.Errors))
+	msg := fmt.Sprintf("%d error(s) occurred:\n", len(aggregateError.Errors))
 
-    for i, err := range aggregateError.Errors {
-        msg += fmt.Sprintf("%d) %s\n", i + 1, err.Error())
-    }
+	for i, err := range aggregateError.Errors {
+		msg += fmt.Sprintf("%d) %s\n", i+1, err.Error())
+	}
 
-    return msg
+	return msg
 }
 
 // Returns the aggregate error if at least one error exists,
 // else returns nil
 func (aggregateError *AggregateError) GetErrors() error {
-    aggregateError.mux.RLock()
-    defer aggregateError.mux.RUnlock()
+	aggregateError.mux.RLock()
+	defer aggregateError.mux.RUnlock()
 
-    if len (aggregateError.Errors) == 0 {
-        return nil
-    }
-    return aggregateError
+	if len(aggregateError.Errors) == 0 {
+		return nil
+	}
+	return aggregateError
 }
 
 func (aggregateError *AggregateError) Append(err error) {
-    aggregateError.mux.Lock()
-    defer aggregateError.mux.Unlock()
+	aggregateError.mux.Lock()
+	defer aggregateError.mux.Unlock()
 
-    if err != nil {
-        aggregateError.Errors = append(aggregateError.Errors, err)
-    }
+	if err != nil {
+		aggregateError.Errors = append(aggregateError.Errors, err)
+	}
 }

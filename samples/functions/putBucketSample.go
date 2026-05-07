@@ -12,11 +12,11 @@
 package functions
 
 import (
-    "context"
-    "fmt"
-    "github.com/SpectraLogic/ds3_go_sdk/ds3/buildclient"
-    "log"
-    "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
+	"context"
+	"fmt"
+	"github.com/SpectraLogic/ds3_go_sdk/ds3/buildclient"
+	"github.com/SpectraLogic/ds3_go_sdk/ds3/models"
+	"log"
 )
 
 // Demonstrates how to create a bucket in two ways.
@@ -25,39 +25,39 @@ import (
 //
 // This assumes that the BP credentials are stored in environment variables.
 func PutBucketSample() {
-    fmt.Println("---- Put Bucket Sample ----")
-    client, err := buildclient.FromEnv()
-    if err != nil {
-        log.Fatal(err)
-    }
+	fmt.Println("---- Put Bucket Sample ----")
+	client, err := buildclient.FromEnv()
+	if err != nil {
+		log.Fatal(err)
+	}
 
-    // 1) Create a bucket using the default data policy. Note that there must already exist a
-    //    default data policy on the specified BP for this to work.
+	// 1) Create a bucket using the default data policy. Note that there must already exist a
+	//    default data policy on the specified BP for this to work.
 
-    bucket1Name := "bucket1Sample"
+	bucket1Name := "bucket1Sample"
 
-    // Create the put bucket request
-    bucket1Request := models.NewPutBucketRequest(bucket1Name)
+	// Create the put bucket request
+	bucket1Request := models.NewPutBucketRequest(bucket1Name)
 
-    // Perform the put bucket call by using the client and invoking the command
-    _, err = client.PutBucket(context.Background(), bucket1Request)
-    if err != nil {
-        log.Fatal(err)
-    }
+	// Perform the put bucket call by using the client and invoking the command
+	_, err = client.PutBucket(context.Background(), bucket1Request)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-    // 2) Create a bucket while specifying the specific data policy to be assigned to the bucket
-    // This assumes that the data policy "Dual Copy on Tape" already exists on the BP
+	// 2) Create a bucket while specifying the specific data policy to be assigned to the bucket
+	// This assumes that the data policy "Dual Copy on Tape" already exists on the BP
 
-    dataPolicyName := "Dual Copy on Tape"
-    bucket2Name := "bucket2Sample"
+	dataPolicyName := "Dual Copy on Tape"
+	bucket2Name := "bucket2Sample"
 
-    // Create the spectra S3 put bucket request and specify the desired data policy. Note that
-    // you can use either the data policy's name or its UUID
-    bucket2Request := models.NewPutBucketSpectraS3Request(bucket2Name).WithDataPolicyId(dataPolicyName)
+	// Create the spectra S3 put bucket request and specify the desired data policy. Note that
+	// you can use either the data policy's name or its UUID
+	bucket2Request := models.NewPutBucketSpectraS3Request(bucket2Name).WithDataPolicyId(dataPolicyName)
 
-    // Perform the spectra S3 put bucket call by using the client and invoking the command
-    _, err = client.PutBucketSpectraS3(context.Background(), bucket2Request)
-    if err != nil {
-        log.Fatal(err)
-    }
+	// Perform the spectra S3 put bucket call by using the client and invoking the command
+	_, err = client.PutBucketSpectraS3(context.Background(), bucket2Request)
+	if err != nil {
+		log.Fatal(err)
+	}
 }

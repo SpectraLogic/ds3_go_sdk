@@ -11,7 +11,9 @@
 
 package models
 
-const ( AMZ_META_HEADER = "x-amz-meta-" )
+const (
+	AMZ_META_HEADER = "x-amz-meta-"
+)
 
 type MetadataCarrier interface {
 	WithMetaData(key string, values ...string) interface{}
