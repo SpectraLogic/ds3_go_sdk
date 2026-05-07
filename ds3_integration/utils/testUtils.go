@@ -40,10 +40,10 @@ func VerifyFilesOnBP(t *testing.T, bucketName string, objectNames []string, file
             for _, curChunk := range chunksReady.MasterObjectList.Objects {
                 for _, curObj := range curChunk.Objects {
 
-                    getObj, _ := client.GetObject(context.Background(), models.NewGetObjectRequest(bucketName, *curObj.Name).
+                    getObj, getErr := client.GetObject(context.Background(), models.NewGetObjectRequest(bucketName, *curObj.Name).
                         WithJob(bulkGet.MasterObjectList.JobId).
                         WithOffset(curObj.Offset))
-                    ds3Testing.AssertNilError(t, err)
+                    ds3Testing.AssertNilError(t, getErr)
 
                     VerifyPartialFile(t, filePath + *curObj.Name, curObj.Length, curObj.Offset, getObj.Content)
                     getObj.Content.Close()
@@ -171,8 +171,11 @@ func CancelAllJobsForBucket(client *ds3.Client, bucketName string) {
         return
     }
     for _, job := range getJobs.JobList.Jobs {
+        if job.BucketName == nil || *job.BucketName != bucketName {
+            continue
+        }
         if _, err = client.CancelJobSpectraS3(context.Background(), models.NewCancelJobSpectraS3Request(job.JobId)); err != nil {
-            log.Printf("WARNING: Unable to cancel job: %s", job.JobId)
+            log.Printf("WARNING: Unable to cancel job %s for bucket %s: %s", job.JobId, bucketName, err)
         }
     }
 }
