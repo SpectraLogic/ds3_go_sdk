@@ -70,7 +70,7 @@ func AssertNonNilInt64Ptr(t *testing.T, label string, expected int64, actual *in
 }
 
 // Asserts if a specified int64 is nil. If not, Fatal.
-func AssertInt64PtrIsNil(t *testing.T, label int64, actual *int64) {
+func AssertInt64PtrIsNil(t *testing.T, label string, actual *int64) {
     if actual != nil {
         t.Fatalf("Expected %s to be 'nil' but was '%d'.", label, *actual)
     }

@@ -33,7 +33,8 @@ func testPutBeowulfWithSpecifiedObjectName(objectName string, t *testing.T) {
 
     //Verify that object exists
     getObjectResponse, err := testutils.GetObjectLogError(t, client, testBucket, objectName)
-    if err != nil {
+    ds3Testing.AssertNilError(t, err)
+    if err == nil {
         defer getObjectResponse.Content.Close()
         bs, err := ioutil.ReadAll(getObjectResponse.Content)
         ds3Testing.AssertNilError(t, err)
