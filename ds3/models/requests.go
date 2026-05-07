@@ -3077,7 +3077,6 @@ type GetBulkJobSpectraS3Request struct {
 }
 
 func NewGetBulkJobSpectraS3Request(bucketName string, objectNames []string) *GetBulkJobSpectraS3Request {
-
 	return &GetBulkJobSpectraS3Request{
 		BucketName: bucketName,
 		Objects:    buildDs3GetObjectSliceFromNames(objectNames),
@@ -3085,7 +3084,6 @@ func NewGetBulkJobSpectraS3Request(bucketName string, objectNames []string) *Get
 }
 
 func NewGetBulkJobSpectraS3RequestWithPartialObjects(bucketName string, objects []Ds3GetObject) *GetBulkJobSpectraS3Request {
-
 	return &GetBulkJobSpectraS3Request{
 		BucketName: bucketName,
 		Objects:    objects,
@@ -3220,7 +3218,6 @@ type VerifyBulkJobSpectraS3Request struct {
 }
 
 func NewVerifyBulkJobSpectraS3Request(bucketName string, objectNames []string) *VerifyBulkJobSpectraS3Request {
-
 	return &VerifyBulkJobSpectraS3Request{
 		BucketName: bucketName,
 		Objects:    buildDs3GetObjectSliceFromNames(objectNames),
@@ -3228,7 +3225,6 @@ func NewVerifyBulkJobSpectraS3Request(bucketName string, objectNames []string) *
 }
 
 func NewVerifyBulkJobSpectraS3RequestWithPartialObjects(bucketName string, objects []Ds3GetObject) *VerifyBulkJobSpectraS3Request {
-
 	return &VerifyBulkJobSpectraS3Request{
 		BucketName: bucketName,
 		Objects:    objects,
@@ -3775,7 +3771,6 @@ type StageObjectsJobSpectraS3Request struct {
 }
 
 func NewStageObjectsJobSpectraS3Request(bucketName string, objectNames []string) *StageObjectsJobSpectraS3Request {
-
 	return &StageObjectsJobSpectraS3Request{
 		BucketName: bucketName,
 		Objects:    buildDs3GetObjectSliceFromNames(objectNames),
@@ -3783,7 +3778,6 @@ func NewStageObjectsJobSpectraS3Request(bucketName string, objectNames []string)
 }
 
 func NewStageObjectsJobSpectraS3RequestWithPartialObjects(bucketName string, objects []Ds3GetObject) *StageObjectsJobSpectraS3Request {
-
 	return &StageObjectsJobSpectraS3Request{
 		BucketName: bucketName,
 		Objects:    objects,
@@ -5454,7 +5448,6 @@ type GetPhysicalPlacementForObjectsSpectraS3Request struct {
 }
 
 func NewGetPhysicalPlacementForObjectsSpectraS3Request(bucketName string, objectNames []string) *GetPhysicalPlacementForObjectsSpectraS3Request {
-
 	return &GetPhysicalPlacementForObjectsSpectraS3Request{
 		BucketName: bucketName,
 		Objects:    buildDs3GetObjectSliceFromNames(objectNames),
@@ -5462,7 +5455,6 @@ func NewGetPhysicalPlacementForObjectsSpectraS3Request(bucketName string, object
 }
 
 func NewGetPhysicalPlacementForObjectsSpectraS3RequestWithPartialObjects(bucketName string, objects []Ds3GetObject) *GetPhysicalPlacementForObjectsSpectraS3Request {
-
 	return &GetPhysicalPlacementForObjectsSpectraS3Request{
 		BucketName: bucketName,
 		Objects:    objects,
@@ -5481,7 +5473,6 @@ type GetPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request struct {
 }
 
 func NewGetPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request(bucketName string, objectNames []string) *GetPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request {
-
 	return &GetPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request{
 		BucketName: bucketName,
 		Objects:    buildDs3GetObjectSliceFromNames(objectNames),
@@ -5489,7 +5480,6 @@ func NewGetPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request(bucketName
 }
 
 func NewGetPhysicalPlacementForObjectsWithFullDetailsSpectraS3RequestWithPartialObjects(bucketName string, objects []Ds3GetObject) *GetPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request {
-
 	return &GetPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request{
 		BucketName: bucketName,
 		Objects:    objects,
@@ -5526,7 +5516,6 @@ type VerifyPhysicalPlacementForObjectsSpectraS3Request struct {
 }
 
 func NewVerifyPhysicalPlacementForObjectsSpectraS3Request(bucketName string, objectNames []string) *VerifyPhysicalPlacementForObjectsSpectraS3Request {
-
 	return &VerifyPhysicalPlacementForObjectsSpectraS3Request{
 		BucketName: bucketName,
 		Objects:    buildDs3GetObjectSliceFromNames(objectNames),
@@ -5534,7 +5523,6 @@ func NewVerifyPhysicalPlacementForObjectsSpectraS3Request(bucketName string, obj
 }
 
 func NewVerifyPhysicalPlacementForObjectsSpectraS3RequestWithPartialObjects(bucketName string, objects []Ds3GetObject) *VerifyPhysicalPlacementForObjectsSpectraS3Request {
-
 	return &VerifyPhysicalPlacementForObjectsSpectraS3Request{
 		BucketName: bucketName,
 		Objects:    objects,
@@ -5553,7 +5541,6 @@ type VerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request struct {
 }
 
 func NewVerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request(bucketName string, objectNames []string) *VerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request {
-
 	return &VerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request{
 		BucketName: bucketName,
 		Objects:    buildDs3GetObjectSliceFromNames(objectNames),
@@ -5561,7 +5548,6 @@ func NewVerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request(bucketN
 }
 
 func NewVerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3RequestWithPartialObjects(bucketName string, objects []Ds3GetObject) *VerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request {
-
 	return &VerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request{
 		BucketName: bucketName,
 		Objects:    objects,
@@ -6933,7 +6919,6 @@ type EjectStorageDomainBlobsSpectraS3Request struct {
 }
 
 func NewEjectStorageDomainBlobsSpectraS3Request(bucketId string, storageDomain string, objectNames []string) *EjectStorageDomainBlobsSpectraS3Request {
-
 	return &EjectStorageDomainBlobsSpectraS3Request{
 		BucketId:      bucketId,
 		StorageDomain: storageDomain,
@@ -6942,7 +6927,6 @@ func NewEjectStorageDomainBlobsSpectraS3Request(bucketId string, storageDomain s
 }
 
 func NewEjectStorageDomainBlobsSpectraS3RequestWithPartialObjects(bucketId string, storageDomain string, objects []Ds3GetObject) *EjectStorageDomainBlobsSpectraS3Request {
-
 	return &EjectStorageDomainBlobsSpectraS3Request{
 		BucketId:      bucketId,
 		StorageDomain: storageDomain,

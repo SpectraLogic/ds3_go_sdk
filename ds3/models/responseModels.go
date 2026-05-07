@@ -7243,7 +7243,6 @@ func (jobNode *JobNode) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 			log.Printf("WARNING: unable to parse unknown attribute '%s' while parsing JobNode.", attr.Name.Local)
 		}
 	}
-
 }
 
 func parseJobNodeSlice(tagName string, xmlNodes []XmlNode, aggErr *AggregateError) []JobNode {
