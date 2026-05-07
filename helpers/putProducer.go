@@ -1,6 +1,7 @@
 package helpers
 
 import (
+    "context"
     "fmt"
     "github.com/SpectraLogic/ds3_go_sdk/ds3"
     ds3Models "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
@@ -11,6 +12,7 @@ import (
 )
 
 type putProducer struct {
+    ctx                  context.Context
     JobMasterObjectList  *ds3Models.MasterObjectList //MOL from put bulk job creation
     WriteObjects         *[]helperModels.PutObject
     queue                *chan TransferOperation
@@ -27,6 +29,7 @@ type putProducer struct {
 }
 
 func newPutProducer(
+    ctx context.Context,
     jobMasterObjectList *ds3Models.MasterObjectList,
     putObjects *[]helperModels.PutObject,
     queue *chan TransferOperation,
@@ -36,6 +39,7 @@ func newPutProducer(
     doneNotifier NotifyBlobDone) *putProducer {
 
     return &putProducer{
+        ctx:                  ctx,
         JobMasterObjectList:  jobMasterObjectList,
         WriteObjects:         putObjects,
         queue:                queue,
@@ -99,7 +103,7 @@ func (producer *putProducer) transferOperationBuilder(info putObjectInfo) Transf
 
 		producer.maybeAddMetadata(info, putObjRequest)
 
-        _, err = producer.client.PutObject(putObjRequest)
+        _, err = producer.client.PutObject(producer.ctx, putObjRequest)
         if err != nil {
             producer.strategy.Listeners.Errored(info.blob.Name(), err)
 
@@ -268,7 +272,11 @@ func (producer *putProducer) run() error {
             producer.doneNotifier.Wait()
         } else if producer.hasMoreToProcess(totalBlobCount) {
             // nothing could be processed, cache is probably full, wait a bit before trying again
-            time.Sleep(producer.strategy.BlobStrategy.delay())
+            select {
+            case <-producer.ctx.Done():
+                return producer.ctx.Err()
+            case <-time.After(producer.strategy.BlobStrategy.delay()):
+            }
         }
     }
     return nil
@@ -296,7 +304,7 @@ func (producer *putProducer) queueBlobsReadyForTransfer(totalBlobCount int64) (i
     // not be able to receive everything, so not all chunks will necessarily be
     // returned
     chunksReady := ds3Models.NewGetJobChunksReadyForClientProcessingSpectraS3Request(producer.JobMasterObjectList.JobId)
-    chunksReadyResponse, err := producer.client.GetJobChunksReadyForClientProcessingSpectraS3(chunksReady)
+    chunksReadyResponse, err := producer.client.GetJobChunksReadyForClientProcessingSpectraS3(producer.ctx, chunksReady)
     if err != nil {
         producer.Errorf("unrecoverable error: %v", err)
         return processedCount, err

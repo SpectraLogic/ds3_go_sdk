@@ -1,13 +1,14 @@
 package commands
 
 import (
+    "context"
     "errors"
     "io/ioutil"
     "github.com/SpectraLogic/ds3_go_sdk/ds3"
     "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
 )
 
-func bulkPut(client *ds3.Client, args *Arguments) error {
+func bulkPut(ctx context.Context, client *ds3.Client, args *Arguments) error {
     // Validate arguments.
     if args.Bucket == "" {
         return errors.New("Must specify a bucket name when doing a bulk_put.")
@@ -29,17 +30,17 @@ func bulkPut(client *ds3.Client, args *Arguments) error {
     }
 
     // Run request.
-    response, err := client.PutBulkJobSpectraS3(models.NewPutBulkJobSpectraS3Request(args.Bucket, objects))
+    response, err := client.PutBulkJobSpectraS3(ctx, models.NewPutBulkJobSpectraS3Request(args.Bucket, objects))
     if err != nil {
         return err
     }
 
     // Handle the responses in parallel
-    return handleBulkResponse(response.MasterObjectList.Objects, buildFilePutter(client, args.Bucket))
+    return handleBulkResponse(response.MasterObjectList.Objects, buildFilePutter(ctx, client, args.Bucket))
 }
 
 // Returns a function that puts an object for a bulk put.
-func buildFilePutter(client *ds3.Client, bucketName string) bulkHandler {
+func buildFilePutter(ctx context.Context, client *ds3.Client, bucketName string) bulkHandler {
     return func(obj models.BulkObject) error {
         // Read the file.
         sizeReadCloser, fileErr := readFile(*obj.Name)
@@ -48,7 +49,7 @@ func buildFilePutter(client *ds3.Client, bucketName string) bulkHandler {
         }
 
         // Submit the put object request.
-        _, putErr := client.PutObject(models.NewPutObjectRequest(
+        _, putErr := client.PutObject(ctx, models.NewPutObjectRequest(
             bucketName,
             *obj.Name,
             sizeReadCloser,

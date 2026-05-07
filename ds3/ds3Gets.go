@@ -14,11 +14,12 @@
 package ds3
 
 import (
+    "context"
     "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
     "github.com/SpectraLogic/ds3_go_sdk/ds3/networking"
 )
 
-func (client *Client) GetObject(request *models.GetObjectRequest) (*models.GetObjectResponse, error) {
+func (client *Client) GetObject(ctx context.Context, request *models.GetObjectRequest) (*models.GetObjectResponse, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -29,7 +30,7 @@ func (client *Client) GetObject(request *models.GetObjectRequest) (*models.GetOb
         WithOptionalQueryParam("version_id", request.VersionId).
         WithChecksum(request.Checksum).
         WithHeaders(request.Metadata).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -48,7 +49,7 @@ func (client *Client) GetObject(request *models.GetObjectRequest) (*models.GetOb
 }
 
 
-func (client *Client) GetBucket(request *models.GetBucketRequest) (*models.GetBucketResponse, error) {
+func (client *Client) GetBucket(ctx context.Context, request *models.GetBucketRequest) (*models.GetBucketResponse, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -58,7 +59,7 @@ func (client *Client) GetBucket(request *models.GetBucketRequest) (*models.GetBu
         WithOptionalQueryParam("max_keys", networking.IntPtrToStrPtr(request.MaxKeys)).
         WithOptionalQueryParam("prefix", request.Prefix).
         WithOptionalVoidQueryParam("versions", request.Versions).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -77,12 +78,12 @@ func (client *Client) GetBucket(request *models.GetBucketRequest) (*models.GetBu
     return models.NewGetBucketResponse(response)
 }
 
-func (client *Client) GetService(request *models.GetServiceRequest) (*models.GetServiceResponse, error) {
+func (client *Client) GetService(ctx context.Context, request *models.GetServiceRequest) (*models.GetServiceResponse, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/").
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -101,7 +102,7 @@ func (client *Client) GetService(request *models.GetServiceRequest) (*models.Get
     return models.NewGetServiceResponse(response)
 }
 
-func (client *Client) ListMultiPartUploadParts(request *models.ListMultiPartUploadPartsRequest) (*models.ListMultiPartUploadPartsResponse, error) {
+func (client *Client) ListMultiPartUploadParts(ctx context.Context, request *models.ListMultiPartUploadPartsRequest) (*models.ListMultiPartUploadPartsResponse, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -109,7 +110,7 @@ func (client *Client) ListMultiPartUploadParts(request *models.ListMultiPartUplo
         WithQueryParam("upload_id", request.UploadId).
         WithOptionalQueryParam("max_parts", networking.IntPtrToStrPtr(request.MaxParts)).
         WithOptionalQueryParam("part_number_marker", networking.IntPtrToStrPtr(request.PartNumberMarker)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -128,7 +129,7 @@ func (client *Client) ListMultiPartUploadParts(request *models.ListMultiPartUplo
     return models.NewListMultiPartUploadPartsResponse(response)
 }
 
-func (client *Client) ListMultiPartUploads(request *models.ListMultiPartUploadsRequest) (*models.ListMultiPartUploadsResponse, error) {
+func (client *Client) ListMultiPartUploads(ctx context.Context, request *models.ListMultiPartUploadsRequest) (*models.ListMultiPartUploadsResponse, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -139,7 +140,7 @@ func (client *Client) ListMultiPartUploads(request *models.ListMultiPartUploadsR
         WithOptionalQueryParam("max_uploads", networking.IntPtrToStrPtr(request.MaxUploads)).
         WithOptionalQueryParam("prefix", request.Prefix).
         WithOptionalQueryParam("upload_id_marker", request.UploadIdMarker).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -158,12 +159,12 @@ func (client *Client) ListMultiPartUploads(request *models.ListMultiPartUploadsR
     return models.NewListMultiPartUploadsResponse(response)
 }
 
-func (client *Client) GetBucketAclSpectraS3(request *models.GetBucketAclSpectraS3Request) (*models.GetBucketAclSpectraS3Response, error) {
+func (client *Client) GetBucketAclSpectraS3(ctx context.Context, request *models.GetBucketAclSpectraS3Request) (*models.GetBucketAclSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/bucket_acl/" + request.BucketAcl).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -182,7 +183,7 @@ func (client *Client) GetBucketAclSpectraS3(request *models.GetBucketAclSpectraS
     return models.NewGetBucketAclSpectraS3Response(response)
 }
 
-func (client *Client) GetBucketAclsSpectraS3(request *models.GetBucketAclsSpectraS3Request) (*models.GetBucketAclsSpectraS3Response, error) {
+func (client *Client) GetBucketAclsSpectraS3(ctx context.Context, request *models.GetBucketAclsSpectraS3Request) (*models.GetBucketAclsSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -195,7 +196,7 @@ func (client *Client) GetBucketAclsSpectraS3(request *models.GetBucketAclsSpectr
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
         WithOptionalQueryParam("permission", networking.InterfaceToStrPtr(request.Permission)).
         WithOptionalQueryParam("user_id", request.UserId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -214,12 +215,12 @@ func (client *Client) GetBucketAclsSpectraS3(request *models.GetBucketAclsSpectr
     return models.NewGetBucketAclsSpectraS3Response(response)
 }
 
-func (client *Client) GetDataPolicyAclSpectraS3(request *models.GetDataPolicyAclSpectraS3Request) (*models.GetDataPolicyAclSpectraS3Response, error) {
+func (client *Client) GetDataPolicyAclSpectraS3(ctx context.Context, request *models.GetDataPolicyAclSpectraS3Request) (*models.GetDataPolicyAclSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/data_policy_acl/" + request.DataPolicyAcl).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -238,7 +239,7 @@ func (client *Client) GetDataPolicyAclSpectraS3(request *models.GetDataPolicyAcl
     return models.NewGetDataPolicyAclSpectraS3Response(response)
 }
 
-func (client *Client) GetDataPolicyAclsSpectraS3(request *models.GetDataPolicyAclsSpectraS3Request) (*models.GetDataPolicyAclsSpectraS3Response, error) {
+func (client *Client) GetDataPolicyAclsSpectraS3(ctx context.Context, request *models.GetDataPolicyAclsSpectraS3Request) (*models.GetDataPolicyAclsSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -250,7 +251,7 @@ func (client *Client) GetDataPolicyAclsSpectraS3(request *models.GetDataPolicyAc
         WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
         WithOptionalQueryParam("user_id", request.UserId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -269,12 +270,12 @@ func (client *Client) GetDataPolicyAclsSpectraS3(request *models.GetDataPolicyAc
     return models.NewGetDataPolicyAclsSpectraS3Response(response)
 }
 
-func (client *Client) GetBucketSpectraS3(request *models.GetBucketSpectraS3Request) (*models.GetBucketSpectraS3Response, error) {
+func (client *Client) GetBucketSpectraS3(ctx context.Context, request *models.GetBucketSpectraS3Request) (*models.GetBucketSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/bucket/" + request.BucketName).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -293,7 +294,7 @@ func (client *Client) GetBucketSpectraS3(request *models.GetBucketSpectraS3Reque
     return models.NewGetBucketSpectraS3Response(response)
 }
 
-func (client *Client) GetBucketsSpectraS3(request *models.GetBucketsSpectraS3Request) (*models.GetBucketsSpectraS3Response, error) {
+func (client *Client) GetBucketsSpectraS3(ctx context.Context, request *models.GetBucketsSpectraS3Request) (*models.GetBucketsSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -305,7 +306,7 @@ func (client *Client) GetBucketsSpectraS3(request *models.GetBucketsSpectraS3Req
         WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
         WithOptionalQueryParam("user_id", request.UserId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -324,12 +325,12 @@ func (client *Client) GetBucketsSpectraS3(request *models.GetBucketsSpectraS3Req
     return models.NewGetBucketsSpectraS3Response(response)
 }
 
-func (client *Client) GetCacheFilesystemSpectraS3(request *models.GetCacheFilesystemSpectraS3Request) (*models.GetCacheFilesystemSpectraS3Response, error) {
+func (client *Client) GetCacheFilesystemSpectraS3(ctx context.Context, request *models.GetCacheFilesystemSpectraS3Request) (*models.GetCacheFilesystemSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/cache_filesystem/" + request.CacheFilesystem).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -348,7 +349,7 @@ func (client *Client) GetCacheFilesystemSpectraS3(request *models.GetCacheFilesy
     return models.NewGetCacheFilesystemSpectraS3Response(response)
 }
 
-func (client *Client) GetCacheFilesystemsSpectraS3(request *models.GetCacheFilesystemsSpectraS3Request) (*models.GetCacheFilesystemsSpectraS3Response, error) {
+func (client *Client) GetCacheFilesystemsSpectraS3(ctx context.Context, request *models.GetCacheFilesystemsSpectraS3Request) (*models.GetCacheFilesystemsSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -358,7 +359,7 @@ func (client *Client) GetCacheFilesystemsSpectraS3(request *models.GetCacheFiles
         WithOptionalQueryParam("page_length", networking.IntPtrToStrPtr(request.PageLength)).
         WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -377,12 +378,12 @@ func (client *Client) GetCacheFilesystemsSpectraS3(request *models.GetCacheFiles
     return models.NewGetCacheFilesystemsSpectraS3Response(response)
 }
 
-func (client *Client) GetCacheStateSpectraS3(request *models.GetCacheStateSpectraS3Request) (*models.GetCacheStateSpectraS3Response, error) {
+func (client *Client) GetCacheStateSpectraS3(ctx context.Context, request *models.GetCacheStateSpectraS3Request) (*models.GetCacheStateSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/cache_state").
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -401,7 +402,7 @@ func (client *Client) GetCacheStateSpectraS3(request *models.GetCacheStateSpectr
     return models.NewGetCacheStateSpectraS3Response(response)
 }
 
-func (client *Client) GetBucketCapacitySummarySpectraS3(request *models.GetBucketCapacitySummarySpectraS3Request) (*models.GetBucketCapacitySummarySpectraS3Response, error) {
+func (client *Client) GetBucketCapacitySummarySpectraS3(ctx context.Context, request *models.GetBucketCapacitySummarySpectraS3Request) (*models.GetBucketCapacitySummarySpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -413,7 +414,7 @@ func (client *Client) GetBucketCapacitySummarySpectraS3(request *models.GetBucke
         WithOptionalQueryParam("pool_type", networking.InterfaceToStrPtr(request.PoolType)).
         WithOptionalQueryParam("tape_state", networking.InterfaceToStrPtr(request.TapeState)).
         WithOptionalQueryParam("tape_type", request.TapeType).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -432,7 +433,7 @@ func (client *Client) GetBucketCapacitySummarySpectraS3(request *models.GetBucke
     return models.NewGetBucketCapacitySummarySpectraS3Response(response)
 }
 
-func (client *Client) GetStorageDomainCapacitySummarySpectraS3(request *models.GetStorageDomainCapacitySummarySpectraS3Request) (*models.GetStorageDomainCapacitySummarySpectraS3Response, error) {
+func (client *Client) GetStorageDomainCapacitySummarySpectraS3(ctx context.Context, request *models.GetStorageDomainCapacitySummarySpectraS3Request) (*models.GetStorageDomainCapacitySummarySpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -443,7 +444,7 @@ func (client *Client) GetStorageDomainCapacitySummarySpectraS3(request *models.G
         WithOptionalQueryParam("pool_type", networking.InterfaceToStrPtr(request.PoolType)).
         WithOptionalQueryParam("tape_state", networking.InterfaceToStrPtr(request.TapeState)).
         WithOptionalQueryParam("tape_type", request.TapeType).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -462,7 +463,7 @@ func (client *Client) GetStorageDomainCapacitySummarySpectraS3(request *models.G
     return models.NewGetStorageDomainCapacitySummarySpectraS3Response(response)
 }
 
-func (client *Client) GetSystemCapacitySummarySpectraS3(request *models.GetSystemCapacitySummarySpectraS3Request) (*models.GetSystemCapacitySummarySpectraS3Response, error) {
+func (client *Client) GetSystemCapacitySummarySpectraS3(ctx context.Context, request *models.GetSystemCapacitySummarySpectraS3Request) (*models.GetSystemCapacitySummarySpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -472,7 +473,7 @@ func (client *Client) GetSystemCapacitySummarySpectraS3(request *models.GetSyste
         WithOptionalQueryParam("pool_type", networking.InterfaceToStrPtr(request.PoolType)).
         WithOptionalQueryParam("tape_state", networking.InterfaceToStrPtr(request.TapeState)).
         WithOptionalQueryParam("tape_type", request.TapeType).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -491,12 +492,12 @@ func (client *Client) GetSystemCapacitySummarySpectraS3(request *models.GetSyste
     return models.NewGetSystemCapacitySummarySpectraS3Response(response)
 }
 
-func (client *Client) GetDataPathBackendSpectraS3(request *models.GetDataPathBackendSpectraS3Request) (*models.GetDataPathBackendSpectraS3Response, error) {
+func (client *Client) GetDataPathBackendSpectraS3(ctx context.Context, request *models.GetDataPathBackendSpectraS3Request) (*models.GetDataPathBackendSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/data_path_backend").
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -515,13 +516,13 @@ func (client *Client) GetDataPathBackendSpectraS3(request *models.GetDataPathBac
     return models.NewGetDataPathBackendSpectraS3Response(response)
 }
 
-func (client *Client) GetDataPlannerBlobStoreTasksSpectraS3(request *models.GetDataPlannerBlobStoreTasksSpectraS3Request) (*models.GetDataPlannerBlobStoreTasksSpectraS3Response, error) {
+func (client *Client) GetDataPlannerBlobStoreTasksSpectraS3(ctx context.Context, request *models.GetDataPlannerBlobStoreTasksSpectraS3Request) (*models.GetDataPlannerBlobStoreTasksSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/blob_store_task").
         WithOptionalVoidQueryParam("full_details", request.FullDetails).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -540,12 +541,12 @@ func (client *Client) GetDataPlannerBlobStoreTasksSpectraS3(request *models.GetD
     return models.NewGetDataPlannerBlobStoreTasksSpectraS3Response(response)
 }
 
-func (client *Client) GetAzureDataReplicationRuleSpectraS3(request *models.GetAzureDataReplicationRuleSpectraS3Request) (*models.GetAzureDataReplicationRuleSpectraS3Response, error) {
+func (client *Client) GetAzureDataReplicationRuleSpectraS3(ctx context.Context, request *models.GetAzureDataReplicationRuleSpectraS3Request) (*models.GetAzureDataReplicationRuleSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/azure_data_replication_rule/" + request.AzureDataReplicationRule).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -564,7 +565,7 @@ func (client *Client) GetAzureDataReplicationRuleSpectraS3(request *models.GetAz
     return models.NewGetAzureDataReplicationRuleSpectraS3Response(response)
 }
 
-func (client *Client) GetAzureDataReplicationRulesSpectraS3(request *models.GetAzureDataReplicationRulesSpectraS3Request) (*models.GetAzureDataReplicationRulesSpectraS3Response, error) {
+func (client *Client) GetAzureDataReplicationRulesSpectraS3(ctx context.Context, request *models.GetAzureDataReplicationRulesSpectraS3Request) (*models.GetAzureDataReplicationRulesSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -578,7 +579,7 @@ func (client *Client) GetAzureDataReplicationRulesSpectraS3(request *models.GetA
         WithOptionalQueryParam("state", networking.InterfaceToStrPtr(request.State)).
         WithOptionalQueryParam("target_id", request.TargetId).
         WithOptionalQueryParam("type", networking.InterfaceToStrPtr(request.DataReplicationRuleType)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -597,12 +598,12 @@ func (client *Client) GetAzureDataReplicationRulesSpectraS3(request *models.GetA
     return models.NewGetAzureDataReplicationRulesSpectraS3Response(response)
 }
 
-func (client *Client) GetDataPersistenceRuleSpectraS3(request *models.GetDataPersistenceRuleSpectraS3Request) (*models.GetDataPersistenceRuleSpectraS3Response, error) {
+func (client *Client) GetDataPersistenceRuleSpectraS3(ctx context.Context, request *models.GetDataPersistenceRuleSpectraS3Request) (*models.GetDataPersistenceRuleSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/data_persistence_rule/" + request.DataPersistenceRuleId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -621,7 +622,7 @@ func (client *Client) GetDataPersistenceRuleSpectraS3(request *models.GetDataPer
     return models.NewGetDataPersistenceRuleSpectraS3Response(response)
 }
 
-func (client *Client) GetDataPersistenceRulesSpectraS3(request *models.GetDataPersistenceRulesSpectraS3Request) (*models.GetDataPersistenceRulesSpectraS3Response, error) {
+func (client *Client) GetDataPersistenceRulesSpectraS3(ctx context.Context, request *models.GetDataPersistenceRulesSpectraS3Request) (*models.GetDataPersistenceRulesSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -635,7 +636,7 @@ func (client *Client) GetDataPersistenceRulesSpectraS3(request *models.GetDataPe
         WithOptionalQueryParam("state", networking.InterfaceToStrPtr(request.State)).
         WithOptionalQueryParam("storage_domain_id", request.StorageDomainId).
         WithOptionalQueryParam("type", networking.InterfaceToStrPtr(request.DataPersistenceRuleType)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -654,7 +655,7 @@ func (client *Client) GetDataPersistenceRulesSpectraS3(request *models.GetDataPe
     return models.NewGetDataPersistenceRulesSpectraS3Response(response)
 }
 
-func (client *Client) GetDataPoliciesSpectraS3(request *models.GetDataPoliciesSpectraS3Request) (*models.GetDataPoliciesSpectraS3Response, error) {
+func (client *Client) GetDataPoliciesSpectraS3(ctx context.Context, request *models.GetDataPoliciesSpectraS3Request) (*models.GetDataPoliciesSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -668,7 +669,7 @@ func (client *Client) GetDataPoliciesSpectraS3(request *models.GetDataPoliciesSp
         WithOptionalQueryParam("page_length", networking.IntPtrToStrPtr(request.PageLength)).
         WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -687,12 +688,12 @@ func (client *Client) GetDataPoliciesSpectraS3(request *models.GetDataPoliciesSp
     return models.NewGetDataPoliciesSpectraS3Response(response)
 }
 
-func (client *Client) GetDataPolicySpectraS3(request *models.GetDataPolicySpectraS3Request) (*models.GetDataPolicySpectraS3Response, error) {
+func (client *Client) GetDataPolicySpectraS3(ctx context.Context, request *models.GetDataPolicySpectraS3Request) (*models.GetDataPolicySpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/data_policy/" + request.DataPolicyId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -711,12 +712,12 @@ func (client *Client) GetDataPolicySpectraS3(request *models.GetDataPolicySpectr
     return models.NewGetDataPolicySpectraS3Response(response)
 }
 
-func (client *Client) GetDs3DataReplicationRuleSpectraS3(request *models.GetDs3DataReplicationRuleSpectraS3Request) (*models.GetDs3DataReplicationRuleSpectraS3Response, error) {
+func (client *Client) GetDs3DataReplicationRuleSpectraS3(ctx context.Context, request *models.GetDs3DataReplicationRuleSpectraS3Request) (*models.GetDs3DataReplicationRuleSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/ds3_data_replication_rule/" + request.Ds3DataReplicationRule).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -735,7 +736,7 @@ func (client *Client) GetDs3DataReplicationRuleSpectraS3(request *models.GetDs3D
     return models.NewGetDs3DataReplicationRuleSpectraS3Response(response)
 }
 
-func (client *Client) GetDs3DataReplicationRulesSpectraS3(request *models.GetDs3DataReplicationRulesSpectraS3Request) (*models.GetDs3DataReplicationRulesSpectraS3Response, error) {
+func (client *Client) GetDs3DataReplicationRulesSpectraS3(ctx context.Context, request *models.GetDs3DataReplicationRulesSpectraS3Request) (*models.GetDs3DataReplicationRulesSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -749,7 +750,7 @@ func (client *Client) GetDs3DataReplicationRulesSpectraS3(request *models.GetDs3
         WithOptionalQueryParam("state", networking.InterfaceToStrPtr(request.State)).
         WithOptionalQueryParam("target_id", request.TargetId).
         WithOptionalQueryParam("type", networking.InterfaceToStrPtr(request.DataReplicationRuleType)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -768,12 +769,12 @@ func (client *Client) GetDs3DataReplicationRulesSpectraS3(request *models.GetDs3
     return models.NewGetDs3DataReplicationRulesSpectraS3Response(response)
 }
 
-func (client *Client) GetS3DataReplicationRuleSpectraS3(request *models.GetS3DataReplicationRuleSpectraS3Request) (*models.GetS3DataReplicationRuleSpectraS3Response, error) {
+func (client *Client) GetS3DataReplicationRuleSpectraS3(ctx context.Context, request *models.GetS3DataReplicationRuleSpectraS3Request) (*models.GetS3DataReplicationRuleSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/s3_data_replication_rule/" + request.S3DataReplicationRule).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -792,7 +793,7 @@ func (client *Client) GetS3DataReplicationRuleSpectraS3(request *models.GetS3Dat
     return models.NewGetS3DataReplicationRuleSpectraS3Response(response)
 }
 
-func (client *Client) GetS3DataReplicationRulesSpectraS3(request *models.GetS3DataReplicationRulesSpectraS3Request) (*models.GetS3DataReplicationRulesSpectraS3Response, error) {
+func (client *Client) GetS3DataReplicationRulesSpectraS3(ctx context.Context, request *models.GetS3DataReplicationRulesSpectraS3Request) (*models.GetS3DataReplicationRulesSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -807,7 +808,7 @@ func (client *Client) GetS3DataReplicationRulesSpectraS3(request *models.GetS3Da
         WithOptionalQueryParam("state", networking.InterfaceToStrPtr(request.State)).
         WithOptionalQueryParam("target_id", request.TargetId).
         WithOptionalQueryParam("type", networking.InterfaceToStrPtr(request.DataReplicationRuleType)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -826,7 +827,7 @@ func (client *Client) GetS3DataReplicationRulesSpectraS3(request *models.GetS3Da
     return models.NewGetS3DataReplicationRulesSpectraS3Response(response)
 }
 
-func (client *Client) GetDegradedAzureDataReplicationRulesSpectraS3(request *models.GetDegradedAzureDataReplicationRulesSpectraS3Request) (*models.GetDegradedAzureDataReplicationRulesSpectraS3Response, error) {
+func (client *Client) GetDegradedAzureDataReplicationRulesSpectraS3(ctx context.Context, request *models.GetDegradedAzureDataReplicationRulesSpectraS3Request) (*models.GetDegradedAzureDataReplicationRulesSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -839,7 +840,7 @@ func (client *Client) GetDegradedAzureDataReplicationRulesSpectraS3(request *mod
         WithOptionalQueryParam("state", networking.InterfaceToStrPtr(request.State)).
         WithOptionalQueryParam("target_id", request.TargetId).
         WithOptionalQueryParam("type", networking.InterfaceToStrPtr(request.DataReplicationRuleType)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -858,7 +859,7 @@ func (client *Client) GetDegradedAzureDataReplicationRulesSpectraS3(request *mod
     return models.NewGetDegradedAzureDataReplicationRulesSpectraS3Response(response)
 }
 
-func (client *Client) GetDegradedBlobsSpectraS3(request *models.GetDegradedBlobsSpectraS3Request) (*models.GetDegradedBlobsSpectraS3Response, error) {
+func (client *Client) GetDegradedBlobsSpectraS3(ctx context.Context, request *models.GetDegradedBlobsSpectraS3Request) (*models.GetDegradedBlobsSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -871,7 +872,7 @@ func (client *Client) GetDegradedBlobsSpectraS3(request *models.GetDegradedBlobs
         WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
         WithOptionalQueryParam("persistence_rule_id", request.PersistenceRuleId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -890,7 +891,7 @@ func (client *Client) GetDegradedBlobsSpectraS3(request *models.GetDegradedBlobs
     return models.NewGetDegradedBlobsSpectraS3Response(response)
 }
 
-func (client *Client) GetDegradedBucketsSpectraS3(request *models.GetDegradedBucketsSpectraS3Request) (*models.GetDegradedBucketsSpectraS3Response, error) {
+func (client *Client) GetDegradedBucketsSpectraS3(ctx context.Context, request *models.GetDegradedBucketsSpectraS3Request) (*models.GetDegradedBucketsSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -902,7 +903,7 @@ func (client *Client) GetDegradedBucketsSpectraS3(request *models.GetDegradedBuc
         WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
         WithOptionalQueryParam("user_id", request.UserId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -921,7 +922,7 @@ func (client *Client) GetDegradedBucketsSpectraS3(request *models.GetDegradedBuc
     return models.NewGetDegradedBucketsSpectraS3Response(response)
 }
 
-func (client *Client) GetDegradedDataPersistenceRulesSpectraS3(request *models.GetDegradedDataPersistenceRulesSpectraS3Request) (*models.GetDegradedDataPersistenceRulesSpectraS3Response, error) {
+func (client *Client) GetDegradedDataPersistenceRulesSpectraS3(ctx context.Context, request *models.GetDegradedDataPersistenceRulesSpectraS3Request) (*models.GetDegradedDataPersistenceRulesSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -935,7 +936,7 @@ func (client *Client) GetDegradedDataPersistenceRulesSpectraS3(request *models.G
         WithOptionalQueryParam("state", networking.InterfaceToStrPtr(request.State)).
         WithOptionalQueryParam("storage_domain_id", request.StorageDomainId).
         WithOptionalQueryParam("type", networking.InterfaceToStrPtr(request.DataPersistenceRuleType)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -954,7 +955,7 @@ func (client *Client) GetDegradedDataPersistenceRulesSpectraS3(request *models.G
     return models.NewGetDegradedDataPersistenceRulesSpectraS3Response(response)
 }
 
-func (client *Client) GetDegradedDs3DataReplicationRulesSpectraS3(request *models.GetDegradedDs3DataReplicationRulesSpectraS3Request) (*models.GetDegradedDs3DataReplicationRulesSpectraS3Response, error) {
+func (client *Client) GetDegradedDs3DataReplicationRulesSpectraS3(ctx context.Context, request *models.GetDegradedDs3DataReplicationRulesSpectraS3Request) (*models.GetDegradedDs3DataReplicationRulesSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -967,7 +968,7 @@ func (client *Client) GetDegradedDs3DataReplicationRulesSpectraS3(request *model
         WithOptionalQueryParam("state", networking.InterfaceToStrPtr(request.State)).
         WithOptionalQueryParam("target_id", request.TargetId).
         WithOptionalQueryParam("type", networking.InterfaceToStrPtr(request.DataReplicationRuleType)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -986,7 +987,7 @@ func (client *Client) GetDegradedDs3DataReplicationRulesSpectraS3(request *model
     return models.NewGetDegradedDs3DataReplicationRulesSpectraS3Response(response)
 }
 
-func (client *Client) GetDegradedS3DataReplicationRulesSpectraS3(request *models.GetDegradedS3DataReplicationRulesSpectraS3Request) (*models.GetDegradedS3DataReplicationRulesSpectraS3Response, error) {
+func (client *Client) GetDegradedS3DataReplicationRulesSpectraS3(ctx context.Context, request *models.GetDegradedS3DataReplicationRulesSpectraS3Request) (*models.GetDegradedS3DataReplicationRulesSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -999,7 +1000,7 @@ func (client *Client) GetDegradedS3DataReplicationRulesSpectraS3(request *models
         WithOptionalQueryParam("state", networking.InterfaceToStrPtr(request.State)).
         WithOptionalQueryParam("target_id", request.TargetId).
         WithOptionalQueryParam("type", networking.InterfaceToStrPtr(request.DataReplicationRuleType)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -1018,7 +1019,7 @@ func (client *Client) GetDegradedS3DataReplicationRulesSpectraS3(request *models
     return models.NewGetDegradedS3DataReplicationRulesSpectraS3Response(response)
 }
 
-func (client *Client) GetSuspectBlobAzureTargetsSpectraS3(request *models.GetSuspectBlobAzureTargetsSpectraS3Request) (*models.GetSuspectBlobAzureTargetsSpectraS3Response, error) {
+func (client *Client) GetSuspectBlobAzureTargetsSpectraS3(ctx context.Context, request *models.GetSuspectBlobAzureTargetsSpectraS3Request) (*models.GetSuspectBlobAzureTargetsSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -1029,7 +1030,7 @@ func (client *Client) GetSuspectBlobAzureTargetsSpectraS3(request *models.GetSus
         WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
         WithOptionalQueryParam("target_id", request.TargetId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -1048,7 +1049,7 @@ func (client *Client) GetSuspectBlobAzureTargetsSpectraS3(request *models.GetSus
     return models.NewGetSuspectBlobAzureTargetsSpectraS3Response(response)
 }
 
-func (client *Client) GetSuspectBlobDs3TargetsSpectraS3(request *models.GetSuspectBlobDs3TargetsSpectraS3Request) (*models.GetSuspectBlobDs3TargetsSpectraS3Response, error) {
+func (client *Client) GetSuspectBlobDs3TargetsSpectraS3(ctx context.Context, request *models.GetSuspectBlobDs3TargetsSpectraS3Request) (*models.GetSuspectBlobDs3TargetsSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -1059,7 +1060,7 @@ func (client *Client) GetSuspectBlobDs3TargetsSpectraS3(request *models.GetSuspe
         WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
         WithOptionalQueryParam("target_id", request.TargetId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -1078,7 +1079,7 @@ func (client *Client) GetSuspectBlobDs3TargetsSpectraS3(request *models.GetSuspe
     return models.NewGetSuspectBlobDs3TargetsSpectraS3Response(response)
 }
 
-func (client *Client) GetSuspectBlobPoolsSpectraS3(request *models.GetSuspectBlobPoolsSpectraS3Request) (*models.GetSuspectBlobPoolsSpectraS3Response, error) {
+func (client *Client) GetSuspectBlobPoolsSpectraS3(ctx context.Context, request *models.GetSuspectBlobPoolsSpectraS3Request) (*models.GetSuspectBlobPoolsSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -1089,7 +1090,7 @@ func (client *Client) GetSuspectBlobPoolsSpectraS3(request *models.GetSuspectBlo
         WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
         WithOptionalQueryParam("pool_id", request.PoolId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -1108,7 +1109,7 @@ func (client *Client) GetSuspectBlobPoolsSpectraS3(request *models.GetSuspectBlo
     return models.NewGetSuspectBlobPoolsSpectraS3Response(response)
 }
 
-func (client *Client) GetSuspectBlobS3TargetsSpectraS3(request *models.GetSuspectBlobS3TargetsSpectraS3Request) (*models.GetSuspectBlobS3TargetsSpectraS3Response, error) {
+func (client *Client) GetSuspectBlobS3TargetsSpectraS3(ctx context.Context, request *models.GetSuspectBlobS3TargetsSpectraS3Request) (*models.GetSuspectBlobS3TargetsSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -1119,7 +1120,7 @@ func (client *Client) GetSuspectBlobS3TargetsSpectraS3(request *models.GetSuspec
         WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
         WithOptionalQueryParam("target_id", request.TargetId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -1138,7 +1139,7 @@ func (client *Client) GetSuspectBlobS3TargetsSpectraS3(request *models.GetSuspec
     return models.NewGetSuspectBlobS3TargetsSpectraS3Response(response)
 }
 
-func (client *Client) GetSuspectBlobTapesSpectraS3(request *models.GetSuspectBlobTapesSpectraS3Request) (*models.GetSuspectBlobTapesSpectraS3Response, error) {
+func (client *Client) GetSuspectBlobTapesSpectraS3(ctx context.Context, request *models.GetSuspectBlobTapesSpectraS3Request) (*models.GetSuspectBlobTapesSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -1149,7 +1150,7 @@ func (client *Client) GetSuspectBlobTapesSpectraS3(request *models.GetSuspectBlo
         WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
         WithOptionalQueryParam("tape_id", request.TapeId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -1168,7 +1169,7 @@ func (client *Client) GetSuspectBlobTapesSpectraS3(request *models.GetSuspectBlo
     return models.NewGetSuspectBlobTapesSpectraS3Response(response)
 }
 
-func (client *Client) GetSuspectBucketsSpectraS3(request *models.GetSuspectBucketsSpectraS3Request) (*models.GetSuspectBucketsSpectraS3Response, error) {
+func (client *Client) GetSuspectBucketsSpectraS3(ctx context.Context, request *models.GetSuspectBucketsSpectraS3Request) (*models.GetSuspectBucketsSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -1180,7 +1181,7 @@ func (client *Client) GetSuspectBucketsSpectraS3(request *models.GetSuspectBucke
         WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
         WithOptionalQueryParam("user_id", request.UserId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -1199,7 +1200,7 @@ func (client *Client) GetSuspectBucketsSpectraS3(request *models.GetSuspectBucke
     return models.NewGetSuspectBucketsSpectraS3Response(response)
 }
 
-func (client *Client) GetSuspectObjectsSpectraS3(request *models.GetSuspectObjectsSpectraS3Request) (*models.GetSuspectObjectsSpectraS3Response, error) {
+func (client *Client) GetSuspectObjectsSpectraS3(ctx context.Context, request *models.GetSuspectObjectsSpectraS3Request) (*models.GetSuspectObjectsSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -1209,7 +1210,7 @@ func (client *Client) GetSuspectObjectsSpectraS3(request *models.GetSuspectObjec
         WithOptionalQueryParam("page_length", networking.IntPtrToStrPtr(request.PageLength)).
         WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -1228,7 +1229,7 @@ func (client *Client) GetSuspectObjectsSpectraS3(request *models.GetSuspectObjec
     return models.NewGetSuspectObjectsSpectraS3Response(response)
 }
 
-func (client *Client) GetSuspectObjectsWithFullDetailsSpectraS3(request *models.GetSuspectObjectsWithFullDetailsSpectraS3Request) (*models.GetSuspectObjectsWithFullDetailsSpectraS3Response, error) {
+func (client *Client) GetSuspectObjectsWithFullDetailsSpectraS3(ctx context.Context, request *models.GetSuspectObjectsWithFullDetailsSpectraS3Request) (*models.GetSuspectObjectsWithFullDetailsSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -1236,7 +1237,7 @@ func (client *Client) GetSuspectObjectsWithFullDetailsSpectraS3(request *models.
         WithQueryParam("full_details", "").
         WithOptionalQueryParam("bucket_id", request.BucketId).
         WithOptionalQueryParam("storage_domain", request.StorageDomain).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -1255,12 +1256,12 @@ func (client *Client) GetSuspectObjectsWithFullDetailsSpectraS3(request *models.
     return models.NewGetSuspectObjectsWithFullDetailsSpectraS3Response(response)
 }
 
-func (client *Client) GetGroupMemberSpectraS3(request *models.GetGroupMemberSpectraS3Request) (*models.GetGroupMemberSpectraS3Response, error) {
+func (client *Client) GetGroupMemberSpectraS3(ctx context.Context, request *models.GetGroupMemberSpectraS3Request) (*models.GetGroupMemberSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/group_member/" + request.GroupMember).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -1279,7 +1280,7 @@ func (client *Client) GetGroupMemberSpectraS3(request *models.GetGroupMemberSpec
     return models.NewGetGroupMemberSpectraS3Response(response)
 }
 
-func (client *Client) GetGroupMembersSpectraS3(request *models.GetGroupMembersSpectraS3Request) (*models.GetGroupMembersSpectraS3Response, error) {
+func (client *Client) GetGroupMembersSpectraS3(ctx context.Context, request *models.GetGroupMembersSpectraS3Request) (*models.GetGroupMembersSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -1291,7 +1292,7 @@ func (client *Client) GetGroupMembersSpectraS3(request *models.GetGroupMembersSp
         WithOptionalQueryParam("page_length", networking.IntPtrToStrPtr(request.PageLength)).
         WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -1310,12 +1311,12 @@ func (client *Client) GetGroupMembersSpectraS3(request *models.GetGroupMembersSp
     return models.NewGetGroupMembersSpectraS3Response(response)
 }
 
-func (client *Client) GetGroupSpectraS3(request *models.GetGroupSpectraS3Request) (*models.GetGroupSpectraS3Response, error) {
+func (client *Client) GetGroupSpectraS3(ctx context.Context, request *models.GetGroupSpectraS3Request) (*models.GetGroupSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/group/" + request.Group).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -1334,7 +1335,7 @@ func (client *Client) GetGroupSpectraS3(request *models.GetGroupSpectraS3Request
     return models.NewGetGroupSpectraS3Response(response)
 }
 
-func (client *Client) GetGroupsSpectraS3(request *models.GetGroupsSpectraS3Request) (*models.GetGroupsSpectraS3Response, error) {
+func (client *Client) GetGroupsSpectraS3(ctx context.Context, request *models.GetGroupsSpectraS3Request) (*models.GetGroupsSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -1345,7 +1346,7 @@ func (client *Client) GetGroupsSpectraS3(request *models.GetGroupsSpectraS3Reque
         WithOptionalQueryParam("page_length", networking.IntPtrToStrPtr(request.PageLength)).
         WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -1364,12 +1365,12 @@ func (client *Client) GetGroupsSpectraS3(request *models.GetGroupsSpectraS3Reque
     return models.NewGetGroupsSpectraS3Response(response)
 }
 
-func (client *Client) GetActiveJobSpectraS3(request *models.GetActiveJobSpectraS3Request) (*models.GetActiveJobSpectraS3Response, error) {
+func (client *Client) GetActiveJobSpectraS3(ctx context.Context, request *models.GetActiveJobSpectraS3Request) (*models.GetActiveJobSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/active_job/" + request.ActiveJobId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -1388,7 +1389,7 @@ func (client *Client) GetActiveJobSpectraS3(request *models.GetActiveJobSpectraS
     return models.NewGetActiveJobSpectraS3Response(response)
 }
 
-func (client *Client) GetActiveJobsSpectraS3(request *models.GetActiveJobsSpectraS3Request) (*models.GetActiveJobsSpectraS3Response, error) {
+func (client *Client) GetActiveJobsSpectraS3(ctx context.Context, request *models.GetActiveJobsSpectraS3Request) (*models.GetActiveJobsSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -1406,7 +1407,7 @@ func (client *Client) GetActiveJobsSpectraS3(request *models.GetActiveJobsSpectr
         WithOptionalQueryParam("request_type", networking.InterfaceToStrPtr(request.RequestType)).
         WithOptionalQueryParam("truncated", networking.BoolPtrToStrPtr(request.Truncated)).
         WithOptionalQueryParam("user_id", request.UserId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -1425,12 +1426,12 @@ func (client *Client) GetActiveJobsSpectraS3(request *models.GetActiveJobsSpectr
     return models.NewGetActiveJobsSpectraS3Response(response)
 }
 
-func (client *Client) GetCanceledJobSpectraS3(request *models.GetCanceledJobSpectraS3Request) (*models.GetCanceledJobSpectraS3Response, error) {
+func (client *Client) GetCanceledJobSpectraS3(ctx context.Context, request *models.GetCanceledJobSpectraS3Request) (*models.GetCanceledJobSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/canceled_job/" + request.CanceledJob).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -1449,7 +1450,7 @@ func (client *Client) GetCanceledJobSpectraS3(request *models.GetCanceledJobSpec
     return models.NewGetCanceledJobSpectraS3Response(response)
 }
 
-func (client *Client) GetCanceledJobsSpectraS3(request *models.GetCanceledJobsSpectraS3Request) (*models.GetCanceledJobsSpectraS3Response, error) {
+func (client *Client) GetCanceledJobsSpectraS3(ctx context.Context, request *models.GetCanceledJobsSpectraS3Request) (*models.GetCanceledJobsSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -1467,7 +1468,7 @@ func (client *Client) GetCanceledJobsSpectraS3(request *models.GetCanceledJobsSp
         WithOptionalQueryParam("request_type", networking.InterfaceToStrPtr(request.RequestType)).
         WithOptionalQueryParam("truncated", networking.BoolPtrToStrPtr(request.Truncated)).
         WithOptionalQueryParam("user_id", request.UserId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -1486,12 +1487,12 @@ func (client *Client) GetCanceledJobsSpectraS3(request *models.GetCanceledJobsSp
     return models.NewGetCanceledJobsSpectraS3Response(response)
 }
 
-func (client *Client) GetCompletedJobSpectraS3(request *models.GetCompletedJobSpectraS3Request) (*models.GetCompletedJobSpectraS3Response, error) {
+func (client *Client) GetCompletedJobSpectraS3(ctx context.Context, request *models.GetCompletedJobSpectraS3Request) (*models.GetCompletedJobSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/completed_job/" + request.CompletedJob).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -1510,7 +1511,7 @@ func (client *Client) GetCompletedJobSpectraS3(request *models.GetCompletedJobSp
     return models.NewGetCompletedJobSpectraS3Response(response)
 }
 
-func (client *Client) GetCompletedJobsSpectraS3(request *models.GetCompletedJobsSpectraS3Request) (*models.GetCompletedJobsSpectraS3Response, error) {
+func (client *Client) GetCompletedJobsSpectraS3(ctx context.Context, request *models.GetCompletedJobsSpectraS3Request) (*models.GetCompletedJobsSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -1527,7 +1528,7 @@ func (client *Client) GetCompletedJobsSpectraS3(request *models.GetCompletedJobs
         WithOptionalQueryParam("request_type", networking.InterfaceToStrPtr(request.RequestType)).
         WithOptionalQueryParam("truncated", networking.BoolPtrToStrPtr(request.Truncated)).
         WithOptionalQueryParam("user_id", request.UserId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -1546,12 +1547,12 @@ func (client *Client) GetCompletedJobsSpectraS3(request *models.GetCompletedJobs
     return models.NewGetCompletedJobsSpectraS3Response(response)
 }
 
-func (client *Client) GetJobChunkDaoSpectraS3(request *models.GetJobChunkDaoSpectraS3Request) (*models.GetJobChunkDaoSpectraS3Response, error) {
+func (client *Client) GetJobChunkDaoSpectraS3(ctx context.Context, request *models.GetJobChunkDaoSpectraS3Request) (*models.GetJobChunkDaoSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/job_chunk_dao/" + request.JobChunkDao).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -1570,12 +1571,12 @@ func (client *Client) GetJobChunkDaoSpectraS3(request *models.GetJobChunkDaoSpec
     return models.NewGetJobChunkDaoSpectraS3Response(response)
 }
 
-func (client *Client) GetJobChunkSpectraS3(request *models.GetJobChunkSpectraS3Request) (*models.GetJobChunkSpectraS3Response, error) {
+func (client *Client) GetJobChunkSpectraS3(ctx context.Context, request *models.GetJobChunkSpectraS3Request) (*models.GetJobChunkSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/job_chunk/" + request.JobChunkId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -1594,7 +1595,7 @@ func (client *Client) GetJobChunkSpectraS3(request *models.GetJobChunkSpectraS3R
     return models.NewGetJobChunkSpectraS3Response(response)
 }
 
-func (client *Client) GetJobChunksReadyForClientProcessingSpectraS3(request *models.GetJobChunksReadyForClientProcessingSpectraS3Request) (*models.GetJobChunksReadyForClientProcessingSpectraS3Response, error) {
+func (client *Client) GetJobChunksReadyForClientProcessingSpectraS3(ctx context.Context, request *models.GetJobChunksReadyForClientProcessingSpectraS3Request) (*models.GetJobChunksReadyForClientProcessingSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -1602,7 +1603,7 @@ func (client *Client) GetJobChunksReadyForClientProcessingSpectraS3(request *mod
         WithQueryParam("job", request.Job).
         WithOptionalQueryParam("job_chunk", request.JobChunk).
         WithOptionalQueryParam("preferred_number_of_chunks", networking.IntPtrToStrPtr(request.PreferredNumberOfChunks)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -1621,7 +1622,7 @@ func (client *Client) GetJobChunksReadyForClientProcessingSpectraS3(request *mod
     return models.NewGetJobChunksReadyForClientProcessingSpectraS3Response(response)
 }
 
-func (client *Client) GetJobCreationFailuresSpectraS3(request *models.GetJobCreationFailuresSpectraS3Request) (*models.GetJobCreationFailuresSpectraS3Response, error) {
+func (client *Client) GetJobCreationFailuresSpectraS3(ctx context.Context, request *models.GetJobCreationFailuresSpectraS3Request) (*models.GetJobCreationFailuresSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -1633,7 +1634,7 @@ func (client *Client) GetJobCreationFailuresSpectraS3(request *models.GetJobCrea
         WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
         WithOptionalQueryParam("user_name", request.UserName).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -1652,12 +1653,12 @@ func (client *Client) GetJobCreationFailuresSpectraS3(request *models.GetJobCrea
     return models.NewGetJobCreationFailuresSpectraS3Response(response)
 }
 
-func (client *Client) GetJobSpectraS3(request *models.GetJobSpectraS3Request) (*models.GetJobSpectraS3Response, error) {
+func (client *Client) GetJobSpectraS3(ctx context.Context, request *models.GetJobSpectraS3Request) (*models.GetJobSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/job/" + request.JobId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -1676,13 +1677,13 @@ func (client *Client) GetJobSpectraS3(request *models.GetJobSpectraS3Request) (*
     return models.NewGetJobSpectraS3Response(response)
 }
 
-func (client *Client) GetJobToReplicateSpectraS3(request *models.GetJobToReplicateSpectraS3Request) (*models.GetJobToReplicateSpectraS3Response, error) {
+func (client *Client) GetJobToReplicateSpectraS3(ctx context.Context, request *models.GetJobToReplicateSpectraS3Request) (*models.GetJobToReplicateSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/job/" + request.JobId).
         WithQueryParam("replicate", "").
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -1701,14 +1702,14 @@ func (client *Client) GetJobToReplicateSpectraS3(request *models.GetJobToReplica
     return models.NewGetJobToReplicateSpectraS3Response(response)
 }
 
-func (client *Client) GetJobsSpectraS3(request *models.GetJobsSpectraS3Request) (*models.GetJobsSpectraS3Response, error) {
+func (client *Client) GetJobsSpectraS3(ctx context.Context, request *models.GetJobsSpectraS3Request) (*models.GetJobsSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/job").
         WithOptionalQueryParam("bucket_id", request.BucketId).
         WithOptionalVoidQueryParam("full_details", request.FullDetails).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -1727,12 +1728,12 @@ func (client *Client) GetJobsSpectraS3(request *models.GetJobsSpectraS3Request) 
     return models.NewGetJobsSpectraS3Response(response)
 }
 
-func (client *Client) GetNodeSpectraS3(request *models.GetNodeSpectraS3Request) (*models.GetNodeSpectraS3Response, error) {
+func (client *Client) GetNodeSpectraS3(ctx context.Context, request *models.GetNodeSpectraS3Request) (*models.GetNodeSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/node/" + request.Node).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -1751,7 +1752,7 @@ func (client *Client) GetNodeSpectraS3(request *models.GetNodeSpectraS3Request) 
     return models.NewGetNodeSpectraS3Response(response)
 }
 
-func (client *Client) GetNodesSpectraS3(request *models.GetNodesSpectraS3Request) (*models.GetNodesSpectraS3Response, error) {
+func (client *Client) GetNodesSpectraS3(ctx context.Context, request *models.GetNodesSpectraS3Request) (*models.GetNodesSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -1760,7 +1761,7 @@ func (client *Client) GetNodesSpectraS3(request *models.GetNodesSpectraS3Request
         WithOptionalQueryParam("page_length", networking.IntPtrToStrPtr(request.PageLength)).
         WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -1779,12 +1780,12 @@ func (client *Client) GetNodesSpectraS3(request *models.GetNodesSpectraS3Request
     return models.NewGetNodesSpectraS3Response(response)
 }
 
-func (client *Client) GetAzureTargetFailureNotificationRegistrationSpectraS3(request *models.GetAzureTargetFailureNotificationRegistrationSpectraS3Request) (*models.GetAzureTargetFailureNotificationRegistrationSpectraS3Response, error) {
+func (client *Client) GetAzureTargetFailureNotificationRegistrationSpectraS3(ctx context.Context, request *models.GetAzureTargetFailureNotificationRegistrationSpectraS3Request) (*models.GetAzureTargetFailureNotificationRegistrationSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/azure_target_failure_notification_registration/" + request.AzureTargetFailureNotificationRegistration).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -1803,7 +1804,7 @@ func (client *Client) GetAzureTargetFailureNotificationRegistrationSpectraS3(req
     return models.NewGetAzureTargetFailureNotificationRegistrationSpectraS3Response(response)
 }
 
-func (client *Client) GetAzureTargetFailureNotificationRegistrationsSpectraS3(request *models.GetAzureTargetFailureNotificationRegistrationsSpectraS3Request) (*models.GetAzureTargetFailureNotificationRegistrationsSpectraS3Response, error) {
+func (client *Client) GetAzureTargetFailureNotificationRegistrationsSpectraS3(ctx context.Context, request *models.GetAzureTargetFailureNotificationRegistrationsSpectraS3Request) (*models.GetAzureTargetFailureNotificationRegistrationsSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -1813,7 +1814,7 @@ func (client *Client) GetAzureTargetFailureNotificationRegistrationsSpectraS3(re
         WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
         WithOptionalQueryParam("user_id", request.UserId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -1832,12 +1833,12 @@ func (client *Client) GetAzureTargetFailureNotificationRegistrationsSpectraS3(re
     return models.NewGetAzureTargetFailureNotificationRegistrationsSpectraS3Response(response)
 }
 
-func (client *Client) GetBucketChangesNotificationRegistrationSpectraS3(request *models.GetBucketChangesNotificationRegistrationSpectraS3Request) (*models.GetBucketChangesNotificationRegistrationSpectraS3Response, error) {
+func (client *Client) GetBucketChangesNotificationRegistrationSpectraS3(ctx context.Context, request *models.GetBucketChangesNotificationRegistrationSpectraS3Request) (*models.GetBucketChangesNotificationRegistrationSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/bucket_changes_notification_registration/" + request.BucketChangesNotificationRegistration).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -1856,7 +1857,7 @@ func (client *Client) GetBucketChangesNotificationRegistrationSpectraS3(request 
     return models.NewGetBucketChangesNotificationRegistrationSpectraS3Response(response)
 }
 
-func (client *Client) GetBucketChangesNotificationRegistrationsSpectraS3(request *models.GetBucketChangesNotificationRegistrationsSpectraS3Request) (*models.GetBucketChangesNotificationRegistrationsSpectraS3Response, error) {
+func (client *Client) GetBucketChangesNotificationRegistrationsSpectraS3(ctx context.Context, request *models.GetBucketChangesNotificationRegistrationsSpectraS3Request) (*models.GetBucketChangesNotificationRegistrationsSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -1866,7 +1867,7 @@ func (client *Client) GetBucketChangesNotificationRegistrationsSpectraS3(request
         WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
         WithOptionalQueryParam("user_id", request.UserId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -1885,7 +1886,7 @@ func (client *Client) GetBucketChangesNotificationRegistrationsSpectraS3(request
     return models.NewGetBucketChangesNotificationRegistrationsSpectraS3Response(response)
 }
 
-func (client *Client) GetBucketHistorySpectraS3(request *models.GetBucketHistorySpectraS3Request) (*models.GetBucketHistorySpectraS3Response, error) {
+func (client *Client) GetBucketHistorySpectraS3(ctx context.Context, request *models.GetBucketHistorySpectraS3Request) (*models.GetBucketHistorySpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -1896,7 +1897,7 @@ func (client *Client) GetBucketHistorySpectraS3(request *models.GetBucketHistory
         WithOptionalQueryParam("page_length", networking.IntPtrToStrPtr(request.PageLength)).
         WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -1915,12 +1916,12 @@ func (client *Client) GetBucketHistorySpectraS3(request *models.GetBucketHistory
     return models.NewGetBucketHistorySpectraS3Response(response)
 }
 
-func (client *Client) GetDs3TargetFailureNotificationRegistrationSpectraS3(request *models.GetDs3TargetFailureNotificationRegistrationSpectraS3Request) (*models.GetDs3TargetFailureNotificationRegistrationSpectraS3Response, error) {
+func (client *Client) GetDs3TargetFailureNotificationRegistrationSpectraS3(ctx context.Context, request *models.GetDs3TargetFailureNotificationRegistrationSpectraS3Request) (*models.GetDs3TargetFailureNotificationRegistrationSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/ds3_target_failure_notification_registration/" + request.NotificationId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -1939,7 +1940,7 @@ func (client *Client) GetDs3TargetFailureNotificationRegistrationSpectraS3(reque
     return models.NewGetDs3TargetFailureNotificationRegistrationSpectraS3Response(response)
 }
 
-func (client *Client) GetDs3TargetFailureNotificationRegistrationsSpectraS3(request *models.GetDs3TargetFailureNotificationRegistrationsSpectraS3Request) (*models.GetDs3TargetFailureNotificationRegistrationsSpectraS3Response, error) {
+func (client *Client) GetDs3TargetFailureNotificationRegistrationsSpectraS3(ctx context.Context, request *models.GetDs3TargetFailureNotificationRegistrationsSpectraS3Request) (*models.GetDs3TargetFailureNotificationRegistrationsSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -1949,7 +1950,7 @@ func (client *Client) GetDs3TargetFailureNotificationRegistrationsSpectraS3(requ
         WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
         WithOptionalQueryParam("user_id", request.UserId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -1968,12 +1969,12 @@ func (client *Client) GetDs3TargetFailureNotificationRegistrationsSpectraS3(requ
     return models.NewGetDs3TargetFailureNotificationRegistrationsSpectraS3Response(response)
 }
 
-func (client *Client) GetJobCompletedNotificationRegistrationSpectraS3(request *models.GetJobCompletedNotificationRegistrationSpectraS3Request) (*models.GetJobCompletedNotificationRegistrationSpectraS3Response, error) {
+func (client *Client) GetJobCompletedNotificationRegistrationSpectraS3(ctx context.Context, request *models.GetJobCompletedNotificationRegistrationSpectraS3Request) (*models.GetJobCompletedNotificationRegistrationSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/job_completed_notification_registration/" + request.NotificationId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -1992,7 +1993,7 @@ func (client *Client) GetJobCompletedNotificationRegistrationSpectraS3(request *
     return models.NewGetJobCompletedNotificationRegistrationSpectraS3Response(response)
 }
 
-func (client *Client) GetJobCompletedNotificationRegistrationsSpectraS3(request *models.GetJobCompletedNotificationRegistrationsSpectraS3Request) (*models.GetJobCompletedNotificationRegistrationsSpectraS3Response, error) {
+func (client *Client) GetJobCompletedNotificationRegistrationsSpectraS3(ctx context.Context, request *models.GetJobCompletedNotificationRegistrationsSpectraS3Request) (*models.GetJobCompletedNotificationRegistrationsSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -2002,7 +2003,7 @@ func (client *Client) GetJobCompletedNotificationRegistrationsSpectraS3(request 
         WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
         WithOptionalQueryParam("user_id", request.UserId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -2021,12 +2022,12 @@ func (client *Client) GetJobCompletedNotificationRegistrationsSpectraS3(request 
     return models.NewGetJobCompletedNotificationRegistrationsSpectraS3Response(response)
 }
 
-func (client *Client) GetJobCreatedNotificationRegistrationSpectraS3(request *models.GetJobCreatedNotificationRegistrationSpectraS3Request) (*models.GetJobCreatedNotificationRegistrationSpectraS3Response, error) {
+func (client *Client) GetJobCreatedNotificationRegistrationSpectraS3(ctx context.Context, request *models.GetJobCreatedNotificationRegistrationSpectraS3Request) (*models.GetJobCreatedNotificationRegistrationSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/job_created_notification_registration/" + request.NotificationId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -2045,7 +2046,7 @@ func (client *Client) GetJobCreatedNotificationRegistrationSpectraS3(request *mo
     return models.NewGetJobCreatedNotificationRegistrationSpectraS3Response(response)
 }
 
-func (client *Client) GetJobCreatedNotificationRegistrationsSpectraS3(request *models.GetJobCreatedNotificationRegistrationsSpectraS3Request) (*models.GetJobCreatedNotificationRegistrationsSpectraS3Response, error) {
+func (client *Client) GetJobCreatedNotificationRegistrationsSpectraS3(ctx context.Context, request *models.GetJobCreatedNotificationRegistrationsSpectraS3Request) (*models.GetJobCreatedNotificationRegistrationsSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -2055,7 +2056,7 @@ func (client *Client) GetJobCreatedNotificationRegistrationsSpectraS3(request *m
         WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
         WithOptionalQueryParam("user_id", request.UserId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -2074,12 +2075,12 @@ func (client *Client) GetJobCreatedNotificationRegistrationsSpectraS3(request *m
     return models.NewGetJobCreatedNotificationRegistrationsSpectraS3Response(response)
 }
 
-func (client *Client) GetJobCreationFailedNotificationRegistrationSpectraS3(request *models.GetJobCreationFailedNotificationRegistrationSpectraS3Request) (*models.GetJobCreationFailedNotificationRegistrationSpectraS3Response, error) {
+func (client *Client) GetJobCreationFailedNotificationRegistrationSpectraS3(ctx context.Context, request *models.GetJobCreationFailedNotificationRegistrationSpectraS3Request) (*models.GetJobCreationFailedNotificationRegistrationSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/job_creation_failed_notification_registration/" + request.NotificationId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -2098,7 +2099,7 @@ func (client *Client) GetJobCreationFailedNotificationRegistrationSpectraS3(requ
     return models.NewGetJobCreationFailedNotificationRegistrationSpectraS3Response(response)
 }
 
-func (client *Client) GetJobCreationFailedNotificationRegistrationsSpectraS3(request *models.GetJobCreationFailedNotificationRegistrationsSpectraS3Request) (*models.GetJobCreationFailedNotificationRegistrationsSpectraS3Response, error) {
+func (client *Client) GetJobCreationFailedNotificationRegistrationsSpectraS3(ctx context.Context, request *models.GetJobCreationFailedNotificationRegistrationsSpectraS3Request) (*models.GetJobCreationFailedNotificationRegistrationsSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -2108,7 +2109,7 @@ func (client *Client) GetJobCreationFailedNotificationRegistrationsSpectraS3(req
         WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
         WithOptionalQueryParam("user_id", request.UserId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -2127,12 +2128,12 @@ func (client *Client) GetJobCreationFailedNotificationRegistrationsSpectraS3(req
     return models.NewGetJobCreationFailedNotificationRegistrationsSpectraS3Response(response)
 }
 
-func (client *Client) GetObjectCachedNotificationRegistrationSpectraS3(request *models.GetObjectCachedNotificationRegistrationSpectraS3Request) (*models.GetObjectCachedNotificationRegistrationSpectraS3Response, error) {
+func (client *Client) GetObjectCachedNotificationRegistrationSpectraS3(ctx context.Context, request *models.GetObjectCachedNotificationRegistrationSpectraS3Request) (*models.GetObjectCachedNotificationRegistrationSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/object_cached_notification_registration/" + request.NotificationId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -2151,7 +2152,7 @@ func (client *Client) GetObjectCachedNotificationRegistrationSpectraS3(request *
     return models.NewGetObjectCachedNotificationRegistrationSpectraS3Response(response)
 }
 
-func (client *Client) GetObjectCachedNotificationRegistrationsSpectraS3(request *models.GetObjectCachedNotificationRegistrationsSpectraS3Request) (*models.GetObjectCachedNotificationRegistrationsSpectraS3Response, error) {
+func (client *Client) GetObjectCachedNotificationRegistrationsSpectraS3(ctx context.Context, request *models.GetObjectCachedNotificationRegistrationsSpectraS3Request) (*models.GetObjectCachedNotificationRegistrationsSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -2161,7 +2162,7 @@ func (client *Client) GetObjectCachedNotificationRegistrationsSpectraS3(request 
         WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
         WithOptionalQueryParam("user_id", request.UserId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -2180,12 +2181,12 @@ func (client *Client) GetObjectCachedNotificationRegistrationsSpectraS3(request 
     return models.NewGetObjectCachedNotificationRegistrationsSpectraS3Response(response)
 }
 
-func (client *Client) GetObjectLostNotificationRegistrationSpectraS3(request *models.GetObjectLostNotificationRegistrationSpectraS3Request) (*models.GetObjectLostNotificationRegistrationSpectraS3Response, error) {
+func (client *Client) GetObjectLostNotificationRegistrationSpectraS3(ctx context.Context, request *models.GetObjectLostNotificationRegistrationSpectraS3Request) (*models.GetObjectLostNotificationRegistrationSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/object_lost_notification_registration/" + request.NotificationId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -2204,7 +2205,7 @@ func (client *Client) GetObjectLostNotificationRegistrationSpectraS3(request *mo
     return models.NewGetObjectLostNotificationRegistrationSpectraS3Response(response)
 }
 
-func (client *Client) GetObjectLostNotificationRegistrationsSpectraS3(request *models.GetObjectLostNotificationRegistrationsSpectraS3Request) (*models.GetObjectLostNotificationRegistrationsSpectraS3Response, error) {
+func (client *Client) GetObjectLostNotificationRegistrationsSpectraS3(ctx context.Context, request *models.GetObjectLostNotificationRegistrationsSpectraS3Request) (*models.GetObjectLostNotificationRegistrationsSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -2214,7 +2215,7 @@ func (client *Client) GetObjectLostNotificationRegistrationsSpectraS3(request *m
         WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
         WithOptionalQueryParam("user_id", request.UserId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -2233,12 +2234,12 @@ func (client *Client) GetObjectLostNotificationRegistrationsSpectraS3(request *m
     return models.NewGetObjectLostNotificationRegistrationsSpectraS3Response(response)
 }
 
-func (client *Client) GetObjectPersistedNotificationRegistrationSpectraS3(request *models.GetObjectPersistedNotificationRegistrationSpectraS3Request) (*models.GetObjectPersistedNotificationRegistrationSpectraS3Response, error) {
+func (client *Client) GetObjectPersistedNotificationRegistrationSpectraS3(ctx context.Context, request *models.GetObjectPersistedNotificationRegistrationSpectraS3Request) (*models.GetObjectPersistedNotificationRegistrationSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/object_persisted_notification_registration/" + request.NotificationId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -2257,7 +2258,7 @@ func (client *Client) GetObjectPersistedNotificationRegistrationSpectraS3(reques
     return models.NewGetObjectPersistedNotificationRegistrationSpectraS3Response(response)
 }
 
-func (client *Client) GetObjectPersistedNotificationRegistrationsSpectraS3(request *models.GetObjectPersistedNotificationRegistrationsSpectraS3Request) (*models.GetObjectPersistedNotificationRegistrationsSpectraS3Response, error) {
+func (client *Client) GetObjectPersistedNotificationRegistrationsSpectraS3(ctx context.Context, request *models.GetObjectPersistedNotificationRegistrationsSpectraS3Request) (*models.GetObjectPersistedNotificationRegistrationsSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -2267,7 +2268,7 @@ func (client *Client) GetObjectPersistedNotificationRegistrationsSpectraS3(reque
         WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
         WithOptionalQueryParam("user_id", request.UserId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -2286,12 +2287,12 @@ func (client *Client) GetObjectPersistedNotificationRegistrationsSpectraS3(reque
     return models.NewGetObjectPersistedNotificationRegistrationsSpectraS3Response(response)
 }
 
-func (client *Client) GetPoolFailureNotificationRegistrationSpectraS3(request *models.GetPoolFailureNotificationRegistrationSpectraS3Request) (*models.GetPoolFailureNotificationRegistrationSpectraS3Response, error) {
+func (client *Client) GetPoolFailureNotificationRegistrationSpectraS3(ctx context.Context, request *models.GetPoolFailureNotificationRegistrationSpectraS3Request) (*models.GetPoolFailureNotificationRegistrationSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/pool_failure_notification_registration/" + request.NotificationId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -2310,7 +2311,7 @@ func (client *Client) GetPoolFailureNotificationRegistrationSpectraS3(request *m
     return models.NewGetPoolFailureNotificationRegistrationSpectraS3Response(response)
 }
 
-func (client *Client) GetPoolFailureNotificationRegistrationsSpectraS3(request *models.GetPoolFailureNotificationRegistrationsSpectraS3Request) (*models.GetPoolFailureNotificationRegistrationsSpectraS3Response, error) {
+func (client *Client) GetPoolFailureNotificationRegistrationsSpectraS3(ctx context.Context, request *models.GetPoolFailureNotificationRegistrationsSpectraS3Request) (*models.GetPoolFailureNotificationRegistrationsSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -2320,7 +2321,7 @@ func (client *Client) GetPoolFailureNotificationRegistrationsSpectraS3(request *
         WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
         WithOptionalQueryParam("user_id", request.UserId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -2339,12 +2340,12 @@ func (client *Client) GetPoolFailureNotificationRegistrationsSpectraS3(request *
     return models.NewGetPoolFailureNotificationRegistrationsSpectraS3Response(response)
 }
 
-func (client *Client) GetS3TargetFailureNotificationRegistrationSpectraS3(request *models.GetS3TargetFailureNotificationRegistrationSpectraS3Request) (*models.GetS3TargetFailureNotificationRegistrationSpectraS3Response, error) {
+func (client *Client) GetS3TargetFailureNotificationRegistrationSpectraS3(ctx context.Context, request *models.GetS3TargetFailureNotificationRegistrationSpectraS3Request) (*models.GetS3TargetFailureNotificationRegistrationSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/s3_target_failure_notification_registration/" + request.S3TargetFailureNotificationRegistration).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -2363,7 +2364,7 @@ func (client *Client) GetS3TargetFailureNotificationRegistrationSpectraS3(reques
     return models.NewGetS3TargetFailureNotificationRegistrationSpectraS3Response(response)
 }
 
-func (client *Client) GetS3TargetFailureNotificationRegistrationsSpectraS3(request *models.GetS3TargetFailureNotificationRegistrationsSpectraS3Request) (*models.GetS3TargetFailureNotificationRegistrationsSpectraS3Response, error) {
+func (client *Client) GetS3TargetFailureNotificationRegistrationsSpectraS3(ctx context.Context, request *models.GetS3TargetFailureNotificationRegistrationsSpectraS3Request) (*models.GetS3TargetFailureNotificationRegistrationsSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -2373,7 +2374,7 @@ func (client *Client) GetS3TargetFailureNotificationRegistrationsSpectraS3(reque
         WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
         WithOptionalQueryParam("user_id", request.UserId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -2392,12 +2393,12 @@ func (client *Client) GetS3TargetFailureNotificationRegistrationsSpectraS3(reque
     return models.NewGetS3TargetFailureNotificationRegistrationsSpectraS3Response(response)
 }
 
-func (client *Client) GetStorageDomainFailureNotificationRegistrationSpectraS3(request *models.GetStorageDomainFailureNotificationRegistrationSpectraS3Request) (*models.GetStorageDomainFailureNotificationRegistrationSpectraS3Response, error) {
+func (client *Client) GetStorageDomainFailureNotificationRegistrationSpectraS3(ctx context.Context, request *models.GetStorageDomainFailureNotificationRegistrationSpectraS3Request) (*models.GetStorageDomainFailureNotificationRegistrationSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/storage_domain_failure_notification_registration/" + request.NotificationId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -2416,7 +2417,7 @@ func (client *Client) GetStorageDomainFailureNotificationRegistrationSpectraS3(r
     return models.NewGetStorageDomainFailureNotificationRegistrationSpectraS3Response(response)
 }
 
-func (client *Client) GetStorageDomainFailureNotificationRegistrationsSpectraS3(request *models.GetStorageDomainFailureNotificationRegistrationsSpectraS3Request) (*models.GetStorageDomainFailureNotificationRegistrationsSpectraS3Response, error) {
+func (client *Client) GetStorageDomainFailureNotificationRegistrationsSpectraS3(ctx context.Context, request *models.GetStorageDomainFailureNotificationRegistrationsSpectraS3Request) (*models.GetStorageDomainFailureNotificationRegistrationsSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -2426,7 +2427,7 @@ func (client *Client) GetStorageDomainFailureNotificationRegistrationsSpectraS3(
         WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
         WithOptionalQueryParam("user_id", request.UserId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -2445,12 +2446,12 @@ func (client *Client) GetStorageDomainFailureNotificationRegistrationsSpectraS3(
     return models.NewGetStorageDomainFailureNotificationRegistrationsSpectraS3Response(response)
 }
 
-func (client *Client) GetSystemFailureNotificationRegistrationSpectraS3(request *models.GetSystemFailureNotificationRegistrationSpectraS3Request) (*models.GetSystemFailureNotificationRegistrationSpectraS3Response, error) {
+func (client *Client) GetSystemFailureNotificationRegistrationSpectraS3(ctx context.Context, request *models.GetSystemFailureNotificationRegistrationSpectraS3Request) (*models.GetSystemFailureNotificationRegistrationSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/system_failure_notification_registration/" + request.NotificationId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -2469,7 +2470,7 @@ func (client *Client) GetSystemFailureNotificationRegistrationSpectraS3(request 
     return models.NewGetSystemFailureNotificationRegistrationSpectraS3Response(response)
 }
 
-func (client *Client) GetSystemFailureNotificationRegistrationsSpectraS3(request *models.GetSystemFailureNotificationRegistrationsSpectraS3Request) (*models.GetSystemFailureNotificationRegistrationsSpectraS3Response, error) {
+func (client *Client) GetSystemFailureNotificationRegistrationsSpectraS3(ctx context.Context, request *models.GetSystemFailureNotificationRegistrationsSpectraS3Request) (*models.GetSystemFailureNotificationRegistrationsSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -2479,7 +2480,7 @@ func (client *Client) GetSystemFailureNotificationRegistrationsSpectraS3(request
         WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
         WithOptionalQueryParam("user_id", request.UserId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -2498,12 +2499,12 @@ func (client *Client) GetSystemFailureNotificationRegistrationsSpectraS3(request
     return models.NewGetSystemFailureNotificationRegistrationsSpectraS3Response(response)
 }
 
-func (client *Client) GetTapeFailureNotificationRegistrationSpectraS3(request *models.GetTapeFailureNotificationRegistrationSpectraS3Request) (*models.GetTapeFailureNotificationRegistrationSpectraS3Response, error) {
+func (client *Client) GetTapeFailureNotificationRegistrationSpectraS3(ctx context.Context, request *models.GetTapeFailureNotificationRegistrationSpectraS3Request) (*models.GetTapeFailureNotificationRegistrationSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/tape_failure_notification_registration/" + request.NotificationId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -2522,7 +2523,7 @@ func (client *Client) GetTapeFailureNotificationRegistrationSpectraS3(request *m
     return models.NewGetTapeFailureNotificationRegistrationSpectraS3Response(response)
 }
 
-func (client *Client) GetTapeFailureNotificationRegistrationsSpectraS3(request *models.GetTapeFailureNotificationRegistrationsSpectraS3Request) (*models.GetTapeFailureNotificationRegistrationsSpectraS3Response, error) {
+func (client *Client) GetTapeFailureNotificationRegistrationsSpectraS3(ctx context.Context, request *models.GetTapeFailureNotificationRegistrationsSpectraS3Request) (*models.GetTapeFailureNotificationRegistrationsSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -2532,7 +2533,7 @@ func (client *Client) GetTapeFailureNotificationRegistrationsSpectraS3(request *
         WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
         WithOptionalQueryParam("user_id", request.UserId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -2551,12 +2552,12 @@ func (client *Client) GetTapeFailureNotificationRegistrationsSpectraS3(request *
     return models.NewGetTapeFailureNotificationRegistrationsSpectraS3Response(response)
 }
 
-func (client *Client) GetTapePartitionFailureNotificationRegistrationSpectraS3(request *models.GetTapePartitionFailureNotificationRegistrationSpectraS3Request) (*models.GetTapePartitionFailureNotificationRegistrationSpectraS3Response, error) {
+func (client *Client) GetTapePartitionFailureNotificationRegistrationSpectraS3(ctx context.Context, request *models.GetTapePartitionFailureNotificationRegistrationSpectraS3Request) (*models.GetTapePartitionFailureNotificationRegistrationSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/tape_partition_failure_notification_registration/" + request.NotificationId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -2575,7 +2576,7 @@ func (client *Client) GetTapePartitionFailureNotificationRegistrationSpectraS3(r
     return models.NewGetTapePartitionFailureNotificationRegistrationSpectraS3Response(response)
 }
 
-func (client *Client) GetTapePartitionFailureNotificationRegistrationsSpectraS3(request *models.GetTapePartitionFailureNotificationRegistrationsSpectraS3Request) (*models.GetTapePartitionFailureNotificationRegistrationsSpectraS3Response, error) {
+func (client *Client) GetTapePartitionFailureNotificationRegistrationsSpectraS3(ctx context.Context, request *models.GetTapePartitionFailureNotificationRegistrationsSpectraS3Request) (*models.GetTapePartitionFailureNotificationRegistrationsSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -2585,7 +2586,7 @@ func (client *Client) GetTapePartitionFailureNotificationRegistrationsSpectraS3(
         WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
         WithOptionalQueryParam("user_id", request.UserId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -2604,13 +2605,13 @@ func (client *Client) GetTapePartitionFailureNotificationRegistrationsSpectraS3(
     return models.NewGetTapePartitionFailureNotificationRegistrationsSpectraS3Response(response)
 }
 
-func (client *Client) GetBlobPersistenceSpectraS3(request *models.GetBlobPersistenceSpectraS3Request) (*models.GetBlobPersistenceSpectraS3Response, error) {
+func (client *Client) GetBlobPersistenceSpectraS3(ctx context.Context, request *models.GetBlobPersistenceSpectraS3Request) (*models.GetBlobPersistenceSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/blob_persistence").
         WithReadCloser(buildStreamFromString(request.RequestPayload)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -2629,13 +2630,13 @@ func (client *Client) GetBlobPersistenceSpectraS3(request *models.GetBlobPersist
     return models.NewGetBlobPersistenceSpectraS3Response(response)
 }
 
-func (client *Client) GetObjectDetailsSpectraS3(request *models.GetObjectDetailsSpectraS3Request) (*models.GetObjectDetailsSpectraS3Response, error) {
+func (client *Client) GetObjectDetailsSpectraS3(ctx context.Context, request *models.GetObjectDetailsSpectraS3Request) (*models.GetObjectDetailsSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/object/" + request.ObjectName).
         WithQueryParam("bucket_id", request.BucketId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -2654,7 +2655,7 @@ func (client *Client) GetObjectDetailsSpectraS3(request *models.GetObjectDetails
     return models.NewGetObjectDetailsSpectraS3Response(response)
 }
 
-func (client *Client) GetObjectsDetailsSpectraS3(request *models.GetObjectsDetailsSpectraS3Request) (*models.GetObjectsDetailsSpectraS3Response, error) {
+func (client *Client) GetObjectsDetailsSpectraS3(ctx context.Context, request *models.GetObjectsDetailsSpectraS3Request) (*models.GetObjectsDetailsSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -2669,7 +2670,7 @@ func (client *Client) GetObjectsDetailsSpectraS3(request *models.GetObjectsDetai
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
         WithOptionalQueryParam("start_date", networking.Int64PtrToStrPtr(request.StartDate)).
         WithOptionalQueryParam("type", networking.InterfaceToStrPtr(request.S3ObjectType)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -2688,7 +2689,7 @@ func (client *Client) GetObjectsDetailsSpectraS3(request *models.GetObjectsDetai
     return models.NewGetObjectsDetailsSpectraS3Response(response)
 }
 
-func (client *Client) GetObjectsWithFullDetailsSpectraS3(request *models.GetObjectsWithFullDetailsSpectraS3Request) (*models.GetObjectsWithFullDetailsSpectraS3Response, error) {
+func (client *Client) GetObjectsWithFullDetailsSpectraS3(ctx context.Context, request *models.GetObjectsWithFullDetailsSpectraS3Request) (*models.GetObjectsWithFullDetailsSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -2705,7 +2706,7 @@ func (client *Client) GetObjectsWithFullDetailsSpectraS3(request *models.GetObje
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
         WithOptionalQueryParam("start_date", networking.Int64PtrToStrPtr(request.StartDate)).
         WithOptionalQueryParam("type", networking.InterfaceToStrPtr(request.S3ObjectType)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -2724,7 +2725,7 @@ func (client *Client) GetObjectsWithFullDetailsSpectraS3(request *models.GetObje
     return models.NewGetObjectsWithFullDetailsSpectraS3Response(response)
 }
 
-func (client *Client) VerifyPhysicalPlacementForObjectsSpectraS3(request *models.VerifyPhysicalPlacementForObjectsSpectraS3Request) (*models.VerifyPhysicalPlacementForObjectsSpectraS3Response, error) {
+func (client *Client) VerifyPhysicalPlacementForObjectsSpectraS3(ctx context.Context, request *models.VerifyPhysicalPlacementForObjectsSpectraS3Request) (*models.VerifyPhysicalPlacementForObjectsSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -2732,7 +2733,7 @@ func (client *Client) VerifyPhysicalPlacementForObjectsSpectraS3(request *models
         WithOptionalQueryParam("storage_domain", request.StorageDomain).
         WithQueryParam("operation", "verify_physical_placement").
         WithReadCloser(buildDs3GetObjectListStream(request.Objects)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -2751,7 +2752,7 @@ func (client *Client) VerifyPhysicalPlacementForObjectsSpectraS3(request *models
     return models.NewVerifyPhysicalPlacementForObjectsSpectraS3Response(response)
 }
 
-func (client *Client) VerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3(request *models.VerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request) (*models.VerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Response, error) {
+func (client *Client) VerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3(ctx context.Context, request *models.VerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Request) (*models.VerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -2760,7 +2761,7 @@ func (client *Client) VerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3(
         WithOptionalQueryParam("storage_domain", request.StorageDomain).
         WithQueryParam("operation", "verify_physical_placement").
         WithReadCloser(buildDs3GetObjectListStream(request.Objects)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -2779,13 +2780,13 @@ func (client *Client) VerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3(
     return models.NewVerifyPhysicalPlacementForObjectsWithFullDetailsSpectraS3Response(response)
 }
 
-func (client *Client) GetBlobsOnPoolSpectraS3(request *models.GetBlobsOnPoolSpectraS3Request) (*models.GetBlobsOnPoolSpectraS3Response, error) {
+func (client *Client) GetBlobsOnPoolSpectraS3(ctx context.Context, request *models.GetBlobsOnPoolSpectraS3Request) (*models.GetBlobsOnPoolSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/pool/" + request.Pool).
         WithQueryParam("operation", "get_physical_placement").
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -2804,7 +2805,7 @@ func (client *Client) GetBlobsOnPoolSpectraS3(request *models.GetBlobsOnPoolSpec
     return models.NewGetBlobsOnPoolSpectraS3Response(response)
 }
 
-func (client *Client) GetPoolFailuresSpectraS3(request *models.GetPoolFailuresSpectraS3Request) (*models.GetPoolFailuresSpectraS3Response, error) {
+func (client *Client) GetPoolFailuresSpectraS3(ctx context.Context, request *models.GetPoolFailuresSpectraS3Request) (*models.GetPoolFailuresSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -2816,7 +2817,7 @@ func (client *Client) GetPoolFailuresSpectraS3(request *models.GetPoolFailuresSp
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
         WithOptionalQueryParam("pool_id", request.PoolId).
         WithOptionalQueryParam("type", networking.InterfaceToStrPtr(request.PoolFailureType)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -2835,12 +2836,12 @@ func (client *Client) GetPoolFailuresSpectraS3(request *models.GetPoolFailuresSp
     return models.NewGetPoolFailuresSpectraS3Response(response)
 }
 
-func (client *Client) GetPoolPartitionSpectraS3(request *models.GetPoolPartitionSpectraS3Request) (*models.GetPoolPartitionSpectraS3Response, error) {
+func (client *Client) GetPoolPartitionSpectraS3(ctx context.Context, request *models.GetPoolPartitionSpectraS3Request) (*models.GetPoolPartitionSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/pool_partition/" + request.PoolPartition).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -2859,7 +2860,7 @@ func (client *Client) GetPoolPartitionSpectraS3(request *models.GetPoolPartition
     return models.NewGetPoolPartitionSpectraS3Response(response)
 }
 
-func (client *Client) GetPoolPartitionsSpectraS3(request *models.GetPoolPartitionsSpectraS3Request) (*models.GetPoolPartitionsSpectraS3Response, error) {
+func (client *Client) GetPoolPartitionsSpectraS3(ctx context.Context, request *models.GetPoolPartitionsSpectraS3Request) (*models.GetPoolPartitionsSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -2870,7 +2871,7 @@ func (client *Client) GetPoolPartitionsSpectraS3(request *models.GetPoolPartitio
         WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
         WithOptionalQueryParam("type", networking.InterfaceToStrPtr(request.PoolType)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -2889,12 +2890,12 @@ func (client *Client) GetPoolPartitionsSpectraS3(request *models.GetPoolPartitio
     return models.NewGetPoolPartitionsSpectraS3Response(response)
 }
 
-func (client *Client) GetPoolSpectraS3(request *models.GetPoolSpectraS3Request) (*models.GetPoolSpectraS3Response, error) {
+func (client *Client) GetPoolSpectraS3(ctx context.Context, request *models.GetPoolSpectraS3Request) (*models.GetPoolSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/pool/" + request.Pool).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -2913,7 +2914,7 @@ func (client *Client) GetPoolSpectraS3(request *models.GetPoolSpectraS3Request) 
     return models.NewGetPoolSpectraS3Response(response)
 }
 
-func (client *Client) GetPoolsSpectraS3(request *models.GetPoolsSpectraS3Request) (*models.GetPoolsSpectraS3Response, error) {
+func (client *Client) GetPoolsSpectraS3(ctx context.Context, request *models.GetPoolsSpectraS3Request) (*models.GetPoolsSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -2933,7 +2934,7 @@ func (client *Client) GetPoolsSpectraS3(request *models.GetPoolsSpectraS3Request
         WithOptionalQueryParam("state", networking.InterfaceToStrPtr(request.State)).
         WithOptionalQueryParam("storage_domain_member_id", request.StorageDomainMemberId).
         WithOptionalQueryParam("type", networking.InterfaceToStrPtr(request.PoolType)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -2952,7 +2953,7 @@ func (client *Client) GetPoolsSpectraS3(request *models.GetPoolsSpectraS3Request
     return models.NewGetPoolsSpectraS3Response(response)
 }
 
-func (client *Client) GetStorageDomainFailuresSpectraS3(request *models.GetStorageDomainFailuresSpectraS3Request) (*models.GetStorageDomainFailuresSpectraS3Response, error) {
+func (client *Client) GetStorageDomainFailuresSpectraS3(ctx context.Context, request *models.GetStorageDomainFailuresSpectraS3Request) (*models.GetStorageDomainFailuresSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -2964,7 +2965,7 @@ func (client *Client) GetStorageDomainFailuresSpectraS3(request *models.GetStora
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
         WithOptionalQueryParam("storage_domain_id", request.StorageDomainId).
         WithOptionalQueryParam("type", networking.InterfaceToStrPtr(request.StorageDomainFailureType)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -2983,12 +2984,12 @@ func (client *Client) GetStorageDomainFailuresSpectraS3(request *models.GetStora
     return models.NewGetStorageDomainFailuresSpectraS3Response(response)
 }
 
-func (client *Client) GetStorageDomainMemberSpectraS3(request *models.GetStorageDomainMemberSpectraS3Request) (*models.GetStorageDomainMemberSpectraS3Response, error) {
+func (client *Client) GetStorageDomainMemberSpectraS3(ctx context.Context, request *models.GetStorageDomainMemberSpectraS3Request) (*models.GetStorageDomainMemberSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/storage_domain_member/" + request.StorageDomainMember).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -3007,7 +3008,7 @@ func (client *Client) GetStorageDomainMemberSpectraS3(request *models.GetStorage
     return models.NewGetStorageDomainMemberSpectraS3Response(response)
 }
 
-func (client *Client) GetStorageDomainMembersSpectraS3(request *models.GetStorageDomainMembersSpectraS3Request) (*models.GetStorageDomainMembersSpectraS3Response, error) {
+func (client *Client) GetStorageDomainMembersSpectraS3(ctx context.Context, request *models.GetStorageDomainMembersSpectraS3Request) (*models.GetStorageDomainMembersSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -3022,7 +3023,7 @@ func (client *Client) GetStorageDomainMembersSpectraS3(request *models.GetStorag
         WithOptionalQueryParam("tape_partition_id", request.TapePartitionId).
         WithOptionalQueryParam("tape_type", request.TapeType).
         WithOptionalQueryParam("write_preference", networking.InterfaceToStrPtr(request.WritePreference)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -3041,12 +3042,12 @@ func (client *Client) GetStorageDomainMembersSpectraS3(request *models.GetStorag
     return models.NewGetStorageDomainMembersSpectraS3Response(response)
 }
 
-func (client *Client) GetStorageDomainSpectraS3(request *models.GetStorageDomainSpectraS3Request) (*models.GetStorageDomainSpectraS3Response, error) {
+func (client *Client) GetStorageDomainSpectraS3(ctx context.Context, request *models.GetStorageDomainSpectraS3Request) (*models.GetStorageDomainSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/storage_domain/" + request.StorageDomain).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -3065,7 +3066,7 @@ func (client *Client) GetStorageDomainSpectraS3(request *models.GetStorageDomain
     return models.NewGetStorageDomainSpectraS3Response(response)
 }
 
-func (client *Client) GetStorageDomainsSpectraS3(request *models.GetStorageDomainsSpectraS3Request) (*models.GetStorageDomainsSpectraS3Response, error) {
+func (client *Client) GetStorageDomainsSpectraS3(ctx context.Context, request *models.GetStorageDomainsSpectraS3Request) (*models.GetStorageDomainsSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -3082,7 +3083,7 @@ func (client *Client) GetStorageDomainsSpectraS3(request *models.GetStorageDomai
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
         WithOptionalQueryParam("secure_media_allocation", networking.BoolPtrToStrPtr(request.SecureMediaAllocation)).
         WithOptionalQueryParam("write_optimization", networking.InterfaceToStrPtr(request.WriteOptimization)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -3101,7 +3102,7 @@ func (client *Client) GetStorageDomainsSpectraS3(request *models.GetStorageDomai
     return models.NewGetStorageDomainsSpectraS3Response(response)
 }
 
-func (client *Client) GetFeatureKeysSpectraS3(request *models.GetFeatureKeysSpectraS3Request) (*models.GetFeatureKeysSpectraS3Response, error) {
+func (client *Client) GetFeatureKeysSpectraS3(ctx context.Context, request *models.GetFeatureKeysSpectraS3Request) (*models.GetFeatureKeysSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -3113,7 +3114,7 @@ func (client *Client) GetFeatureKeysSpectraS3(request *models.GetFeatureKeysSpec
         WithOptionalQueryParam("page_length", networking.IntPtrToStrPtr(request.PageLength)).
         WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -3132,7 +3133,7 @@ func (client *Client) GetFeatureKeysSpectraS3(request *models.GetFeatureKeysSpec
     return models.NewGetFeatureKeysSpectraS3Response(response)
 }
 
-func (client *Client) GetSystemFailuresSpectraS3(request *models.GetSystemFailuresSpectraS3Request) (*models.GetSystemFailuresSpectraS3Response, error) {
+func (client *Client) GetSystemFailuresSpectraS3(ctx context.Context, request *models.GetSystemFailuresSpectraS3Request) (*models.GetSystemFailuresSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -3143,7 +3144,7 @@ func (client *Client) GetSystemFailuresSpectraS3(request *models.GetSystemFailur
         WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
         WithOptionalQueryParam("type", networking.InterfaceToStrPtr(request.SystemFailureType)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -3162,12 +3163,12 @@ func (client *Client) GetSystemFailuresSpectraS3(request *models.GetSystemFailur
     return models.NewGetSystemFailuresSpectraS3Response(response)
 }
 
-func (client *Client) GetSystemInformationSpectraS3(request *models.GetSystemInformationSpectraS3Request) (*models.GetSystemInformationSpectraS3Response, error) {
+func (client *Client) GetSystemInformationSpectraS3(ctx context.Context, request *models.GetSystemInformationSpectraS3Request) (*models.GetSystemInformationSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/system_information").
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -3186,12 +3187,12 @@ func (client *Client) GetSystemInformationSpectraS3(request *models.GetSystemInf
     return models.NewGetSystemInformationSpectraS3Response(response)
 }
 
-func (client *Client) VerifySystemHealthSpectraS3(request *models.VerifySystemHealthSpectraS3Request) (*models.VerifySystemHealthSpectraS3Response, error) {
+func (client *Client) VerifySystemHealthSpectraS3(ctx context.Context, request *models.VerifySystemHealthSpectraS3Request) (*models.VerifySystemHealthSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/system_health").
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -3210,7 +3211,7 @@ func (client *Client) VerifySystemHealthSpectraS3(request *models.VerifySystemHe
     return models.NewVerifySystemHealthSpectraS3Response(response)
 }
 
-func (client *Client) GetBlobsOnTapeSpectraS3(request *models.GetBlobsOnTapeSpectraS3Request) (*models.GetBlobsOnTapeSpectraS3Response, error) {
+func (client *Client) GetBlobsOnTapeSpectraS3(ctx context.Context, request *models.GetBlobsOnTapeSpectraS3Request) (*models.GetBlobsOnTapeSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -3220,7 +3221,7 @@ func (client *Client) GetBlobsOnTapeSpectraS3(request *models.GetBlobsOnTapeSpec
         WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
         WithQueryParam("operation", "get_physical_placement").
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -3239,12 +3240,12 @@ func (client *Client) GetBlobsOnTapeSpectraS3(request *models.GetBlobsOnTapeSpec
     return models.NewGetBlobsOnTapeSpectraS3Response(response)
 }
 
-func (client *Client) GetTapeDensityDirectiveSpectraS3(request *models.GetTapeDensityDirectiveSpectraS3Request) (*models.GetTapeDensityDirectiveSpectraS3Response, error) {
+func (client *Client) GetTapeDensityDirectiveSpectraS3(ctx context.Context, request *models.GetTapeDensityDirectiveSpectraS3Request) (*models.GetTapeDensityDirectiveSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/tape_density_directive/" + request.TapeDensityDirective).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -3263,7 +3264,7 @@ func (client *Client) GetTapeDensityDirectiveSpectraS3(request *models.GetTapeDe
     return models.NewGetTapeDensityDirectiveSpectraS3Response(response)
 }
 
-func (client *Client) GetTapeDensityDirectivesSpectraS3(request *models.GetTapeDensityDirectivesSpectraS3Request) (*models.GetTapeDensityDirectivesSpectraS3Response, error) {
+func (client *Client) GetTapeDensityDirectivesSpectraS3(ctx context.Context, request *models.GetTapeDensityDirectivesSpectraS3Request) (*models.GetTapeDensityDirectivesSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -3275,7 +3276,7 @@ func (client *Client) GetTapeDensityDirectivesSpectraS3(request *models.GetTapeD
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
         WithOptionalQueryParam("partition_id", request.PartitionId).
         WithOptionalQueryParam("tape_type", request.TapeType).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -3294,12 +3295,12 @@ func (client *Client) GetTapeDensityDirectivesSpectraS3(request *models.GetTapeD
     return models.NewGetTapeDensityDirectivesSpectraS3Response(response)
 }
 
-func (client *Client) GetTapeDriveSpectraS3(request *models.GetTapeDriveSpectraS3Request) (*models.GetTapeDriveSpectraS3Response, error) {
+func (client *Client) GetTapeDriveSpectraS3(ctx context.Context, request *models.GetTapeDriveSpectraS3Request) (*models.GetTapeDriveSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/tape_drive/" + request.TapeDriveId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -3318,7 +3319,7 @@ func (client *Client) GetTapeDriveSpectraS3(request *models.GetTapeDriveSpectraS
     return models.NewGetTapeDriveSpectraS3Response(response)
 }
 
-func (client *Client) GetTapeDrivesSpectraS3(request *models.GetTapeDrivesSpectraS3Request) (*models.GetTapeDrivesSpectraS3Response, error) {
+func (client *Client) GetTapeDrivesSpectraS3(ctx context.Context, request *models.GetTapeDrivesSpectraS3Request) (*models.GetTapeDrivesSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -3333,7 +3334,7 @@ func (client *Client) GetTapeDrivesSpectraS3(request *models.GetTapeDrivesSpectr
         WithOptionalQueryParam("serial_number", request.SerialNumber).
         WithOptionalQueryParam("state", networking.InterfaceToStrPtr(request.State)).
         WithOptionalQueryParam("type", networking.InterfaceToStrPtr(request.TapeDriveType)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -3352,7 +3353,7 @@ func (client *Client) GetTapeDrivesSpectraS3(request *models.GetTapeDrivesSpectr
     return models.NewGetTapeDrivesSpectraS3Response(response)
 }
 
-func (client *Client) GetTapeFailuresSpectraS3(request *models.GetTapeFailuresSpectraS3Request) (*models.GetTapeFailuresSpectraS3Response, error) {
+func (client *Client) GetTapeFailuresSpectraS3(ctx context.Context, request *models.GetTapeFailuresSpectraS3Request) (*models.GetTapeFailuresSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -3365,7 +3366,7 @@ func (client *Client) GetTapeFailuresSpectraS3(request *models.GetTapeFailuresSp
         WithOptionalQueryParam("tape_drive_id", request.TapeDriveId).
         WithOptionalQueryParam("tape_id", request.TapeId).
         WithOptionalQueryParam("type", networking.InterfaceToStrPtr(request.TapeFailureType)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -3384,7 +3385,7 @@ func (client *Client) GetTapeFailuresSpectraS3(request *models.GetTapeFailuresSp
     return models.NewGetTapeFailuresSpectraS3Response(response)
 }
 
-func (client *Client) GetTapeLibrariesSpectraS3(request *models.GetTapeLibrariesSpectraS3Request) (*models.GetTapeLibrariesSpectraS3Response, error) {
+func (client *Client) GetTapeLibrariesSpectraS3(ctx context.Context, request *models.GetTapeLibrariesSpectraS3Request) (*models.GetTapeLibrariesSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -3396,7 +3397,7 @@ func (client *Client) GetTapeLibrariesSpectraS3(request *models.GetTapeLibraries
         WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
         WithOptionalQueryParam("serial_number", request.SerialNumber).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -3415,12 +3416,12 @@ func (client *Client) GetTapeLibrariesSpectraS3(request *models.GetTapeLibraries
     return models.NewGetTapeLibrariesSpectraS3Response(response)
 }
 
-func (client *Client) GetTapeLibrarySpectraS3(request *models.GetTapeLibrarySpectraS3Request) (*models.GetTapeLibrarySpectraS3Response, error) {
+func (client *Client) GetTapeLibrarySpectraS3(ctx context.Context, request *models.GetTapeLibrarySpectraS3Request) (*models.GetTapeLibrarySpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/tape_library/" + request.TapeLibraryId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -3439,7 +3440,7 @@ func (client *Client) GetTapeLibrarySpectraS3(request *models.GetTapeLibrarySpec
     return models.NewGetTapeLibrarySpectraS3Response(response)
 }
 
-func (client *Client) GetTapePartitionFailuresSpectraS3(request *models.GetTapePartitionFailuresSpectraS3Request) (*models.GetTapePartitionFailuresSpectraS3Response, error) {
+func (client *Client) GetTapePartitionFailuresSpectraS3(ctx context.Context, request *models.GetTapePartitionFailuresSpectraS3Request) (*models.GetTapePartitionFailuresSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -3451,7 +3452,7 @@ func (client *Client) GetTapePartitionFailuresSpectraS3(request *models.GetTapeP
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
         WithOptionalQueryParam("partition_id", request.PartitionId).
         WithOptionalQueryParam("type", networking.InterfaceToStrPtr(request.TapePartitionFailureType)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -3470,12 +3471,12 @@ func (client *Client) GetTapePartitionFailuresSpectraS3(request *models.GetTapeP
     return models.NewGetTapePartitionFailuresSpectraS3Response(response)
 }
 
-func (client *Client) GetTapePartitionSpectraS3(request *models.GetTapePartitionSpectraS3Request) (*models.GetTapePartitionSpectraS3Response, error) {
+func (client *Client) GetTapePartitionSpectraS3(ctx context.Context, request *models.GetTapePartitionSpectraS3Request) (*models.GetTapePartitionSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/tape_partition/" + request.TapePartition).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -3494,13 +3495,13 @@ func (client *Client) GetTapePartitionSpectraS3(request *models.GetTapePartition
     return models.NewGetTapePartitionSpectraS3Response(response)
 }
 
-func (client *Client) GetTapePartitionWithFullDetailsSpectraS3(request *models.GetTapePartitionWithFullDetailsSpectraS3Request) (*models.GetTapePartitionWithFullDetailsSpectraS3Response, error) {
+func (client *Client) GetTapePartitionWithFullDetailsSpectraS3(ctx context.Context, request *models.GetTapePartitionWithFullDetailsSpectraS3Request) (*models.GetTapePartitionWithFullDetailsSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/tape_partition/" + request.TapePartition).
         WithQueryParam("full_details", "").
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -3519,7 +3520,7 @@ func (client *Client) GetTapePartitionWithFullDetailsSpectraS3(request *models.G
     return models.NewGetTapePartitionWithFullDetailsSpectraS3Response(response)
 }
 
-func (client *Client) GetTapePartitionsSpectraS3(request *models.GetTapePartitionsSpectraS3Request) (*models.GetTapePartitionsSpectraS3Response, error) {
+func (client *Client) GetTapePartitionsSpectraS3(ctx context.Context, request *models.GetTapePartitionsSpectraS3Request) (*models.GetTapePartitionsSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -3534,7 +3535,7 @@ func (client *Client) GetTapePartitionsSpectraS3(request *models.GetTapePartitio
         WithOptionalQueryParam("quiesced", networking.InterfaceToStrPtr(request.Quiesced)).
         WithOptionalQueryParam("serial_number", request.SerialNumber).
         WithOptionalQueryParam("state", networking.InterfaceToStrPtr(request.State)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -3553,7 +3554,7 @@ func (client *Client) GetTapePartitionsSpectraS3(request *models.GetTapePartitio
     return models.NewGetTapePartitionsSpectraS3Response(response)
 }
 
-func (client *Client) GetTapePartitionsWithFullDetailsSpectraS3(request *models.GetTapePartitionsWithFullDetailsSpectraS3Request) (*models.GetTapePartitionsWithFullDetailsSpectraS3Response, error) {
+func (client *Client) GetTapePartitionsWithFullDetailsSpectraS3(ctx context.Context, request *models.GetTapePartitionsWithFullDetailsSpectraS3Request) (*models.GetTapePartitionsWithFullDetailsSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -3569,7 +3570,7 @@ func (client *Client) GetTapePartitionsWithFullDetailsSpectraS3(request *models.
         WithOptionalQueryParam("quiesced", networking.InterfaceToStrPtr(request.Quiesced)).
         WithOptionalQueryParam("serial_number", request.SerialNumber).
         WithOptionalQueryParam("state", networking.InterfaceToStrPtr(request.State)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -3588,12 +3589,12 @@ func (client *Client) GetTapePartitionsWithFullDetailsSpectraS3(request *models.
     return models.NewGetTapePartitionsWithFullDetailsSpectraS3Response(response)
 }
 
-func (client *Client) GetTapeSpectraS3(request *models.GetTapeSpectraS3Request) (*models.GetTapeSpectraS3Response, error) {
+func (client *Client) GetTapeSpectraS3(ctx context.Context, request *models.GetTapeSpectraS3Request) (*models.GetTapeSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/tape/" + request.TapeId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -3612,7 +3613,7 @@ func (client *Client) GetTapeSpectraS3(request *models.GetTapeSpectraS3Request) 
     return models.NewGetTapeSpectraS3Response(response)
 }
 
-func (client *Client) GetTapesSpectraS3(request *models.GetTapesSpectraS3Request) (*models.GetTapesSpectraS3Response, error) {
+func (client *Client) GetTapesSpectraS3(ctx context.Context, request *models.GetTapesSpectraS3Request) (*models.GetTapesSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -3642,7 +3643,7 @@ func (client *Client) GetTapesSpectraS3(request *models.GetTapesSpectraS3Request
         WithOptionalQueryParam("type", request.String).
         WithOptionalQueryParam("verify_pending", networking.InterfaceToStrPtr(request.VerifyPending)).
         WithOptionalQueryParam("write_protected", networking.BoolPtrToStrPtr(request.WriteProtected)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -3661,7 +3662,7 @@ func (client *Client) GetTapesSpectraS3(request *models.GetTapesSpectraS3Request
     return models.NewGetTapesSpectraS3Response(response)
 }
 
-func (client *Client) GetAzureTargetBucketNamesSpectraS3(request *models.GetAzureTargetBucketNamesSpectraS3Request) (*models.GetAzureTargetBucketNamesSpectraS3Response, error) {
+func (client *Client) GetAzureTargetBucketNamesSpectraS3(ctx context.Context, request *models.GetAzureTargetBucketNamesSpectraS3Request) (*models.GetAzureTargetBucketNamesSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -3673,7 +3674,7 @@ func (client *Client) GetAzureTargetBucketNamesSpectraS3(request *models.GetAzur
         WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
         WithOptionalQueryParam("target_id", request.TargetId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -3692,7 +3693,7 @@ func (client *Client) GetAzureTargetBucketNamesSpectraS3(request *models.GetAzur
     return models.NewGetAzureTargetBucketNamesSpectraS3Response(response)
 }
 
-func (client *Client) GetAzureTargetFailuresSpectraS3(request *models.GetAzureTargetFailuresSpectraS3Request) (*models.GetAzureTargetFailuresSpectraS3Response, error) {
+func (client *Client) GetAzureTargetFailuresSpectraS3(ctx context.Context, request *models.GetAzureTargetFailuresSpectraS3Request) (*models.GetAzureTargetFailuresSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -3704,7 +3705,7 @@ func (client *Client) GetAzureTargetFailuresSpectraS3(request *models.GetAzureTa
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
         WithOptionalQueryParam("target_id", request.TargetId).
         WithOptionalQueryParam("type", networking.InterfaceToStrPtr(request.TargetFailureType)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -3723,12 +3724,12 @@ func (client *Client) GetAzureTargetFailuresSpectraS3(request *models.GetAzureTa
     return models.NewGetAzureTargetFailuresSpectraS3Response(response)
 }
 
-func (client *Client) GetAzureTargetReadPreferenceSpectraS3(request *models.GetAzureTargetReadPreferenceSpectraS3Request) (*models.GetAzureTargetReadPreferenceSpectraS3Response, error) {
+func (client *Client) GetAzureTargetReadPreferenceSpectraS3(ctx context.Context, request *models.GetAzureTargetReadPreferenceSpectraS3Request) (*models.GetAzureTargetReadPreferenceSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/azure_target_read_preference/" + request.AzureTargetReadPreference).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -3747,7 +3748,7 @@ func (client *Client) GetAzureTargetReadPreferenceSpectraS3(request *models.GetA
     return models.NewGetAzureTargetReadPreferenceSpectraS3Response(response)
 }
 
-func (client *Client) GetAzureTargetReadPreferencesSpectraS3(request *models.GetAzureTargetReadPreferencesSpectraS3Request) (*models.GetAzureTargetReadPreferencesSpectraS3Response, error) {
+func (client *Client) GetAzureTargetReadPreferencesSpectraS3(ctx context.Context, request *models.GetAzureTargetReadPreferencesSpectraS3Request) (*models.GetAzureTargetReadPreferencesSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -3759,7 +3760,7 @@ func (client *Client) GetAzureTargetReadPreferencesSpectraS3(request *models.Get
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
         WithOptionalQueryParam("read_preference", networking.InterfaceToStrPtr(request.ReadPreference)).
         WithOptionalQueryParam("target_id", request.TargetId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -3778,12 +3779,12 @@ func (client *Client) GetAzureTargetReadPreferencesSpectraS3(request *models.Get
     return models.NewGetAzureTargetReadPreferencesSpectraS3Response(response)
 }
 
-func (client *Client) GetAzureTargetSpectraS3(request *models.GetAzureTargetSpectraS3Request) (*models.GetAzureTargetSpectraS3Response, error) {
+func (client *Client) GetAzureTargetSpectraS3(ctx context.Context, request *models.GetAzureTargetSpectraS3Request) (*models.GetAzureTargetSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/azure_target/" + request.AzureTarget).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -3802,7 +3803,7 @@ func (client *Client) GetAzureTargetSpectraS3(request *models.GetAzureTargetSpec
     return models.NewGetAzureTargetSpectraS3Response(response)
 }
 
-func (client *Client) GetAzureTargetsSpectraS3(request *models.GetAzureTargetsSpectraS3Request) (*models.GetAzureTargetsSpectraS3Response, error) {
+func (client *Client) GetAzureTargetsSpectraS3(ctx context.Context, request *models.GetAzureTargetsSpectraS3Request) (*models.GetAzureTargetsSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -3818,7 +3819,7 @@ func (client *Client) GetAzureTargetsSpectraS3(request *models.GetAzureTargetsSp
         WithOptionalQueryParam("permit_going_out_of_sync", networking.BoolPtrToStrPtr(request.PermitGoingOutOfSync)).
         WithOptionalQueryParam("quiesced", networking.InterfaceToStrPtr(request.Quiesced)).
         WithOptionalQueryParam("state", networking.InterfaceToStrPtr(request.State)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -3837,13 +3838,13 @@ func (client *Client) GetAzureTargetsSpectraS3(request *models.GetAzureTargetsSp
     return models.NewGetAzureTargetsSpectraS3Response(response)
 }
 
-func (client *Client) GetBlobsOnAzureTargetSpectraS3(request *models.GetBlobsOnAzureTargetSpectraS3Request) (*models.GetBlobsOnAzureTargetSpectraS3Response, error) {
+func (client *Client) GetBlobsOnAzureTargetSpectraS3(ctx context.Context, request *models.GetBlobsOnAzureTargetSpectraS3Request) (*models.GetBlobsOnAzureTargetSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/azure_target/" + request.AzureTarget).
         WithQueryParam("operation", "get_physical_placement").
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -3862,13 +3863,13 @@ func (client *Client) GetBlobsOnAzureTargetSpectraS3(request *models.GetBlobsOnA
     return models.NewGetBlobsOnAzureTargetSpectraS3Response(response)
 }
 
-func (client *Client) GetBlobsOnDs3TargetSpectraS3(request *models.GetBlobsOnDs3TargetSpectraS3Request) (*models.GetBlobsOnDs3TargetSpectraS3Response, error) {
+func (client *Client) GetBlobsOnDs3TargetSpectraS3(ctx context.Context, request *models.GetBlobsOnDs3TargetSpectraS3Request) (*models.GetBlobsOnDs3TargetSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/ds3_target/" + request.Ds3Target).
         WithQueryParam("operation", "get_physical_placement").
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -3887,12 +3888,12 @@ func (client *Client) GetBlobsOnDs3TargetSpectraS3(request *models.GetBlobsOnDs3
     return models.NewGetBlobsOnDs3TargetSpectraS3Response(response)
 }
 
-func (client *Client) GetDs3TargetDataPoliciesSpectraS3(request *models.GetDs3TargetDataPoliciesSpectraS3Request) (*models.GetDs3TargetDataPoliciesSpectraS3Response, error) {
+func (client *Client) GetDs3TargetDataPoliciesSpectraS3(ctx context.Context, request *models.GetDs3TargetDataPoliciesSpectraS3Request) (*models.GetDs3TargetDataPoliciesSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/ds3_target_data_policies/" + request.Ds3TargetDataPolicies).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -3911,7 +3912,7 @@ func (client *Client) GetDs3TargetDataPoliciesSpectraS3(request *models.GetDs3Ta
     return models.NewGetDs3TargetDataPoliciesSpectraS3Response(response)
 }
 
-func (client *Client) GetDs3TargetFailuresSpectraS3(request *models.GetDs3TargetFailuresSpectraS3Request) (*models.GetDs3TargetFailuresSpectraS3Response, error) {
+func (client *Client) GetDs3TargetFailuresSpectraS3(ctx context.Context, request *models.GetDs3TargetFailuresSpectraS3Request) (*models.GetDs3TargetFailuresSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -3923,7 +3924,7 @@ func (client *Client) GetDs3TargetFailuresSpectraS3(request *models.GetDs3Target
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
         WithOptionalQueryParam("target_id", request.TargetId).
         WithOptionalQueryParam("type", networking.InterfaceToStrPtr(request.TargetFailureType)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -3942,12 +3943,12 @@ func (client *Client) GetDs3TargetFailuresSpectraS3(request *models.GetDs3Target
     return models.NewGetDs3TargetFailuresSpectraS3Response(response)
 }
 
-func (client *Client) GetDs3TargetReadPreferenceSpectraS3(request *models.GetDs3TargetReadPreferenceSpectraS3Request) (*models.GetDs3TargetReadPreferenceSpectraS3Response, error) {
+func (client *Client) GetDs3TargetReadPreferenceSpectraS3(ctx context.Context, request *models.GetDs3TargetReadPreferenceSpectraS3Request) (*models.GetDs3TargetReadPreferenceSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/ds3_target_read_preference/" + request.Ds3TargetReadPreference).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -3966,7 +3967,7 @@ func (client *Client) GetDs3TargetReadPreferenceSpectraS3(request *models.GetDs3
     return models.NewGetDs3TargetReadPreferenceSpectraS3Response(response)
 }
 
-func (client *Client) GetDs3TargetReadPreferencesSpectraS3(request *models.GetDs3TargetReadPreferencesSpectraS3Request) (*models.GetDs3TargetReadPreferencesSpectraS3Response, error) {
+func (client *Client) GetDs3TargetReadPreferencesSpectraS3(ctx context.Context, request *models.GetDs3TargetReadPreferencesSpectraS3Request) (*models.GetDs3TargetReadPreferencesSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -3978,7 +3979,7 @@ func (client *Client) GetDs3TargetReadPreferencesSpectraS3(request *models.GetDs
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
         WithOptionalQueryParam("read_preference", networking.InterfaceToStrPtr(request.ReadPreference)).
         WithOptionalQueryParam("target_id", request.TargetId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -3997,12 +3998,12 @@ func (client *Client) GetDs3TargetReadPreferencesSpectraS3(request *models.GetDs
     return models.NewGetDs3TargetReadPreferencesSpectraS3Response(response)
 }
 
-func (client *Client) GetDs3TargetSpectraS3(request *models.GetDs3TargetSpectraS3Request) (*models.GetDs3TargetSpectraS3Response, error) {
+func (client *Client) GetDs3TargetSpectraS3(ctx context.Context, request *models.GetDs3TargetSpectraS3Request) (*models.GetDs3TargetSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/ds3_target/" + request.Ds3Target).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -4021,7 +4022,7 @@ func (client *Client) GetDs3TargetSpectraS3(request *models.GetDs3TargetSpectraS
     return models.NewGetDs3TargetSpectraS3Response(response)
 }
 
-func (client *Client) GetDs3TargetsSpectraS3(request *models.GetDs3TargetsSpectraS3Request) (*models.GetDs3TargetsSpectraS3Response, error) {
+func (client *Client) GetDs3TargetsSpectraS3(ctx context.Context, request *models.GetDs3TargetsSpectraS3Request) (*models.GetDs3TargetsSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -4041,7 +4042,7 @@ func (client *Client) GetDs3TargetsSpectraS3(request *models.GetDs3TargetsSpectr
         WithOptionalQueryParam("permit_going_out_of_sync", networking.BoolPtrToStrPtr(request.PermitGoingOutOfSync)).
         WithOptionalQueryParam("quiesced", networking.InterfaceToStrPtr(request.Quiesced)).
         WithOptionalQueryParam("state", networking.InterfaceToStrPtr(request.State)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -4060,13 +4061,13 @@ func (client *Client) GetDs3TargetsSpectraS3(request *models.GetDs3TargetsSpectr
     return models.NewGetDs3TargetsSpectraS3Response(response)
 }
 
-func (client *Client) GetBlobsOnS3TargetSpectraS3(request *models.GetBlobsOnS3TargetSpectraS3Request) (*models.GetBlobsOnS3TargetSpectraS3Response, error) {
+func (client *Client) GetBlobsOnS3TargetSpectraS3(ctx context.Context, request *models.GetBlobsOnS3TargetSpectraS3Request) (*models.GetBlobsOnS3TargetSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/s3_target/" + request.S3Target).
         WithQueryParam("operation", "get_physical_placement").
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -4085,7 +4086,7 @@ func (client *Client) GetBlobsOnS3TargetSpectraS3(request *models.GetBlobsOnS3Ta
     return models.NewGetBlobsOnS3TargetSpectraS3Response(response)
 }
 
-func (client *Client) GetS3TargetBucketNamesSpectraS3(request *models.GetS3TargetBucketNamesSpectraS3Request) (*models.GetS3TargetBucketNamesSpectraS3Response, error) {
+func (client *Client) GetS3TargetBucketNamesSpectraS3(ctx context.Context, request *models.GetS3TargetBucketNamesSpectraS3Request) (*models.GetS3TargetBucketNamesSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -4097,7 +4098,7 @@ func (client *Client) GetS3TargetBucketNamesSpectraS3(request *models.GetS3Targe
         WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
         WithOptionalQueryParam("target_id", request.TargetId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -4116,7 +4117,7 @@ func (client *Client) GetS3TargetBucketNamesSpectraS3(request *models.GetS3Targe
     return models.NewGetS3TargetBucketNamesSpectraS3Response(response)
 }
 
-func (client *Client) GetS3TargetFailuresSpectraS3(request *models.GetS3TargetFailuresSpectraS3Request) (*models.GetS3TargetFailuresSpectraS3Response, error) {
+func (client *Client) GetS3TargetFailuresSpectraS3(ctx context.Context, request *models.GetS3TargetFailuresSpectraS3Request) (*models.GetS3TargetFailuresSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -4128,7 +4129,7 @@ func (client *Client) GetS3TargetFailuresSpectraS3(request *models.GetS3TargetFa
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
         WithOptionalQueryParam("target_id", request.TargetId).
         WithOptionalQueryParam("type", networking.InterfaceToStrPtr(request.TargetFailureType)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -4147,12 +4148,12 @@ func (client *Client) GetS3TargetFailuresSpectraS3(request *models.GetS3TargetFa
     return models.NewGetS3TargetFailuresSpectraS3Response(response)
 }
 
-func (client *Client) GetS3TargetReadPreferenceSpectraS3(request *models.GetS3TargetReadPreferenceSpectraS3Request) (*models.GetS3TargetReadPreferenceSpectraS3Response, error) {
+func (client *Client) GetS3TargetReadPreferenceSpectraS3(ctx context.Context, request *models.GetS3TargetReadPreferenceSpectraS3Request) (*models.GetS3TargetReadPreferenceSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/s3_target_read_preference/" + request.S3TargetReadPreference).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -4171,7 +4172,7 @@ func (client *Client) GetS3TargetReadPreferenceSpectraS3(request *models.GetS3Ta
     return models.NewGetS3TargetReadPreferenceSpectraS3Response(response)
 }
 
-func (client *Client) GetS3TargetReadPreferencesSpectraS3(request *models.GetS3TargetReadPreferencesSpectraS3Request) (*models.GetS3TargetReadPreferencesSpectraS3Response, error) {
+func (client *Client) GetS3TargetReadPreferencesSpectraS3(ctx context.Context, request *models.GetS3TargetReadPreferencesSpectraS3Request) (*models.GetS3TargetReadPreferencesSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -4183,7 +4184,7 @@ func (client *Client) GetS3TargetReadPreferencesSpectraS3(request *models.GetS3T
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
         WithOptionalQueryParam("read_preference", networking.InterfaceToStrPtr(request.ReadPreference)).
         WithOptionalQueryParam("target_id", request.TargetId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -4202,12 +4203,12 @@ func (client *Client) GetS3TargetReadPreferencesSpectraS3(request *models.GetS3T
     return models.NewGetS3TargetReadPreferencesSpectraS3Response(response)
 }
 
-func (client *Client) GetS3TargetSpectraS3(request *models.GetS3TargetSpectraS3Request) (*models.GetS3TargetSpectraS3Response, error) {
+func (client *Client) GetS3TargetSpectraS3(ctx context.Context, request *models.GetS3TargetSpectraS3Request) (*models.GetS3TargetSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/s3_target/" + request.S3Target).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -4226,7 +4227,7 @@ func (client *Client) GetS3TargetSpectraS3(request *models.GetS3TargetSpectraS3R
     return models.NewGetS3TargetSpectraS3Response(response)
 }
 
-func (client *Client) GetS3TargetsSpectraS3(request *models.GetS3TargetsSpectraS3Request) (*models.GetS3TargetsSpectraS3Response, error) {
+func (client *Client) GetS3TargetsSpectraS3(ctx context.Context, request *models.GetS3TargetsSpectraS3Request) (*models.GetS3TargetsSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -4245,7 +4246,7 @@ func (client *Client) GetS3TargetsSpectraS3(request *models.GetS3TargetsSpectraS
         WithOptionalQueryParam("quiesced", networking.InterfaceToStrPtr(request.Quiesced)).
         WithOptionalQueryParam("region", networking.InterfaceToStrPtr(request.Region)).
         WithOptionalQueryParam("state", networking.InterfaceToStrPtr(request.State)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -4264,12 +4265,12 @@ func (client *Client) GetS3TargetsSpectraS3(request *models.GetS3TargetsSpectraS
     return models.NewGetS3TargetsSpectraS3Response(response)
 }
 
-func (client *Client) GetUserSpectraS3(request *models.GetUserSpectraS3Request) (*models.GetUserSpectraS3Response, error) {
+func (client *Client) GetUserSpectraS3(ctx context.Context, request *models.GetUserSpectraS3Request) (*models.GetUserSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
         WithPath("/_rest_/user/" + request.UserId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -4288,7 +4289,7 @@ func (client *Client) GetUserSpectraS3(request *models.GetUserSpectraS3Request) 
     return models.NewGetUserSpectraS3Response(response)
 }
 
-func (client *Client) GetUsersSpectraS3(request *models.GetUsersSpectraS3Request) (*models.GetUsersSpectraS3Response, error) {
+func (client *Client) GetUsersSpectraS3(ctx context.Context, request *models.GetUsersSpectraS3Request) (*models.GetUsersSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_GET).
@@ -4300,7 +4301,7 @@ func (client *Client) GetUsersSpectraS3(request *models.GetUsersSpectraS3Request
         WithOptionalQueryParam("page_length", networking.IntPtrToStrPtr(request.PageLength)).
         WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
         WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err

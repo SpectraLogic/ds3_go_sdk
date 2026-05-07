@@ -12,6 +12,7 @@
 package networking
 
 import (
+    "context"
     "io"
     "net/http"
     "net/url"
@@ -108,8 +109,8 @@ func (builder *HttpRequestBuilder) WithContentType(contentType string) *HttpRequ
     return builder
 }
 
-func (builder *HttpRequestBuilder) Build(conn *ConnectionInfo) (*http.Request, error) {
-    httpRequest, err := http.NewRequest(builder.signatureFields.Verb, builder.buildUrl(conn), builder.reader)
+func (builder *HttpRequestBuilder) Build(ctx context.Context, conn *ConnectionInfo) (*http.Request, error) {
+    httpRequest, err := http.NewRequestWithContext(ctx, builder.signatureFields.Verb, builder.buildUrl(conn), builder.reader)
     if err != nil {
         return nil, err
     }

@@ -12,6 +12,7 @@
 package functions
 
 import (
+    "context"
     "log"
     "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
     "github.com/SpectraLogic/ds3_go_sdk/ds3/buildclient"
@@ -34,7 +35,7 @@ func GetBucketSample() {
     bucketRequest := models.NewGetBucketRequest(utils.BucketName)
 
     // Perform the Get Bucket call by using the client and invoking the desired command.
-    bucketResponse, err := client.GetBucket(bucketRequest)
+    bucketResponse, err := client.GetBucket(context.Background(), bucketRequest)
     if err != nil {
         log.Fatal(err)
     }

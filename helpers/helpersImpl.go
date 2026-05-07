@@ -1,6 +1,7 @@
 package helpers
 
 import (
+    "context"
     "fmt"
     "github.com/SpectraLogic/ds3_go_sdk/ds3"
     "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
@@ -18,20 +19,22 @@ type HelperInterface interface {
     // Puts the specified list of objects on the Black Pearl in the specified bucket.
     // Returns the Black Pearl bulk put Job ID and any errors that may have occurred.
     // A job ID will be returned if a BP job was successfully created, regardless of
-    // whether additional errors occur.
-    PutObjects(bucketName string, objects []helperModels.PutObject, strategy WriteTransferStrategy) (string, error)
+    // whether additional errors occur. Cancelling ctx aborts in-flight requests and
+    // stops the producer between attempts.
+    PutObjects(ctx context.Context, bucketName string, objects []helperModels.PutObject, strategy WriteTransferStrategy) (string, error)
 
     // Retrieves the list of objects from the specified bucket on the Black Pearl.
     // Returns the Black Pearl bulk get Job ID and any errors that may have occurred.
     // A job ID will be returned if a BP job was successfully created, regardless of
-    // whether additional errors occur.
-    GetObjects(bucketName string, objects []helperModels.GetObject, strategy ReadTransferStrategy) (string, error)
+    // whether additional errors occur. Cancelling ctx aborts in-flight requests and
+    // stops the producer between attempts.
+    GetObjects(ctx context.Context, bucketName string, objects []helperModels.GetObject, strategy ReadTransferStrategy) (string, error)
 
     // Retrieves the list of objects from the specified bucket on the Black Pearl.
     // If a get job cannot be created due to insufficient cache space to fulfill an
     // IN_ORDER processing guarantee, then the job is split across multiple BP jobs.
     // This allows for the IN_ORDER retrieval of objects that exceed available cache space.
-    GetObjectsSpanningJobs(bucketName string, objects []helperModels.GetObject, strategy ReadTransferStrategy) ([]string, error)
+    GetObjectsSpanningJobs(ctx context.Context, bucketName string, objects []helperModels.GetObject, strategy ReadTransferStrategy) ([]string, error)
 }
 
 type HelperImpl struct {
@@ -52,19 +55,19 @@ func (helper *HelperImpl) ListObjectsFromDirectory(directoryName string) []helpe
 }
 */
 
-func (helper *HelperImpl) PutObjects(bucketName string, objects []helperModels.PutObject, strategy WriteTransferStrategy) (string, error) {
+func (helper *HelperImpl) PutObjects(ctx context.Context, bucketName string, objects []helperModels.PutObject, strategy WriteTransferStrategy) (string, error) {
     transceiver := newPutTransceiver(bucketName, &objects, &strategy, helper.client)
-    return transceiver.transfer()
+    return transceiver.transfer(ctx)
 }
 
-func (helper *HelperImpl) GetObjects(bucketName string, objects []helperModels.GetObject, strategy ReadTransferStrategy) (string, error) {
+func (helper *HelperImpl) GetObjects(ctx context.Context, bucketName string, objects []helperModels.GetObject, strategy ReadTransferStrategy) (string, error) {
     transceiver := newGetTransceiver(bucketName, &objects, &strategy, helper.client)
-    return transceiver.transfer()
+    return transceiver.transfer(ctx)
 }
 
-func (helper *HelperImpl) GetObjectsSpanningJobs(bucketName string, objects []helperModels.GetObject, strategy ReadTransferStrategy) ([]string, error) {
+func (helper *HelperImpl) GetObjectsSpanningJobs(ctx context.Context, bucketName string, objects []helperModels.GetObject, strategy ReadTransferStrategy) ([]string, error) {
     // Attempt to send the entire job at once
-    jobId, err := helper.GetObjects(bucketName, objects, strategy)
+    jobId, err := helper.GetObjects(ctx, bucketName, objects, strategy)
     if err == nil {
         // success
         return []string{jobId}, nil
@@ -76,7 +79,7 @@ func (helper *HelperImpl) GetObjectsSpanningJobs(bucketName string, objects []he
     // Retrieve each file individually
     var jobIds []string
     for _, getObject := range objects {
-        fileJobIds := helper.retrieveIndividualFile(bucketName, getObject, strategy)
+        fileJobIds := helper.retrieveIndividualFile(ctx, bucketName, getObject, strategy)
         jobIds = append(jobIds, fileJobIds...)
     }
     return jobIds, nil
@@ -95,9 +98,9 @@ func (helper *HelperImpl) isCannotPreAllocateError(err error) bool {
     return false
 }
 
-func (helper *HelperImpl) retrieveIndividualFile(bucketName string, getObject helperModels.GetObject, strategy ReadTransferStrategy) []string {
+func (helper *HelperImpl) retrieveIndividualFile(ctx context.Context, bucketName string, getObject helperModels.GetObject, strategy ReadTransferStrategy) []string {
     // Get the blob offsets
-    headObject, err := helper.client.HeadObject(models.NewHeadObjectRequest(bucketName, getObject.Name))
+    headObject, err := helper.client.HeadObject(ctx, models.NewHeadObjectRequest(bucketName, getObject.Name))
     if err != nil {
         getObject.ChannelBuilder.SetFatalError(err)
         return nil
@@ -113,6 +116,7 @@ func (helper *HelperImpl) retrieveIndividualFile(bucketName string, getObject he
 
     // Get the object size
     objectsDetails, err := helper.client.GetObjectsWithFullDetailsSpectraS3(
+        ctx,
         models.NewGetObjectsWithFullDetailsSpectraS3Request().
             WithBucketId(bucketName).WithName(getObject.Name).
             WithLatest(true))
@@ -150,7 +154,7 @@ func (helper *HelperImpl) retrieveIndividualFile(bucketName string, getObject he
             continue
         }
 
-        jobId, err := helper.retrieveBlob(bucketName, getObject, blobRanges, strategy)
+        jobId, err := helper.retrieveBlob(ctx, bucketName, getObject, blobRanges, strategy)
         if err != nil {
             getObject.ChannelBuilder.SetFatalError(err)
             return nil
@@ -165,7 +169,7 @@ func (helper *HelperImpl) retrieveIndividualFile(bucketName string, getObject he
     return jobIds
 }
 
-func (helper *HelperImpl) retrieveBlob(bucketName string, getObject helperModels.GetObject, blobRanges []models.Range, strategy ReadTransferStrategy) (string, error) {
+func (helper *HelperImpl) retrieveBlob(ctx context.Context, bucketName string, getObject helperModels.GetObject, blobRanges []models.Range, strategy ReadTransferStrategy) (string, error) {
     // Since there is only one blob being retrieved, create the job with Order-Guarantee=None so that the
     // job will wait if cache needs to be reclaimed on the BP before the chunk can be allocated.
     getObjectBlob := getObject
@@ -174,5 +178,5 @@ func (helper *HelperImpl) retrieveBlob(bucketName string, getObject helperModels
     strategyCopy := strategy
     strategyCopy.Options.ChunkClientProcessingOrderGuarantee = models.JOB_CHUNK_CLIENT_PROCESSING_ORDER_GUARANTEE_NONE
 
-    return helper.GetObjects(bucketName, []helperModels.GetObject{getObjectBlob}, strategyCopy)
+    return helper.GetObjects(ctx, bucketName, []helperModels.GetObject{getObjectBlob}, strategyCopy)
 }

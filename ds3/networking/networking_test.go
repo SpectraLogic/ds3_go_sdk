@@ -12,6 +12,7 @@
 package networking
 
 import (
+    "context"
     "testing"
     "net/url"
     "github.com/SpectraLogic/ds3_go_sdk/ds3_utils/ds3Testing"
@@ -51,7 +52,7 @@ func TestBuildingAuthorizationDigestWithMetadata(t *testing.T) {
 	httpRequestBuilder.
 		WithHeader(models.AMZ_META_HEADER + shasta, samoyed).
 		WithHeader(models.AMZ_META_HEADER + gracie, eskimo).
-		Build(&connectionInfo)
+		Build(context.Background(), &connectionInfo)
 
 	amazonHeaders := httpRequestBuilder.signatureFields.CanonicalizedAmzHeaders
 
@@ -78,7 +79,7 @@ func TestBuildingAuthorizationDigestWithSignatureQueryParams(t *testing.T) {
 		WithQueryParam("uploads", "two").
 		WithQueryParam("doesnotexist", "four").
 		WithQueryParam("versionId", "version").
-		Build(&connectionInfo)
+		Build(context.Background(), &connectionInfo)
 
 	subResources := httpRequestBuilder.signatureFields.CanonicalizedSubResources
 

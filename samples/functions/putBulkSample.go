@@ -12,6 +12,7 @@
 package functions
 
 import (
+    "context"
     "log"
     "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
     "github.com/SpectraLogic/ds3_go_sdk/ds3/buildclient"
@@ -31,7 +32,7 @@ func PutBulkSample() {
     }
 
     // Create a bucket where our files will be stored.
-    _, err = client.PutBucket(models.NewPutBucketRequest(utils.BucketName))
+    _, err = client.PutBucket(context.Background(), models.NewPutBucketRequest(utils.BucketName))
     if err != nil {
         log.Fatal(err)
     }
@@ -53,7 +54,7 @@ func PutBulkSample() {
 
     // Send the bulk put request to the server. This creates the job, but does not
     // directly send the data.
-    putBulkResponse, err := client.PutBulkJobSpectraS3(putBulkRequest)
+    putBulkResponse, err := client.PutBulkJobSpectraS3(context.Background(), putBulkRequest)
     if err != nil {
         log.Fatal(err)
     }
@@ -71,7 +72,7 @@ func PutBulkSample() {
         // not be able to receive everything, so not all chunks will necessarily be
         // returned
         chunksReady := models.NewGetJobChunksReadyForClientProcessingSpectraS3Request(putBulkResponse.MasterObjectList.JobId)
-        chunksReadyResponse, err := client.GetJobChunksReadyForClientProcessingSpectraS3(chunksReady)
+        chunksReadyResponse, err := client.GetJobChunksReadyForClientProcessingSpectraS3(context.Background(), chunksReady)
         if err != nil {
             log.Fatal(err)
         }
@@ -94,7 +95,7 @@ func PutBulkSample() {
                         WithJob(chunksReadyResponse.MasterObjectList.JobId).
                         WithOffset(curObj.Offset)
 
-                    _, err = client.PutObject(putObjRequest)
+                    _, err = client.PutObject(context.Background(), putObjRequest)
                     if err != nil {
                         log.Fatal(err)
                     }

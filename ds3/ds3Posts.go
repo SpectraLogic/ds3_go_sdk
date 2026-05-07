@@ -14,11 +14,12 @@
 package ds3
 
 import (
+    "context"
     "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
     "github.com/SpectraLogic/ds3_go_sdk/ds3/networking"
 )
 
-func (client *Client) CompleteBlob(request *models.CompleteBlobRequest) (*models.CompleteBlobResponse, error) {
+func (client *Client) CompleteBlob(ctx context.Context, request *models.CompleteBlobRequest) (*models.CompleteBlobResponse, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_POST).
@@ -28,7 +29,7 @@ func (client *Client) CompleteBlob(request *models.CompleteBlobRequest) (*models
         WithOptionalQueryParam("size", networking.Int64PtrToStrPtr(request.Size)).
         WithChecksum(request.Checksum).
         WithHeaders(request.Metadata).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -46,14 +47,14 @@ func (client *Client) CompleteBlob(request *models.CompleteBlobRequest) (*models
     return models.NewCompleteBlobResponse(response)
 }
 
-func (client *Client) CompleteMultiPartUpload(request *models.CompleteMultiPartUploadRequest) (*models.CompleteMultiPartUploadResponse, error) {
+func (client *Client) CompleteMultiPartUpload(ctx context.Context, request *models.CompleteMultiPartUploadRequest) (*models.CompleteMultiPartUploadResponse, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_POST).
         WithPath("/" + request.BucketName + "/" + request.ObjectName).
         WithQueryParam("upload_id", request.UploadId).
         WithReadCloser(buildPartsListStream(request.Parts)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -71,14 +72,14 @@ func (client *Client) CompleteMultiPartUpload(request *models.CompleteMultiPartU
     return models.NewCompleteMultiPartUploadResponse(response)
 }
 
-func (client *Client) DeleteObjects(request *models.DeleteObjectsRequest) (*models.DeleteObjectsResponse, error) {
+func (client *Client) DeleteObjects(ctx context.Context, request *models.DeleteObjectsRequest) (*models.DeleteObjectsResponse, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_POST).
         WithPath("/" + request.BucketName).
         WithQueryParam("delete", "").
         WithReadCloser(buildDeleteObjectsPayload(request.ObjectNames)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -96,13 +97,13 @@ func (client *Client) DeleteObjects(request *models.DeleteObjectsRequest) (*mode
     return models.NewDeleteObjectsResponse(response)
 }
 
-func (client *Client) InitiateMultiPartUpload(request *models.InitiateMultiPartUploadRequest) (*models.InitiateMultiPartUploadResponse, error) {
+func (client *Client) InitiateMultiPartUpload(ctx context.Context, request *models.InitiateMultiPartUploadRequest) (*models.InitiateMultiPartUploadResponse, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_POST).
         WithPath("/" + request.BucketName + "/" + request.ObjectName).
         WithQueryParam("uploads", "").
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -120,7 +121,7 @@ func (client *Client) InitiateMultiPartUpload(request *models.InitiateMultiPartU
     return models.NewInitiateMultiPartUploadResponse(response)
 }
 
-func (client *Client) PutBucketAclForGroupSpectraS3(request *models.PutBucketAclForGroupSpectraS3Request) (*models.PutBucketAclForGroupSpectraS3Response, error) {
+func (client *Client) PutBucketAclForGroupSpectraS3(ctx context.Context, request *models.PutBucketAclForGroupSpectraS3Request) (*models.PutBucketAclForGroupSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_POST).
@@ -128,7 +129,7 @@ func (client *Client) PutBucketAclForGroupSpectraS3(request *models.PutBucketAcl
         WithQueryParam("bucket_id", request.BucketId).
         WithQueryParam("group_id", request.GroupId).
         WithQueryParam("permission", request.Permission.String()).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -146,7 +147,7 @@ func (client *Client) PutBucketAclForGroupSpectraS3(request *models.PutBucketAcl
     return models.NewPutBucketAclForGroupSpectraS3Response(response)
 }
 
-func (client *Client) PutBucketAclForUserSpectraS3(request *models.PutBucketAclForUserSpectraS3Request) (*models.PutBucketAclForUserSpectraS3Response, error) {
+func (client *Client) PutBucketAclForUserSpectraS3(ctx context.Context, request *models.PutBucketAclForUserSpectraS3Request) (*models.PutBucketAclForUserSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_POST).
@@ -154,7 +155,7 @@ func (client *Client) PutBucketAclForUserSpectraS3(request *models.PutBucketAclF
         WithQueryParam("bucket_id", request.BucketId).
         WithQueryParam("permission", request.Permission.String()).
         WithQueryParam("user_id", request.UserId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -172,14 +173,14 @@ func (client *Client) PutBucketAclForUserSpectraS3(request *models.PutBucketAclF
     return models.NewPutBucketAclForUserSpectraS3Response(response)
 }
 
-func (client *Client) PutDataPolicyAclForGroupSpectraS3(request *models.PutDataPolicyAclForGroupSpectraS3Request) (*models.PutDataPolicyAclForGroupSpectraS3Response, error) {
+func (client *Client) PutDataPolicyAclForGroupSpectraS3(ctx context.Context, request *models.PutDataPolicyAclForGroupSpectraS3Request) (*models.PutDataPolicyAclForGroupSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_POST).
         WithPath("/_rest_/data_policy_acl").
         WithQueryParam("data_policy_id", request.DataPolicyId).
         WithQueryParam("group_id", request.GroupId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -197,14 +198,14 @@ func (client *Client) PutDataPolicyAclForGroupSpectraS3(request *models.PutDataP
     return models.NewPutDataPolicyAclForGroupSpectraS3Response(response)
 }
 
-func (client *Client) PutDataPolicyAclForUserSpectraS3(request *models.PutDataPolicyAclForUserSpectraS3Request) (*models.PutDataPolicyAclForUserSpectraS3Response, error) {
+func (client *Client) PutDataPolicyAclForUserSpectraS3(ctx context.Context, request *models.PutDataPolicyAclForUserSpectraS3Request) (*models.PutDataPolicyAclForUserSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_POST).
         WithPath("/_rest_/data_policy_acl").
         WithQueryParam("data_policy_id", request.DataPolicyId).
         WithQueryParam("user_id", request.UserId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -222,14 +223,14 @@ func (client *Client) PutDataPolicyAclForUserSpectraS3(request *models.PutDataPo
     return models.NewPutDataPolicyAclForUserSpectraS3Response(response)
 }
 
-func (client *Client) PutGlobalBucketAclForGroupSpectraS3(request *models.PutGlobalBucketAclForGroupSpectraS3Request) (*models.PutGlobalBucketAclForGroupSpectraS3Response, error) {
+func (client *Client) PutGlobalBucketAclForGroupSpectraS3(ctx context.Context, request *models.PutGlobalBucketAclForGroupSpectraS3Request) (*models.PutGlobalBucketAclForGroupSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_POST).
         WithPath("/_rest_/bucket_acl").
         WithQueryParam("group_id", request.GroupId).
         WithQueryParam("permission", request.Permission.String()).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -247,14 +248,14 @@ func (client *Client) PutGlobalBucketAclForGroupSpectraS3(request *models.PutGlo
     return models.NewPutGlobalBucketAclForGroupSpectraS3Response(response)
 }
 
-func (client *Client) PutGlobalBucketAclForUserSpectraS3(request *models.PutGlobalBucketAclForUserSpectraS3Request) (*models.PutGlobalBucketAclForUserSpectraS3Response, error) {
+func (client *Client) PutGlobalBucketAclForUserSpectraS3(ctx context.Context, request *models.PutGlobalBucketAclForUserSpectraS3Request) (*models.PutGlobalBucketAclForUserSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_POST).
         WithPath("/_rest_/bucket_acl").
         WithQueryParam("permission", request.Permission.String()).
         WithQueryParam("user_id", request.UserId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -272,13 +273,13 @@ func (client *Client) PutGlobalBucketAclForUserSpectraS3(request *models.PutGlob
     return models.NewPutGlobalBucketAclForUserSpectraS3Response(response)
 }
 
-func (client *Client) PutGlobalDataPolicyAclForGroupSpectraS3(request *models.PutGlobalDataPolicyAclForGroupSpectraS3Request) (*models.PutGlobalDataPolicyAclForGroupSpectraS3Response, error) {
+func (client *Client) PutGlobalDataPolicyAclForGroupSpectraS3(ctx context.Context, request *models.PutGlobalDataPolicyAclForGroupSpectraS3Request) (*models.PutGlobalDataPolicyAclForGroupSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_POST).
         WithPath("/_rest_/data_policy_acl").
         WithQueryParam("group_id", request.GroupId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -296,13 +297,13 @@ func (client *Client) PutGlobalDataPolicyAclForGroupSpectraS3(request *models.Pu
     return models.NewPutGlobalDataPolicyAclForGroupSpectraS3Response(response)
 }
 
-func (client *Client) PutGlobalDataPolicyAclForUserSpectraS3(request *models.PutGlobalDataPolicyAclForUserSpectraS3Request) (*models.PutGlobalDataPolicyAclForUserSpectraS3Response, error) {
+func (client *Client) PutGlobalDataPolicyAclForUserSpectraS3(ctx context.Context, request *models.PutGlobalDataPolicyAclForUserSpectraS3Request) (*models.PutGlobalDataPolicyAclForUserSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_POST).
         WithPath("/_rest_/data_policy_acl").
         WithQueryParam("user_id", request.UserId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -320,7 +321,7 @@ func (client *Client) PutGlobalDataPolicyAclForUserSpectraS3(request *models.Put
     return models.NewPutGlobalDataPolicyAclForUserSpectraS3Response(response)
 }
 
-func (client *Client) PutBucketSpectraS3(request *models.PutBucketSpectraS3Request) (*models.PutBucketSpectraS3Response, error) {
+func (client *Client) PutBucketSpectraS3(ctx context.Context, request *models.PutBucketSpectraS3Request) (*models.PutBucketSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_POST).
@@ -330,7 +331,7 @@ func (client *Client) PutBucketSpectraS3(request *models.PutBucketSpectraS3Reque
         WithOptionalQueryParam("id", request.Id).
         WithOptionalQueryParam("protected", networking.BoolPtrToStrPtr(request.Protected)).
         WithOptionalQueryParam("user_id", request.UserId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -348,7 +349,7 @@ func (client *Client) PutBucketSpectraS3(request *models.PutBucketSpectraS3Reque
     return models.NewPutBucketSpectraS3Response(response)
 }
 
-func (client *Client) PutAzureDataReplicationRuleSpectraS3(request *models.PutAzureDataReplicationRuleSpectraS3Request) (*models.PutAzureDataReplicationRuleSpectraS3Response, error) {
+func (client *Client) PutAzureDataReplicationRuleSpectraS3(ctx context.Context, request *models.PutAzureDataReplicationRuleSpectraS3Request) (*models.PutAzureDataReplicationRuleSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_POST).
@@ -358,7 +359,7 @@ func (client *Client) PutAzureDataReplicationRuleSpectraS3(request *models.PutAz
         WithQueryParam("type", request.DataReplicationRuleType.String()).
         WithOptionalQueryParam("max_blob_part_size_in_bytes", networking.Int64PtrToStrPtr(request.MaxBlobPartSizeInBytes)).
         WithOptionalQueryParam("replicate_deletes", networking.BoolPtrToStrPtr(request.ReplicateDeletes)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -376,7 +377,7 @@ func (client *Client) PutAzureDataReplicationRuleSpectraS3(request *models.PutAz
     return models.NewPutAzureDataReplicationRuleSpectraS3Response(response)
 }
 
-func (client *Client) PutDataPersistenceRuleSpectraS3(request *models.PutDataPersistenceRuleSpectraS3Request) (*models.PutDataPersistenceRuleSpectraS3Response, error) {
+func (client *Client) PutDataPersistenceRuleSpectraS3(ctx context.Context, request *models.PutDataPersistenceRuleSpectraS3Request) (*models.PutDataPersistenceRuleSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_POST).
@@ -386,7 +387,7 @@ func (client *Client) PutDataPersistenceRuleSpectraS3(request *models.PutDataPer
         WithQueryParam("storage_domain_id", request.StorageDomainId).
         WithQueryParam("type", request.DataPersistenceRuleType.String()).
         WithOptionalQueryParam("minimum_days_to_retain", networking.IntPtrToStrPtr(request.MinimumDaysToRetain)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -404,7 +405,7 @@ func (client *Client) PutDataPersistenceRuleSpectraS3(request *models.PutDataPer
     return models.NewPutDataPersistenceRuleSpectraS3Response(response)
 }
 
-func (client *Client) PutDataPolicySpectraS3(request *models.PutDataPolicySpectraS3Request) (*models.PutDataPolicySpectraS3Response, error) {
+func (client *Client) PutDataPolicySpectraS3(ctx context.Context, request *models.PutDataPolicySpectraS3Request) (*models.PutDataPolicySpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_POST).
@@ -423,7 +424,7 @@ func (client *Client) PutDataPolicySpectraS3(request *models.PutDataPolicySpectr
         WithOptionalQueryParam("max_versions_to_keep", networking.IntPtrToStrPtr(request.MaxVersionsToKeep)).
         WithOptionalQueryParam("rebuild_priority", networking.InterfaceToStrPtr(request.RebuildPriority)).
         WithOptionalQueryParam("versioning", networking.InterfaceToStrPtr(request.Versioning)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -441,7 +442,7 @@ func (client *Client) PutDataPolicySpectraS3(request *models.PutDataPolicySpectr
     return models.NewPutDataPolicySpectraS3Response(response)
 }
 
-func (client *Client) PutDs3DataReplicationRuleSpectraS3(request *models.PutDs3DataReplicationRuleSpectraS3Request) (*models.PutDs3DataReplicationRuleSpectraS3Response, error) {
+func (client *Client) PutDs3DataReplicationRuleSpectraS3(ctx context.Context, request *models.PutDs3DataReplicationRuleSpectraS3Request) (*models.PutDs3DataReplicationRuleSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_POST).
@@ -451,7 +452,7 @@ func (client *Client) PutDs3DataReplicationRuleSpectraS3(request *models.PutDs3D
         WithQueryParam("type", request.DataReplicationRuleType.String()).
         WithOptionalQueryParam("replicate_deletes", networking.BoolPtrToStrPtr(request.ReplicateDeletes)).
         WithOptionalQueryParam("target_data_policy", request.TargetDataPolicy).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -469,7 +470,7 @@ func (client *Client) PutDs3DataReplicationRuleSpectraS3(request *models.PutDs3D
     return models.NewPutDs3DataReplicationRuleSpectraS3Response(response)
 }
 
-func (client *Client) PutS3DataReplicationRuleSpectraS3(request *models.PutS3DataReplicationRuleSpectraS3Request) (*models.PutS3DataReplicationRuleSpectraS3Response, error) {
+func (client *Client) PutS3DataReplicationRuleSpectraS3(ctx context.Context, request *models.PutS3DataReplicationRuleSpectraS3Request) (*models.PutS3DataReplicationRuleSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_POST).
@@ -480,7 +481,7 @@ func (client *Client) PutS3DataReplicationRuleSpectraS3(request *models.PutS3Dat
         WithOptionalQueryParam("initial_data_placement", networking.InterfaceToStrPtr(request.InitialDataPlacement)).
         WithOptionalQueryParam("max_blob_part_size_in_bytes", networking.Int64PtrToStrPtr(request.MaxBlobPartSizeInBytes)).
         WithOptionalQueryParam("replicate_deletes", networking.BoolPtrToStrPtr(request.ReplicateDeletes)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -498,14 +499,14 @@ func (client *Client) PutS3DataReplicationRuleSpectraS3(request *models.PutS3Dat
     return models.NewPutS3DataReplicationRuleSpectraS3Response(response)
 }
 
-func (client *Client) PutGroupGroupMemberSpectraS3(request *models.PutGroupGroupMemberSpectraS3Request) (*models.PutGroupGroupMemberSpectraS3Response, error) {
+func (client *Client) PutGroupGroupMemberSpectraS3(ctx context.Context, request *models.PutGroupGroupMemberSpectraS3Request) (*models.PutGroupGroupMemberSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_POST).
         WithPath("/_rest_/group_member").
         WithQueryParam("group_id", request.GroupId).
         WithQueryParam("member_group_id", request.MemberGroupId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -523,13 +524,13 @@ func (client *Client) PutGroupGroupMemberSpectraS3(request *models.PutGroupGroup
     return models.NewPutGroupGroupMemberSpectraS3Response(response)
 }
 
-func (client *Client) PutGroupSpectraS3(request *models.PutGroupSpectraS3Request) (*models.PutGroupSpectraS3Response, error) {
+func (client *Client) PutGroupSpectraS3(ctx context.Context, request *models.PutGroupSpectraS3Request) (*models.PutGroupSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_POST).
         WithPath("/_rest_/group").
         WithQueryParam("name", request.Name).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -547,14 +548,14 @@ func (client *Client) PutGroupSpectraS3(request *models.PutGroupSpectraS3Request
     return models.NewPutGroupSpectraS3Response(response)
 }
 
-func (client *Client) PutUserGroupMemberSpectraS3(request *models.PutUserGroupMemberSpectraS3Request) (*models.PutUserGroupMemberSpectraS3Response, error) {
+func (client *Client) PutUserGroupMemberSpectraS3(ctx context.Context, request *models.PutUserGroupMemberSpectraS3Request) (*models.PutUserGroupMemberSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_POST).
         WithPath("/_rest_/group_member").
         WithQueryParam("group_id", request.GroupId).
         WithQueryParam("member_user_id", request.MemberUserId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -572,7 +573,7 @@ func (client *Client) PutUserGroupMemberSpectraS3(request *models.PutUserGroupMe
     return models.NewPutUserGroupMemberSpectraS3Response(response)
 }
 
-func (client *Client) PutAzureTargetFailureNotificationRegistrationSpectraS3(request *models.PutAzureTargetFailureNotificationRegistrationSpectraS3Request) (*models.PutAzureTargetFailureNotificationRegistrationSpectraS3Response, error) {
+func (client *Client) PutAzureTargetFailureNotificationRegistrationSpectraS3(ctx context.Context, request *models.PutAzureTargetFailureNotificationRegistrationSpectraS3Request) (*models.PutAzureTargetFailureNotificationRegistrationSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_POST).
@@ -581,7 +582,7 @@ func (client *Client) PutAzureTargetFailureNotificationRegistrationSpectraS3(req
         WithOptionalQueryParam("format", networking.InterfaceToStrPtr(request.Format)).
         WithOptionalQueryParam("naming_convention", networking.InterfaceToStrPtr(request.NamingConvention)).
         WithOptionalQueryParam("notification_http_method", networking.InterfaceToStrPtr(request.NotificationHttpMethod)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -599,7 +600,7 @@ func (client *Client) PutAzureTargetFailureNotificationRegistrationSpectraS3(req
     return models.NewPutAzureTargetFailureNotificationRegistrationSpectraS3Response(response)
 }
 
-func (client *Client) PutBucketChangesNotificationRegistrationSpectraS3(request *models.PutBucketChangesNotificationRegistrationSpectraS3Request) (*models.PutBucketChangesNotificationRegistrationSpectraS3Response, error) {
+func (client *Client) PutBucketChangesNotificationRegistrationSpectraS3(ctx context.Context, request *models.PutBucketChangesNotificationRegistrationSpectraS3Request) (*models.PutBucketChangesNotificationRegistrationSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_POST).
@@ -609,7 +610,7 @@ func (client *Client) PutBucketChangesNotificationRegistrationSpectraS3(request 
         WithOptionalQueryParam("format", networking.InterfaceToStrPtr(request.Format)).
         WithOptionalQueryParam("naming_convention", networking.InterfaceToStrPtr(request.NamingConvention)).
         WithOptionalQueryParam("notification_http_method", networking.InterfaceToStrPtr(request.NotificationHttpMethod)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -627,7 +628,7 @@ func (client *Client) PutBucketChangesNotificationRegistrationSpectraS3(request 
     return models.NewPutBucketChangesNotificationRegistrationSpectraS3Response(response)
 }
 
-func (client *Client) PutDs3TargetFailureNotificationRegistrationSpectraS3(request *models.PutDs3TargetFailureNotificationRegistrationSpectraS3Request) (*models.PutDs3TargetFailureNotificationRegistrationSpectraS3Response, error) {
+func (client *Client) PutDs3TargetFailureNotificationRegistrationSpectraS3(ctx context.Context, request *models.PutDs3TargetFailureNotificationRegistrationSpectraS3Request) (*models.PutDs3TargetFailureNotificationRegistrationSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_POST).
@@ -636,7 +637,7 @@ func (client *Client) PutDs3TargetFailureNotificationRegistrationSpectraS3(reque
         WithOptionalQueryParam("format", networking.InterfaceToStrPtr(request.Format)).
         WithOptionalQueryParam("naming_convention", networking.InterfaceToStrPtr(request.NamingConvention)).
         WithOptionalQueryParam("notification_http_method", networking.InterfaceToStrPtr(request.NotificationHttpMethod)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -654,7 +655,7 @@ func (client *Client) PutDs3TargetFailureNotificationRegistrationSpectraS3(reque
     return models.NewPutDs3TargetFailureNotificationRegistrationSpectraS3Response(response)
 }
 
-func (client *Client) PutJobCompletedNotificationRegistrationSpectraS3(request *models.PutJobCompletedNotificationRegistrationSpectraS3Request) (*models.PutJobCompletedNotificationRegistrationSpectraS3Response, error) {
+func (client *Client) PutJobCompletedNotificationRegistrationSpectraS3(ctx context.Context, request *models.PutJobCompletedNotificationRegistrationSpectraS3Request) (*models.PutJobCompletedNotificationRegistrationSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_POST).
@@ -664,7 +665,7 @@ func (client *Client) PutJobCompletedNotificationRegistrationSpectraS3(request *
         WithOptionalQueryParam("job_id", request.JobId).
         WithOptionalQueryParam("naming_convention", networking.InterfaceToStrPtr(request.NamingConvention)).
         WithOptionalQueryParam("notification_http_method", networking.InterfaceToStrPtr(request.NotificationHttpMethod)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -682,7 +683,7 @@ func (client *Client) PutJobCompletedNotificationRegistrationSpectraS3(request *
     return models.NewPutJobCompletedNotificationRegistrationSpectraS3Response(response)
 }
 
-func (client *Client) PutJobCreatedNotificationRegistrationSpectraS3(request *models.PutJobCreatedNotificationRegistrationSpectraS3Request) (*models.PutJobCreatedNotificationRegistrationSpectraS3Response, error) {
+func (client *Client) PutJobCreatedNotificationRegistrationSpectraS3(ctx context.Context, request *models.PutJobCreatedNotificationRegistrationSpectraS3Request) (*models.PutJobCreatedNotificationRegistrationSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_POST).
@@ -691,7 +692,7 @@ func (client *Client) PutJobCreatedNotificationRegistrationSpectraS3(request *mo
         WithOptionalQueryParam("format", networking.InterfaceToStrPtr(request.Format)).
         WithOptionalQueryParam("naming_convention", networking.InterfaceToStrPtr(request.NamingConvention)).
         WithOptionalQueryParam("notification_http_method", networking.InterfaceToStrPtr(request.NotificationHttpMethod)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -709,7 +710,7 @@ func (client *Client) PutJobCreatedNotificationRegistrationSpectraS3(request *mo
     return models.NewPutJobCreatedNotificationRegistrationSpectraS3Response(response)
 }
 
-func (client *Client) PutJobCreationFailedNotificationRegistrationSpectraS3(request *models.PutJobCreationFailedNotificationRegistrationSpectraS3Request) (*models.PutJobCreationFailedNotificationRegistrationSpectraS3Response, error) {
+func (client *Client) PutJobCreationFailedNotificationRegistrationSpectraS3(ctx context.Context, request *models.PutJobCreationFailedNotificationRegistrationSpectraS3Request) (*models.PutJobCreationFailedNotificationRegistrationSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_POST).
@@ -718,7 +719,7 @@ func (client *Client) PutJobCreationFailedNotificationRegistrationSpectraS3(requ
         WithOptionalQueryParam("format", networking.InterfaceToStrPtr(request.Format)).
         WithOptionalQueryParam("naming_convention", networking.InterfaceToStrPtr(request.NamingConvention)).
         WithOptionalQueryParam("notification_http_method", networking.InterfaceToStrPtr(request.NotificationHttpMethod)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -736,7 +737,7 @@ func (client *Client) PutJobCreationFailedNotificationRegistrationSpectraS3(requ
     return models.NewPutJobCreationFailedNotificationRegistrationSpectraS3Response(response)
 }
 
-func (client *Client) PutObjectCachedNotificationRegistrationSpectraS3(request *models.PutObjectCachedNotificationRegistrationSpectraS3Request) (*models.PutObjectCachedNotificationRegistrationSpectraS3Response, error) {
+func (client *Client) PutObjectCachedNotificationRegistrationSpectraS3(ctx context.Context, request *models.PutObjectCachedNotificationRegistrationSpectraS3Request) (*models.PutObjectCachedNotificationRegistrationSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_POST).
@@ -746,7 +747,7 @@ func (client *Client) PutObjectCachedNotificationRegistrationSpectraS3(request *
         WithOptionalQueryParam("job_id", request.JobId).
         WithOptionalQueryParam("naming_convention", networking.InterfaceToStrPtr(request.NamingConvention)).
         WithOptionalQueryParam("notification_http_method", networking.InterfaceToStrPtr(request.NotificationHttpMethod)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -764,7 +765,7 @@ func (client *Client) PutObjectCachedNotificationRegistrationSpectraS3(request *
     return models.NewPutObjectCachedNotificationRegistrationSpectraS3Response(response)
 }
 
-func (client *Client) PutObjectLostNotificationRegistrationSpectraS3(request *models.PutObjectLostNotificationRegistrationSpectraS3Request) (*models.PutObjectLostNotificationRegistrationSpectraS3Response, error) {
+func (client *Client) PutObjectLostNotificationRegistrationSpectraS3(ctx context.Context, request *models.PutObjectLostNotificationRegistrationSpectraS3Request) (*models.PutObjectLostNotificationRegistrationSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_POST).
@@ -773,7 +774,7 @@ func (client *Client) PutObjectLostNotificationRegistrationSpectraS3(request *mo
         WithOptionalQueryParam("format", networking.InterfaceToStrPtr(request.Format)).
         WithOptionalQueryParam("naming_convention", networking.InterfaceToStrPtr(request.NamingConvention)).
         WithOptionalQueryParam("notification_http_method", networking.InterfaceToStrPtr(request.NotificationHttpMethod)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -791,7 +792,7 @@ func (client *Client) PutObjectLostNotificationRegistrationSpectraS3(request *mo
     return models.NewPutObjectLostNotificationRegistrationSpectraS3Response(response)
 }
 
-func (client *Client) PutObjectPersistedNotificationRegistrationSpectraS3(request *models.PutObjectPersistedNotificationRegistrationSpectraS3Request) (*models.PutObjectPersistedNotificationRegistrationSpectraS3Response, error) {
+func (client *Client) PutObjectPersistedNotificationRegistrationSpectraS3(ctx context.Context, request *models.PutObjectPersistedNotificationRegistrationSpectraS3Request) (*models.PutObjectPersistedNotificationRegistrationSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_POST).
@@ -801,7 +802,7 @@ func (client *Client) PutObjectPersistedNotificationRegistrationSpectraS3(reques
         WithOptionalQueryParam("job_id", request.JobId).
         WithOptionalQueryParam("naming_convention", networking.InterfaceToStrPtr(request.NamingConvention)).
         WithOptionalQueryParam("notification_http_method", networking.InterfaceToStrPtr(request.NotificationHttpMethod)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -819,7 +820,7 @@ func (client *Client) PutObjectPersistedNotificationRegistrationSpectraS3(reques
     return models.NewPutObjectPersistedNotificationRegistrationSpectraS3Response(response)
 }
 
-func (client *Client) PutPoolFailureNotificationRegistrationSpectraS3(request *models.PutPoolFailureNotificationRegistrationSpectraS3Request) (*models.PutPoolFailureNotificationRegistrationSpectraS3Response, error) {
+func (client *Client) PutPoolFailureNotificationRegistrationSpectraS3(ctx context.Context, request *models.PutPoolFailureNotificationRegistrationSpectraS3Request) (*models.PutPoolFailureNotificationRegistrationSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_POST).
@@ -828,7 +829,7 @@ func (client *Client) PutPoolFailureNotificationRegistrationSpectraS3(request *m
         WithOptionalQueryParam("format", networking.InterfaceToStrPtr(request.Format)).
         WithOptionalQueryParam("naming_convention", networking.InterfaceToStrPtr(request.NamingConvention)).
         WithOptionalQueryParam("notification_http_method", networking.InterfaceToStrPtr(request.NotificationHttpMethod)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -846,7 +847,7 @@ func (client *Client) PutPoolFailureNotificationRegistrationSpectraS3(request *m
     return models.NewPutPoolFailureNotificationRegistrationSpectraS3Response(response)
 }
 
-func (client *Client) PutS3TargetFailureNotificationRegistrationSpectraS3(request *models.PutS3TargetFailureNotificationRegistrationSpectraS3Request) (*models.PutS3TargetFailureNotificationRegistrationSpectraS3Response, error) {
+func (client *Client) PutS3TargetFailureNotificationRegistrationSpectraS3(ctx context.Context, request *models.PutS3TargetFailureNotificationRegistrationSpectraS3Request) (*models.PutS3TargetFailureNotificationRegistrationSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_POST).
@@ -855,7 +856,7 @@ func (client *Client) PutS3TargetFailureNotificationRegistrationSpectraS3(reques
         WithOptionalQueryParam("format", networking.InterfaceToStrPtr(request.Format)).
         WithOptionalQueryParam("naming_convention", networking.InterfaceToStrPtr(request.NamingConvention)).
         WithOptionalQueryParam("notification_http_method", networking.InterfaceToStrPtr(request.NotificationHttpMethod)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -873,7 +874,7 @@ func (client *Client) PutS3TargetFailureNotificationRegistrationSpectraS3(reques
     return models.NewPutS3TargetFailureNotificationRegistrationSpectraS3Response(response)
 }
 
-func (client *Client) PutStorageDomainFailureNotificationRegistrationSpectraS3(request *models.PutStorageDomainFailureNotificationRegistrationSpectraS3Request) (*models.PutStorageDomainFailureNotificationRegistrationSpectraS3Response, error) {
+func (client *Client) PutStorageDomainFailureNotificationRegistrationSpectraS3(ctx context.Context, request *models.PutStorageDomainFailureNotificationRegistrationSpectraS3Request) (*models.PutStorageDomainFailureNotificationRegistrationSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_POST).
@@ -882,7 +883,7 @@ func (client *Client) PutStorageDomainFailureNotificationRegistrationSpectraS3(r
         WithOptionalQueryParam("format", networking.InterfaceToStrPtr(request.Format)).
         WithOptionalQueryParam("naming_convention", networking.InterfaceToStrPtr(request.NamingConvention)).
         WithOptionalQueryParam("notification_http_method", networking.InterfaceToStrPtr(request.NotificationHttpMethod)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -900,7 +901,7 @@ func (client *Client) PutStorageDomainFailureNotificationRegistrationSpectraS3(r
     return models.NewPutStorageDomainFailureNotificationRegistrationSpectraS3Response(response)
 }
 
-func (client *Client) PutSystemFailureNotificationRegistrationSpectraS3(request *models.PutSystemFailureNotificationRegistrationSpectraS3Request) (*models.PutSystemFailureNotificationRegistrationSpectraS3Response, error) {
+func (client *Client) PutSystemFailureNotificationRegistrationSpectraS3(ctx context.Context, request *models.PutSystemFailureNotificationRegistrationSpectraS3Request) (*models.PutSystemFailureNotificationRegistrationSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_POST).
@@ -909,7 +910,7 @@ func (client *Client) PutSystemFailureNotificationRegistrationSpectraS3(request 
         WithOptionalQueryParam("format", networking.InterfaceToStrPtr(request.Format)).
         WithOptionalQueryParam("naming_convention", networking.InterfaceToStrPtr(request.NamingConvention)).
         WithOptionalQueryParam("notification_http_method", networking.InterfaceToStrPtr(request.NotificationHttpMethod)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -927,7 +928,7 @@ func (client *Client) PutSystemFailureNotificationRegistrationSpectraS3(request 
     return models.NewPutSystemFailureNotificationRegistrationSpectraS3Response(response)
 }
 
-func (client *Client) PutTapeFailureNotificationRegistrationSpectraS3(request *models.PutTapeFailureNotificationRegistrationSpectraS3Request) (*models.PutTapeFailureNotificationRegistrationSpectraS3Response, error) {
+func (client *Client) PutTapeFailureNotificationRegistrationSpectraS3(ctx context.Context, request *models.PutTapeFailureNotificationRegistrationSpectraS3Request) (*models.PutTapeFailureNotificationRegistrationSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_POST).
@@ -936,7 +937,7 @@ func (client *Client) PutTapeFailureNotificationRegistrationSpectraS3(request *m
         WithOptionalQueryParam("format", networking.InterfaceToStrPtr(request.Format)).
         WithOptionalQueryParam("naming_convention", networking.InterfaceToStrPtr(request.NamingConvention)).
         WithOptionalQueryParam("notification_http_method", networking.InterfaceToStrPtr(request.NotificationHttpMethod)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -954,7 +955,7 @@ func (client *Client) PutTapeFailureNotificationRegistrationSpectraS3(request *m
     return models.NewPutTapeFailureNotificationRegistrationSpectraS3Response(response)
 }
 
-func (client *Client) PutTapePartitionFailureNotificationRegistrationSpectraS3(request *models.PutTapePartitionFailureNotificationRegistrationSpectraS3Request) (*models.PutTapePartitionFailureNotificationRegistrationSpectraS3Response, error) {
+func (client *Client) PutTapePartitionFailureNotificationRegistrationSpectraS3(ctx context.Context, request *models.PutTapePartitionFailureNotificationRegistrationSpectraS3Request) (*models.PutTapePartitionFailureNotificationRegistrationSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_POST).
@@ -963,7 +964,7 @@ func (client *Client) PutTapePartitionFailureNotificationRegistrationSpectraS3(r
         WithOptionalQueryParam("format", networking.InterfaceToStrPtr(request.Format)).
         WithOptionalQueryParam("naming_convention", networking.InterfaceToStrPtr(request.NamingConvention)).
         WithOptionalQueryParam("notification_http_method", networking.InterfaceToStrPtr(request.NotificationHttpMethod)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -981,14 +982,14 @@ func (client *Client) PutTapePartitionFailureNotificationRegistrationSpectraS3(r
     return models.NewPutTapePartitionFailureNotificationRegistrationSpectraS3Response(response)
 }
 
-func (client *Client) PutPoolPartitionSpectraS3(request *models.PutPoolPartitionSpectraS3Request) (*models.PutPoolPartitionSpectraS3Response, error) {
+func (client *Client) PutPoolPartitionSpectraS3(ctx context.Context, request *models.PutPoolPartitionSpectraS3Request) (*models.PutPoolPartitionSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_POST).
         WithPath("/_rest_/pool_partition").
         WithQueryParam("name", request.Name).
         WithQueryParam("type", request.PoolType.String()).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -1006,7 +1007,7 @@ func (client *Client) PutPoolPartitionSpectraS3(request *models.PutPoolPartition
     return models.NewPutPoolPartitionSpectraS3Response(response)
 }
 
-func (client *Client) PutPoolStorageDomainMemberSpectraS3(request *models.PutPoolStorageDomainMemberSpectraS3Request) (*models.PutPoolStorageDomainMemberSpectraS3Response, error) {
+func (client *Client) PutPoolStorageDomainMemberSpectraS3(ctx context.Context, request *models.PutPoolStorageDomainMemberSpectraS3Request) (*models.PutPoolStorageDomainMemberSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_POST).
@@ -1014,7 +1015,7 @@ func (client *Client) PutPoolStorageDomainMemberSpectraS3(request *models.PutPoo
         WithQueryParam("pool_partition_id", request.PoolPartitionId).
         WithQueryParam("storage_domain_id", request.StorageDomainId).
         WithOptionalQueryParam("write_preference", networking.InterfaceToStrPtr(request.WritePreference)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -1032,7 +1033,7 @@ func (client *Client) PutPoolStorageDomainMemberSpectraS3(request *models.PutPoo
     return models.NewPutPoolStorageDomainMemberSpectraS3Response(response)
 }
 
-func (client *Client) PutStorageDomainSpectraS3(request *models.PutStorageDomainSpectraS3Request) (*models.PutStorageDomainSpectraS3Response, error) {
+func (client *Client) PutStorageDomainSpectraS3(ctx context.Context, request *models.PutStorageDomainSpectraS3Request) (*models.PutStorageDomainSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_POST).
@@ -1050,7 +1051,7 @@ func (client *Client) PutStorageDomainSpectraS3(request *models.PutStorageDomain
         WithOptionalQueryParam("secure_media_allocation", networking.BoolPtrToStrPtr(request.SecureMediaAllocation)).
         WithOptionalQueryParam("verify_prior_to_auto_eject", networking.InterfaceToStrPtr(request.VerifyPriorToAutoEject)).
         WithOptionalQueryParam("write_optimization", networking.InterfaceToStrPtr(request.WriteOptimization)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -1068,7 +1069,7 @@ func (client *Client) PutStorageDomainSpectraS3(request *models.PutStorageDomain
     return models.NewPutStorageDomainSpectraS3Response(response)
 }
 
-func (client *Client) PutTapeStorageDomainMemberSpectraS3(request *models.PutTapeStorageDomainMemberSpectraS3Request) (*models.PutTapeStorageDomainMemberSpectraS3Response, error) {
+func (client *Client) PutTapeStorageDomainMemberSpectraS3(ctx context.Context, request *models.PutTapeStorageDomainMemberSpectraS3Request) (*models.PutTapeStorageDomainMemberSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_POST).
@@ -1078,7 +1079,7 @@ func (client *Client) PutTapeStorageDomainMemberSpectraS3(request *models.PutTap
         WithQueryParam("tape_type", request.TapeType).
         WithOptionalQueryParam("auto_compaction_threshold", networking.IntPtrToStrPtr(request.AutoCompactionThreshold)).
         WithOptionalQueryParam("write_preference", networking.InterfaceToStrPtr(request.WritePreference)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -1096,7 +1097,7 @@ func (client *Client) PutTapeStorageDomainMemberSpectraS3(request *models.PutTap
     return models.NewPutTapeStorageDomainMemberSpectraS3Response(response)
 }
 
-func (client *Client) PutTapeDensityDirectiveSpectraS3(request *models.PutTapeDensityDirectiveSpectraS3Request) (*models.PutTapeDensityDirectiveSpectraS3Response, error) {
+func (client *Client) PutTapeDensityDirectiveSpectraS3(ctx context.Context, request *models.PutTapeDensityDirectiveSpectraS3Request) (*models.PutTapeDensityDirectiveSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_POST).
@@ -1104,7 +1105,7 @@ func (client *Client) PutTapeDensityDirectiveSpectraS3(request *models.PutTapeDe
         WithQueryParam("density", request.Density.String()).
         WithQueryParam("partition_id", request.PartitionId).
         WithQueryParam("tape_type", request.TapeType).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -1122,7 +1123,7 @@ func (client *Client) PutTapeDensityDirectiveSpectraS3(request *models.PutTapeDe
     return models.NewPutTapeDensityDirectiveSpectraS3Response(response)
 }
 
-func (client *Client) PutAzureTargetBucketNameSpectraS3(request *models.PutAzureTargetBucketNameSpectraS3Request) (*models.PutAzureTargetBucketNameSpectraS3Response, error) {
+func (client *Client) PutAzureTargetBucketNameSpectraS3(ctx context.Context, request *models.PutAzureTargetBucketNameSpectraS3Request) (*models.PutAzureTargetBucketNameSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_POST).
@@ -1130,7 +1131,7 @@ func (client *Client) PutAzureTargetBucketNameSpectraS3(request *models.PutAzure
         WithQueryParam("bucket_id", request.BucketId).
         WithQueryParam("name", request.Name).
         WithQueryParam("target_id", request.TargetId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -1148,7 +1149,7 @@ func (client *Client) PutAzureTargetBucketNameSpectraS3(request *models.PutAzure
     return models.NewPutAzureTargetBucketNameSpectraS3Response(response)
 }
 
-func (client *Client) PutAzureTargetReadPreferenceSpectraS3(request *models.PutAzureTargetReadPreferenceSpectraS3Request) (*models.PutAzureTargetReadPreferenceSpectraS3Response, error) {
+func (client *Client) PutAzureTargetReadPreferenceSpectraS3(ctx context.Context, request *models.PutAzureTargetReadPreferenceSpectraS3Request) (*models.PutAzureTargetReadPreferenceSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_POST).
@@ -1156,7 +1157,7 @@ func (client *Client) PutAzureTargetReadPreferenceSpectraS3(request *models.PutA
         WithQueryParam("bucket_id", request.BucketId).
         WithQueryParam("read_preference", request.ReadPreference.String()).
         WithQueryParam("target_id", request.TargetId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -1174,7 +1175,7 @@ func (client *Client) PutAzureTargetReadPreferenceSpectraS3(request *models.PutA
     return models.NewPutAzureTargetReadPreferenceSpectraS3Response(response)
 }
 
-func (client *Client) RegisterAzureTargetSpectraS3(request *models.RegisterAzureTargetSpectraS3Request) (*models.RegisterAzureTargetSpectraS3Response, error) {
+func (client *Client) RegisterAzureTargetSpectraS3(ctx context.Context, request *models.RegisterAzureTargetSpectraS3Request) (*models.RegisterAzureTargetSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_POST).
@@ -1188,7 +1189,7 @@ func (client *Client) RegisterAzureTargetSpectraS3(request *models.RegisterAzure
         WithOptionalQueryParam("default_read_preference", networking.InterfaceToStrPtr(request.DefaultReadPreference)).
         WithOptionalQueryParam("https", networking.BoolPtrToStrPtr(request.Https)).
         WithOptionalQueryParam("permit_going_out_of_sync", networking.BoolPtrToStrPtr(request.PermitGoingOutOfSync)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -1206,7 +1207,7 @@ func (client *Client) RegisterAzureTargetSpectraS3(request *models.RegisterAzure
     return models.NewRegisterAzureTargetSpectraS3Response(response)
 }
 
-func (client *Client) PutDs3TargetReadPreferenceSpectraS3(request *models.PutDs3TargetReadPreferenceSpectraS3Request) (*models.PutDs3TargetReadPreferenceSpectraS3Response, error) {
+func (client *Client) PutDs3TargetReadPreferenceSpectraS3(ctx context.Context, request *models.PutDs3TargetReadPreferenceSpectraS3Request) (*models.PutDs3TargetReadPreferenceSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_POST).
@@ -1214,7 +1215,7 @@ func (client *Client) PutDs3TargetReadPreferenceSpectraS3(request *models.PutDs3
         WithQueryParam("bucket_id", request.BucketId).
         WithQueryParam("read_preference", request.ReadPreference.String()).
         WithQueryParam("target_id", request.TargetId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -1232,7 +1233,7 @@ func (client *Client) PutDs3TargetReadPreferenceSpectraS3(request *models.PutDs3
     return models.NewPutDs3TargetReadPreferenceSpectraS3Response(response)
 }
 
-func (client *Client) RegisterDs3TargetSpectraS3(request *models.RegisterDs3TargetSpectraS3Request) (*models.RegisterDs3TargetSpectraS3Response, error) {
+func (client *Client) RegisterDs3TargetSpectraS3(ctx context.Context, request *models.RegisterDs3TargetSpectraS3Request) (*models.RegisterDs3TargetSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_POST).
@@ -1249,7 +1250,7 @@ func (client *Client) RegisterDs3TargetSpectraS3(request *models.RegisterDs3Targ
         WithOptionalQueryParam("default_read_preference", networking.InterfaceToStrPtr(request.DefaultReadPreference)).
         WithOptionalQueryParam("permit_going_out_of_sync", networking.BoolPtrToStrPtr(request.PermitGoingOutOfSync)).
         WithOptionalQueryParam("replicated_user_default_data_policy", request.ReplicatedUserDefaultDataPolicy).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -1267,7 +1268,7 @@ func (client *Client) RegisterDs3TargetSpectraS3(request *models.RegisterDs3Targ
     return models.NewRegisterDs3TargetSpectraS3Response(response)
 }
 
-func (client *Client) PutS3TargetBucketNameSpectraS3(request *models.PutS3TargetBucketNameSpectraS3Request) (*models.PutS3TargetBucketNameSpectraS3Response, error) {
+func (client *Client) PutS3TargetBucketNameSpectraS3(ctx context.Context, request *models.PutS3TargetBucketNameSpectraS3Request) (*models.PutS3TargetBucketNameSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_POST).
@@ -1275,7 +1276,7 @@ func (client *Client) PutS3TargetBucketNameSpectraS3(request *models.PutS3Target
         WithQueryParam("bucket_id", request.BucketId).
         WithQueryParam("name", request.Name).
         WithQueryParam("target_id", request.TargetId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -1293,7 +1294,7 @@ func (client *Client) PutS3TargetBucketNameSpectraS3(request *models.PutS3Target
     return models.NewPutS3TargetBucketNameSpectraS3Response(response)
 }
 
-func (client *Client) PutS3TargetReadPreferenceSpectraS3(request *models.PutS3TargetReadPreferenceSpectraS3Request) (*models.PutS3TargetReadPreferenceSpectraS3Response, error) {
+func (client *Client) PutS3TargetReadPreferenceSpectraS3(ctx context.Context, request *models.PutS3TargetReadPreferenceSpectraS3Request) (*models.PutS3TargetReadPreferenceSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_POST).
@@ -1301,7 +1302,7 @@ func (client *Client) PutS3TargetReadPreferenceSpectraS3(request *models.PutS3Ta
         WithQueryParam("bucket_id", request.BucketId).
         WithQueryParam("read_preference", request.ReadPreference.String()).
         WithQueryParam("target_id", request.TargetId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -1319,7 +1320,7 @@ func (client *Client) PutS3TargetReadPreferenceSpectraS3(request *models.PutS3Ta
     return models.NewPutS3TargetReadPreferenceSpectraS3Response(response)
 }
 
-func (client *Client) RegisterS3TargetSpectraS3(request *models.RegisterS3TargetSpectraS3Request) (*models.RegisterS3TargetSpectraS3Response, error) {
+func (client *Client) RegisterS3TargetSpectraS3(ctx context.Context, request *models.RegisterS3TargetSpectraS3Request) (*models.RegisterS3TargetSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_POST).
@@ -1344,7 +1345,7 @@ func (client *Client) RegisterS3TargetSpectraS3(request *models.RegisterS3Target
         WithOptionalQueryParam("region", networking.InterfaceToStrPtr(request.Region)).
         WithOptionalQueryParam("restricted_access", networking.BoolPtrToStrPtr(request.RestrictedAccess)).
         WithOptionalQueryParam("staged_data_expiration_in_days", networking.IntPtrToStrPtr(request.StagedDataExpirationInDays)).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -1362,7 +1363,7 @@ func (client *Client) RegisterS3TargetSpectraS3(request *models.RegisterS3Target
     return models.NewRegisterS3TargetSpectraS3Response(response)
 }
 
-func (client *Client) DelegateCreateUserSpectraS3(request *models.DelegateCreateUserSpectraS3Request) (*models.DelegateCreateUserSpectraS3Response, error) {
+func (client *Client) DelegateCreateUserSpectraS3(ctx context.Context, request *models.DelegateCreateUserSpectraS3Request) (*models.DelegateCreateUserSpectraS3Response, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_POST).
@@ -1372,7 +1373,7 @@ func (client *Client) DelegateCreateUserSpectraS3(request *models.DelegateCreate
         WithOptionalQueryParam("id", request.Id).
         WithOptionalQueryParam("max_buckets", networking.IntPtrToStrPtr(request.MaxBuckets)).
         WithOptionalQueryParam("secret_key", request.SecretKey).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err

@@ -1,11 +1,12 @@
 package commands
 
 import (
+    "context"
     "fmt"
     "github.com/SpectraLogic/ds3_go_sdk/ds3"
 )
 
-type command func(*ds3.Client, *Arguments) error
+type command func(context.Context, *ds3.Client, *Arguments) error
 
 var availableCommands = map[string]command {
     "get_service": getService,
@@ -22,12 +23,11 @@ var availableCommands = map[string]command {
     "bulk_put": bulkPut,
 }
 
-func RunCommand(client *ds3.Client, args *Arguments) error {
+func RunCommand(ctx context.Context, client *ds3.Client, args *Arguments) error {
     cmd, ok := availableCommands[args.Command]
     if ok {
-        return cmd(client, args)
+        return cmd(ctx, client, args)
     } else {
         return fmt.Errorf("Unsupported command: '%s'", args.Command)
     }
 }
-

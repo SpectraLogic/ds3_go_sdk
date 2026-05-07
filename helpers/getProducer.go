@@ -1,6 +1,7 @@
 package helpers
 
 import (
+    "context"
     "fmt"
     "github.com/SpectraLogic/ds3_go_sdk/ds3"
     ds3Models "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
@@ -15,6 +16,7 @@ import (
 const timesToRetryGettingPartialBlob = 5
 
 type getProducer struct {
+    ctx                  context.Context
     JobMasterObjectList  *ds3Models.MasterObjectList //MOL from put bulk job creation
     queue                *chan TransferOperation
     strategy             *ReadTransferStrategy
@@ -31,6 +33,7 @@ type getProducer struct {
 }
 
 func newGetProducer(
+    ctx context.Context,
     jobMasterObjectList *ds3Models.MasterObjectList,
     getObjects *[]helperModels.GetObject,
     queue *chan TransferOperation,
@@ -40,6 +43,7 @@ func newGetProducer(
     doneNotifier NotifyBlobDone) *getProducer {
 
     return &getProducer{
+        ctx:                  ctx,
         JobMasterObjectList:  jobMasterObjectList,
         queue:                queue,
         strategy:             strategy,
@@ -120,7 +124,7 @@ func (producer *getProducer) transferOperationBuilder(info getObjectInfo) Transf
             getObjRequest = getObjRequest.WithRanges(blobRanges...)
         }
 
-        getObjResponse, err := producer.client.GetObject(getObjRequest)
+        getObjResponse, err := producer.client.GetObject(producer.ctx, getObjRequest)
         if err != nil {
             producer.strategy.Listeners.Errored(info.blob.Name(), err)
             info.channelBuilder.SetFatalError(err)
@@ -152,7 +156,7 @@ func (producer *getProducer) transferOperationBuilder(info getObjectInfo) Transf
             }
             if bytesWritten != info.blob.Length() {
                 producer.Errorf("failed to copy all content of object '%s' at offset '%d': only wrote %d of %d bytes", info.blob.Name(), info.blob.Offset(), bytesWritten, info.blob.Length())
-                err := GetRemainingBlob(producer.client, info.bucketName, info.blob, bytesWritten, writer, producer.Logger)
+                err := GetRemainingBlob(producer.ctx, producer.client, info.bucketName, info.blob, bytesWritten, writer, producer.Logger)
                 if err != nil {
                     producer.strategy.Listeners.Errored(info.blob.Name(), err)
                     info.channelBuilder.SetFatalError(err)
@@ -174,14 +178,14 @@ func (producer *getProducer) transferOperationBuilder(info getObjectInfo) Transf
     }
 }
 
-func GetRemainingBlob(client *ds3.Client, bucketName string, blob *helperModels.BlobDescription, amountAlreadyRetrieved int64, writer io.Writer, logger sdk_log.Logger) error {
+func GetRemainingBlob(ctx context.Context, client *ds3.Client, bucketName string, blob *helperModels.BlobDescription, amountAlreadyRetrieved int64, writer io.Writer, logger sdk_log.Logger) error {
     logger.Debugf("starting retry for fetching partial blob '%s' at offset '%d': amount to retrieve %d", blob.Name(), blob.Offset(), blob.Length() - amountAlreadyRetrieved)
     bytesRetrievedSoFar := amountAlreadyRetrieved
     timesRetried := 0
     rangeEnd := blob.Offset() + blob.Length() -1
     for bytesRetrievedSoFar < blob.Length() && timesRetried < timesToRetryGettingPartialBlob {
         rangeStart := blob.Offset() + bytesRetrievedSoFar
-        bytesRetrievedThisRound, err := RetryGettingBlobRange(client, bucketName, blob.Name(), blob.Offset(), rangeStart, rangeEnd, writer, logger)
+        bytesRetrievedThisRound, err := RetryGettingBlobRange(ctx, client, bucketName, blob.Name(), blob.Offset(), rangeStart, rangeEnd, writer, logger)
         if err != nil {
             logger.Errorf("failed to get object '%s' at offset '%d', range %d=%d attempt %d: %s", blob.Name(), blob.Offset(), rangeStart, rangeEnd, timesRetried, err.Error())
         }
@@ -195,7 +199,7 @@ func GetRemainingBlob(client *ds3.Client, bucketName string, blob *helperModels.
     return nil
 }
 
-func RetryGettingBlobRange(client *ds3.Client, bucketName string, objectName string, blobOffset int64, rangeStart int64, rangeEnd int64, writer io.Writer, logger sdk_log.Logger) (int64, error) {
+func RetryGettingBlobRange(ctx context.Context, client *ds3.Client, bucketName string, objectName string, blobOffset int64, rangeStart int64, rangeEnd int64, writer io.Writer, logger sdk_log.Logger) (int64, error) {
     // perform a naked get call for the rest of the blob that we originally failed to get
     partOfBlobToFetch := ds3Models.Range{
         Start: rangeStart,
@@ -205,7 +209,7 @@ func RetryGettingBlobRange(client *ds3.Client, bucketName string, objectName str
         WithOffset(blobOffset).
         WithRanges(partOfBlobToFetch)
 
-    getObjResponse, err := client.GetObject(getObjRequest)
+    getObjResponse, err := client.GetObject(ctx, getObjRequest)
     if err != nil {
         return 0, err
     }
@@ -341,7 +345,11 @@ func (producer *getProducer) run() error {
             producer.doneNotifier.Wait()
         } else if producer.hasMoreToProcess(totalBlobCount) {
             // nothing could be processed, cache is probably full, wait a bit before trying again
-            time.Sleep(producer.strategy.BlobStrategy.delay())
+            select {
+            case <-producer.ctx.Done():
+                return producer.ctx.Err()
+            case <-time.After(producer.strategy.BlobStrategy.delay()):
+            }
         }
     }
     return nil
@@ -369,7 +377,7 @@ func (producer *getProducer) queueBlobsReadyForTransfer(totalBlobCount int64) (i
     // not be able to receive everything, so not all chunks will necessarily be
     // returned
     chunksReady := ds3Models.NewGetJobChunksReadyForClientProcessingSpectraS3Request(producer.JobMasterObjectList.JobId)
-    chunksReadyResponse, err := producer.client.GetJobChunksReadyForClientProcessingSpectraS3(chunksReady)
+    chunksReadyResponse, err := producer.client.GetJobChunksReadyForClientProcessingSpectraS3(producer.ctx, chunksReady)
     if err != nil {
         producer.Errorf("unrecoverable error: %v", err)
         return processedCount, err

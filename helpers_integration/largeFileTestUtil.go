@@ -1,6 +1,7 @@
 package helpers_integration
 
 import (
+    "context"
     "io"
     "bytes"
     "fmt"
@@ -49,6 +50,6 @@ func LoadLargeFile(t *testing.T, bucket string, client *ds3.Client) error {
     var writeObjects []helperModels.PutObject
     writeObjects = append(writeObjects, *writeObj)
 
-    _, err = helper.PutObjects(bucket, writeObjects, newTestTransferStrategy(t))
+    _, err = helper.PutObjects(context.Background(), bucket, writeObjects, newTestTransferStrategy(t))
     return err
 }

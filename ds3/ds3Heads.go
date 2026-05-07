@@ -14,16 +14,17 @@
 package ds3
 
 import (
+    "context"
     "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
     "github.com/SpectraLogic/ds3_go_sdk/ds3/networking"
 )
 
-func (client *Client) HeadBucket(request *models.HeadBucketRequest) (*models.HeadBucketResponse, error) {
+func (client *Client) HeadBucket(ctx context.Context, request *models.HeadBucketRequest) (*models.HeadBucketResponse, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_HEAD).
         WithPath("/" + request.BucketName).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err
@@ -41,13 +42,13 @@ func (client *Client) HeadBucket(request *models.HeadBucketRequest) (*models.Hea
     return models.NewHeadBucketResponse(response)
 }
 
-func (client *Client) HeadObject(request *models.HeadObjectRequest) (*models.HeadObjectResponse, error) {
+func (client *Client) HeadObject(ctx context.Context, request *models.HeadObjectRequest) (*models.HeadObjectResponse, error) {
     // Build the http request
     httpRequest, err := networking.NewHttpRequestBuilder().
         WithHttpVerb(HTTP_VERB_HEAD).
         WithPath("/" + request.BucketName + "/" + request.ObjectName).
         WithOptionalQueryParam("version_id", request.VersionId).
-        Build(client.connectionInfo)
+        Build(ctx, client.connectionInfo)
 
     if err != nil {
         return nil, err

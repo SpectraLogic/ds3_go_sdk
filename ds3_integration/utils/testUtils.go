@@ -1,6 +1,7 @@
 package testutils
 
 import (
+    "context"
     "testing"
     "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
     "github.com/SpectraLogic/ds3_go_sdk/ds3"
@@ -23,12 +24,13 @@ var BookTitles = []string{ "beowulf.txt", "sherlock_holmes.txt", "tale_of_two_ci
 // Retrieves the specified objects from the BP bucket and compares the content to
 // to local files. Assumes that local file names and BP object names are the same.
 func VerifyFilesOnBP(t *testing.T, bucketName string, objectNames []string, filePath string, client *ds3.Client) {
-    bulkGet, err := client.GetBulkJobSpectraS3(models.NewGetBulkJobSpectraS3Request(bucketName, objectNames))
+    bulkGet, err := client.GetBulkJobSpectraS3(context.Background(), models.NewGetBulkJobSpectraS3Request(bucketName, objectNames))
     ds3Testing.AssertNilError(t, err)
     totalChunkCount := len(bulkGet.MasterObjectList.Objects)
     curChunkCount := 0
     for curChunkCount < totalChunkCount {
         chunksReady, err := client.GetJobChunksReadyForClientProcessingSpectraS3(
+            context.Background(),
             models.NewGetJobChunksReadyForClientProcessingSpectraS3Request(bulkGet.MasterObjectList.JobId))
 
         ds3Testing.AssertNilError(t, err)
@@ -38,7 +40,7 @@ func VerifyFilesOnBP(t *testing.T, bucketName string, objectNames []string, file
             for _, curChunk := range chunksReady.MasterObjectList.Objects {
                 for _, curObj := range curChunk.Objects {
 
-                    getObj, getErr := client.GetObject(models.NewGetObjectRequest(bucketName, *curObj.Name).
+                    getObj, getErr := client.GetObject(context.Background(), models.NewGetObjectRequest(bucketName, *curObj.Name).
                         WithJob(bulkGet.MasterObjectList.JobId).
                         WithOffset(curObj.Offset))
                     ds3Testing.AssertNilError(t, getErr)
@@ -137,19 +139,19 @@ func PutTestBooks(client *ds3.Client, bucketName string) error {
     }
 
     // Create bulk put job
-    bulkPut, bulkPutErr := client.PutBulkJobSpectraS3(models.NewPutBulkJobSpectraS3Request(bucketName, ds3Objects))
+    bulkPut, bulkPutErr := client.PutBulkJobSpectraS3(context.Background(), models.NewPutBulkJobSpectraS3Request(bucketName, ds3Objects))
     if bulkPutErr != nil {
         return bulkPutErr
     }
 
     for _, chunk := range bulkPut.MasterObjectList.Objects {
-        allocateChunk, allocateErr := client.AllocateJobChunkSpectraS3(models.NewAllocateJobChunkSpectraS3Request(chunk.ChunkId))
+        allocateChunk, allocateErr := client.AllocateJobChunkSpectraS3(context.Background(), models.NewAllocateJobChunkSpectraS3Request(chunk.ChunkId))
         if allocateErr != nil {
             return allocateErr
         }
         for _, obj := range allocateChunk.Objects.Objects {
             content := books[*obj.Name]
-            _, putObjErr := client.PutObject(models.NewPutObjectRequest(bucketName, *obj.Name, content).
+            _, putObjErr := client.PutObject(context.Background(), models.NewPutObjectRequest(bucketName, *obj.Name, content).
                 WithOffset(obj.Offset).
                 WithJob(bulkPut.MasterObjectList.JobId))
 
@@ -163,7 +165,7 @@ func PutTestBooks(client *ds3.Client, bucketName string) error {
 
 func CancelAllJobsForBucket(client *ds3.Client, bucketName string) {
     //Cancel all jobs on bucket
-    getJobs, err := client.GetJobsSpectraS3(models.NewGetJobsSpectraS3Request())
+    getJobs, err := client.GetJobsSpectraS3(context.Background(), models.NewGetJobsSpectraS3Request())
     if err != nil {
         log.Printf("WARNING: Cleanup error when attempting to get all jobs for bucket '%s': '%s.", bucketName, err.Error())
         return
@@ -172,7 +174,7 @@ func CancelAllJobsForBucket(client *ds3.Client, bucketName string) {
         if job.BucketName == nil || *job.BucketName != bucketName {
             continue
         }
-        if _, err = client.CancelJobSpectraS3(models.NewCancelJobSpectraS3Request(job.JobId)); err != nil {
+        if _, err = client.CancelJobSpectraS3(context.Background(), models.NewCancelJobSpectraS3Request(job.JobId)); err != nil {
             log.Printf("WARNING: Unable to cancel job %s for bucket %s: %s", job.JobId, bucketName, err)
         }
     }
@@ -182,7 +184,7 @@ func DeleteBucketContents(client *ds3.Client, bucketName string) {
     CancelAllJobsForBucket(client, bucketName)
 
     //Get the contents of bucket
-    getBucket, err := client.GetBucket(models.NewGetBucketRequest(bucketName))
+    getBucket, err := client.GetBucket(context.Background(), models.NewGetBucketRequest(bucketName))
     if err != nil {
         log.Printf("WARNING: Cleanup error when attempting to get contents of bucket '%s': '%s'.", bucketName, err.Error())
         return
@@ -269,7 +271,7 @@ func PutObjectWithJobId(client *ds3.Client, bucketName string, objectName string
     if jobId != "" {
         putObjRequest = putObjRequest.WithJob(jobId)
     }
-    putObjectResponse, putErr := client.PutObject(putObjRequest)
+    putObjectResponse, putErr := client.PutObject(context.Background(), putObjRequest)
     if putErr != nil {
         return putErr
     }
@@ -280,19 +282,19 @@ func PutObjectWithJobId(client *ds3.Client, bucketName string, objectName string
 }
 
 func PutEmptyObjects(client *ds3.Client, bucketName string, objects []models.Ds3PutObject) (error) {
-    putBulk, err := client.PutBulkJobSpectraS3(models.NewPutBulkJobSpectraS3Request(bucketName, objects))
+    putBulk, err := client.PutBulkJobSpectraS3(context.Background(), models.NewPutBulkJobSpectraS3Request(bucketName, objects))
     if err != nil {
         return err
     }
     for _, chunk := range putBulk.MasterObjectList.Objects {
-        allocateChunk, err := client.AllocateJobChunkSpectraS3(models.NewAllocateJobChunkSpectraS3Request(chunk.ChunkId))
+        allocateChunk, err := client.AllocateJobChunkSpectraS3(context.Background(), models.NewAllocateJobChunkSpectraS3Request(chunk.ChunkId))
         if err != nil {
-            client.CancelJobSpectraS3(models.NewCancelJobSpectraS3Request(putBulk.MasterObjectList.JobId))
+            client.CancelJobSpectraS3(context.Background(), models.NewCancelJobSpectraS3Request(putBulk.MasterObjectList.JobId))
             return err
         }
         for _, obj := range allocateChunk.Objects.Objects {
             if err = PutObjectWithJobId(client, bucketName, *obj.Name, putBulk.MasterObjectList.JobId, []byte{}); err != nil {
-                client.CancelJobSpectraS3(models.NewCancelJobSpectraS3Request(putBulk.MasterObjectList.JobId))
+                client.CancelJobSpectraS3(context.Background(), models.NewCancelJobSpectraS3Request(putBulk.MasterObjectList.JobId))
                 return err
             }
         }
@@ -312,7 +314,7 @@ func DeleteObjectLogError(t *testing.T, client *ds3.Client, bucketName string, o
 
 // Deletes the specified object. Returns an error if not successful.
 func DeleteObject(client *ds3.Client, bucketName string, objectName string) (error) {
-    deleteObjectResponse, deleteErr := client.DeleteObject(models.NewDeleteObjectRequest(bucketName, objectName))
+    deleteObjectResponse, deleteErr := client.DeleteObject(context.Background(), models.NewDeleteObjectRequest(bucketName, objectName))
     if deleteErr != nil {
         return deleteErr
     }
@@ -335,7 +337,7 @@ func GetObjectLogError(t *testing.T, client *ds3.Client, bucketName string, obje
 
 // Retrieves the specified object. Returns an error if not successful.
 func GetObject(client *ds3.Client, bucketName string, objectName string) (*models.GetObjectResponse, error) {
-    response, err := client.GetObject(models.NewGetObjectRequest(bucketName, objectName))
+    response, err := client.GetObject(context.Background(), models.NewGetObjectRequest(bucketName, objectName))
     if err != nil {
         return nil, err
     } else if response == nil {
@@ -356,7 +358,7 @@ func PutBucketLogError(t *testing.T, client *ds3.Client, bucketName string) (err
 
 // Puts the specified bucket. Returns an error if not successful.
 func PutBucket(client *ds3.Client, bucketName string) (error) {
-    putBucketResponse, putErr := client.PutBucket(models.NewPutBucketRequest(bucketName))
+    putBucketResponse, putErr := client.PutBucket(context.Background(), models.NewPutBucketRequest(bucketName))
     if putErr != nil {
         return putErr
     }
@@ -378,7 +380,7 @@ func DeleteBucketLogError(t *testing.T, client *ds3.Client, bucketName string) (
 
 // Deletes the specified bucket and returns an error if one occurs
 func DeleteBucket(client *ds3.Client, bucketName string) (error) {
-    deleteBucket, deleteErr := client.DeleteBucketSpectraS3(models.NewDeleteBucketSpectraS3Request(bucketName).WithForce())
+    deleteBucket, deleteErr := client.DeleteBucketSpectraS3(context.Background(), models.NewDeleteBucketSpectraS3Request(bucketName).WithForce())
     if deleteErr != nil {
         return deleteErr
     }
@@ -401,7 +403,7 @@ func GetBucketLogError(t *testing.T, client *ds3.Client, bucketName string) (*mo
 
 // Retrieves the specified bucket. Returns an error if unsuccessful.
 func GetBucket(client *ds3.Client, bucketName string) (*models.GetBucketResponse, error) {
-    response, err := client.GetBucket(models.NewGetBucketRequest(bucketName))
+    response, err := client.GetBucket(context.Background(), models.NewGetBucketRequest(bucketName))
     if err != nil {
         return nil, err
     } else if response == nil {
@@ -413,7 +415,7 @@ func GetBucket(client *ds3.Client, bucketName string) (*models.GetBucketResponse
 // Deletes the specified data policy. If an error occurs, it is logged, and the calling
 // test is marked as failed, but continues running.
 func DeleteDataPolicyLogError(t *testing.T, client *ds3.Client, dataPolicyId string) (error) {
-    _, deleteErr := client.DeleteDataPolicySpectraS3(models.NewDeleteDataPolicySpectraS3Request(dataPolicyId))
+    _, deleteErr := client.DeleteDataPolicySpectraS3(context.Background(), models.NewDeleteDataPolicySpectraS3Request(dataPolicyId))
     if deleteErr != nil {
         t.Errorf("Unable to delete Data Policy '%s': '%s'.", dataPolicyId, deleteErr.Error())
     }
@@ -423,7 +425,7 @@ func DeleteDataPolicyLogError(t *testing.T, client *ds3.Client, dataPolicyId str
 // Creates the specified data policy. If an error occurs, it is logged, and the calling
 // test is marked as failed, but continues running.
 func PutDataPolicyLogError(t *testing.T, client *ds3.Client, dataPolicyName string) (*models.PutDataPolicySpectraS3Response, error) {
-    response, err := client.PutDataPolicySpectraS3(models.NewPutDataPolicySpectraS3Request(dataPolicyName))
+    response, err := client.PutDataPolicySpectraS3(context.Background(), models.NewPutDataPolicySpectraS3Request(dataPolicyName))
     if err != nil {
         t.Errorf("Unable to create Data Policy '%s': '%s'.", dataPolicyName, err.Error())
     }
@@ -433,7 +435,7 @@ func PutDataPolicyLogError(t *testing.T, client *ds3.Client, dataPolicyName stri
 // Retrieves the specified data policy. If an error occurs, it is logged, and the calling
 // test is marked as failed, but continues running
 func GetDataPolicyLogError(t *testing.T, client *ds3.Client, dataPolicyId string) (*models.GetDataPolicySpectraS3Response, error) {
-    response, err := client.GetDataPolicySpectraS3(models.NewGetDataPolicySpectraS3Request(dataPolicyId))
+    response, err := client.GetDataPolicySpectraS3(context.Background(), models.NewGetDataPolicySpectraS3Request(dataPolicyId))
     if err != nil {
         t.Errorf("Unable to get Data Policy '%s': '%s'.", dataPolicyId, err.Error())
     }
@@ -444,7 +446,7 @@ func GetDataPolicyLogError(t *testing.T, client *ds3.Client, dataPolicyId string
 // If there is not exactly 1 user with the specified name, it is treated as an error. If an
 // error occurs, it is logged, and the calling  test is marked as failed, but continues running.
 func GetUserByNameLogError(t *testing.T, client *ds3.Client, userName string) (*models.SpectraUser, error) {
-    response, err := client.GetUsersSpectraS3(models.NewGetUsersSpectraS3Request().WithName(userName))
+    response, err := client.GetUsersSpectraS3(context.Background(), models.NewGetUsersSpectraS3Request().WithName(userName))
     if err != nil {
         t.Errorf("Unable to get user '%s': '%s'.", userName, err.Error())
         return nil, err
@@ -489,14 +491,14 @@ func SetupTestEnv(testBucket string, userName string, envTestNameSpace string) (
     }
 
     // Create data policy
-    dataPolicyResponse, dataPolicyErr := client.PutDataPolicySpectraS3(models.NewPutDataPolicySpectraS3Request(envTestNameSpace))
+    dataPolicyResponse, dataPolicyErr := client.PutDataPolicySpectraS3(context.Background(), models.NewPutDataPolicySpectraS3Request(envTestNameSpace))
     if dataPolicyErr != nil {
         return nil, &ids, dataPolicyErr
     }
     ids.DataPolicyId = &dataPolicyResponse.DataPolicy.Id
 
     // Modify default user to use new data policy
-    modifyResponse, modifyErr := client.ModifyUserSpectraS3(models.NewModifyUserSpectraS3Request(userName).
+    modifyResponse, modifyErr := client.ModifyUserSpectraS3(context.Background(), models.NewModifyUserSpectraS3Request(userName).
         WithDefaultDataPolicyId(dataPolicyResponse.DataPolicy.Id))
     if modifyErr != nil {
         return nil, &ids, modifyErr
@@ -505,7 +507,7 @@ func SetupTestEnv(testBucket string, userName string, envTestNameSpace string) (
     ids.UserId = &modifyResponse.SpectraUser.Id
 
     // Create pool partition
-    poolPartitionResponse, poolPartitionErr := client.PutPoolPartitionSpectraS3(models.NewPutPoolPartitionSpectraS3Request(
+    poolPartitionResponse, poolPartitionErr := client.PutPoolPartitionSpectraS3(context.Background(), models.NewPutPoolPartitionSpectraS3Request(
         envTestNameSpace,
         models.POOL_TYPE_ONLINE))
     if poolPartitionErr != nil {
@@ -514,14 +516,14 @@ func SetupTestEnv(testBucket string, userName string, envTestNameSpace string) (
     ids.PoolPartitionId = &poolPartitionResponse.PoolPartition.Id
 
     // Create storage domain
-    storageDomainResponse, storageDomainErr := client.PutStorageDomainSpectraS3(models.NewPutStorageDomainSpectraS3Request(envTestNameSpace))
+    storageDomainResponse, storageDomainErr := client.PutStorageDomainSpectraS3(context.Background(), models.NewPutStorageDomainSpectraS3Request(envTestNameSpace))
     if storageDomainErr != nil {
         return nil, &ids, storageDomainErr
     }
     ids.StorageDomainId = &storageDomainResponse.StorageDomain.Id
 
     // Create storage domain member linking pool partition to storage domain
-    memberResponse, memberErr := client.PutPoolStorageDomainMemberSpectraS3(models.NewPutPoolStorageDomainMemberSpectraS3Request(
+    memberResponse, memberErr := client.PutPoolStorageDomainMemberSpectraS3(context.Background(), models.NewPutPoolStorageDomainMemberSpectraS3Request(
         poolPartitionResponse.PoolPartition.Id,
         storageDomainResponse.StorageDomain.Id))
     if memberErr != nil {
@@ -530,7 +532,7 @@ func SetupTestEnv(testBucket string, userName string, envTestNameSpace string) (
     ids.StorageDomainMemberId = &memberResponse.StorageDomainMember.Id
 
     // Create data persistence rule
-    ruleResponse, ruleErr := client.PutDataPersistenceRuleSpectraS3(models.NewPutDataPersistenceRuleSpectraS3Request(
+    ruleResponse, ruleErr := client.PutDataPersistenceRuleSpectraS3(context.Background(), models.NewPutDataPersistenceRuleSpectraS3Request(
         models.DATA_PERSISTENCE_RULE_TYPE_PERMANENT,
         dataPolicyResponse.DataPolicy.Id,
         models.DATA_ISOLATION_LEVEL_STANDARD,
@@ -568,38 +570,38 @@ func TeardownTestEnv(client *ds3.Client, ids *TestIds, testBucket string) {
 
     // Delete data persistence rule
     if ids.DataPersistenceRuleId != nil {
-        _, err := client.DeleteDataPersistenceRuleSpectraS3(models.NewDeleteDataPersistenceRuleSpectraS3Request(*ids.DataPersistenceRuleId))
+        _, err := client.DeleteDataPersistenceRuleSpectraS3(context.Background(), models.NewDeleteDataPersistenceRuleSpectraS3Request(*ids.DataPersistenceRuleId))
         logErrViaPrint(err)
     }
 
     // Delete storage domain member
     if ids.StorageDomainMemberId != nil {
-        _, err := client.DeleteStorageDomainMemberSpectraS3(models.NewDeleteStorageDomainMemberSpectraS3Request(*ids.StorageDomainMemberId))
+        _, err := client.DeleteStorageDomainMemberSpectraS3(context.Background(), models.NewDeleteStorageDomainMemberSpectraS3Request(*ids.StorageDomainMemberId))
         logErrViaPrint(err)
     }
 
     // Delete storage domain
     if ids.StorageDomainId != nil {
-        _, err := client.DeleteStorageDomainSpectraS3(models.NewDeleteStorageDomainSpectraS3Request(*ids.StorageDomainId))
+        _, err := client.DeleteStorageDomainSpectraS3(context.Background(), models.NewDeleteStorageDomainSpectraS3Request(*ids.StorageDomainId))
         logErrViaPrint(err)
     }
 
     // Delete pool partition
     if ids.PoolPartitionId != nil {
-        _, err := client.DeletePoolPartitionSpectraS3(models.NewDeletePoolPartitionSpectraS3Request(*ids.PoolPartitionId))
+        _, err := client.DeletePoolPartitionSpectraS3(context.Background(), models.NewDeletePoolPartitionSpectraS3Request(*ids.PoolPartitionId))
         logErrViaPrint(err)
     }
 
     // Modify user to use its original data policy
     if ids.OriginalDataPolicyId != nil {
-        _, err := client.ModifyUserSpectraS3(models.NewModifyUserSpectraS3Request(*ids.UserId).
+        _, err := client.ModifyUserSpectraS3(context.Background(), models.NewModifyUserSpectraS3Request(*ids.UserId).
             WithDefaultDataPolicyId(*ids.OriginalDataPolicyId))
         logErrViaPrint(err)
     }
 
     // Delete data policy
     if ids.DataPolicyId != nil {
-        _, err := client.DeleteDataPolicySpectraS3(models.NewDeleteDataPolicySpectraS3Request(*ids.DataPolicyId))
+        _, err := client.DeleteDataPolicySpectraS3(context.Background(), models.NewDeleteDataPolicySpectraS3Request(*ids.DataPolicyId))
         logErrViaPrint(err)
     }
 }

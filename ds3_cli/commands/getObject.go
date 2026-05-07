@@ -1,6 +1,7 @@
 package commands
 
 import (
+    "context"
     "os"
     "io"
     "errors"
@@ -8,7 +9,7 @@ import (
     "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
 )
 
-func getObject(client *ds3.Client, args *Arguments) error {
+func getObject(ctx context.Context, client *ds3.Client, args *Arguments) error {
     // Validate the arguments.
     if args.Bucket == "" {
         return errors.New("Must specify a bucket.")
@@ -29,7 +30,7 @@ func getObject(client *ds3.Client, args *Arguments) error {
     }
 
     // Perform the request.
-    response, requestErr := client.GetObject(request)
+    response, requestErr := client.GetObject(ctx, request)
     if requestErr != nil {
         return requestErr
     }

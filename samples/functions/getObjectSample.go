@@ -12,6 +12,7 @@
 package functions
 
 import (
+    "context"
     "log"
     "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
     "github.com/SpectraLogic/ds3_go_sdk/ds3/buildclient"
@@ -33,7 +34,7 @@ func GetObjectSample() {
 
     // Grab the first book defined in utils.BookNames
     getObjRequest := models.NewGetObjectRequest(utils.BucketName, utils.BookNames[0])
-    getObjResponse, err := client.GetObject(getObjRequest)
+    getObjResponse, err := client.GetObject(context.Background(), getObjRequest)
     if err != nil {
         log.Fatal(err)
     }

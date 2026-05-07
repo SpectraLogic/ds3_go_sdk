@@ -1,6 +1,7 @@
 package helpers
 
 import (
+    "context"
     "fmt"
     "github.com/SpectraLogic/ds3_go_sdk/ds3"
     ds3Models "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
@@ -10,18 +11,18 @@ import (
 )
 
 type getTransceiver struct {
-    BucketName string
+    BucketName  string
     ReadObjects *[]helperModels.GetObject
-    Strategy *ReadTransferStrategy
-    Client *ds3.Client
+    Strategy    *ReadTransferStrategy
+    Client      *ds3.Client
 }
 
 func newGetTransceiver(bucketName string, readObjects *[]helperModels.GetObject, strategy *ReadTransferStrategy, client *ds3.Client) *getTransceiver {
     return &getTransceiver{
-        BucketName:bucketName,
-        ReadObjects:readObjects,
-        Strategy:strategy,
-        Client:client,
+        BucketName:  bucketName,
+        ReadObjects: readObjects,
+        Strategy:    strategy,
+        Client:      client,
     }
 }
 
@@ -68,10 +69,10 @@ func createPartialGetObjects(getObject helperModels.GetObject) []ds3Models.Ds3Ge
     return partialObjects
 }
 
-func (transceiver *getTransceiver) createBulkGetJob() (*ds3Models.GetBulkJobSpectraS3Response, *[]helperModels.GetObject, error) {
+func (transceiver *getTransceiver) createBulkGetJob(ctx context.Context) (*ds3Models.GetBulkJobSpectraS3Response, *[]helperModels.GetObject, error) {
     // attempt to create a bulk get of all objects
     bulkGet := newBulkGetRequest(transceiver.BucketName, transceiver.ReadObjects, transceiver.Strategy.Options)
-    bulkGetResponse, err := transceiver.Client.GetBulkJobSpectraS3(bulkGet)
+    bulkGetResponse, err := transceiver.Client.GetBulkJobSpectraS3(ctx, bulkGet)
     if err == nil {
         return bulkGetResponse, transceiver.ReadObjects, nil
     }
@@ -85,7 +86,7 @@ func (transceiver *getTransceiver) createBulkGetJob() (*ds3Models.GetBulkJobSpec
     // head each item and try again for all objects that exist in the bucket
     var objectsThatExist []helperModels.GetObject
     for _, obj := range *transceiver.ReadObjects {
-        _, err := transceiver.Client.HeadObject(ds3Models.NewHeadObjectRequest(transceiver.BucketName, obj.Name))
+        _, err := transceiver.Client.HeadObject(ctx, ds3Models.NewHeadObjectRequest(transceiver.BucketName, obj.Name))
         if err != nil {
             // mark file as having a fatal error
             readableErr := fmt.Errorf("failed HeadObject call on %s: %v", obj.Name, err)
@@ -101,7 +102,7 @@ func (transceiver *getTransceiver) createBulkGetJob() (*ds3Models.GetBulkJobSpec
 
     // create bulk get job for all objects that exist in the bucket
     bulkGet = newBulkGetRequest(transceiver.BucketName, &objectsThatExist, transceiver.Strategy.Options)
-    bulkGetResponse, err = transceiver.Client.GetBulkJobSpectraS3(bulkGet)
+    bulkGetResponse, err = transceiver.Client.GetBulkJobSpectraS3(ctx, bulkGet)
     if err != nil {
         return nil, nil, err
     } else {
@@ -109,9 +110,9 @@ func (transceiver *getTransceiver) createBulkGetJob() (*ds3Models.GetBulkJobSpec
     }
 }
 
-func (transceiver *getTransceiver) transfer() (string, error) {
+func (transceiver *getTransceiver) transfer(ctx context.Context) (string, error) {
     // create bulk get job
-    bulkGetResponse, objectsToRetrieve, err := transceiver.createBulkGetJob()
+    bulkGetResponse, objectsToRetrieve, err := transceiver.createBulkGetJob(ctx)
     if err != nil {
         return "", err
     }
@@ -122,7 +123,7 @@ func (transceiver *getTransceiver) transfer() (string, error) {
     doneNotifier := NewConditionalBool()
 
     queue := newOperationQueue(transceiver.Strategy.BlobStrategy.maxWaitingTransfers(), transceiver.Client.Logger)
-    producer := newGetProducer(&bulkGetResponse.MasterObjectList, objectsToRetrieve, &queue, transceiver.Strategy, transceiver.Client, &waitGroup, doneNotifier)
+    producer := newGetProducer(ctx, &bulkGetResponse.MasterObjectList, objectsToRetrieve, &queue, transceiver.Strategy, transceiver.Client, &waitGroup, doneNotifier)
     consumer := newConsumer(&queue, &waitGroup, transceiver.Strategy.BlobStrategy.maxConcurrentTransfers(), doneNotifier)
 
     // Wait for completion of producer-consumer goroutines
