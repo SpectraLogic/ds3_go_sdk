@@ -7,6 +7,7 @@ import (
 	"github.com/SpectraLogic/ds3_go_sdk/ds3_cli/commands"
 	"net/url"
 	"os"
+	"strings"
 )
 
 const EndpointEnv = "DS3_ENDPOINT"
@@ -16,7 +17,7 @@ const ProxyEnv = "DS3_PROXY"
 
 // Creates a client from cli arguments
 func FromArgs(args *commands.Arguments) (*ds3.Client, error) {
-	return createClient(args.Endpoint, args.AccessKey, args.SecretKey, args.Proxy)
+	return createClient(args)
 }
 
 // Creates a client from environment variables
@@ -35,14 +36,26 @@ func FromEnv() (*ds3.Client, error) {
 		return nil, errors.New("Must specify an access key.")
 	case secretKey == "":
 		return nil, errors.New("Must specify an secret key.")
-	default:
-		return createClient(endpoint, accessKey, secretKey, proxy)
 	}
+
+	args := commands.Arguments{
+		Endpoint:  endpoint,
+		AccessKey: accessKey,
+		SecretKey: secretKey,
+		Proxy:     proxy,
+	}
+
+	return createClient(&args)
 }
 
 // Creates a client
-func createClient(endpoint, accessKey, secretKey, proxy string) (*ds3.Client, error) {
+func createClient(args *commands.Arguments) (*ds3.Client, error) {
 	// Parse endpoint.
+	endpoint := args.Endpoint
+	if !strings.HasPrefix(endpoint, "http://") && !strings.HasPrefix(endpoint, "https://") {
+		endpoint = "https://" + endpoint
+	}
+
 	endpointUrl, endpointErr := url.Parse(endpoint)
 	if endpointErr != nil {
 		return nil, errors.New("The endpoint format was invalid.")
@@ -50,9 +63,9 @@ func createClient(endpoint, accessKey, secretKey, proxy string) (*ds3.Client, er
 
 	// Parse proxy.
 	var proxyUrlPtr *url.URL
-	if len(proxy) != 0 {
+	if len(args.Proxy) != 0 {
 		var proxyErr error
-		proxyUrlPtr, proxyErr = url.Parse(proxy)
+		proxyUrlPtr, proxyErr = url.Parse(args.Proxy)
 		if proxyErr != nil {
 			return nil, errors.New("The proxy format was invalid.")
 		}
@@ -60,7 +73,8 @@ func createClient(endpoint, accessKey, secretKey, proxy string) (*ds3.Client, er
 
 	// Create the client.
 	client := ds3.
-		NewClientBuilder(endpointUrl, &networking.Credentials{AccessId: accessKey, Key: secretKey}).
+		NewClientBuilder(endpointUrl, &networking.Credentials{AccessId: args.AccessKey, Key: args.SecretKey}).
+		WithIgnoreServerCertificate(args.IgnoreServerCertificate).
 		WithProxy(proxyUrlPtr).
 		BuildClient()
 	return client, nil
