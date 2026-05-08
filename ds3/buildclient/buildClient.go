@@ -50,7 +50,7 @@ func createClient(args *commands.Arguments) (*ds3.Client, error) {
     
     // Parse endpoint.
     endpoint := args.Endpoint
-    if !strings.HasPrefix(endpoint, "http://") || !strings.HasPrefix(endpoint, "https://") {
+    if !strings.HasPrefix(endpoint, "http://") && !strings.HasPrefix(endpoint, "https://") {
         endpoint = "https://" + endpoint
     }
 
