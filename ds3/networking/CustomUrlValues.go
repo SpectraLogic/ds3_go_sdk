@@ -12,56 +12,56 @@
 package networking
 
 import (
-    "net/url"
-    "bytes"
-    "sort"
+	"bytes"
+	"net/url"
+	"sort"
 )
 
 // Wrapper for url.Values to be used for encoding query parameters
 // without the '=' sign when there is no corresponding value, ex:
 // key, value -> key=value
-// key, '' -> key
+// key, ” -> key
 type CustomUrlValues struct {
-    values url.Values
+	values url.Values
 }
 
 func NewCustomUrlValues() CustomUrlValues {
-    return CustomUrlValues{ values:url.Values{} }
+	return CustomUrlValues{values: url.Values{}}
 }
 
 // Copied and modified from url.Values to remove '=' when there are no values to add
 func (customValues CustomUrlValues) Encode() string {
-    if customValues.values == nil {
-        return ""
-    }
-    var buf bytes.Buffer
-    keys := make([]string, 0, len(customValues.values))
-    for key := range customValues.values {
-        keys = append(keys, key)
-    }
-    sort.Strings(keys)
-    for _, key := range keys {
-        values := customValues.values[key]
-        prefix := url.QueryEscape(key)
-        for _, value := range values {
-            if buf.Len() > 0 {
-                buf.WriteByte('&')
-            }
-            buf.WriteString(prefix)
+	if customValues.values == nil {
+		return ""
+	}
+	var buf bytes.Buffer
+	keys := make([]string, 0, len(customValues.values))
+	for key := range customValues.values {
+		keys = append(keys, key)
+	}
+	sort.Strings(keys)
+	for _, key := range keys {
+		values := customValues.values[key]
+		prefix := url.QueryEscape(key)
+		for _, value := range values {
+			if buf.Len() > 0 {
+				buf.WriteByte('&')
+			}
+			buf.WriteString(prefix)
 
-            // If there is a value, then append
-            if value != "" {
-                buf.WriteString("=" + url.QueryEscape(value))
-            }
-        }
-    }
-    return buf.String()
+			// If there is a value, then append
+			if value != "" {
+				buf.WriteString("=" + url.QueryEscape(value))
+			}
+		}
+	}
+	return buf.String()
 }
 
 func (customValues CustomUrlValues) Add(key string, value string) {
-    customValues.values.Add(key, value)
+	customValues.values.Add(key, value)
 }
 
 func (customValues CustomUrlValues) Size() int {
-    return len(customValues.values)
+	return len(customValues.values)
 }

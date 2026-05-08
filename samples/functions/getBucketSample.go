@@ -12,44 +12,44 @@
 package functions
 
 import (
-    "context"
-    "log"
-    "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
-    "github.com/SpectraLogic/ds3_go_sdk/ds3/buildclient"
-    "fmt"
-    "github.com/SpectraLogic/ds3_go_sdk/samples/utils"
+	"context"
+	"fmt"
+	"github.com/SpectraLogic/ds3_go_sdk/ds3/buildclient"
+	"github.com/SpectraLogic/ds3_go_sdk/ds3/models"
+	"github.com/SpectraLogic/ds3_go_sdk/samples/utils"
+	"log"
 )
 
 // Demonstrates how to get a list of S3 objects in a bucket. Assumes that the target
 // bucket already exists and has files, i.e. run putBulkSample.go first.
 func GetBucketSample() {
-    fmt.Println("---- Get Bucket Sample ----")
+	fmt.Println("---- Get Bucket Sample ----")
 
-    // Create the client from environment variables.
-    client, err := buildclient.FromEnv()
-    if err != nil {
-        log.Fatal(err)
-    }
+	// Create the client from environment variables.
+	client, err := buildclient.FromEnv()
+	if err != nil {
+		log.Fatal(err)
+	}
 
-    // Create the get bucket request.
-    bucketRequest := models.NewGetBucketRequest(utils.BucketName)
+	// Create the get bucket request.
+	bucketRequest := models.NewGetBucketRequest(utils.BucketName)
 
-    // Perform the Get Bucket call by using the client and invoking the desired command.
-    bucketResponse, err := client.GetBucket(context.Background(), bucketRequest)
-    if err != nil {
-        log.Fatal(err)
-    }
+	// Perform the Get Bucket call by using the client and invoking the desired command.
+	bucketResponse, err := client.GetBucket(context.Background(), bucketRequest)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-    if len(bucketResponse.ListBucketResult.Objects) == 0 {
-        fmt.Printf("There are no objects in bucket '%s'.\n", utils.BucketName)
-        return
-    }
+	if len(bucketResponse.ListBucketResult.Objects) == 0 {
+		fmt.Printf("There are no objects in bucket '%s'.\n", utils.BucketName)
+		return
+	}
 
-    fmt.Printf("Objects in bucket '%s'\n", utils.BucketName)
-    for i, obj := range bucketResponse.ListBucketResult.Objects {
-        fmt.Printf("%d) Object: '%s' created on '%s'\n",
-            i,
-            utils.ToSafeString(obj.Key),
-            utils.ToSafeString(obj.LastModified))
-    }
+	fmt.Printf("Objects in bucket '%s'\n", utils.BucketName)
+	for i, obj := range bucketResponse.ListBucketResult.Objects {
+		fmt.Printf("%d) Object: '%s' created on '%s'\n",
+			i,
+			utils.ToSafeString(obj.Key),
+			utils.ToSafeString(obj.LastModified))
+	}
 }

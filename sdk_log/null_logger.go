@@ -1,24 +1,24 @@
 package sdk_log
 
 func NewNullLogger() Logger {
-    return &NullLogger{}
+	return &NullLogger{}
 }
 
 // A logger which does nothing.
-type NullLogger struct {}
+type NullLogger struct{}
 
 func (NullLogger) Infof(format string, args ...interface{}) {
-    // do nothing
+	// do nothing
 }
 
 func (NullLogger) Debugf(format string, args ...interface{}) {
-    // do nothing
+	// do nothing
 }
 
 func (NullLogger) Warningf(format string, args ...interface{}) {
-    // do nothing
+	// do nothing
 }
 
 func (NullLogger) Errorf(format string, args ...interface{}) {
-    // do nothing
+	// do nothing
 }

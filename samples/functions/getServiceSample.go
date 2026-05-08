@@ -12,35 +12,35 @@
 package functions
 
 import (
-    "context"
-    "log"
-    "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
-    "github.com/SpectraLogic/ds3_go_sdk/ds3/buildclient"
-    "fmt"
-    "github.com/SpectraLogic/ds3_go_sdk/samples/utils"
+	"context"
+	"fmt"
+	"github.com/SpectraLogic/ds3_go_sdk/ds3/buildclient"
+	"github.com/SpectraLogic/ds3_go_sdk/ds3/models"
+	"github.com/SpectraLogic/ds3_go_sdk/samples/utils"
+	"log"
 )
 
 func GetServiceSample() {
-    fmt.Println("---- Get Service Sample ----")
+	fmt.Println("---- Get Service Sample ----")
 
-    // Create the client from environment variables.
-    client, err := buildclient.FromEnv()
-    if err != nil {
-        log.Fatal(err)
-    }
+	// Create the client from environment variables.
+	client, err := buildclient.FromEnv()
+	if err != nil {
+		log.Fatal(err)
+	}
 
-    // Create the get service request. All requests to a DS3 appliance start this way.
-    request := models.NewGetServiceRequest()
+	// Create the get service request. All requests to a DS3 appliance start this way.
+	request := models.NewGetServiceRequest()
 
-    // Perform the Get Service call by using the client and invoking the desired command.
-    response, err := client.GetService(context.Background(), request)
-    if err != nil {
-        log.Fatal(err)
-    }
+	// Perform the Get Service call by using the client and invoking the desired command.
+	response, err := client.GetService(context.Background(), request)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-    // Printing contents of get service.
-    fmt.Println("Buckets:")
-    for i, bucket := range response.ListAllMyBucketsResult.Buckets {
-        fmt.Printf("%d) Name: %s; CreationDate: %s\n", i + 1, utils.ToSafeString(bucket.Name), utils.ToSafeString(bucket.CreationDate))
-    }
+	// Printing contents of get service.
+	fmt.Println("Buckets:")
+	for i, bucket := range response.ListAllMyBucketsResult.Buckets {
+		fmt.Printf("%d) Name: %s; CreationDate: %s\n", i+1, utils.ToSafeString(bucket.Name), utils.ToSafeString(bucket.CreationDate))
+	}
 }

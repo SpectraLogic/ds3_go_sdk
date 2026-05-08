@@ -14,21 +14,21 @@
 package models
 
 import (
-    "encoding/xml"
+	"encoding/xml"
 )
 
 type XmlNode struct {
-    XMLName  xml.Name
-    Attrs    []xml.Attr `xml:"-"` // Does not parse attributes in sax parser
-    Content  []byte     `xml:",chardata"`
-    Children []XmlNode     `xml:",any"`
+	XMLName  xml.Name
+	Attrs    []xml.Attr `xml:"-"` // Does not parse attributes in sax parser
+	Content  []byte     `xml:",chardata"`
+	Children []XmlNode  `xml:",any"`
 }
 
 // Uses the Go library to unmarshal XML into a simple node structure
 func (xmlNode *XmlNode) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
-    xmlNode.Attrs = start.Attr
+	xmlNode.Attrs = start.Attr
 
-    type n XmlNode
+	type n XmlNode
 
-    return d.DecodeElement((*n)(xmlNode), &start)
+	return d.DecodeElement((*n)(xmlNode), &start)
 }

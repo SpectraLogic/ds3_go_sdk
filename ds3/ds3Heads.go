@@ -14,56 +14,54 @@
 package ds3
 
 import (
-    "context"
-    "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
-    "github.com/SpectraLogic/ds3_go_sdk/ds3/networking"
+	"context"
+	"github.com/SpectraLogic/ds3_go_sdk/ds3/models"
+	"github.com/SpectraLogic/ds3_go_sdk/ds3/networking"
 )
 
 func (client *Client) HeadBucket(ctx context.Context, request *models.HeadBucketRequest) (*models.HeadBucketResponse, error) {
-    // Build the http request
-    httpRequest, err := networking.NewHttpRequestBuilder().
-        WithHttpVerb(HTTP_VERB_HEAD).
-        WithPath("/" + request.BucketName).
-        Build(ctx, client.connectionInfo)
+	// Build the http request
+	httpRequest, err := networking.NewHttpRequestBuilder().
+		WithHttpVerb(HTTP_VERB_HEAD).
+		WithPath("/"+request.BucketName).
+		Build(ctx, client.connectionInfo)
 
-    if err != nil {
-        return nil, err
-    }
+	if err != nil {
+		return nil, err
+	}
 
-    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
+	networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
 
-    // Invoke the HTTP request.
-    response, requestErr := networkRetryDecorator.Invoke(httpRequest)
-    if requestErr != nil {
-        return nil, requestErr
-    }
+	// Invoke the HTTP request.
+	response, requestErr := networkRetryDecorator.Invoke(httpRequest)
+	if requestErr != nil {
+		return nil, requestErr
+	}
 
-    // Create a response object based on the result.
-    return models.NewHeadBucketResponse(response)
+	// Create a response object based on the result.
+	return models.NewHeadBucketResponse(response)
 }
 
 func (client *Client) HeadObject(ctx context.Context, request *models.HeadObjectRequest) (*models.HeadObjectResponse, error) {
-    // Build the http request
-    httpRequest, err := networking.NewHttpRequestBuilder().
-        WithHttpVerb(HTTP_VERB_HEAD).
-        WithPath("/" + request.BucketName + "/" + request.ObjectName).
-        WithOptionalQueryParam("version_id", request.VersionId).
-        Build(ctx, client.connectionInfo)
+	// Build the http request
+	httpRequest, err := networking.NewHttpRequestBuilder().
+		WithHttpVerb(HTTP_VERB_HEAD).
+		WithPath("/"+request.BucketName+"/"+request.ObjectName).
+		WithOptionalQueryParam("version_id", request.VersionId).
+		Build(ctx, client.connectionInfo)
 
-    if err != nil {
-        return nil, err
-    }
+	if err != nil {
+		return nil, err
+	}
 
-    networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
+	networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
 
-    // Invoke the HTTP request.
-    response, requestErr := networkRetryDecorator.Invoke(httpRequest)
-    if requestErr != nil {
-        return nil, requestErr
-    }
+	// Invoke the HTTP request.
+	response, requestErr := networkRetryDecorator.Invoke(httpRequest)
+	if requestErr != nil {
+		return nil, requestErr
+	}
 
-    // Create a response object based on the result.
-    return models.NewHeadObjectResponse(response)
+	// Create a response object based on the result.
+	return models.NewHeadObjectResponse(response)
 }
-
-

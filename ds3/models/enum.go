@@ -3,9 +3,9 @@ package models
 type Enum int
 
 func (enum Enum) String() string {
-    return "something..."
+	return "something..."
 }
 
 const (
-    UNDEFINED = 0
+	UNDEFINED = 0
 )

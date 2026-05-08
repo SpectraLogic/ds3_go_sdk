@@ -1,7 +1,7 @@
 package networking
 
 import (
-    "strconv"
+	"strconv"
 )
 
 // Contains utils for converting pointers to primitives into string pointers.
@@ -10,49 +10,49 @@ import (
 
 // Converts an *int64 into a *string
 func Int64PtrToStrPtr(int *int64) *string {
-    if int == nil {
-        return nil
-    }
-    str := strconv.FormatInt(*int, 10)
-    return &str
+	if int == nil {
+		return nil
+	}
+	str := strconv.FormatInt(*int, 10)
+	return &str
 }
 
 // Converts an *int into a *string
 func IntPtrToStrPtr(int *int) *string {
-    if int == nil {
-        return nil
-    }
-    str := strconv.Itoa(*int)
-    return &str
+	if int == nil {
+		return nil
+	}
+	str := strconv.Itoa(*int)
+	return &str
 }
 
 // Converts a *bool into a *string
 func BoolPtrToStrPtr(bool *bool) *string {
-    if bool == nil {
-        return nil
-    }
-    str := strconv.FormatBool(*bool)
-    return &str
+	if bool == nil {
+		return nil
+	}
+	str := strconv.FormatBool(*bool)
+	return &str
 }
 
 // Converts a *float64 into a *string
 func Float64PtrToStrPtr(float *float64) *string {
-    if float == nil {
-        return nil
-    }
-    str := strconv.FormatFloat(*float, 'f', -1, 64)
-    return &str
+	if float == nil {
+		return nil
+	}
+	str := strconv.FormatFloat(*float, 'f', -1, 64)
+	return &str
 }
 
 // Interface for a to string method
 type ToStringPtrInterface interface {
-    StringPtr() *string
+	StringPtr() *string
 }
 
 // Converts an item that meets the ToStringInterface into a *string
 func InterfaceToStrPtr(item ToStringPtrInterface) *string {
-    if item == nil {
-        return nil
-    }
-    return item.StringPtr()
+	if item == nil {
+		return nil
+	}
+	return item.StringPtr()
 }

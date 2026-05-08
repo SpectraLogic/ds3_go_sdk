@@ -7,7 +7,7 @@ type Ds3ObjectReadCloser struct {
 }
 
 func NewDs3ObjectReadCloserDecorator(reader io.Reader) io.ReadCloser {
-	return Ds3ObjectReadCloser { Reader: reader }
+	return Ds3ObjectReadCloser{Reader: reader}
 }
 
 func (Ds3ObjectReadCloser Ds3ObjectReadCloser) Close() error {
@@ -17,7 +17,3 @@ func (Ds3ObjectReadCloser Ds3ObjectReadCloser) Close() error {
 	}
 	return nil
 }
-
-
-
-

@@ -1,8 +1,8 @@
 package networking
 
 // Used to correctly sort headers when creating the stringToSign for the authorization header.
-type CanonicalHeader struct{
-	key string // key is assumed to be lower cased
+type CanonicalHeader struct {
+	key    string // key is assumed to be lower cased
 	values []string
 }
 type CanonicalHeaders []CanonicalHeader

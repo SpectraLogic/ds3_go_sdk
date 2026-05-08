@@ -12,25 +12,25 @@
 package networking
 
 import (
-    "context"
-    "testing"
-    "net/url"
-    "github.com/SpectraLogic/ds3_go_sdk/ds3_utils/ds3Testing"
-    "github.com/SpectraLogic/ds3_go_sdk/ds3/models"
-    "strings"
+	"context"
+	"github.com/SpectraLogic/ds3_go_sdk/ds3/models"
+	"github.com/SpectraLogic/ds3_go_sdk/ds3_utils/ds3Testing"
+	"net/url"
+	"strings"
+	"testing"
 )
 
 func TestEncodeQueryParams(t *testing.T) {
-    expected := "key%20space%20=value%20space%20&key%2Bplus=value%2Bplus&key%3Bsemicolon=value%3Bsemicolon"
+	expected := "key%20space%20=value%20space%20&key%2Bplus=value%2Bplus&key%3Bsemicolon=value%3Bsemicolon"
 
-    queryParams := &url.Values{}
-    queryParams.Set("key space ", "value space ")
-    queryParams.Set("key;semicolon", "value;semicolon")
-    queryParams.Set("key+plus", "value+plus")
+	queryParams := &url.Values{}
+	queryParams.Set("key space ", "value space ")
+	queryParams.Set("key;semicolon", "value;semicolon")
+	queryParams.Set("key+plus", "value+plus")
 
-    result := encodeQueryParams(queryParams)
+	result := encodeQueryParams(queryParams)
 
-    ds3Testing.AssertString(t, "Encoded Query Params", expected, result)
+	ds3Testing.AssertString(t, "Encoded Query Params", expected, result)
 }
 
 func TestBuildingAuthorizationDigestWithMetadata(t *testing.T) {
@@ -50,8 +50,8 @@ func TestBuildingAuthorizationDigestWithMetadata(t *testing.T) {
 		Proxy:       nil}
 
 	httpRequestBuilder.
-		WithHeader(models.AMZ_META_HEADER + shasta, samoyed).
-		WithHeader(models.AMZ_META_HEADER + gracie, eskimo).
+		WithHeader(models.AMZ_META_HEADER+shasta, samoyed).
+		WithHeader(models.AMZ_META_HEADER+gracie, eskimo).
 		Build(context.Background(), &connectionInfo)
 
 	amazonHeaders := httpRequestBuilder.signatureFields.CanonicalizedAmzHeaders
