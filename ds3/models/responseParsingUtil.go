@@ -12,10 +12,11 @@
 package models
 
 import (
-	"log"
 	"net/http"
 	"strconv"
 	"strings"
+
+	"github.com/SpectraLogic/ds3_go_sdk/sdk_log"
 )
 
 // Contains utils used by model parsers to parse response payloads.
@@ -292,14 +293,14 @@ func parseNullableBoolFromString(content string, aggErr *AggregateError) *bool {
 	return &result
 }
 
-func parseStringSlice(tagName string, xmlNodes []XmlNode, aggErr *AggregateError) []string {
+func parseStringSlice(tagName string, xmlNodes []XmlNode, aggErr *AggregateError, logger sdk_log.Logger) []string {
 	var result []string
 	for _, curXmlNode := range xmlNodes {
 		if curXmlNode.XMLName.Local == tagName {
 			var curResult string = string(curXmlNode.Content)
 			result = append(result, curResult)
 		} else {
-			log.Printf("WARNING: Discovered unexpected xml tag '%s' when expected tag '%s' when parsing string slice.\n", curXmlNode.XMLName.Local, tagName)
+			logger.Warningf("Discovered unexpected xml tag '%s' when expected tag '%s' when parsing string slice.", curXmlNode.XMLName.Local, tagName)
 		}
 	}
 	return result

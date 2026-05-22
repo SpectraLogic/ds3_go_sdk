@@ -15,15 +15,17 @@ import (
 	"encoding/xml"
 	"io"
 	"io/ioutil"
+
+	"github.com/SpectraLogic/ds3_go_sdk/sdk_log"
 )
 
 type modelParser interface {
-	parse(node *XmlNode, aggErr *AggregateError)
+	parse(node *XmlNode, aggErr *AggregateError, logger sdk_log.Logger)
 }
 
 // Parses a response payload into the specified model parser. A best effort parsing
 // is performed, and all errors that occur during parsing are captured within an aggregate error.
-func parseResponsePayload(webResponse WebResponse, parsedBody modelParser) error {
+func parseResponsePayload(webResponse WebResponse, parsedBody modelParser, logger sdk_log.Logger) error {
 	// Clean up the response body.
 	body := webResponse.Body()
 
@@ -35,7 +37,7 @@ func parseResponsePayload(webResponse WebResponse, parsedBody modelParser) error
 
 	// Parse the response
 	var aggErr AggregateError
-	parsedBody.parse(root, &aggErr)
+	parsedBody.parse(root, &aggErr, logger)
 	return aggErr.GetErrors()
 }
 

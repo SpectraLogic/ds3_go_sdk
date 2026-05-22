@@ -39,7 +39,7 @@ func (client *Client) HeadBucket(ctx context.Context, request *models.HeadBucket
 	}
 
 	// Create a response object based on the result.
-	return models.NewHeadBucketResponse(response)
+	return models.NewHeadBucketResponse(response, client.Logger)
 }
 
 func (client *Client) HeadObject(ctx context.Context, request *models.HeadObjectRequest) (*models.HeadObjectResponse, error) {
@@ -63,5 +63,5 @@ func (client *Client) HeadObject(ctx context.Context, request *models.HeadObject
 	}
 
 	// Create a response object based on the result.
-	return models.NewHeadObjectResponse(response)
+	return models.NewHeadObjectResponse(response, client.Logger)
 }

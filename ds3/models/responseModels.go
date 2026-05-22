@@ -17,7 +17,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"log"
+	"github.com/SpectraLogic/ds3_go_sdk/sdk_log"
 )
 
 type PhysicalPlacement struct {
@@ -28,23 +28,23 @@ type PhysicalPlacement struct {
 	Tapes        []Tape
 }
 
-func (physicalPlacement *PhysicalPlacement) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (physicalPlacement *PhysicalPlacement) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "AzureTargets":
-			physicalPlacement.AzureTargets = parseAzureTargetSlice("AzureTarget", child.Children, aggErr)
+			physicalPlacement.AzureTargets = parseAzureTargetSlice("AzureTarget", child.Children, aggErr, logger)
 		case "Ds3Targets":
-			physicalPlacement.Ds3Targets = parseDs3TargetSlice("Ds3Target", child.Children, aggErr)
+			physicalPlacement.Ds3Targets = parseDs3TargetSlice("Ds3Target", child.Children, aggErr, logger)
 		case "Pools":
-			physicalPlacement.Pools = parsePoolSlice("Pool", child.Children, aggErr)
+			physicalPlacement.Pools = parsePoolSlice("Pool", child.Children, aggErr, logger)
 		case "S3Targets":
-			physicalPlacement.S3Targets = parseS3TargetSlice("S3Target", child.Children, aggErr)
+			physicalPlacement.S3Targets = parseS3TargetSlice("S3Target", child.Children, aggErr, logger)
 		case "Tapes":
-			physicalPlacement.Tapes = parseTapeSlice("Tape", child.Children, aggErr)
+			physicalPlacement.Tapes = parseTapeSlice("Tape", child.Children, aggErr, logger)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing PhysicalPlacement.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing PhysicalPlacement.", child.XMLName.Local)
 		}
 	}
 }
@@ -84,7 +84,6 @@ func (autoInspectMode AutoInspectMode) String() string {
 	case AUTO_INSPECT_MODE_FULL:
 		return "FULL"
 	default:
-		log.Printf("Error: invalid AutoInspectMode represented by '%d'", autoInspectMode)
 		return ""
 	}
 }
@@ -117,7 +116,7 @@ type AzureDataReplicationRule struct {
 	Type                   DataReplicationRuleType
 }
 
-func (azureDataReplicationRule *AzureDataReplicationRule) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (azureDataReplicationRule *AzureDataReplicationRule) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -137,7 +136,7 @@ func (azureDataReplicationRule *AzureDataReplicationRule) parse(xmlNode *XmlNode
 		case "Type":
 			parseEnum(child.Content, &azureDataReplicationRule.Type, aggErr)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing AzureDataReplicationRule.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing AzureDataReplicationRule.", child.XMLName.Local)
 		}
 	}
 }
@@ -151,7 +150,7 @@ type Blob struct {
 	ObjectId     string
 }
 
-func (blob *Blob) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (blob *Blob) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -169,7 +168,7 @@ func (blob *Blob) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 		case "ObjectId":
 			blob.ObjectId = parseString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing Blob.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing Blob.", child.XMLName.Local)
 		}
 	}
 }
@@ -224,7 +223,6 @@ func (priority Priority) String() string {
 	case PRIORITY_BACKGROUND:
 		return "BACKGROUND"
 	default:
-		log.Printf("Error: invalid Priority represented by '%d'", priority)
 		return ""
 	}
 }
@@ -259,7 +257,7 @@ type Bucket struct {
 	UserId                        string
 }
 
-func (bucket *Bucket) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (bucket *Bucket) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -283,7 +281,7 @@ func (bucket *Bucket) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 		case "UserId":
 			bucket.UserId = parseString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing Bucket.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing Bucket.", child.XMLName.Local)
 		}
 	}
 }
@@ -296,7 +294,7 @@ type BucketAcl struct {
 	UserId     *string
 }
 
-func (bucketAcl *BucketAcl) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (bucketAcl *BucketAcl) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -312,7 +310,7 @@ func (bucketAcl *BucketAcl) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 		case "UserId":
 			bucketAcl.UserId = parseNullableString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing BucketAcl.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing BucketAcl.", child.XMLName.Local)
 		}
 	}
 }
@@ -367,7 +365,6 @@ func (bucketAclPermission BucketAclPermission) String() string {
 	case BUCKET_ACL_PERMISSION_OWNER:
 		return "OWNER"
 	default:
-		log.Printf("Error: invalid BucketAclPermission represented by '%d'", bucketAclPermission)
 		return ""
 	}
 }
@@ -410,7 +407,7 @@ type CanceledJob struct {
 	UserId                              string
 }
 
-func (canceledJob *CanceledJob) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (canceledJob *CanceledJob) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -450,7 +447,7 @@ func (canceledJob *CanceledJob) parse(xmlNode *XmlNode, aggErr *AggregateError) 
 		case "UserId":
 			canceledJob.UserId = parseString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing CanceledJob.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing CanceledJob.", child.XMLName.Local)
 		}
 	}
 }
@@ -460,17 +457,17 @@ type CapacitySummaryContainer struct {
 	Tape StorageDomainCapacitySummary
 }
 
-func (capacitySummaryContainer *CapacitySummaryContainer) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (capacitySummaryContainer *CapacitySummaryContainer) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "Pool":
-			capacitySummaryContainer.Pool.parse(&child, aggErr)
+			capacitySummaryContainer.Pool.parse(&child, aggErr, logger)
 		case "Tape":
-			capacitySummaryContainer.Tape.parse(&child, aggErr)
+			capacitySummaryContainer.Tape.parse(&child, aggErr, logger)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing CapacitySummaryContainer.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing CapacitySummaryContainer.", child.XMLName.Local)
 		}
 	}
 }
@@ -505,7 +502,6 @@ func (cloudNamingMode CloudNamingMode) String() string {
 	case CLOUD_NAMING_MODE_AWS_S3:
 		return "AWS_S3"
 	default:
-		log.Printf("Error: invalid CloudNamingMode represented by '%d'", cloudNamingMode)
 		return ""
 	}
 }
@@ -547,7 +543,7 @@ type CompletedJob struct {
 	UserId                              string
 }
 
-func (completedJob *CompletedJob) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (completedJob *CompletedJob) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -585,7 +581,7 @@ func (completedJob *CompletedJob) parse(xmlNode *XmlNode, aggErr *AggregateError
 		case "UserId":
 			completedJob.UserId = parseString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing CompletedJob.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing CompletedJob.", child.XMLName.Local)
 		}
 	}
 }
@@ -620,7 +616,6 @@ func (dataIsolationLevel DataIsolationLevel) String() string {
 	case DATA_ISOLATION_LEVEL_BUCKET_ISOLATED:
 		return "BUCKET_ISOLATED"
 	default:
-		log.Printf("Error: invalid DataIsolationLevel represented by '%d'", dataIsolationLevel)
 		return ""
 	}
 }
@@ -666,7 +661,7 @@ type DataPathBackend struct {
 	VerifyCheckpointBeforeRead                bool
 }
 
-func (dataPathBackend *DataPathBackend) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (dataPathBackend *DataPathBackend) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -712,7 +707,7 @@ func (dataPathBackend *DataPathBackend) parse(xmlNode *XmlNode, aggErr *Aggregat
 		case "VerifyCheckpointBeforeRead":
 			dataPathBackend.VerifyCheckpointBeforeRead = parseBool(child.Content, aggErr)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing DataPathBackend.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing DataPathBackend.", child.XMLName.Local)
 		}
 	}
 }
@@ -727,7 +722,7 @@ type DataPersistenceRule struct {
 	Type                DataPersistenceRuleType
 }
 
-func (dataPersistenceRule *DataPersistenceRule) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (dataPersistenceRule *DataPersistenceRule) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -747,7 +742,7 @@ func (dataPersistenceRule *DataPersistenceRule) parse(xmlNode *XmlNode, aggErr *
 		case "Type":
 			parseEnum(child.Content, &dataPersistenceRule.Type, aggErr)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing DataPersistenceRule.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing DataPersistenceRule.", child.XMLName.Local)
 		}
 	}
 }
@@ -787,7 +782,6 @@ func (dataPersistenceRuleType DataPersistenceRuleType) String() string {
 	case DATA_PERSISTENCE_RULE_TYPE_RETIRED:
 		return "RETIRED"
 	default:
-		log.Printf("Error: invalid DataPersistenceRuleType represented by '%d'", dataPersistenceRuleType)
 		return ""
 	}
 }
@@ -840,7 +834,6 @@ func (dataPlacementRuleState DataPlacementRuleState) String() string {
 	case DATA_PLACEMENT_RULE_STATE_INCLUSION_IN_PROGRESS:
 		return "INCLUSION_IN_PROGRESS"
 	default:
-		log.Printf("Error: invalid DataPlacementRuleState represented by '%d'", dataPlacementRuleState)
 		return ""
 	}
 }
@@ -882,7 +875,7 @@ type DataPolicy struct {
 	Versioning                        VersioningLevel
 }
 
-func (dataPolicy *DataPolicy) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (dataPolicy *DataPolicy) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -920,7 +913,7 @@ func (dataPolicy *DataPolicy) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 		case "Versioning":
 			parseEnum(child.Content, &dataPolicy.Versioning, aggErr)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing DataPolicy.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing DataPolicy.", child.XMLName.Local)
 		}
 	}
 }
@@ -932,7 +925,7 @@ type DataPolicyAcl struct {
 	UserId       *string
 }
 
-func (dataPolicyAcl *DataPolicyAcl) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (dataPolicyAcl *DataPolicyAcl) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -946,7 +939,7 @@ func (dataPolicyAcl *DataPolicyAcl) parse(xmlNode *XmlNode, aggErr *AggregateErr
 		case "UserId":
 			dataPolicyAcl.UserId = parseNullableString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing DataPolicyAcl.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing DataPolicyAcl.", child.XMLName.Local)
 		}
 	}
 }
@@ -981,7 +974,6 @@ func (dataReplicationRuleType DataReplicationRuleType) String() string {
 	case DATA_REPLICATION_RULE_TYPE_RETIRED:
 		return "RETIRED"
 	default:
-		log.Printf("Error: invalid DataReplicationRuleType represented by '%d'", dataReplicationRuleType)
 		return ""
 	}
 }
@@ -1014,7 +1006,7 @@ type DegradedBlob struct {
 	S3ReplicationRuleId    *string
 }
 
-func (degradedBlob *DegradedBlob) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (degradedBlob *DegradedBlob) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -1034,7 +1026,7 @@ func (degradedBlob *DegradedBlob) parse(xmlNode *XmlNode, aggErr *AggregateError
 		case "S3ReplicationRuleId":
 			degradedBlob.S3ReplicationRuleId = parseNullableString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing DegradedBlob.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing DegradedBlob.", child.XMLName.Local)
 		}
 	}
 }
@@ -1049,7 +1041,7 @@ type Ds3DataReplicationRule struct {
 	Type             DataReplicationRuleType
 }
 
-func (ds3DataReplicationRule *Ds3DataReplicationRule) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (ds3DataReplicationRule *Ds3DataReplicationRule) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -1069,7 +1061,7 @@ func (ds3DataReplicationRule *Ds3DataReplicationRule) parse(xmlNode *XmlNode, ag
 		case "Type":
 			parseEnum(child.Content, &ds3DataReplicationRule.Type, aggErr)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing Ds3DataReplicationRule.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing Ds3DataReplicationRule.", child.XMLName.Local)
 		}
 	}
 }
@@ -1083,7 +1075,7 @@ type FeatureKey struct {
 	LimitValue     *int64
 }
 
-func (featureKey *FeatureKey) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (featureKey *FeatureKey) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -1101,7 +1093,7 @@ func (featureKey *FeatureKey) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 		case "LimitValue":
 			featureKey.LimitValue = parseNullableInt64(child.Content, aggErr)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing FeatureKey.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing FeatureKey.", child.XMLName.Local)
 		}
 	}
 }
@@ -1136,7 +1128,6 @@ func (featureKeyType FeatureKeyType) String() string {
 	case FEATURE_KEY_TYPE_MICROSOFT_AZURE_CLOUD_OUT:
 		return "MICROSOFT_AZURE_CLOUD_OUT"
 	default:
-		log.Printf("Error: invalid FeatureKeyType represented by '%d'", featureKeyType)
 		return ""
 	}
 }
@@ -1165,7 +1156,7 @@ type Group struct {
 	Name    *string
 }
 
-func (group *Group) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (group *Group) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -1177,7 +1168,7 @@ func (group *Group) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 		case "Name":
 			group.Name = parseNullableString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing Group.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing Group.", child.XMLName.Local)
 		}
 	}
 }
@@ -1189,7 +1180,7 @@ type GroupMember struct {
 	MemberUserId  *string
 }
 
-func (groupMember *GroupMember) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (groupMember *GroupMember) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -1203,7 +1194,7 @@ func (groupMember *GroupMember) parse(xmlNode *XmlNode, aggErr *AggregateError) 
 		case "MemberUserId":
 			groupMember.MemberUserId = parseNullableString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing GroupMember.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing GroupMember.", child.XMLName.Local)
 		}
 	}
 }
@@ -1235,7 +1226,7 @@ type ActiveJob struct {
 	VerifyAfterWrite                    bool
 }
 
-func (activeJob *ActiveJob) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (activeJob *ActiveJob) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -1289,7 +1280,7 @@ func (activeJob *ActiveJob) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 		case "VerifyAfterWrite":
 			activeJob.VerifyAfterWrite = parseBool(child.Content, aggErr)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing ActiveJob.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing ActiveJob.", child.XMLName.Local)
 		}
 	}
 }
@@ -1309,7 +1300,7 @@ type JobChunk struct {
 	ReadFromTapeId        *string
 }
 
-func (jobChunk *JobChunk) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (jobChunk *JobChunk) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -1339,7 +1330,7 @@ func (jobChunk *JobChunk) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 		case "ReadFromTapeId":
 			jobChunk.ReadFromTapeId = parseNullableString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing JobChunk.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing JobChunk.", child.XMLName.Local)
 		}
 	}
 }
@@ -1379,7 +1370,6 @@ func (jobChunkBlobStoreState JobChunkBlobStoreState) String() string {
 	case JOB_CHUNK_BLOB_STORE_STATE_COMPLETED:
 		return "COMPLETED"
 	default:
-		log.Printf("Error: invalid JobChunkBlobStoreState represented by '%d'", jobChunkBlobStoreState)
 		return ""
 	}
 }
@@ -1432,7 +1422,6 @@ func (jobChunkClientProcessingOrderGuarantee JobChunkClientProcessingOrderGuaran
 	case JOB_CHUNK_CLIENT_PROCESSING_ORDER_GUARANTEE_IN_ORDER:
 		return "IN_ORDER"
 	default:
-		log.Printf("Error: invalid JobChunkClientProcessingOrderGuarantee represented by '%d'", jobChunkClientProcessingOrderGuarantee)
 		return ""
 	}
 }
@@ -1464,7 +1453,7 @@ type JobCreationFailed struct {
 	UserName     *string
 }
 
-func (jobCreationFailed *JobCreationFailed) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (jobCreationFailed *JobCreationFailed) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -1482,7 +1471,7 @@ func (jobCreationFailed *JobCreationFailed) parse(xmlNode *XmlNode, aggErr *Aggr
 		case "UserName":
 			jobCreationFailed.UserName = parseNullableString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing JobCreationFailed.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing JobCreationFailed.", child.XMLName.Local)
 		}
 	}
 }
@@ -1512,7 +1501,6 @@ func (jobCreationFailedType JobCreationFailedType) String() string {
 	case JOB_CREATION_FAILED_TYPE_TAPES_MUST_BE_ONLINED:
 		return "TAPES_MUST_BE_ONLINED"
 	default:
-		log.Printf("Error: invalid JobCreationFailedType represented by '%d'", jobCreationFailedType)
 		return ""
 	}
 }
@@ -1570,7 +1558,6 @@ func (jobRequestType JobRequestType) String() string {
 	case JOB_REQUEST_TYPE_VERIFY:
 		return "VERIFY"
 	default:
-		log.Printf("Error: invalid JobRequestType represented by '%d'", jobRequestType)
 		return ""
 	}
 }
@@ -1628,7 +1615,6 @@ func (jobRestore JobRestore) String() string {
 	case JOB_RESTORE_PERMANENT_ONLY:
 		return "PERMANENT_ONLY"
 	default:
-		log.Printf("Error: invalid JobRestore represented by '%d'", jobRestore)
 		return ""
 	}
 }
@@ -1681,7 +1667,6 @@ func (ltfsFileNamingMode LtfsFileNamingMode) String() string {
 	case LTFS_FILE_NAMING_MODE_OBJECT_ID:
 		return "OBJECT_ID"
 	default:
-		log.Printf("Error: invalid LtfsFileNamingMode represented by '%d'", ltfsFileNamingMode)
 		return ""
 	}
 }
@@ -1715,7 +1700,7 @@ type Node struct {
 	SerialNumber      *string
 }
 
-func (node *Node) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (node *Node) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -1737,7 +1722,7 @@ func (node *Node) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 		case "SerialNumber":
 			node.SerialNumber = parseNullableString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing Node.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing Node.", child.XMLName.Local)
 		}
 	}
 }
@@ -1753,7 +1738,7 @@ type S3DataReplicationRule struct {
 	Type                   DataReplicationRuleType
 }
 
-func (s3DataReplicationRule *S3DataReplicationRule) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (s3DataReplicationRule *S3DataReplicationRule) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -1775,7 +1760,7 @@ func (s3DataReplicationRule *S3DataReplicationRule) parse(xmlNode *XmlNode, aggE
 		case "Type":
 			parseEnum(child.Content, &s3DataReplicationRule.Type, aggErr)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing S3DataReplicationRule.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing S3DataReplicationRule.", child.XMLName.Local)
 		}
 	}
 }
@@ -1825,7 +1810,6 @@ func (s3InitialDataPlacementPolicy S3InitialDataPlacementPolicy) String() string
 	case S3_INITIAL_DATA_PLACEMENT_POLICY_DEEP_ARCHIVE:
 		return "DEEP_ARCHIVE"
 	default:
-		log.Printf("Error: invalid S3InitialDataPlacementPolicy represented by '%d'", s3InitialDataPlacementPolicy)
 		return ""
 	}
 }
@@ -1857,7 +1841,7 @@ type S3Object struct {
 	Type         S3ObjectType
 }
 
-func (s3Object *S3Object) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (s3Object *S3Object) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -1875,7 +1859,7 @@ func (s3Object *S3Object) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 		case "Type":
 			parseEnum(child.Content, &s3Object.Type, aggErr)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing S3Object.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing S3Object.", child.XMLName.Local)
 		}
 	}
 }
@@ -1910,7 +1894,6 @@ func (s3ObjectType S3ObjectType) String() string {
 	case S3_OBJECT_TYPE_FOLDER:
 		return "FOLDER"
 	default:
-		log.Printf("Error: invalid S3ObjectType represented by '%d'", s3ObjectType)
 		return ""
 	}
 }
@@ -2033,7 +2016,6 @@ func (s3Region S3Region) String() string {
 	case S3_REGION_CA_CENTRAL_1:
 		return "CA_CENTRAL_1"
 	default:
-		log.Printf("Error: invalid S3Region represented by '%d'", s3Region)
 		return ""
 	}
 }
@@ -2073,7 +2055,7 @@ type StorageDomain struct {
 	WriteOptimization                      WriteOptimization
 }
 
-func (storageDomain *StorageDomain) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (storageDomain *StorageDomain) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -2107,7 +2089,7 @@ func (storageDomain *StorageDomain) parse(xmlNode *XmlNode, aggErr *AggregateErr
 		case "WriteOptimization":
 			parseEnum(child.Content, &storageDomain.WriteOptimization, aggErr)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing StorageDomain.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing StorageDomain.", child.XMLName.Local)
 		}
 	}
 }
@@ -2118,7 +2100,7 @@ type StorageDomainCapacitySummary struct {
 	PhysicalUsed      int64
 }
 
-func (storageDomainCapacitySummary *StorageDomainCapacitySummary) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (storageDomainCapacitySummary *StorageDomainCapacitySummary) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -2130,7 +2112,7 @@ func (storageDomainCapacitySummary *StorageDomainCapacitySummary) parse(xmlNode 
 		case "PhysicalUsed":
 			storageDomainCapacitySummary.PhysicalUsed = parseInt64(child.Content, aggErr)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing StorageDomainCapacitySummary.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing StorageDomainCapacitySummary.", child.XMLName.Local)
 		}
 	}
 }
@@ -2143,7 +2125,7 @@ type StorageDomainFailure struct {
 	Type            StorageDomainFailureType
 }
 
-func (storageDomainFailure *StorageDomainFailure) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (storageDomainFailure *StorageDomainFailure) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -2159,7 +2141,7 @@ func (storageDomainFailure *StorageDomainFailure) parse(xmlNode *XmlNode, aggErr
 		case "Type":
 			parseEnum(child.Content, &storageDomainFailure.Type, aggErr)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing StorageDomainFailure.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing StorageDomainFailure.", child.XMLName.Local)
 		}
 	}
 }
@@ -2199,7 +2181,6 @@ func (storageDomainFailureType StorageDomainFailureType) String() string {
 	case STORAGE_DOMAIN_FAILURE_TYPE_WRITES_STALLED_DUE_TO_NO_FREE_MEDIA_REMAINING:
 		return "WRITES_STALLED_DUE_TO_NO_FREE_MEDIA_REMAINING"
 	default:
-		log.Printf("Error: invalid StorageDomainFailureType represented by '%d'", storageDomainFailureType)
 		return ""
 	}
 }
@@ -2233,7 +2214,7 @@ type StorageDomainMember struct {
 	WritePreference         WritePreferenceLevel
 }
 
-func (storageDomainMember *StorageDomainMember) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (storageDomainMember *StorageDomainMember) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -2255,7 +2236,7 @@ func (storageDomainMember *StorageDomainMember) parse(xmlNode *XmlNode, aggErr *
 		case "WritePreference":
 			parseEnum(child.Content, &storageDomainMember.WritePreference, aggErr)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing StorageDomainMember.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing StorageDomainMember.", child.XMLName.Local)
 		}
 	}
 }
@@ -2290,7 +2271,6 @@ func (storageDomainMemberState StorageDomainMemberState) String() string {
 	case STORAGE_DOMAIN_MEMBER_STATE_EXCLUSION_IN_PROGRESS:
 		return "EXCLUSION_IN_PROGRESS"
 	default:
-		log.Printf("Error: invalid StorageDomainMemberState represented by '%d'", storageDomainMemberState)
 		return ""
 	}
 }
@@ -2320,7 +2300,7 @@ type SystemFailure struct {
 	Type         SystemFailureType
 }
 
-func (systemFailure *SystemFailure) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (systemFailure *SystemFailure) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -2334,7 +2314,7 @@ func (systemFailure *SystemFailure) parse(xmlNode *XmlNode, aggErr *AggregateErr
 		case "Type":
 			parseEnum(child.Content, &systemFailure.Type, aggErr)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing SystemFailure.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing SystemFailure.", child.XMLName.Local)
 		}
 	}
 }
@@ -2389,7 +2369,6 @@ func (systemFailureType SystemFailureType) String() string {
 	case SYSTEM_FAILURE_TYPE_DATABASE_RUNNING_OUT_OF_SPACE:
 		return "DATABASE_RUNNING_OUT_OF_SPACE"
 	default:
-		log.Printf("Error: invalid SystemFailureType represented by '%d'", systemFailureType)
 		return ""
 	}
 }
@@ -2447,7 +2426,6 @@ func (unavailableMediaUsagePolicy UnavailableMediaUsagePolicy) String() string {
 	case UNAVAILABLE_MEDIA_USAGE_POLICY_DISALLOW:
 		return "DISALLOW"
 	default:
-		log.Printf("Error: invalid UnavailableMediaUsagePolicy represented by '%d'", unavailableMediaUsagePolicy)
 		return ""
 	}
 }
@@ -2479,7 +2457,7 @@ type SpectraUser struct {
 	SecretKey           *string
 }
 
-func (spectraUser *SpectraUser) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (spectraUser *SpectraUser) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -2497,7 +2475,7 @@ func (spectraUser *SpectraUser) parse(xmlNode *XmlNode, aggErr *AggregateError) 
 		case "SecretKey":
 			spectraUser.SecretKey = parseNullableString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing SpectraUser.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing SpectraUser.", child.XMLName.Local)
 		}
 	}
 }
@@ -2537,7 +2515,6 @@ func (versioningLevel VersioningLevel) String() string {
 	case VERSIONING_LEVEL_KEEP_MULTIPLE_VERSIONS:
 		return "KEEP_MULTIPLE_VERSIONS"
 	default:
-		log.Printf("Error: invalid VersioningLevel represented by '%d'", versioningLevel)
 		return ""
 	}
 }
@@ -2590,7 +2567,6 @@ func (writeOptimization WriteOptimization) String() string {
 	case WRITE_OPTIMIZATION_PERFORMANCE:
 		return "PERFORMANCE"
 	default:
-		log.Printf("Error: invalid WriteOptimization represented by '%d'", writeOptimization)
 		return ""
 	}
 }
@@ -2653,7 +2629,6 @@ func (writePreferenceLevel WritePreferenceLevel) String() string {
 	case WRITE_PREFERENCE_LEVEL_NEVER_SELECT:
 		return "NEVER_SELECT"
 	default:
-		log.Printf("Error: invalid WritePreferenceLevel represented by '%d'", writePreferenceLevel)
 		return ""
 	}
 }
@@ -2690,7 +2665,7 @@ type AzureTargetFailureNotificationRegistration struct {
 	UserId                           *string
 }
 
-func (azureTargetFailureNotificationRegistration *AzureTargetFailureNotificationRegistration) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (azureTargetFailureNotificationRegistration *AzureTargetFailureNotificationRegistration) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -2718,7 +2693,7 @@ func (azureTargetFailureNotificationRegistration *AzureTargetFailureNotification
 		case "UserId":
 			azureTargetFailureNotificationRegistration.UserId = parseNullableString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing AzureTargetFailureNotificationRegistration.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing AzureTargetFailureNotificationRegistration.", child.XMLName.Local)
 		}
 	}
 }
@@ -2739,7 +2714,7 @@ type BucketChangesNotificationRegistration struct {
 	UserId                           *string
 }
 
-func (bucketChangesNotificationRegistration *BucketChangesNotificationRegistration) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (bucketChangesNotificationRegistration *BucketChangesNotificationRegistration) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -2771,7 +2746,7 @@ func (bucketChangesNotificationRegistration *BucketChangesNotificationRegistrati
 		case "UserId":
 			bucketChangesNotificationRegistration.UserId = parseNullableString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing BucketChangesNotificationRegistration.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing BucketChangesNotificationRegistration.", child.XMLName.Local)
 		}
 	}
 }
@@ -2786,7 +2761,7 @@ type BucketHistoryEvent struct {
 	VersionId          string
 }
 
-func (bucketHistoryEvent *BucketHistoryEvent) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (bucketHistoryEvent *BucketHistoryEvent) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -2806,7 +2781,7 @@ func (bucketHistoryEvent *BucketHistoryEvent) parse(xmlNode *XmlNode, aggErr *Ag
 		case "VersionId":
 			bucketHistoryEvent.VersionId = parseString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing BucketHistoryEvent.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing BucketHistoryEvent.", child.XMLName.Local)
 		}
 	}
 }
@@ -2851,7 +2826,6 @@ func (bucketHistoryEventType BucketHistoryEventType) String() string {
 	case BUCKET_HISTORY_EVENT_TYPE_CREATE:
 		return "CREATE"
 	default:
-		log.Printf("Error: invalid BucketHistoryEventType represented by '%d'", bucketHistoryEventType)
 		return ""
 	}
 }
@@ -2888,7 +2862,7 @@ type Ds3TargetFailureNotificationRegistration struct {
 	UserId                           *string
 }
 
-func (ds3TargetFailureNotificationRegistration *Ds3TargetFailureNotificationRegistration) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (ds3TargetFailureNotificationRegistration *Ds3TargetFailureNotificationRegistration) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -2916,7 +2890,7 @@ func (ds3TargetFailureNotificationRegistration *Ds3TargetFailureNotificationRegi
 		case "UserId":
 			ds3TargetFailureNotificationRegistration.UserId = parseNullableString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing Ds3TargetFailureNotificationRegistration.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing Ds3TargetFailureNotificationRegistration.", child.XMLName.Local)
 		}
 	}
 }
@@ -2936,7 +2910,7 @@ type JobCompletedNotificationRegistration struct {
 	UserId                           *string
 }
 
-func (jobCompletedNotificationRegistration *JobCompletedNotificationRegistration) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (jobCompletedNotificationRegistration *JobCompletedNotificationRegistration) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -2966,7 +2940,7 @@ func (jobCompletedNotificationRegistration *JobCompletedNotificationRegistration
 		case "UserId":
 			jobCompletedNotificationRegistration.UserId = parseNullableString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing JobCompletedNotificationRegistration.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing JobCompletedNotificationRegistration.", child.XMLName.Local)
 		}
 	}
 }
@@ -2985,7 +2959,7 @@ type JobCreatedNotificationRegistration struct {
 	UserId                           *string
 }
 
-func (jobCreatedNotificationRegistration *JobCreatedNotificationRegistration) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (jobCreatedNotificationRegistration *JobCreatedNotificationRegistration) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -3013,7 +2987,7 @@ func (jobCreatedNotificationRegistration *JobCreatedNotificationRegistration) pa
 		case "UserId":
 			jobCreatedNotificationRegistration.UserId = parseNullableString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing JobCreatedNotificationRegistration.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing JobCreatedNotificationRegistration.", child.XMLName.Local)
 		}
 	}
 }
@@ -3032,7 +3006,7 @@ type JobCreationFailedNotificationRegistration struct {
 	UserId                           *string
 }
 
-func (jobCreationFailedNotificationRegistration *JobCreationFailedNotificationRegistration) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (jobCreationFailedNotificationRegistration *JobCreationFailedNotificationRegistration) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -3060,7 +3034,7 @@ func (jobCreationFailedNotificationRegistration *JobCreationFailedNotificationRe
 		case "UserId":
 			jobCreationFailedNotificationRegistration.UserId = parseNullableString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing JobCreationFailedNotificationRegistration.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing JobCreationFailedNotificationRegistration.", child.XMLName.Local)
 		}
 	}
 }
@@ -3079,7 +3053,7 @@ type PoolFailureNotificationRegistration struct {
 	UserId                           *string
 }
 
-func (poolFailureNotificationRegistration *PoolFailureNotificationRegistration) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (poolFailureNotificationRegistration *PoolFailureNotificationRegistration) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -3107,7 +3081,7 @@ func (poolFailureNotificationRegistration *PoolFailureNotificationRegistration) 
 		case "UserId":
 			poolFailureNotificationRegistration.UserId = parseNullableString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing PoolFailureNotificationRegistration.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing PoolFailureNotificationRegistration.", child.XMLName.Local)
 		}
 	}
 }
@@ -3127,7 +3101,7 @@ type S3ObjectCachedNotificationRegistration struct {
 	UserId                           *string
 }
 
-func (s3ObjectCachedNotificationRegistration *S3ObjectCachedNotificationRegistration) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (s3ObjectCachedNotificationRegistration *S3ObjectCachedNotificationRegistration) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -3157,7 +3131,7 @@ func (s3ObjectCachedNotificationRegistration *S3ObjectCachedNotificationRegistra
 		case "UserId":
 			s3ObjectCachedNotificationRegistration.UserId = parseNullableString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing S3ObjectCachedNotificationRegistration.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing S3ObjectCachedNotificationRegistration.", child.XMLName.Local)
 		}
 	}
 }
@@ -3176,7 +3150,7 @@ type S3ObjectLostNotificationRegistration struct {
 	UserId                           *string
 }
 
-func (s3ObjectLostNotificationRegistration *S3ObjectLostNotificationRegistration) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (s3ObjectLostNotificationRegistration *S3ObjectLostNotificationRegistration) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -3204,7 +3178,7 @@ func (s3ObjectLostNotificationRegistration *S3ObjectLostNotificationRegistration
 		case "UserId":
 			s3ObjectLostNotificationRegistration.UserId = parseNullableString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing S3ObjectLostNotificationRegistration.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing S3ObjectLostNotificationRegistration.", child.XMLName.Local)
 		}
 	}
 }
@@ -3224,7 +3198,7 @@ type S3ObjectPersistedNotificationRegistration struct {
 	UserId                           *string
 }
 
-func (s3ObjectPersistedNotificationRegistration *S3ObjectPersistedNotificationRegistration) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (s3ObjectPersistedNotificationRegistration *S3ObjectPersistedNotificationRegistration) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -3254,7 +3228,7 @@ func (s3ObjectPersistedNotificationRegistration *S3ObjectPersistedNotificationRe
 		case "UserId":
 			s3ObjectPersistedNotificationRegistration.UserId = parseNullableString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing S3ObjectPersistedNotificationRegistration.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing S3ObjectPersistedNotificationRegistration.", child.XMLName.Local)
 		}
 	}
 }
@@ -3273,7 +3247,7 @@ type S3TargetFailureNotificationRegistration struct {
 	UserId                           *string
 }
 
-func (s3TargetFailureNotificationRegistration *S3TargetFailureNotificationRegistration) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (s3TargetFailureNotificationRegistration *S3TargetFailureNotificationRegistration) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -3301,7 +3275,7 @@ func (s3TargetFailureNotificationRegistration *S3TargetFailureNotificationRegist
 		case "UserId":
 			s3TargetFailureNotificationRegistration.UserId = parseNullableString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing S3TargetFailureNotificationRegistration.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing S3TargetFailureNotificationRegistration.", child.XMLName.Local)
 		}
 	}
 }
@@ -3320,7 +3294,7 @@ type StorageDomainFailureNotificationRegistration struct {
 	UserId                           *string
 }
 
-func (storageDomainFailureNotificationRegistration *StorageDomainFailureNotificationRegistration) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (storageDomainFailureNotificationRegistration *StorageDomainFailureNotificationRegistration) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -3348,7 +3322,7 @@ func (storageDomainFailureNotificationRegistration *StorageDomainFailureNotifica
 		case "UserId":
 			storageDomainFailureNotificationRegistration.UserId = parseNullableString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing StorageDomainFailureNotificationRegistration.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing StorageDomainFailureNotificationRegistration.", child.XMLName.Local)
 		}
 	}
 }
@@ -3367,7 +3341,7 @@ type SystemFailureNotificationRegistration struct {
 	UserId                           *string
 }
 
-func (systemFailureNotificationRegistration *SystemFailureNotificationRegistration) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (systemFailureNotificationRegistration *SystemFailureNotificationRegistration) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -3395,7 +3369,7 @@ func (systemFailureNotificationRegistration *SystemFailureNotificationRegistrati
 		case "UserId":
 			systemFailureNotificationRegistration.UserId = parseNullableString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing SystemFailureNotificationRegistration.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing SystemFailureNotificationRegistration.", child.XMLName.Local)
 		}
 	}
 }
@@ -3414,7 +3388,7 @@ type TapeFailureNotificationRegistration struct {
 	UserId                           *string
 }
 
-func (tapeFailureNotificationRegistration *TapeFailureNotificationRegistration) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (tapeFailureNotificationRegistration *TapeFailureNotificationRegistration) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -3442,7 +3416,7 @@ func (tapeFailureNotificationRegistration *TapeFailureNotificationRegistration) 
 		case "UserId":
 			tapeFailureNotificationRegistration.UserId = parseNullableString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing TapeFailureNotificationRegistration.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing TapeFailureNotificationRegistration.", child.XMLName.Local)
 		}
 	}
 }
@@ -3461,7 +3435,7 @@ type TapePartitionFailureNotificationRegistration struct {
 	UserId                           *string
 }
 
-func (tapePartitionFailureNotificationRegistration *TapePartitionFailureNotificationRegistration) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (tapePartitionFailureNotificationRegistration *TapePartitionFailureNotificationRegistration) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -3489,7 +3463,7 @@ func (tapePartitionFailureNotificationRegistration *TapePartitionFailureNotifica
 		case "UserId":
 			tapePartitionFailureNotificationRegistration.UserId = parseNullableString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing TapePartitionFailureNotificationRegistration.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing TapePartitionFailureNotificationRegistration.", child.XMLName.Local)
 		}
 	}
 }
@@ -3524,7 +3498,6 @@ func (cacheEntryState CacheEntryState) String() string {
 	case CACHE_ENTRY_STATE_IN_CACHE:
 		return "IN_CACHE"
 	default:
-		log.Printf("Error: invalid CacheEntryState represented by '%d'", cacheEntryState)
 		return ""
 	}
 }
@@ -3560,7 +3533,7 @@ type CacheFilesystem struct {
 	Path                              *string
 }
 
-func (cacheFilesystem *CacheFilesystem) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (cacheFilesystem *CacheFilesystem) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -3586,7 +3559,7 @@ func (cacheFilesystem *CacheFilesystem) parse(xmlNode *XmlNode, aggErr *Aggregat
 		case "Path":
 			cacheFilesystem.Path = parseNullableString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing CacheFilesystem.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing CacheFilesystem.", child.XMLName.Local)
 		}
 	}
 }
@@ -3614,7 +3587,7 @@ type Pool struct {
 	UsedCapacity            int64
 }
 
-func (pool *Pool) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (pool *Pool) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -3660,20 +3633,20 @@ func (pool *Pool) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 		case "UsedCapacity":
 			pool.UsedCapacity = parseInt64(child.Content, aggErr)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing Pool.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing Pool.", child.XMLName.Local)
 		}
 	}
 }
 
-func parsePoolSlice(tagName string, xmlNodes []XmlNode, aggErr *AggregateError) []Pool {
+func parsePoolSlice(tagName string, xmlNodes []XmlNode, aggErr *AggregateError, logger sdk_log.Logger) []Pool {
 	var result []Pool
 	for _, curXmlNode := range xmlNodes {
 		if curXmlNode.XMLName.Local == tagName {
 			var curResult Pool
-			curResult.parse(&curXmlNode, aggErr)
+			curResult.parse(&curXmlNode, aggErr, logger)
 			result = append(result, curResult)
 		} else {
-			log.Printf("WARNING: Discovered unexpected xml tag '%s' when expected tag '%s' when parsing Pool struct.\n", curXmlNode.XMLName.Local, tagName)
+			logger.Warningf("Discovered unexpected xml tag '%s' when expected tag '%s' when parsing Pool struct.", curXmlNode.XMLName.Local, tagName)
 		}
 	}
 	return result
@@ -3687,7 +3660,7 @@ type PoolFailure struct {
 	Type         PoolFailureType
 }
 
-func (poolFailure *PoolFailure) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (poolFailure *PoolFailure) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -3703,7 +3676,7 @@ func (poolFailure *PoolFailure) parse(xmlNode *XmlNode, aggErr *AggregateError) 
 		case "Type":
 			parseEnum(child.Content, &poolFailure.Type, aggErr)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing PoolFailure.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing PoolFailure.", child.XMLName.Local)
 		}
 	}
 }
@@ -3793,7 +3766,6 @@ func (poolFailureType PoolFailureType) String() string {
 	case POOL_FAILURE_TYPE_WRITE_FAILED:
 		return "WRITE_FAILED"
 	default:
-		log.Printf("Error: invalid PoolFailureType represented by '%d'", poolFailureType)
 		return ""
 	}
 }
@@ -3846,7 +3818,6 @@ func (poolHealth PoolHealth) String() string {
 	case POOL_HEALTH_DEGRADED:
 		return "DEGRADED"
 	default:
-		log.Printf("Error: invalid PoolHealth represented by '%d'", poolHealth)
 		return ""
 	}
 }
@@ -3875,7 +3846,7 @@ type PoolPartition struct {
 	Type PoolType
 }
 
-func (poolPartition *PoolPartition) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (poolPartition *PoolPartition) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -3887,7 +3858,7 @@ func (poolPartition *PoolPartition) parse(xmlNode *XmlNode, aggErr *AggregateErr
 		case "Type":
 			parseEnum(child.Content, &poolPartition.Type, aggErr)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing PoolPartition.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing PoolPartition.", child.XMLName.Local)
 		}
 	}
 }
@@ -3942,7 +3913,6 @@ func (poolState PoolState) String() string {
 	case POOL_STATE_IMPORT_IN_PROGRESS:
 		return "IMPORT_IN_PROGRESS"
 	default:
-		log.Printf("Error: invalid PoolState represented by '%d'", poolState)
 		return ""
 	}
 }
@@ -3995,7 +3965,6 @@ func (poolType PoolType) String() string {
 	case POOL_TYPE_ONLINE:
 		return "ONLINE"
 	default:
-		log.Printf("Error: invalid PoolType represented by '%d'", poolType)
 		return ""
 	}
 }
@@ -4027,7 +3996,7 @@ type SuspectBlobPool struct {
 	PoolId       string
 }
 
-func (suspectBlobPool *SuspectBlobPool) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (suspectBlobPool *SuspectBlobPool) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -4045,7 +4014,7 @@ func (suspectBlobPool *SuspectBlobPool) parse(xmlNode *XmlNode, aggErr *Aggregat
 		case "PoolId":
 			suspectBlobPool.PoolId = parseString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing SuspectBlobPool.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing SuspectBlobPool.", child.XMLName.Local)
 		}
 	}
 }
@@ -4085,7 +4054,6 @@ func (quiesced Quiesced) String() string {
 	case QUIESCED_YES:
 		return "YES"
 	default:
-		log.Printf("Error: invalid Quiesced represented by '%d'", quiesced)
 		return ""
 	}
 }
@@ -4148,7 +4116,6 @@ func (reservedTaskType ReservedTaskType) String() string {
 	case RESERVED_TASK_TYPE_WRITE:
 		return "WRITE"
 	default:
-		log.Printf("Error: invalid ReservedTaskType represented by '%d'", reservedTaskType)
 		return ""
 	}
 }
@@ -4201,7 +4168,6 @@ func (importExportConfiguration ImportExportConfiguration) String() string {
 	case IMPORT_EXPORT_CONFIGURATION_NOT_SUPPORTED:
 		return "NOT_SUPPORTED"
 	default:
-		log.Printf("Error: invalid ImportExportConfiguration represented by '%d'", importExportConfiguration)
 		return ""
 	}
 }
@@ -4231,7 +4197,7 @@ type SuspectBlobTape struct {
 	TapeId     string
 }
 
-func (suspectBlobTape *SuspectBlobTape) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (suspectBlobTape *SuspectBlobTape) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -4245,7 +4211,7 @@ func (suspectBlobTape *SuspectBlobTape) parse(xmlNode *XmlNode, aggErr *Aggregat
 		case "TapeId":
 			suspectBlobTape.TapeId = parseString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing SuspectBlobTape.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing SuspectBlobTape.", child.XMLName.Local)
 		}
 	}
 }
@@ -4280,7 +4246,7 @@ type Tape struct {
 	WriteProtected               bool
 }
 
-func (tape *Tape) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (tape *Tape) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -4340,20 +4306,20 @@ func (tape *Tape) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 		case "WriteProtected":
 			tape.WriteProtected = parseBool(child.Content, aggErr)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing Tape.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing Tape.", child.XMLName.Local)
 		}
 	}
 }
 
-func parseTapeSlice(tagName string, xmlNodes []XmlNode, aggErr *AggregateError) []Tape {
+func parseTapeSlice(tagName string, xmlNodes []XmlNode, aggErr *AggregateError, logger sdk_log.Logger) []Tape {
 	var result []Tape
 	for _, curXmlNode := range xmlNodes {
 		if curXmlNode.XMLName.Local == tagName {
 			var curResult Tape
-			curResult.parse(&curXmlNode, aggErr)
+			curResult.parse(&curXmlNode, aggErr, logger)
 			result = append(result, curResult)
 		} else {
-			log.Printf("WARNING: Discovered unexpected xml tag '%s' when expected tag '%s' when parsing Tape struct.\n", curXmlNode.XMLName.Local, tagName)
+			logger.Warningf("Discovered unexpected xml tag '%s' when expected tag '%s' when parsing Tape struct.", curXmlNode.XMLName.Local, tagName)
 		}
 	}
 	return result
@@ -4366,7 +4332,7 @@ type TapeDensityDirective struct {
 	TapeType    string
 }
 
-func (tapeDensityDirective *TapeDensityDirective) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (tapeDensityDirective *TapeDensityDirective) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -4380,7 +4346,7 @@ func (tapeDensityDirective *TapeDensityDirective) parse(xmlNode *XmlNode, aggErr
 		case "TapeType":
 			tapeDensityDirective.TapeType = parseString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing TapeDensityDirective.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing TapeDensityDirective.", child.XMLName.Local)
 		}
 	}
 }
@@ -4403,7 +4369,7 @@ type TapeDrive struct {
 	Type                TapeDriveType
 }
 
-func (tapeDrive *TapeDrive) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (tapeDrive *TapeDrive) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -4439,7 +4405,7 @@ func (tapeDrive *TapeDrive) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 		case "Type":
 			parseEnum(child.Content, &tapeDrive.Type, aggErr)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing TapeDrive.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing TapeDrive.", child.XMLName.Local)
 		}
 	}
 }
@@ -4484,7 +4450,6 @@ func (tapeDriveState TapeDriveState) String() string {
 	case TAPE_DRIVE_STATE_NOT_COMPATIBLE_IN_PARTITION_DUE_TO_NEWER_TAPE_DRIVES:
 		return "NOT_COMPATIBLE_IN_PARTITION_DUE_TO_NEWER_TAPE_DRIVES"
 	default:
-		log.Printf("Error: invalid TapeDriveState represented by '%d'", tapeDriveState)
 		return ""
 	}
 }
@@ -4587,7 +4552,6 @@ func (tapeDriveType TapeDriveType) String() string {
 	case TAPE_DRIVE_TYPE_TS1170:
 		return "TS1170"
 	default:
-		log.Printf("Error: invalid TapeDriveType represented by '%d'", tapeDriveType)
 		return ""
 	}
 }
@@ -4619,7 +4583,7 @@ type DetailedTapeFailure struct {
 	Type         TapeFailureType
 }
 
-func (detailedTapeFailure *DetailedTapeFailure) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (detailedTapeFailure *DetailedTapeFailure) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -4637,7 +4601,7 @@ func (detailedTapeFailure *DetailedTapeFailure) parse(xmlNode *XmlNode, aggErr *
 		case "Type":
 			parseEnum(child.Content, &detailedTapeFailure.Type, aggErr)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing DetailedTapeFailure.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing DetailedTapeFailure.", child.XMLName.Local)
 		}
 	}
 }
@@ -4822,7 +4786,6 @@ func (tapeFailureType TapeFailureType) String() string {
 	case TAPE_FAILURE_TYPE_WRITE_FAILED:
 		return "WRITE_FAILED"
 	default:
-		log.Printf("Error: invalid TapeFailureType represented by '%d'", tapeFailureType)
 		return ""
 	}
 }
@@ -4852,7 +4815,7 @@ type TapeLibrary struct {
 	SerialNumber  *string
 }
 
-func (tapeLibrary *TapeLibrary) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (tapeLibrary *TapeLibrary) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -4866,7 +4829,7 @@ func (tapeLibrary *TapeLibrary) parse(xmlNode *XmlNode, aggErr *AggregateError) 
 		case "SerialNumber":
 			tapeLibrary.SerialNumber = parseNullableString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing TapeLibrary.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing TapeLibrary.", child.XMLName.Local)
 		}
 	}
 }
@@ -4888,7 +4851,7 @@ type TapePartition struct {
 	State                      TapePartitionState
 }
 
-func (tapePartition *TapePartition) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (tapePartition *TapePartition) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -4922,7 +4885,7 @@ func (tapePartition *TapePartition) parse(xmlNode *XmlNode, aggErr *AggregateErr
 		case "State":
 			parseEnum(child.Content, &tapePartition.State, aggErr)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing TapePartition.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing TapePartition.", child.XMLName.Local)
 		}
 	}
 }
@@ -4935,7 +4898,7 @@ type TapePartitionFailure struct {
 	Type         TapePartitionFailureType
 }
 
-func (tapePartitionFailure *TapePartitionFailure) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (tapePartitionFailure *TapePartitionFailure) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -4951,7 +4914,7 @@ func (tapePartitionFailure *TapePartitionFailure) parse(xmlNode *XmlNode, aggErr
 		case "Type":
 			parseEnum(child.Content, &tapePartitionFailure.Type, aggErr)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing TapePartitionFailure.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing TapePartitionFailure.", child.XMLName.Local)
 		}
 	}
 }
@@ -5066,7 +5029,6 @@ func (tapePartitionFailureType TapePartitionFailureType) String() string {
 	case TAPE_PARTITION_FAILURE_TYPE_TAPE_IN_INVALID_PARTITION:
 		return "TAPE_IN_INVALID_PARTITION"
 	default:
-		log.Printf("Error: invalid TapePartitionFailureType represented by '%d'", tapePartitionFailureType)
 		return ""
 	}
 }
@@ -5124,7 +5086,6 @@ func (tapePartitionState TapePartitionState) String() string {
 	case TAPE_PARTITION_STATE_ERROR:
 		return "ERROR"
 	default:
-		log.Printf("Error: invalid TapePartitionState represented by '%d'", tapePartitionState)
 		return ""
 	}
 }
@@ -5177,7 +5138,6 @@ func (tapeRole TapeRole) String() string {
 	case TAPE_ROLE_TEST:
 		return "TEST"
 	default:
-		log.Printf("Error: invalid TapeRole represented by '%d'", tapeRole)
 		return ""
 	}
 }
@@ -5355,7 +5315,6 @@ func (tapeState TapeState) String() string {
 	case TAPE_STATE_EJECTED:
 		return "EJECTED"
 	default:
-		log.Printf("Error: invalid TapeState represented by '%d'", tapeState)
 		return ""
 	}
 }
@@ -5395,7 +5354,7 @@ type AzureTarget struct {
 	State                     TargetState
 }
 
-func (azureTarget *AzureTarget) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (azureTarget *AzureTarget) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -5429,20 +5388,20 @@ func (azureTarget *AzureTarget) parse(xmlNode *XmlNode, aggErr *AggregateError) 
 		case "State":
 			parseEnum(child.Content, &azureTarget.State, aggErr)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing AzureTarget.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing AzureTarget.", child.XMLName.Local)
 		}
 	}
 }
 
-func parseAzureTargetSlice(tagName string, xmlNodes []XmlNode, aggErr *AggregateError) []AzureTarget {
+func parseAzureTargetSlice(tagName string, xmlNodes []XmlNode, aggErr *AggregateError, logger sdk_log.Logger) []AzureTarget {
 	var result []AzureTarget
 	for _, curXmlNode := range xmlNodes {
 		if curXmlNode.XMLName.Local == tagName {
 			var curResult AzureTarget
-			curResult.parse(&curXmlNode, aggErr)
+			curResult.parse(&curXmlNode, aggErr, logger)
 			result = append(result, curResult)
 		} else {
-			log.Printf("WARNING: Discovered unexpected xml tag '%s' when expected tag '%s' when parsing AzureTarget struct.\n", curXmlNode.XMLName.Local, tagName)
+			logger.Warningf("Discovered unexpected xml tag '%s' when expected tag '%s' when parsing AzureTarget struct.", curXmlNode.XMLName.Local, tagName)
 		}
 	}
 	return result
@@ -5455,7 +5414,7 @@ type AzureTargetBucketName struct {
 	TargetId string
 }
 
-func (azureTargetBucketName *AzureTargetBucketName) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (azureTargetBucketName *AzureTargetBucketName) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -5469,7 +5428,7 @@ func (azureTargetBucketName *AzureTargetBucketName) parse(xmlNode *XmlNode, aggE
 		case "TargetId":
 			azureTargetBucketName.TargetId = parseString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing AzureTargetBucketName.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing AzureTargetBucketName.", child.XMLName.Local)
 		}
 	}
 }
@@ -5482,7 +5441,7 @@ type AzureTargetFailure struct {
 	Type         TargetFailureType
 }
 
-func (azureTargetFailure *AzureTargetFailure) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (azureTargetFailure *AzureTargetFailure) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -5498,7 +5457,7 @@ func (azureTargetFailure *AzureTargetFailure) parse(xmlNode *XmlNode, aggErr *Ag
 		case "Type":
 			parseEnum(child.Content, &azureTargetFailure.Type, aggErr)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing AzureTargetFailure.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing AzureTargetFailure.", child.XMLName.Local)
 		}
 	}
 }
@@ -5510,7 +5469,7 @@ type AzureTargetReadPreference struct {
 	TargetId       string
 }
 
-func (azureTargetReadPreference *AzureTargetReadPreference) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (azureTargetReadPreference *AzureTargetReadPreference) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -5524,7 +5483,7 @@ func (azureTargetReadPreference *AzureTargetReadPreference) parse(xmlNode *XmlNo
 		case "TargetId":
 			azureTargetReadPreference.TargetId = parseString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing AzureTargetReadPreference.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing AzureTargetReadPreference.", child.XMLName.Local)
 		}
 	}
 }
@@ -5547,7 +5506,7 @@ type Ds3Target struct {
 	State                           TargetState
 }
 
-func (ds3Target *Ds3Target) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (ds3Target *Ds3Target) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -5583,20 +5542,20 @@ func (ds3Target *Ds3Target) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 		case "State":
 			parseEnum(child.Content, &ds3Target.State, aggErr)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing Ds3Target.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing Ds3Target.", child.XMLName.Local)
 		}
 	}
 }
 
-func parseDs3TargetSlice(tagName string, xmlNodes []XmlNode, aggErr *AggregateError) []Ds3Target {
+func parseDs3TargetSlice(tagName string, xmlNodes []XmlNode, aggErr *AggregateError, logger sdk_log.Logger) []Ds3Target {
 	var result []Ds3Target
 	for _, curXmlNode := range xmlNodes {
 		if curXmlNode.XMLName.Local == tagName {
 			var curResult Ds3Target
-			curResult.parse(&curXmlNode, aggErr)
+			curResult.parse(&curXmlNode, aggErr, logger)
 			result = append(result, curResult)
 		} else {
-			log.Printf("WARNING: Discovered unexpected xml tag '%s' when expected tag '%s' when parsing Ds3Target struct.\n", curXmlNode.XMLName.Local, tagName)
+			logger.Warningf("Discovered unexpected xml tag '%s' when expected tag '%s' when parsing Ds3Target struct.", curXmlNode.XMLName.Local, tagName)
 		}
 	}
 	return result
@@ -5632,7 +5591,6 @@ func (ds3TargetAccessControlReplication Ds3TargetAccessControlReplication) Strin
 	case DS3_TARGET_ACCESS_CONTROL_REPLICATION_USERS:
 		return "USERS"
 	default:
-		log.Printf("Error: invalid Ds3TargetAccessControlReplication represented by '%d'", ds3TargetAccessControlReplication)
 		return ""
 	}
 }
@@ -5663,7 +5621,7 @@ type Ds3TargetFailure struct {
 	Type         TargetFailureType
 }
 
-func (ds3TargetFailure *Ds3TargetFailure) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (ds3TargetFailure *Ds3TargetFailure) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -5679,7 +5637,7 @@ func (ds3TargetFailure *Ds3TargetFailure) parse(xmlNode *XmlNode, aggErr *Aggreg
 		case "Type":
 			parseEnum(child.Content, &ds3TargetFailure.Type, aggErr)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing Ds3TargetFailure.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing Ds3TargetFailure.", child.XMLName.Local)
 		}
 	}
 }
@@ -5691,7 +5649,7 @@ type Ds3TargetReadPreference struct {
 	TargetId       string
 }
 
-func (ds3TargetReadPreference *Ds3TargetReadPreference) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (ds3TargetReadPreference *Ds3TargetReadPreference) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -5705,7 +5663,7 @@ func (ds3TargetReadPreference *Ds3TargetReadPreference) parse(xmlNode *XmlNode, 
 		case "TargetId":
 			ds3TargetReadPreference.TargetId = parseString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing Ds3TargetReadPreference.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing Ds3TargetReadPreference.", child.XMLName.Local)
 		}
 	}
 }
@@ -5737,7 +5695,7 @@ type S3Target struct {
 	State                        TargetState
 }
 
-func (s3Target *S3Target) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (s3Target *S3Target) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -5791,20 +5749,20 @@ func (s3Target *S3Target) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 		case "State":
 			parseEnum(child.Content, &s3Target.State, aggErr)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing S3Target.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing S3Target.", child.XMLName.Local)
 		}
 	}
 }
 
-func parseS3TargetSlice(tagName string, xmlNodes []XmlNode, aggErr *AggregateError) []S3Target {
+func parseS3TargetSlice(tagName string, xmlNodes []XmlNode, aggErr *AggregateError, logger sdk_log.Logger) []S3Target {
 	var result []S3Target
 	for _, curXmlNode := range xmlNodes {
 		if curXmlNode.XMLName.Local == tagName {
 			var curResult S3Target
-			curResult.parse(&curXmlNode, aggErr)
+			curResult.parse(&curXmlNode, aggErr, logger)
 			result = append(result, curResult)
 		} else {
-			log.Printf("WARNING: Discovered unexpected xml tag '%s' when expected tag '%s' when parsing S3Target struct.\n", curXmlNode.XMLName.Local, tagName)
+			logger.Warningf("Discovered unexpected xml tag '%s' when expected tag '%s' when parsing S3Target struct.", curXmlNode.XMLName.Local, tagName)
 		}
 	}
 	return result
@@ -5817,7 +5775,7 @@ type S3TargetBucketName struct {
 	TargetId string
 }
 
-func (s3TargetBucketName *S3TargetBucketName) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (s3TargetBucketName *S3TargetBucketName) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -5831,7 +5789,7 @@ func (s3TargetBucketName *S3TargetBucketName) parse(xmlNode *XmlNode, aggErr *Ag
 		case "TargetId":
 			s3TargetBucketName.TargetId = parseString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing S3TargetBucketName.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing S3TargetBucketName.", child.XMLName.Local)
 		}
 	}
 }
@@ -5844,7 +5802,7 @@ type S3TargetFailure struct {
 	Type         TargetFailureType
 }
 
-func (s3TargetFailure *S3TargetFailure) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (s3TargetFailure *S3TargetFailure) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -5860,7 +5818,7 @@ func (s3TargetFailure *S3TargetFailure) parse(xmlNode *XmlNode, aggErr *Aggregat
 		case "Type":
 			parseEnum(child.Content, &s3TargetFailure.Type, aggErr)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing S3TargetFailure.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing S3TargetFailure.", child.XMLName.Local)
 		}
 	}
 }
@@ -5872,7 +5830,7 @@ type S3TargetReadPreference struct {
 	TargetId       string
 }
 
-func (s3TargetReadPreference *S3TargetReadPreference) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (s3TargetReadPreference *S3TargetReadPreference) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -5886,7 +5844,7 @@ func (s3TargetReadPreference *S3TargetReadPreference) parse(xmlNode *XmlNode, ag
 		case "TargetId":
 			s3TargetReadPreference.TargetId = parseString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing S3TargetReadPreference.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing S3TargetReadPreference.", child.XMLName.Local)
 		}
 	}
 }
@@ -5897,7 +5855,7 @@ type SuspectBlobAzureTarget struct {
 	TargetId string
 }
 
-func (suspectBlobAzureTarget *SuspectBlobAzureTarget) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (suspectBlobAzureTarget *SuspectBlobAzureTarget) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -5909,7 +5867,7 @@ func (suspectBlobAzureTarget *SuspectBlobAzureTarget) parse(xmlNode *XmlNode, ag
 		case "TargetId":
 			suspectBlobAzureTarget.TargetId = parseString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing SuspectBlobAzureTarget.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing SuspectBlobAzureTarget.", child.XMLName.Local)
 		}
 	}
 }
@@ -5920,7 +5878,7 @@ type SuspectBlobDs3Target struct {
 	TargetId string
 }
 
-func (suspectBlobDs3Target *SuspectBlobDs3Target) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (suspectBlobDs3Target *SuspectBlobDs3Target) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -5932,7 +5890,7 @@ func (suspectBlobDs3Target *SuspectBlobDs3Target) parse(xmlNode *XmlNode, aggErr
 		case "TargetId":
 			suspectBlobDs3Target.TargetId = parseString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing SuspectBlobDs3Target.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing SuspectBlobDs3Target.", child.XMLName.Local)
 		}
 	}
 }
@@ -5943,7 +5901,7 @@ type SuspectBlobS3Target struct {
 	TargetId string
 }
 
-func (suspectBlobS3Target *SuspectBlobS3Target) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (suspectBlobS3Target *SuspectBlobS3Target) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -5955,7 +5913,7 @@ func (suspectBlobS3Target *SuspectBlobS3Target) parse(xmlNode *XmlNode, aggErr *
 		case "TargetId":
 			suspectBlobS3Target.TargetId = parseString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing SuspectBlobS3Target.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing SuspectBlobS3Target.", child.XMLName.Local)
 		}
 	}
 }
@@ -6025,7 +5983,6 @@ func (targetFailureType TargetFailureType) String() string {
 	case TARGET_FAILURE_TYPE_VERIFY_COMPLETE:
 		return "VERIFY_COMPLETE"
 	default:
-		log.Printf("Error: invalid TargetFailureType represented by '%d'", targetFailureType)
 		return ""
 	}
 }
@@ -6098,7 +6055,6 @@ func (targetReadPreferenceType TargetReadPreferenceType) String() string {
 	case TARGET_READ_PREFERENCE_TYPE_NEVER:
 		return "NEVER"
 	default:
-		log.Printf("Error: invalid TargetReadPreferenceType represented by '%d'", targetReadPreferenceType)
 		return ""
 	}
 }
@@ -6151,7 +6107,6 @@ func (targetState TargetState) String() string {
 	case TARGET_STATE_OFFLINE:
 		return "OFFLINE"
 	default:
-		log.Printf("Error: invalid TargetState represented by '%d'", targetState)
 		return ""
 	}
 }
@@ -6186,7 +6141,7 @@ type BulkObject struct {
 	VersionId         string
 }
 
-func (bulkObject *BulkObject) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (bulkObject *BulkObject) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 	// Parse Attributes
 	for _, attr := range xmlNode.Attrs {
 		switch attr.Name.Local {
@@ -6207,7 +6162,7 @@ func (bulkObject *BulkObject) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 		case "VersionId":
 			bulkObject.VersionId = attr.Value
 		default:
-			log.Printf("WARNING: unable to parse unknown attribute '%s' while parsing BulkObject.", attr.Name.Local)
+			logger.Warningf("unable to parse unknown attribute '%s' while parsing BulkObject.", attr.Name.Local)
 		}
 	}
 
@@ -6216,10 +6171,10 @@ func (bulkObject *BulkObject) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 		switch child.XMLName.Local {
 		case "PhysicalPlacement":
 			var model PhysicalPlacement
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			bulkObject.PhysicalPlacement = &model
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing BulkObject.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing BulkObject.", child.XMLName.Local)
 		}
 	}
 }
@@ -6228,17 +6183,17 @@ type BulkObjectList struct {
 	Objects []BulkObject
 }
 
-func (bulkObjectList *BulkObjectList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (bulkObjectList *BulkObjectList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "Object":
 			var model BulkObject
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			bulkObjectList.Objects = append(bulkObjectList.Objects, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing BulkObjectList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing BulkObjectList.", child.XMLName.Local)
 		}
 	}
 }
@@ -6249,7 +6204,7 @@ type BuildInformation struct {
 	Version  *string
 }
 
-func (buildInformation *BuildInformation) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (buildInformation *BuildInformation) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -6261,7 +6216,7 @@ func (buildInformation *BuildInformation) parse(xmlNode *XmlNode, aggErr *Aggreg
 		case "Version":
 			buildInformation.Version = parseNullableString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing BuildInformation.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing BuildInformation.", child.XMLName.Local)
 		}
 	}
 }
@@ -6281,7 +6236,7 @@ type BlobStoreTaskInformation struct {
 	TargetType    *string
 }
 
-func (blobStoreTaskInformation *BlobStoreTaskInformation) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (blobStoreTaskInformation *BlobStoreTaskInformation) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -6311,7 +6266,7 @@ func (blobStoreTaskInformation *BlobStoreTaskInformation) parse(xmlNode *XmlNode
 		case "TargetType":
 			blobStoreTaskInformation.TargetType = parseNullableString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing BlobStoreTaskInformation.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing BlobStoreTaskInformation.", child.XMLName.Local)
 		}
 	}
 }
@@ -6361,7 +6316,6 @@ func (blobStoreTaskState BlobStoreTaskState) String() string {
 	case BLOB_STORE_TASK_STATE_COMPLETED:
 		return "COMPLETED"
 	default:
-		log.Printf("Error: invalid BlobStoreTaskState represented by '%d'", blobStoreTaskState)
 		return ""
 	}
 }
@@ -6388,17 +6342,17 @@ type BlobStoreTasksInformation struct {
 	Tasks []BlobStoreTaskInformation
 }
 
-func (blobStoreTasksInformation *BlobStoreTasksInformation) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (blobStoreTasksInformation *BlobStoreTasksInformation) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "Tasks":
 			var model BlobStoreTaskInformation
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			blobStoreTasksInformation.Tasks = append(blobStoreTasksInformation.Tasks, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing BlobStoreTasksInformation.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing BlobStoreTasksInformation.", child.XMLName.Local)
 		}
 	}
 }
@@ -6408,19 +6362,19 @@ type CacheEntryInformation struct {
 	State CacheEntryState
 }
 
-func (cacheEntryInformation *CacheEntryInformation) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (cacheEntryInformation *CacheEntryInformation) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "Blob":
 			var model Blob
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			cacheEntryInformation.Blob = &model
 		case "State":
 			parseEnum(child.Content, &cacheEntryInformation.State, aggErr)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing CacheEntryInformation.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing CacheEntryInformation.", child.XMLName.Local)
 		}
 	}
 }
@@ -6436,7 +6390,7 @@ type CacheFilesystemInformation struct {
 	UsedCapacityInBytes        int64
 }
 
-func (cacheFilesystemInformation *CacheFilesystemInformation) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (cacheFilesystemInformation *CacheFilesystemInformation) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -6444,10 +6398,10 @@ func (cacheFilesystemInformation *CacheFilesystemInformation) parse(xmlNode *Xml
 		case "AvailableCapacityInBytes":
 			cacheFilesystemInformation.AvailableCapacityInBytes = parseInt64(child.Content, aggErr)
 		case "CacheFilesystem":
-			cacheFilesystemInformation.CacheFilesystem.parse(&child, aggErr)
+			cacheFilesystemInformation.CacheFilesystem.parse(&child, aggErr, logger)
 		case "Entries":
 			var model CacheEntryInformation
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			cacheFilesystemInformation.Entries = append(cacheFilesystemInformation.Entries, model)
 		case "JobLockedCacheInBytes":
 			cacheFilesystemInformation.JobLockedCacheInBytes = parseInt64(child.Content, aggErr)
@@ -6460,7 +6414,7 @@ func (cacheFilesystemInformation *CacheFilesystemInformation) parse(xmlNode *Xml
 		case "UsedCapacityInBytes":
 			cacheFilesystemInformation.UsedCapacityInBytes = parseInt64(child.Content, aggErr)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing CacheFilesystemInformation.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing CacheFilesystemInformation.", child.XMLName.Local)
 		}
 	}
 }
@@ -6469,17 +6423,17 @@ type CacheInformation struct {
 	Filesystems []CacheFilesystemInformation
 }
 
-func (cacheInformation *CacheInformation) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (cacheInformation *CacheInformation) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "Filesystems":
 			var model CacheFilesystemInformation
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			cacheInformation.Filesystems = append(cacheInformation.Filesystems, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing CacheInformation.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing CacheInformation.", child.XMLName.Local)
 		}
 	}
 }
@@ -6489,7 +6443,7 @@ type BucketDetails struct {
 	Name         *string
 }
 
-func (bucketDetails *BucketDetails) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (bucketDetails *BucketDetails) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -6499,20 +6453,20 @@ func (bucketDetails *BucketDetails) parse(xmlNode *XmlNode, aggErr *AggregateErr
 		case "Name":
 			bucketDetails.Name = parseNullableString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing BucketDetails.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing BucketDetails.", child.XMLName.Local)
 		}
 	}
 }
 
-func parseBucketDetailsSlice(tagName string, xmlNodes []XmlNode, aggErr *AggregateError) []BucketDetails {
+func parseBucketDetailsSlice(tagName string, xmlNodes []XmlNode, aggErr *AggregateError, logger sdk_log.Logger) []BucketDetails {
 	var result []BucketDetails
 	for _, curXmlNode := range xmlNodes {
 		if curXmlNode.XMLName.Local == tagName {
 			var curResult BucketDetails
-			curResult.parse(&curXmlNode, aggErr)
+			curResult.parse(&curXmlNode, aggErr, logger)
 			result = append(result, curResult)
 		} else {
-			log.Printf("WARNING: Discovered unexpected xml tag '%s' when expected tag '%s' when parsing BucketDetails struct.\n", curXmlNode.XMLName.Local, tagName)
+			logger.Warningf("Discovered unexpected xml tag '%s' when expected tag '%s' when parsing BucketDetails struct.", curXmlNode.XMLName.Local, tagName)
 		}
 	}
 	return result
@@ -6532,14 +6486,14 @@ type ListBucketResult struct {
 	VersionedObjects []Contents
 }
 
-func (listBucketResult *ListBucketResult) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (listBucketResult *ListBucketResult) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "CommonPrefixes":
 			var prefixes []string
-			prefixes = parseStringSlice("Prefix", child.Children, aggErr)
+			prefixes = parseStringSlice("Prefix", child.Children, aggErr, logger)
 			listBucketResult.CommonPrefixes = append(listBucketResult.CommonPrefixes, prefixes...)
 		case "CreationDate":
 			listBucketResult.CreationDate = parseNullableString(child.Content)
@@ -6555,7 +6509,7 @@ func (listBucketResult *ListBucketResult) parse(xmlNode *XmlNode, aggErr *Aggreg
 			listBucketResult.NextMarker = parseNullableString(child.Content)
 		case "Contents":
 			var model Contents
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			listBucketResult.Objects = append(listBucketResult.Objects, model)
 		case "Prefix":
 			listBucketResult.Prefix = parseNullableString(child.Content)
@@ -6563,10 +6517,10 @@ func (listBucketResult *ListBucketResult) parse(xmlNode *XmlNode, aggErr *Aggreg
 			listBucketResult.Truncated = parseBool(child.Content, aggErr)
 		case "Version":
 			var model Contents
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			listBucketResult.VersionedObjects = append(listBucketResult.VersionedObjects, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing ListBucketResult.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing ListBucketResult.", child.XMLName.Local)
 		}
 	}
 }
@@ -6576,17 +6530,17 @@ type ListAllMyBucketsResult struct {
 	Owner   User
 }
 
-func (listAllMyBucketsResult *ListAllMyBucketsResult) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (listAllMyBucketsResult *ListAllMyBucketsResult) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "Buckets":
-			listAllMyBucketsResult.Buckets = parseBucketDetailsSlice("Bucket", child.Children, aggErr)
+			listAllMyBucketsResult.Buckets = parseBucketDetailsSlice("Bucket", child.Children, aggErr, logger)
 		case "Owner":
-			listAllMyBucketsResult.Owner.parse(&child, aggErr)
+			listAllMyBucketsResult.Owner.parse(&child, aggErr, logger)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing ListAllMyBucketsResult.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing ListAllMyBucketsResult.", child.XMLName.Local)
 		}
 	}
 }
@@ -6598,7 +6552,7 @@ type CompleteMultipartUploadResult struct {
 	Location *string
 }
 
-func (completeMultipartUploadResult *CompleteMultipartUploadResult) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (completeMultipartUploadResult *CompleteMultipartUploadResult) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -6612,7 +6566,7 @@ func (completeMultipartUploadResult *CompleteMultipartUploadResult) parse(xmlNod
 		case "Location":
 			completeMultipartUploadResult.Location = parseNullableString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing CompleteMultipartUploadResult.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing CompleteMultipartUploadResult.", child.XMLName.Local)
 		}
 	}
 }
@@ -6624,7 +6578,7 @@ type DeleteObjectError struct {
 	VersionId *string
 }
 
-func (deleteObjectError *DeleteObjectError) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (deleteObjectError *DeleteObjectError) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -6638,7 +6592,7 @@ func (deleteObjectError *DeleteObjectError) parse(xmlNode *XmlNode, aggErr *Aggr
 		case "VersionId":
 			deleteObjectError.VersionId = parseNullableString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing DeleteObjectError.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing DeleteObjectError.", child.XMLName.Local)
 		}
 	}
 }
@@ -6648,21 +6602,21 @@ type DeleteResult struct {
 	Errors         []DeleteObjectError
 }
 
-func (deleteResult *DeleteResult) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (deleteResult *DeleteResult) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "Deleted":
 			var model S3ObjectToDelete
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			deleteResult.DeletedObjects = append(deleteResult.DeletedObjects, model)
 		case "Error":
 			var model DeleteObjectError
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			deleteResult.Errors = append(deleteResult.Errors, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing DeleteResult.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing DeleteResult.", child.XMLName.Local)
 		}
 	}
 }
@@ -6692,7 +6646,7 @@ type DetailedTapePartition struct {
 	UsedStorageCapacity        int64
 }
 
-func (detailedTapePartition *DetailedTapePartition) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (detailedTapePartition *DetailedTapePartition) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -6734,9 +6688,9 @@ func (detailedTapePartition *DetailedTapePartition) parse(xmlNode *XmlNode, aggE
 		case "TapeCount":
 			detailedTapePartition.TapeCount = parseInt(child.Content, aggErr)
 		case "TapeStateSummaries":
-			detailedTapePartition.TapeStateSummaries = parseTapeStateSummaryApiBeanSlice("TapeStateSummary", child.Children, aggErr)
+			detailedTapePartition.TapeStateSummaries = parseTapeStateSummaryApiBeanSlice("TapeStateSummary", child.Children, aggErr, logger)
 		case "TapeTypeSummaries":
-			detailedTapePartition.TapeTypeSummaries = parseTapeTypeSummaryApiBeanSlice("TapeTypeSummary", child.Children, aggErr)
+			detailedTapePartition.TapeTypeSummaries = parseTapeTypeSummaryApiBeanSlice("TapeTypeSummary", child.Children, aggErr, logger)
 		case "TapeTypes":
 			var str = parseString(child.Content)
 			detailedTapePartition.TapeTypes = append(detailedTapePartition.TapeTypes, str)
@@ -6745,7 +6699,7 @@ func (detailedTapePartition *DetailedTapePartition) parse(xmlNode *XmlNode, aggE
 		case "UsedStorageCapacity":
 			detailedTapePartition.UsedStorageCapacity = parseInt64(child.Content, aggErr)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing DetailedTapePartition.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing DetailedTapePartition.", child.XMLName.Local)
 		}
 	}
 }
@@ -6758,7 +6712,7 @@ type Error struct {
 	ResourceId    int64
 }
 
-func (error *Error) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (error *Error) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -6774,7 +6728,7 @@ func (error *Error) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 		case "ResourceId":
 			error.ResourceId = parseInt64(child.Content, aggErr)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing Error.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing Error.", child.XMLName.Local)
 		}
 	}
 }
@@ -6785,7 +6739,7 @@ type InitiateMultipartUploadResult struct {
 	UploadId *string
 }
 
-func (initiateMultipartUploadResult *InitiateMultipartUploadResult) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (initiateMultipartUploadResult *InitiateMultipartUploadResult) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -6797,7 +6751,7 @@ func (initiateMultipartUploadResult *InitiateMultipartUploadResult) parse(xmlNod
 		case "UploadId":
 			initiateMultipartUploadResult.UploadId = parseNullableString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing InitiateMultipartUploadResult.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing InitiateMultipartUploadResult.", child.XMLName.Local)
 		}
 	}
 }
@@ -6822,7 +6776,7 @@ type Job struct {
 	UserName                            *string
 }
 
-func (job *Job) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (job *Job) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 	// Parse Attributes
 	for _, attr := range xmlNode.Attrs {
 		switch attr.Name.Local {
@@ -6859,7 +6813,7 @@ func (job *Job) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 		case "UserName":
 			job.UserName = parseNullableStringFromString(attr.Value)
 		default:
-			log.Printf("WARNING: unable to parse unknown attribute '%s' while parsing Job.", attr.Name.Local)
+			logger.Warningf("unable to parse unknown attribute '%s' while parsing Job.", attr.Name.Local)
 		}
 	}
 
@@ -6867,22 +6821,22 @@ func (job *Job) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "Nodes":
-			job.Nodes = parseJobNodeSlice("Node", child.Children, aggErr)
+			job.Nodes = parseJobNodeSlice("Node", child.Children, aggErr, logger)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing Job.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing Job.", child.XMLName.Local)
 		}
 	}
 }
 
-func parseJobSlice(tagName string, xmlNodes []XmlNode, aggErr *AggregateError) []Job {
+func parseJobSlice(tagName string, xmlNodes []XmlNode, aggErr *AggregateError, logger sdk_log.Logger) []Job {
 	var result []Job
 	for _, curXmlNode := range xmlNodes {
 		if curXmlNode.XMLName.Local == tagName {
 			var curResult Job
-			curResult.parse(&curXmlNode, aggErr)
+			curResult.parse(&curXmlNode, aggErr, logger)
 			result = append(result, curResult)
 		} else {
-			log.Printf("WARNING: Discovered unexpected xml tag '%s' when expected tag '%s' when parsing Job struct.\n", curXmlNode.XMLName.Local, tagName)
+			logger.Warningf("Discovered unexpected xml tag '%s' when expected tag '%s' when parsing Job struct.", curXmlNode.XMLName.Local, tagName)
 		}
 	}
 	return result
@@ -6895,7 +6849,7 @@ type Objects struct {
 	Objects     []BulkObject
 }
 
-func (objects *Objects) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (objects *Objects) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 	// Parse Attributes
 	for _, attr := range xmlNode.Attrs {
 		switch attr.Name.Local {
@@ -6906,7 +6860,7 @@ func (objects *Objects) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 		case "NodeId":
 			objects.NodeId = parseNullableStringFromString(attr.Value)
 		default:
-			log.Printf("WARNING: unable to parse unknown attribute '%s' while parsing Objects.", attr.Name.Local)
+			logger.Warningf("unable to parse unknown attribute '%s' while parsing Objects.", attr.Name.Local)
 		}
 	}
 
@@ -6915,10 +6869,10 @@ func (objects *Objects) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 		switch child.XMLName.Local {
 		case "Object":
 			var model BulkObject
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			objects.Objects = append(objects.Objects, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing Objects.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing Objects.", child.XMLName.Local)
 		}
 	}
 }
@@ -6958,7 +6912,6 @@ func (jobStatus JobStatus) String() string {
 	case JOB_STATUS_CANCELED:
 		return "CANCELED"
 	default:
-		log.Printf("Error: invalid JobStatus represented by '%d'", jobStatus)
 		return ""
 	}
 }
@@ -7002,7 +6955,7 @@ type MasterObjectList struct {
 	UserName                            *string
 }
 
-func (masterObjectList *MasterObjectList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (masterObjectList *MasterObjectList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 	// Parse Attributes
 	for _, attr := range xmlNode.Attrs {
 		switch attr.Name.Local {
@@ -7039,7 +6992,7 @@ func (masterObjectList *MasterObjectList) parse(xmlNode *XmlNode, aggErr *Aggreg
 		case "UserName":
 			masterObjectList.UserName = parseNullableStringFromString(attr.Value)
 		default:
-			log.Printf("WARNING: unable to parse unknown attribute '%s' while parsing MasterObjectList.", attr.Name.Local)
+			logger.Warningf("unable to parse unknown attribute '%s' while parsing MasterObjectList.", attr.Name.Local)
 		}
 	}
 
@@ -7047,13 +7000,13 @@ func (masterObjectList *MasterObjectList) parse(xmlNode *XmlNode, aggErr *Aggreg
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "Nodes":
-			masterObjectList.Nodes = parseJobNodeSlice("Node", child.Children, aggErr)
+			masterObjectList.Nodes = parseJobNodeSlice("Node", child.Children, aggErr, logger)
 		case "Objects":
 			var model Objects
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			masterObjectList.Objects = append(masterObjectList.Objects, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing MasterObjectList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing MasterObjectList.", child.XMLName.Local)
 		}
 	}
 }
@@ -7062,17 +7015,17 @@ type JobList struct {
 	Jobs []Job
 }
 
-func (jobList *JobList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (jobList *JobList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "Job":
 			var model Job
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			jobList.Jobs = append(jobList.Jobs, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing JobList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing JobList.", child.XMLName.Local)
 		}
 	}
 }
@@ -7089,7 +7042,7 @@ type ListPartsResult struct {
 	UploadId             string
 }
 
-func (listPartsResult *ListPartsResult) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (listPartsResult *ListPartsResult) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -7103,19 +7056,19 @@ func (listPartsResult *ListPartsResult) parse(xmlNode *XmlNode, aggErr *Aggregat
 		case "NextPartNumberMarker":
 			listPartsResult.NextPartNumberMarker = parseInt(child.Content, aggErr)
 		case "Owner":
-			listPartsResult.Owner.parse(&child, aggErr)
+			listPartsResult.Owner.parse(&child, aggErr, logger)
 		case "PartNumberMarker":
 			listPartsResult.PartNumberMarker = parseNullableInt(child.Content, aggErr)
 		case "Part":
 			var model MultiPartUploadPart
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			listPartsResult.Parts = append(listPartsResult.Parts, model)
 		case "IsTruncated":
 			listPartsResult.Truncated = parseBool(child.Content, aggErr)
 		case "UploadId":
 			listPartsResult.UploadId = parseString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing ListPartsResult.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing ListPartsResult.", child.XMLName.Local)
 		}
 	}
 }
@@ -7134,7 +7087,7 @@ type ListMultiPartUploadsResult struct {
 	Uploads            []MultiPartUpload
 }
 
-func (listMultiPartUploadsResult *ListMultiPartUploadsResult) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (listMultiPartUploadsResult *ListMultiPartUploadsResult) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -7143,7 +7096,7 @@ func (listMultiPartUploadsResult *ListMultiPartUploadsResult) parse(xmlNode *Xml
 			listMultiPartUploadsResult.Bucket = parseNullableString(child.Content)
 		case "CommonPrefixes":
 			var prefixes []string
-			prefixes = parseStringSlice("Prefix", child.Children, aggErr)
+			prefixes = parseStringSlice("Prefix", child.Children, aggErr, logger)
 			listMultiPartUploadsResult.CommonPrefixes = append(listMultiPartUploadsResult.CommonPrefixes, prefixes...)
 		case "Delimiter":
 			listMultiPartUploadsResult.Delimiter = parseNullableString(child.Content)
@@ -7163,10 +7116,10 @@ func (listMultiPartUploadsResult *ListMultiPartUploadsResult) parse(xmlNode *Xml
 			listMultiPartUploadsResult.UploadIdMarker = parseNullableString(child.Content)
 		case "Upload":
 			var model MultiPartUpload
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			listMultiPartUploadsResult.Uploads = append(listMultiPartUploadsResult.Uploads, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing ListMultiPartUploadsResult.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing ListMultiPartUploadsResult.", child.XMLName.Local)
 		}
 	}
 }
@@ -7178,7 +7131,7 @@ type MultiPartUpload struct {
 	UploadId  string
 }
 
-func (multiPartUpload *MultiPartUpload) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (multiPartUpload *MultiPartUpload) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -7188,11 +7141,11 @@ func (multiPartUpload *MultiPartUpload) parse(xmlNode *XmlNode, aggErr *Aggregat
 		case "Key":
 			multiPartUpload.Key = parseNullableString(child.Content)
 		case "Owner":
-			multiPartUpload.Owner.parse(&child, aggErr)
+			multiPartUpload.Owner.parse(&child, aggErr, logger)
 		case "UploadId":
 			multiPartUpload.UploadId = parseString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing MultiPartUpload.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing MultiPartUpload.", child.XMLName.Local)
 		}
 	}
 }
@@ -7203,7 +7156,7 @@ type MultiPartUploadPart struct {
 	PartNumber   int
 }
 
-func (multiPartUploadPart *MultiPartUploadPart) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (multiPartUploadPart *MultiPartUploadPart) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -7215,7 +7168,7 @@ func (multiPartUploadPart *MultiPartUploadPart) parse(xmlNode *XmlNode, aggErr *
 		case "PartNumber":
 			multiPartUploadPart.PartNumber = parseInt(child.Content, aggErr)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing MultiPartUploadPart.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing MultiPartUploadPart.", child.XMLName.Local)
 		}
 	}
 }
@@ -7227,7 +7180,7 @@ type JobNode struct {
 	Id        string
 }
 
-func (jobNode *JobNode) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (jobNode *JobNode) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 	// Parse Attributes
 	for _, attr := range xmlNode.Attrs {
 		switch attr.Name.Local {
@@ -7240,20 +7193,20 @@ func (jobNode *JobNode) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 		case "Id":
 			jobNode.Id = attr.Value
 		default:
-			log.Printf("WARNING: unable to parse unknown attribute '%s' while parsing JobNode.", attr.Name.Local)
+			logger.Warningf("unable to parse unknown attribute '%s' while parsing JobNode.", attr.Name.Local)
 		}
 	}
 }
 
-func parseJobNodeSlice(tagName string, xmlNodes []XmlNode, aggErr *AggregateError) []JobNode {
+func parseJobNodeSlice(tagName string, xmlNodes []XmlNode, aggErr *AggregateError, logger sdk_log.Logger) []JobNode {
 	var result []JobNode
 	for _, curXmlNode := range xmlNodes {
 		if curXmlNode.XMLName.Local == tagName {
 			var curResult JobNode
-			curResult.parse(&curXmlNode, aggErr)
+			curResult.parse(&curXmlNode, aggErr, logger)
 			result = append(result, curResult)
 		} else {
-			log.Printf("WARNING: Discovered unexpected xml tag '%s' when expected tag '%s' when parsing JobNode struct.\n", curXmlNode.XMLName.Local, tagName)
+			logger.Warningf("Discovered unexpected xml tag '%s' when expected tag '%s' when parsing JobNode struct.", curXmlNode.XMLName.Local, tagName)
 		}
 	}
 	return result
@@ -7270,7 +7223,7 @@ type Contents struct {
 	VersionId    *string
 }
 
-func (contents *Contents) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (contents *Contents) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -7284,7 +7237,7 @@ func (contents *Contents) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 		case "LastModified":
 			contents.LastModified = parseNullableString(child.Content)
 		case "Owner":
-			contents.Owner.parse(&child, aggErr)
+			contents.Owner.parse(&child, aggErr, logger)
 		case "Size":
 			contents.Size = parseInt64(child.Content, aggErr)
 		case "StorageClass":
@@ -7292,7 +7245,7 @@ func (contents *Contents) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 		case "VersionId":
 			contents.VersionId = parseNullableString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing Contents.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing Contents.", child.XMLName.Local)
 		}
 	}
 }
@@ -7302,7 +7255,7 @@ type S3ObjectToDelete struct {
 	VersionId *string
 }
 
-func (s3ObjectToDelete *S3ObjectToDelete) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (s3ObjectToDelete *S3ObjectToDelete) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -7312,7 +7265,7 @@ func (s3ObjectToDelete *S3ObjectToDelete) parse(xmlNode *XmlNode, aggErr *Aggreg
 		case "VersionId":
 			s3ObjectToDelete.VersionId = parseNullableString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing S3ObjectToDelete.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing S3ObjectToDelete.", child.XMLName.Local)
 		}
 	}
 }
@@ -7324,7 +7277,7 @@ type TapeStateSummaryApiBean struct {
 	TypeCounts []TypeTypeCountApiBean
 }
 
-func (tapeStateSummaryApiBean *TapeStateSummaryApiBean) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (tapeStateSummaryApiBean *TapeStateSummaryApiBean) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -7337,23 +7290,23 @@ func (tapeStateSummaryApiBean *TapeStateSummaryApiBean) parse(xmlNode *XmlNode, 
 			parseEnum(child.Content, &tapeStateSummaryApiBean.TapeState, aggErr)
 		case "TypeCounts":
 			var model TypeTypeCountApiBean
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			tapeStateSummaryApiBean.TypeCounts = append(tapeStateSummaryApiBean.TypeCounts, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing TapeStateSummaryApiBean.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing TapeStateSummaryApiBean.", child.XMLName.Local)
 		}
 	}
 }
 
-func parseTapeStateSummaryApiBeanSlice(tagName string, xmlNodes []XmlNode, aggErr *AggregateError) []TapeStateSummaryApiBean {
+func parseTapeStateSummaryApiBeanSlice(tagName string, xmlNodes []XmlNode, aggErr *AggregateError, logger sdk_log.Logger) []TapeStateSummaryApiBean {
 	var result []TapeStateSummaryApiBean
 	for _, curXmlNode := range xmlNodes {
 		if curXmlNode.XMLName.Local == tagName {
 			var curResult TapeStateSummaryApiBean
-			curResult.parse(&curXmlNode, aggErr)
+			curResult.parse(&curXmlNode, aggErr, logger)
 			result = append(result, curResult)
 		} else {
-			log.Printf("WARNING: Discovered unexpected xml tag '%s' when expected tag '%s' when parsing TapeStateSummaryApiBean struct.\n", curXmlNode.XMLName.Local, tagName)
+			logger.Warningf("Discovered unexpected xml tag '%s' when expected tag '%s' when parsing TapeStateSummaryApiBean struct.", curXmlNode.XMLName.Local, tagName)
 		}
 	}
 	return result
@@ -7367,7 +7320,7 @@ type TapeTypeSummaryApiBean struct {
 	UsedStorageCapacity      int64
 }
 
-func (tapeTypeSummaryApiBean *TapeTypeSummaryApiBean) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (tapeTypeSummaryApiBean *TapeTypeSummaryApiBean) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -7383,20 +7336,20 @@ func (tapeTypeSummaryApiBean *TapeTypeSummaryApiBean) parse(xmlNode *XmlNode, ag
 		case "UsedStorageCapacity":
 			tapeTypeSummaryApiBean.UsedStorageCapacity = parseInt64(child.Content, aggErr)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing TapeTypeSummaryApiBean.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing TapeTypeSummaryApiBean.", child.XMLName.Local)
 		}
 	}
 }
 
-func parseTapeTypeSummaryApiBeanSlice(tagName string, xmlNodes []XmlNode, aggErr *AggregateError) []TapeTypeSummaryApiBean {
+func parseTapeTypeSummaryApiBeanSlice(tagName string, xmlNodes []XmlNode, aggErr *AggregateError, logger sdk_log.Logger) []TapeTypeSummaryApiBean {
 	var result []TapeTypeSummaryApiBean
 	for _, curXmlNode := range xmlNodes {
 		if curXmlNode.XMLName.Local == tagName {
 			var curResult TapeTypeSummaryApiBean
-			curResult.parse(&curXmlNode, aggErr)
+			curResult.parse(&curXmlNode, aggErr, logger)
 			result = append(result, curResult)
 		} else {
-			log.Printf("WARNING: Discovered unexpected xml tag '%s' when expected tag '%s' when parsing TapeTypeSummaryApiBean struct.\n", curXmlNode.XMLName.Local, tagName)
+			logger.Warningf("Discovered unexpected xml tag '%s' when expected tag '%s' when parsing TapeTypeSummaryApiBean struct.", curXmlNode.XMLName.Local, tagName)
 		}
 	}
 	return result
@@ -7408,7 +7361,7 @@ type TypeTypeCountApiBean struct {
 	Type       string
 }
 
-func (typeTypeCountApiBean *TypeTypeCountApiBean) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (typeTypeCountApiBean *TypeTypeCountApiBean) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -7420,7 +7373,7 @@ func (typeTypeCountApiBean *TypeTypeCountApiBean) parse(xmlNode *XmlNode, aggErr
 		case "Type":
 			typeTypeCountApiBean.Type = parseString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing TypeTypeCountApiBean.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing TypeTypeCountApiBean.", child.XMLName.Local)
 		}
 	}
 }
@@ -7430,7 +7383,7 @@ type User struct {
 	Id          string
 }
 
-func (user *User) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (user *User) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -7440,7 +7393,7 @@ func (user *User) parse(xmlNode *XmlNode, aggErr *AggregateError) {
 		case "ID":
 			user.Id = parseString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing User.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing User.", child.XMLName.Local)
 		}
 	}
 }
@@ -7462,14 +7415,14 @@ type DetailedS3Object struct {
 	Type                S3ObjectType
 }
 
-func (detailedS3Object *DetailedS3Object) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (detailedS3Object *DetailedS3Object) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "Blobs":
 			var model BulkObjectList
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			detailedS3Object.Blobs = &model
 		case "BlobsBeingPersisted":
 			detailedS3Object.BlobsBeingPersisted = parseNullableInt(child.Content, aggErr)
@@ -7498,7 +7451,7 @@ func (detailedS3Object *DetailedS3Object) parse(xmlNode *XmlNode, aggErr *Aggreg
 		case "Type":
 			parseEnum(child.Content, &detailedS3Object.Type, aggErr)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing DetailedS3Object.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing DetailedS3Object.", child.XMLName.Local)
 		}
 	}
 }
@@ -7512,7 +7465,7 @@ type SystemInformation struct {
 	SerialNumber     *string
 }
 
-func (systemInformation *SystemInformation) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (systemInformation *SystemInformation) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -7522,7 +7475,7 @@ func (systemInformation *SystemInformation) parse(xmlNode *XmlNode, aggErr *Aggr
 		case "BackendActivated":
 			systemInformation.BackendActivated = parseBool(child.Content, aggErr)
 		case "BuildInformation":
-			systemInformation.BuildInformation.parse(&child, aggErr)
+			systemInformation.BuildInformation.parse(&child, aggErr, logger)
 		case "InstanceId":
 			systemInformation.InstanceId = parseString(child.Content)
 		case "Now":
@@ -7530,7 +7483,7 @@ func (systemInformation *SystemInformation) parse(xmlNode *XmlNode, aggErr *Aggr
 		case "SerialNumber":
 			systemInformation.SerialNumber = parseNullableString(child.Content)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing SystemInformation.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing SystemInformation.", child.XMLName.Local)
 		}
 	}
 }
@@ -7540,7 +7493,7 @@ type HealthVerificationResult struct {
 	MsRequiredToVerifyDataPlannerHealth int64
 }
 
-func (healthVerificationResult *HealthVerificationResult) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (healthVerificationResult *HealthVerificationResult) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -7550,7 +7503,7 @@ func (healthVerificationResult *HealthVerificationResult) parse(xmlNode *XmlNode
 		case "MsRequiredToVerifyDataPlannerHealth":
 			healthVerificationResult.MsRequiredToVerifyDataPlannerHealth = parseInt64(child.Content, aggErr)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing HealthVerificationResult.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing HealthVerificationResult.", child.XMLName.Local)
 		}
 	}
 }
@@ -7580,7 +7533,7 @@ type NamedDetailedTapePartition struct {
 	UsedStorageCapacity        int64
 }
 
-func (namedDetailedTapePartition *NamedDetailedTapePartition) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (namedDetailedTapePartition *NamedDetailedTapePartition) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -7622,9 +7575,9 @@ func (namedDetailedTapePartition *NamedDetailedTapePartition) parse(xmlNode *Xml
 		case "TapeCount":
 			namedDetailedTapePartition.TapeCount = parseInt(child.Content, aggErr)
 		case "TapeStateSummaries":
-			namedDetailedTapePartition.TapeStateSummaries = parseTapeStateSummaryApiBeanSlice("TapeStateSummary", child.Children, aggErr)
+			namedDetailedTapePartition.TapeStateSummaries = parseTapeStateSummaryApiBeanSlice("TapeStateSummary", child.Children, aggErr, logger)
 		case "TapeTypeSummaries":
-			namedDetailedTapePartition.TapeTypeSummaries = parseTapeTypeSummaryApiBeanSlice("TapeTypeSummary", child.Children, aggErr)
+			namedDetailedTapePartition.TapeTypeSummaries = parseTapeTypeSummaryApiBeanSlice("TapeTypeSummary", child.Children, aggErr, logger)
 		case "TapeTypes":
 			var str = parseString(child.Content)
 			namedDetailedTapePartition.TapeTypes = append(namedDetailedTapePartition.TapeTypes, str)
@@ -7633,7 +7586,7 @@ func (namedDetailedTapePartition *NamedDetailedTapePartition) parse(xmlNode *Xml
 		case "UsedStorageCapacity":
 			namedDetailedTapePartition.UsedStorageCapacity = parseInt64(child.Content, aggErr)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing NamedDetailedTapePartition.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing NamedDetailedTapePartition.", child.XMLName.Local)
 		}
 	}
 }
@@ -7643,7 +7596,7 @@ type TapeFailure struct {
 	Tape  Tape
 }
 
-func (tapeFailure *TapeFailure) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (tapeFailure *TapeFailure) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
@@ -7651,9 +7604,9 @@ func (tapeFailure *TapeFailure) parse(xmlNode *XmlNode, aggErr *AggregateError) 
 		case "Cause":
 			tapeFailure.Cause = parseNullableString(child.Content)
 		case "Tape":
-			tapeFailure.Tape.parse(&child, aggErr)
+			tapeFailure.Tape.parse(&child, aggErr, logger)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing TapeFailure.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing TapeFailure.", child.XMLName.Local)
 		}
 	}
 }
@@ -7662,17 +7615,17 @@ type TapeFailureList struct {
 	Failures []TapeFailure
 }
 
-func (tapeFailureList *TapeFailureList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (tapeFailureList *TapeFailureList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "Failure":
 			var model TapeFailure
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			tapeFailureList.Failures = append(tapeFailureList.Failures, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing TapeFailureList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing TapeFailureList.", child.XMLName.Local)
 		}
 	}
 }
@@ -7837,7 +7790,6 @@ func (restOperationType RestOperationType) String() string {
 	case REST_OPERATION_TYPE_VERIFY_PHYSICAL_PLACEMENT:
 		return "VERIFY_PHYSICAL_PLACEMENT"
 	default:
-		log.Printf("Error: invalid RestOperationType represented by '%d'", restOperationType)
 		return ""
 	}
 }
@@ -7900,7 +7852,6 @@ func (databasePhysicalSpaceState DatabasePhysicalSpaceState) String() string {
 	case DATABASE_PHYSICAL_SPACE_STATE_NORMAL:
 		return "NORMAL"
 	default:
-		log.Printf("Error: invalid DatabasePhysicalSpaceState represented by '%d'", databasePhysicalSpaceState)
 		return ""
 	}
 }
@@ -7958,7 +7909,6 @@ func (httpResponseFormatType HttpResponseFormatType) String() string {
 	case HTTP_RESPONSE_FORMAT_TYPE_XML:
 		return "XML"
 	default:
-		log.Printf("Error: invalid HttpResponseFormatType represented by '%d'", httpResponseFormatType)
 		return ""
 	}
 }
@@ -8026,7 +7976,6 @@ func (requestType RequestType) String() string {
 	case REQUEST_TYPE_PUT:
 		return "PUT"
 	default:
-		log.Printf("Error: invalid RequestType represented by '%d'", requestType)
 		return ""
 	}
 }
@@ -8094,7 +8043,6 @@ func (namingConventionType NamingConventionType) String() string {
 	case NAMING_CONVENTION_TYPE_CAMEL_CASE_WITH_FIRST_LETTER_LOWERCASE:
 		return "CAMEL_CASE_WITH_FIRST_LETTER_LOWERCASE"
 	default:
-		log.Printf("Error: invalid NamingConventionType represented by '%d'", namingConventionType)
 		return ""
 	}
 }
@@ -8163,7 +8111,6 @@ func (checksumType ChecksumType) String() string {
 	case CHECKSUM_TYPE_SHA_512:
 		return "SHA_512"
 	default:
-		log.Printf("Error: invalid ChecksumType represented by '%d'", checksumType)
 		return ""
 	}
 }
@@ -8190,17 +8137,17 @@ type BucketAclList struct {
 	BucketAcls []BucketAcl
 }
 
-func (bucketAclList *BucketAclList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (bucketAclList *BucketAclList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "BucketAcl":
 			var model BucketAcl
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			bucketAclList.BucketAcls = append(bucketAclList.BucketAcls, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing BucketAclList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing BucketAclList.", child.XMLName.Local)
 		}
 	}
 }
@@ -8209,17 +8156,17 @@ type DataPolicyAclList struct {
 	DataPolicyAcls []DataPolicyAcl
 }
 
-func (dataPolicyAclList *DataPolicyAclList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (dataPolicyAclList *DataPolicyAclList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "DataPolicyAcl":
 			var model DataPolicyAcl
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			dataPolicyAclList.DataPolicyAcls = append(dataPolicyAclList.DataPolicyAcls, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing DataPolicyAclList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing DataPolicyAclList.", child.XMLName.Local)
 		}
 	}
 }
@@ -8228,17 +8175,17 @@ type BucketList struct {
 	Buckets []Bucket
 }
 
-func (bucketList *BucketList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (bucketList *BucketList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "Bucket":
 			var model Bucket
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			bucketList.Buckets = append(bucketList.Buckets, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing BucketList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing BucketList.", child.XMLName.Local)
 		}
 	}
 }
@@ -8247,17 +8194,17 @@ type CacheFilesystemList struct {
 	CacheFilesystems []CacheFilesystem
 }
 
-func (cacheFilesystemList *CacheFilesystemList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (cacheFilesystemList *CacheFilesystemList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "CacheFilesystem":
 			var model CacheFilesystem
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			cacheFilesystemList.CacheFilesystems = append(cacheFilesystemList.CacheFilesystems, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing CacheFilesystemList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing CacheFilesystemList.", child.XMLName.Local)
 		}
 	}
 }
@@ -8266,17 +8213,17 @@ type AzureDataReplicationRuleList struct {
 	AzureDataReplicationRules []AzureDataReplicationRule
 }
 
-func (azureDataReplicationRuleList *AzureDataReplicationRuleList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (azureDataReplicationRuleList *AzureDataReplicationRuleList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "AzureDataReplicationRule":
 			var model AzureDataReplicationRule
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			azureDataReplicationRuleList.AzureDataReplicationRules = append(azureDataReplicationRuleList.AzureDataReplicationRules, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing AzureDataReplicationRuleList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing AzureDataReplicationRuleList.", child.XMLName.Local)
 		}
 	}
 }
@@ -8285,17 +8232,17 @@ type DataPersistenceRuleList struct {
 	DataPersistenceRules []DataPersistenceRule
 }
 
-func (dataPersistenceRuleList *DataPersistenceRuleList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (dataPersistenceRuleList *DataPersistenceRuleList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "DataPersistenceRule":
 			var model DataPersistenceRule
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			dataPersistenceRuleList.DataPersistenceRules = append(dataPersistenceRuleList.DataPersistenceRules, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing DataPersistenceRuleList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing DataPersistenceRuleList.", child.XMLName.Local)
 		}
 	}
 }
@@ -8304,17 +8251,17 @@ type DataPolicyList struct {
 	DataPolicies []DataPolicy
 }
 
-func (dataPolicyList *DataPolicyList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (dataPolicyList *DataPolicyList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "DataPolicy":
 			var model DataPolicy
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			dataPolicyList.DataPolicies = append(dataPolicyList.DataPolicies, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing DataPolicyList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing DataPolicyList.", child.XMLName.Local)
 		}
 	}
 }
@@ -8323,17 +8270,17 @@ type Ds3DataReplicationRuleList struct {
 	Ds3DataReplicationRules []Ds3DataReplicationRule
 }
 
-func (ds3DataReplicationRuleList *Ds3DataReplicationRuleList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (ds3DataReplicationRuleList *Ds3DataReplicationRuleList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "Ds3DataReplicationRule":
 			var model Ds3DataReplicationRule
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			ds3DataReplicationRuleList.Ds3DataReplicationRules = append(ds3DataReplicationRuleList.Ds3DataReplicationRules, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing Ds3DataReplicationRuleList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing Ds3DataReplicationRuleList.", child.XMLName.Local)
 		}
 	}
 }
@@ -8342,17 +8289,17 @@ type S3DataReplicationRuleList struct {
 	S3DataReplicationRules []S3DataReplicationRule
 }
 
-func (s3DataReplicationRuleList *S3DataReplicationRuleList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (s3DataReplicationRuleList *S3DataReplicationRuleList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "S3DataReplicationRule":
 			var model S3DataReplicationRule
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			s3DataReplicationRuleList.S3DataReplicationRules = append(s3DataReplicationRuleList.S3DataReplicationRules, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing S3DataReplicationRuleList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing S3DataReplicationRuleList.", child.XMLName.Local)
 		}
 	}
 }
@@ -8361,17 +8308,17 @@ type DegradedBlobList struct {
 	DegradedBlobs []DegradedBlob
 }
 
-func (degradedBlobList *DegradedBlobList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (degradedBlobList *DegradedBlobList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "DegradedBlob":
 			var model DegradedBlob
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			degradedBlobList.DegradedBlobs = append(degradedBlobList.DegradedBlobs, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing DegradedBlobList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing DegradedBlobList.", child.XMLName.Local)
 		}
 	}
 }
@@ -8380,17 +8327,17 @@ type SuspectBlobAzureTargetList struct {
 	SuspectBlobAzureTargets []SuspectBlobAzureTarget
 }
 
-func (suspectBlobAzureTargetList *SuspectBlobAzureTargetList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (suspectBlobAzureTargetList *SuspectBlobAzureTargetList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "SuspectBlobAzureTarget":
 			var model SuspectBlobAzureTarget
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			suspectBlobAzureTargetList.SuspectBlobAzureTargets = append(suspectBlobAzureTargetList.SuspectBlobAzureTargets, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing SuspectBlobAzureTargetList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing SuspectBlobAzureTargetList.", child.XMLName.Local)
 		}
 	}
 }
@@ -8399,17 +8346,17 @@ type SuspectBlobDs3TargetList struct {
 	SuspectBlobDs3Targets []SuspectBlobDs3Target
 }
 
-func (suspectBlobDs3TargetList *SuspectBlobDs3TargetList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (suspectBlobDs3TargetList *SuspectBlobDs3TargetList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "SuspectBlobDs3Target":
 			var model SuspectBlobDs3Target
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			suspectBlobDs3TargetList.SuspectBlobDs3Targets = append(suspectBlobDs3TargetList.SuspectBlobDs3Targets, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing SuspectBlobDs3TargetList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing SuspectBlobDs3TargetList.", child.XMLName.Local)
 		}
 	}
 }
@@ -8418,17 +8365,17 @@ type SuspectBlobPoolList struct {
 	SuspectBlobPools []SuspectBlobPool
 }
 
-func (suspectBlobPoolList *SuspectBlobPoolList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (suspectBlobPoolList *SuspectBlobPoolList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "SuspectBlobPool":
 			var model SuspectBlobPool
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			suspectBlobPoolList.SuspectBlobPools = append(suspectBlobPoolList.SuspectBlobPools, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing SuspectBlobPoolList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing SuspectBlobPoolList.", child.XMLName.Local)
 		}
 	}
 }
@@ -8437,17 +8384,17 @@ type SuspectBlobS3TargetList struct {
 	SuspectBlobS3Targets []SuspectBlobS3Target
 }
 
-func (suspectBlobS3TargetList *SuspectBlobS3TargetList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (suspectBlobS3TargetList *SuspectBlobS3TargetList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "SuspectBlobS3Target":
 			var model SuspectBlobS3Target
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			suspectBlobS3TargetList.SuspectBlobS3Targets = append(suspectBlobS3TargetList.SuspectBlobS3Targets, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing SuspectBlobS3TargetList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing SuspectBlobS3TargetList.", child.XMLName.Local)
 		}
 	}
 }
@@ -8456,17 +8403,17 @@ type SuspectBlobTapeList struct {
 	SuspectBlobTapes []SuspectBlobTape
 }
 
-func (suspectBlobTapeList *SuspectBlobTapeList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (suspectBlobTapeList *SuspectBlobTapeList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "SuspectBlobTape":
 			var model SuspectBlobTape
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			suspectBlobTapeList.SuspectBlobTapes = append(suspectBlobTapeList.SuspectBlobTapes, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing SuspectBlobTapeList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing SuspectBlobTapeList.", child.XMLName.Local)
 		}
 	}
 }
@@ -8475,17 +8422,17 @@ type S3ObjectList struct {
 	S3Objects []S3Object
 }
 
-func (s3ObjectList *S3ObjectList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (s3ObjectList *S3ObjectList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "S3Object":
 			var model S3Object
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			s3ObjectList.S3Objects = append(s3ObjectList.S3Objects, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing S3ObjectList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing S3ObjectList.", child.XMLName.Local)
 		}
 	}
 }
@@ -8494,17 +8441,17 @@ type GroupMemberList struct {
 	GroupMembers []GroupMember
 }
 
-func (groupMemberList *GroupMemberList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (groupMemberList *GroupMemberList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "GroupMember":
 			var model GroupMember
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			groupMemberList.GroupMembers = append(groupMemberList.GroupMembers, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing GroupMemberList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing GroupMemberList.", child.XMLName.Local)
 		}
 	}
 }
@@ -8513,17 +8460,17 @@ type GroupList struct {
 	Groups []Group
 }
 
-func (groupList *GroupList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (groupList *GroupList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "Group":
 			var model Group
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			groupList.Groups = append(groupList.Groups, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing GroupList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing GroupList.", child.XMLName.Local)
 		}
 	}
 }
@@ -8532,17 +8479,17 @@ type ActiveJobList struct {
 	ActiveJobs []ActiveJob
 }
 
-func (activeJobList *ActiveJobList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (activeJobList *ActiveJobList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "Job":
 			var model ActiveJob
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			activeJobList.ActiveJobs = append(activeJobList.ActiveJobs, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing ActiveJobList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing ActiveJobList.", child.XMLName.Local)
 		}
 	}
 }
@@ -8551,17 +8498,17 @@ type CanceledJobList struct {
 	CanceledJobs []CanceledJob
 }
 
-func (canceledJobList *CanceledJobList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (canceledJobList *CanceledJobList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "CanceledJob":
 			var model CanceledJob
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			canceledJobList.CanceledJobs = append(canceledJobList.CanceledJobs, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing CanceledJobList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing CanceledJobList.", child.XMLName.Local)
 		}
 	}
 }
@@ -8570,17 +8517,17 @@ type CompletedJobList struct {
 	CompletedJobs []CompletedJob
 }
 
-func (completedJobList *CompletedJobList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (completedJobList *CompletedJobList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "CompletedJob":
 			var model CompletedJob
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			completedJobList.CompletedJobs = append(completedJobList.CompletedJobs, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing CompletedJobList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing CompletedJobList.", child.XMLName.Local)
 		}
 	}
 }
@@ -8589,17 +8536,17 @@ type JobCreationFailedList struct {
 	JobCreationFaileds []JobCreationFailed
 }
 
-func (jobCreationFailedList *JobCreationFailedList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (jobCreationFailedList *JobCreationFailedList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "JobCreationFailed":
 			var model JobCreationFailed
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			jobCreationFailedList.JobCreationFaileds = append(jobCreationFailedList.JobCreationFaileds, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing JobCreationFailedList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing JobCreationFailedList.", child.XMLName.Local)
 		}
 	}
 }
@@ -8608,17 +8555,17 @@ type NodeList struct {
 	Nodes []Node
 }
 
-func (nodeList *NodeList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (nodeList *NodeList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "Node":
 			var model Node
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			nodeList.Nodes = append(nodeList.Nodes, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing NodeList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing NodeList.", child.XMLName.Local)
 		}
 	}
 }
@@ -8627,17 +8574,17 @@ type AzureTargetFailureNotificationRegistrationList struct {
 	AzureTargetFailureNotificationRegistrations []AzureTargetFailureNotificationRegistration
 }
 
-func (azureTargetFailureNotificationRegistrationList *AzureTargetFailureNotificationRegistrationList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (azureTargetFailureNotificationRegistrationList *AzureTargetFailureNotificationRegistrationList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "AzureTargetFailureNotificationRegistration":
 			var model AzureTargetFailureNotificationRegistration
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			azureTargetFailureNotificationRegistrationList.AzureTargetFailureNotificationRegistrations = append(azureTargetFailureNotificationRegistrationList.AzureTargetFailureNotificationRegistrations, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing AzureTargetFailureNotificationRegistrationList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing AzureTargetFailureNotificationRegistrationList.", child.XMLName.Local)
 		}
 	}
 }
@@ -8646,17 +8593,17 @@ type BucketChangesNotificationRegistrationList struct {
 	BucketChangesNotificationRegistrations []BucketChangesNotificationRegistration
 }
 
-func (bucketChangesNotificationRegistrationList *BucketChangesNotificationRegistrationList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (bucketChangesNotificationRegistrationList *BucketChangesNotificationRegistrationList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "BucketChangesNotificationRegistration":
 			var model BucketChangesNotificationRegistration
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			bucketChangesNotificationRegistrationList.BucketChangesNotificationRegistrations = append(bucketChangesNotificationRegistrationList.BucketChangesNotificationRegistrations, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing BucketChangesNotificationRegistrationList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing BucketChangesNotificationRegistrationList.", child.XMLName.Local)
 		}
 	}
 }
@@ -8665,17 +8612,17 @@ type BucketHistoryEventList struct {
 	BucketHistoryEvents []BucketHistoryEvent
 }
 
-func (bucketHistoryEventList *BucketHistoryEventList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (bucketHistoryEventList *BucketHistoryEventList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "BucketHistoryEvent":
 			var model BucketHistoryEvent
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			bucketHistoryEventList.BucketHistoryEvents = append(bucketHistoryEventList.BucketHistoryEvents, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing BucketHistoryEventList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing BucketHistoryEventList.", child.XMLName.Local)
 		}
 	}
 }
@@ -8684,17 +8631,17 @@ type Ds3TargetFailureNotificationRegistrationList struct {
 	Ds3TargetFailureNotificationRegistrations []Ds3TargetFailureNotificationRegistration
 }
 
-func (ds3TargetFailureNotificationRegistrationList *Ds3TargetFailureNotificationRegistrationList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (ds3TargetFailureNotificationRegistrationList *Ds3TargetFailureNotificationRegistrationList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "Ds3TargetFailureNotificationRegistration":
 			var model Ds3TargetFailureNotificationRegistration
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			ds3TargetFailureNotificationRegistrationList.Ds3TargetFailureNotificationRegistrations = append(ds3TargetFailureNotificationRegistrationList.Ds3TargetFailureNotificationRegistrations, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing Ds3TargetFailureNotificationRegistrationList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing Ds3TargetFailureNotificationRegistrationList.", child.XMLName.Local)
 		}
 	}
 }
@@ -8703,17 +8650,17 @@ type JobCompletedNotificationRegistrationList struct {
 	JobCompletedNotificationRegistrations []JobCompletedNotificationRegistration
 }
 
-func (jobCompletedNotificationRegistrationList *JobCompletedNotificationRegistrationList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (jobCompletedNotificationRegistrationList *JobCompletedNotificationRegistrationList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "JobCompletedNotificationRegistration":
 			var model JobCompletedNotificationRegistration
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			jobCompletedNotificationRegistrationList.JobCompletedNotificationRegistrations = append(jobCompletedNotificationRegistrationList.JobCompletedNotificationRegistrations, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing JobCompletedNotificationRegistrationList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing JobCompletedNotificationRegistrationList.", child.XMLName.Local)
 		}
 	}
 }
@@ -8722,17 +8669,17 @@ type JobCreatedNotificationRegistrationList struct {
 	JobCreatedNotificationRegistrations []JobCreatedNotificationRegistration
 }
 
-func (jobCreatedNotificationRegistrationList *JobCreatedNotificationRegistrationList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (jobCreatedNotificationRegistrationList *JobCreatedNotificationRegistrationList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "JobCreatedNotificationRegistration":
 			var model JobCreatedNotificationRegistration
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			jobCreatedNotificationRegistrationList.JobCreatedNotificationRegistrations = append(jobCreatedNotificationRegistrationList.JobCreatedNotificationRegistrations, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing JobCreatedNotificationRegistrationList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing JobCreatedNotificationRegistrationList.", child.XMLName.Local)
 		}
 	}
 }
@@ -8741,17 +8688,17 @@ type JobCreationFailedNotificationRegistrationList struct {
 	JobCreationFailedNotificationRegistrations []JobCreationFailedNotificationRegistration
 }
 
-func (jobCreationFailedNotificationRegistrationList *JobCreationFailedNotificationRegistrationList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (jobCreationFailedNotificationRegistrationList *JobCreationFailedNotificationRegistrationList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "JobCreationFailedNotificationRegistration":
 			var model JobCreationFailedNotificationRegistration
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			jobCreationFailedNotificationRegistrationList.JobCreationFailedNotificationRegistrations = append(jobCreationFailedNotificationRegistrationList.JobCreationFailedNotificationRegistrations, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing JobCreationFailedNotificationRegistrationList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing JobCreationFailedNotificationRegistrationList.", child.XMLName.Local)
 		}
 	}
 }
@@ -8760,17 +8707,17 @@ type S3ObjectCachedNotificationRegistrationList struct {
 	S3ObjectCachedNotificationRegistrations []S3ObjectCachedNotificationRegistration
 }
 
-func (s3ObjectCachedNotificationRegistrationList *S3ObjectCachedNotificationRegistrationList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (s3ObjectCachedNotificationRegistrationList *S3ObjectCachedNotificationRegistrationList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "S3ObjectCachedNotificationRegistration":
 			var model S3ObjectCachedNotificationRegistration
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			s3ObjectCachedNotificationRegistrationList.S3ObjectCachedNotificationRegistrations = append(s3ObjectCachedNotificationRegistrationList.S3ObjectCachedNotificationRegistrations, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing S3ObjectCachedNotificationRegistrationList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing S3ObjectCachedNotificationRegistrationList.", child.XMLName.Local)
 		}
 	}
 }
@@ -8779,17 +8726,17 @@ type S3ObjectLostNotificationRegistrationList struct {
 	S3ObjectLostNotificationRegistrations []S3ObjectLostNotificationRegistration
 }
 
-func (s3ObjectLostNotificationRegistrationList *S3ObjectLostNotificationRegistrationList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (s3ObjectLostNotificationRegistrationList *S3ObjectLostNotificationRegistrationList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "S3ObjectLostNotificationRegistration":
 			var model S3ObjectLostNotificationRegistration
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			s3ObjectLostNotificationRegistrationList.S3ObjectLostNotificationRegistrations = append(s3ObjectLostNotificationRegistrationList.S3ObjectLostNotificationRegistrations, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing S3ObjectLostNotificationRegistrationList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing S3ObjectLostNotificationRegistrationList.", child.XMLName.Local)
 		}
 	}
 }
@@ -8798,17 +8745,17 @@ type S3ObjectPersistedNotificationRegistrationList struct {
 	S3ObjectPersistedNotificationRegistrations []S3ObjectPersistedNotificationRegistration
 }
 
-func (s3ObjectPersistedNotificationRegistrationList *S3ObjectPersistedNotificationRegistrationList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (s3ObjectPersistedNotificationRegistrationList *S3ObjectPersistedNotificationRegistrationList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "S3ObjectPersistedNotificationRegistration":
 			var model S3ObjectPersistedNotificationRegistration
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			s3ObjectPersistedNotificationRegistrationList.S3ObjectPersistedNotificationRegistrations = append(s3ObjectPersistedNotificationRegistrationList.S3ObjectPersistedNotificationRegistrations, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing S3ObjectPersistedNotificationRegistrationList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing S3ObjectPersistedNotificationRegistrationList.", child.XMLName.Local)
 		}
 	}
 }
@@ -8817,17 +8764,17 @@ type PoolFailureNotificationRegistrationList struct {
 	PoolFailureNotificationRegistrations []PoolFailureNotificationRegistration
 }
 
-func (poolFailureNotificationRegistrationList *PoolFailureNotificationRegistrationList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (poolFailureNotificationRegistrationList *PoolFailureNotificationRegistrationList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "PoolFailureNotificationRegistration":
 			var model PoolFailureNotificationRegistration
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			poolFailureNotificationRegistrationList.PoolFailureNotificationRegistrations = append(poolFailureNotificationRegistrationList.PoolFailureNotificationRegistrations, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing PoolFailureNotificationRegistrationList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing PoolFailureNotificationRegistrationList.", child.XMLName.Local)
 		}
 	}
 }
@@ -8836,17 +8783,17 @@ type S3TargetFailureNotificationRegistrationList struct {
 	S3TargetFailureNotificationRegistrations []S3TargetFailureNotificationRegistration
 }
 
-func (s3TargetFailureNotificationRegistrationList *S3TargetFailureNotificationRegistrationList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (s3TargetFailureNotificationRegistrationList *S3TargetFailureNotificationRegistrationList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "S3TargetFailureNotificationRegistration":
 			var model S3TargetFailureNotificationRegistration
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			s3TargetFailureNotificationRegistrationList.S3TargetFailureNotificationRegistrations = append(s3TargetFailureNotificationRegistrationList.S3TargetFailureNotificationRegistrations, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing S3TargetFailureNotificationRegistrationList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing S3TargetFailureNotificationRegistrationList.", child.XMLName.Local)
 		}
 	}
 }
@@ -8855,17 +8802,17 @@ type StorageDomainFailureNotificationRegistrationList struct {
 	StorageDomainFailureNotificationRegistrations []StorageDomainFailureNotificationRegistration
 }
 
-func (storageDomainFailureNotificationRegistrationList *StorageDomainFailureNotificationRegistrationList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (storageDomainFailureNotificationRegistrationList *StorageDomainFailureNotificationRegistrationList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "StorageDomainFailureNotificationRegistration":
 			var model StorageDomainFailureNotificationRegistration
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			storageDomainFailureNotificationRegistrationList.StorageDomainFailureNotificationRegistrations = append(storageDomainFailureNotificationRegistrationList.StorageDomainFailureNotificationRegistrations, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing StorageDomainFailureNotificationRegistrationList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing StorageDomainFailureNotificationRegistrationList.", child.XMLName.Local)
 		}
 	}
 }
@@ -8874,17 +8821,17 @@ type SystemFailureNotificationRegistrationList struct {
 	SystemFailureNotificationRegistrations []SystemFailureNotificationRegistration
 }
 
-func (systemFailureNotificationRegistrationList *SystemFailureNotificationRegistrationList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (systemFailureNotificationRegistrationList *SystemFailureNotificationRegistrationList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "SystemFailureNotificationRegistration":
 			var model SystemFailureNotificationRegistration
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			systemFailureNotificationRegistrationList.SystemFailureNotificationRegistrations = append(systemFailureNotificationRegistrationList.SystemFailureNotificationRegistrations, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing SystemFailureNotificationRegistrationList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing SystemFailureNotificationRegistrationList.", child.XMLName.Local)
 		}
 	}
 }
@@ -8893,17 +8840,17 @@ type TapeFailureNotificationRegistrationList struct {
 	TapeFailureNotificationRegistrations []TapeFailureNotificationRegistration
 }
 
-func (tapeFailureNotificationRegistrationList *TapeFailureNotificationRegistrationList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (tapeFailureNotificationRegistrationList *TapeFailureNotificationRegistrationList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "TapeFailureNotificationRegistration":
 			var model TapeFailureNotificationRegistration
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			tapeFailureNotificationRegistrationList.TapeFailureNotificationRegistrations = append(tapeFailureNotificationRegistrationList.TapeFailureNotificationRegistrations, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing TapeFailureNotificationRegistrationList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing TapeFailureNotificationRegistrationList.", child.XMLName.Local)
 		}
 	}
 }
@@ -8912,17 +8859,17 @@ type TapePartitionFailureNotificationRegistrationList struct {
 	TapePartitionFailureNotificationRegistrations []TapePartitionFailureNotificationRegistration
 }
 
-func (tapePartitionFailureNotificationRegistrationList *TapePartitionFailureNotificationRegistrationList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (tapePartitionFailureNotificationRegistrationList *TapePartitionFailureNotificationRegistrationList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "TapePartitionFailureNotificationRegistration":
 			var model TapePartitionFailureNotificationRegistration
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			tapePartitionFailureNotificationRegistrationList.TapePartitionFailureNotificationRegistrations = append(tapePartitionFailureNotificationRegistrationList.TapePartitionFailureNotificationRegistrations, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing TapePartitionFailureNotificationRegistrationList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing TapePartitionFailureNotificationRegistrationList.", child.XMLName.Local)
 		}
 	}
 }
@@ -8931,17 +8878,17 @@ type DetailedS3ObjectList struct {
 	DetailedS3Objects []DetailedS3Object
 }
 
-func (detailedS3ObjectList *DetailedS3ObjectList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (detailedS3ObjectList *DetailedS3ObjectList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "Object":
 			var model DetailedS3Object
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			detailedS3ObjectList.DetailedS3Objects = append(detailedS3ObjectList.DetailedS3Objects, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing DetailedS3ObjectList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing DetailedS3ObjectList.", child.XMLName.Local)
 		}
 	}
 }
@@ -8950,17 +8897,17 @@ type PoolFailureList struct {
 	PoolFailures []PoolFailure
 }
 
-func (poolFailureList *PoolFailureList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (poolFailureList *PoolFailureList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "PoolFailure":
 			var model PoolFailure
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			poolFailureList.PoolFailures = append(poolFailureList.PoolFailures, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing PoolFailureList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing PoolFailureList.", child.XMLName.Local)
 		}
 	}
 }
@@ -8969,17 +8916,17 @@ type PoolPartitionList struct {
 	PoolPartitions []PoolPartition
 }
 
-func (poolPartitionList *PoolPartitionList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (poolPartitionList *PoolPartitionList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "PoolPartition":
 			var model PoolPartition
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			poolPartitionList.PoolPartitions = append(poolPartitionList.PoolPartitions, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing PoolPartitionList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing PoolPartitionList.", child.XMLName.Local)
 		}
 	}
 }
@@ -8988,17 +8935,17 @@ type PoolList struct {
 	Pools []Pool
 }
 
-func (poolList *PoolList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (poolList *PoolList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "Pool":
 			var model Pool
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			poolList.Pools = append(poolList.Pools, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing PoolList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing PoolList.", child.XMLName.Local)
 		}
 	}
 }
@@ -9007,17 +8954,17 @@ type StorageDomainFailureList struct {
 	StorageDomainFailures []StorageDomainFailure
 }
 
-func (storageDomainFailureList *StorageDomainFailureList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (storageDomainFailureList *StorageDomainFailureList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "StorageDomainFailure":
 			var model StorageDomainFailure
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			storageDomainFailureList.StorageDomainFailures = append(storageDomainFailureList.StorageDomainFailures, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing StorageDomainFailureList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing StorageDomainFailureList.", child.XMLName.Local)
 		}
 	}
 }
@@ -9026,17 +8973,17 @@ type StorageDomainMemberList struct {
 	StorageDomainMembers []StorageDomainMember
 }
 
-func (storageDomainMemberList *StorageDomainMemberList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (storageDomainMemberList *StorageDomainMemberList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "StorageDomainMember":
 			var model StorageDomainMember
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			storageDomainMemberList.StorageDomainMembers = append(storageDomainMemberList.StorageDomainMembers, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing StorageDomainMemberList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing StorageDomainMemberList.", child.XMLName.Local)
 		}
 	}
 }
@@ -9045,17 +8992,17 @@ type StorageDomainList struct {
 	StorageDomains []StorageDomain
 }
 
-func (storageDomainList *StorageDomainList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (storageDomainList *StorageDomainList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "StorageDomain":
 			var model StorageDomain
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			storageDomainList.StorageDomains = append(storageDomainList.StorageDomains, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing StorageDomainList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing StorageDomainList.", child.XMLName.Local)
 		}
 	}
 }
@@ -9064,17 +9011,17 @@ type FeatureKeyList struct {
 	FeatureKeys []FeatureKey
 }
 
-func (featureKeyList *FeatureKeyList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (featureKeyList *FeatureKeyList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "FeatureKey":
 			var model FeatureKey
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			featureKeyList.FeatureKeys = append(featureKeyList.FeatureKeys, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing FeatureKeyList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing FeatureKeyList.", child.XMLName.Local)
 		}
 	}
 }
@@ -9083,17 +9030,17 @@ type SystemFailureList struct {
 	SystemFailures []SystemFailure
 }
 
-func (systemFailureList *SystemFailureList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (systemFailureList *SystemFailureList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "SystemFailure":
 			var model SystemFailure
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			systemFailureList.SystemFailures = append(systemFailureList.SystemFailures, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing SystemFailureList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing SystemFailureList.", child.XMLName.Local)
 		}
 	}
 }
@@ -9102,17 +9049,17 @@ type TapeDensityDirectiveList struct {
 	TapeDensityDirectives []TapeDensityDirective
 }
 
-func (tapeDensityDirectiveList *TapeDensityDirectiveList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (tapeDensityDirectiveList *TapeDensityDirectiveList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "TapeDensityDirective":
 			var model TapeDensityDirective
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			tapeDensityDirectiveList.TapeDensityDirectives = append(tapeDensityDirectiveList.TapeDensityDirectives, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing TapeDensityDirectiveList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing TapeDensityDirectiveList.", child.XMLName.Local)
 		}
 	}
 }
@@ -9121,17 +9068,17 @@ type TapeDriveList struct {
 	TapeDrives []TapeDrive
 }
 
-func (tapeDriveList *TapeDriveList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (tapeDriveList *TapeDriveList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "TapeDrive":
 			var model TapeDrive
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			tapeDriveList.TapeDrives = append(tapeDriveList.TapeDrives, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing TapeDriveList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing TapeDriveList.", child.XMLName.Local)
 		}
 	}
 }
@@ -9140,17 +9087,17 @@ type DetailedTapeFailureList struct {
 	DetailedTapeFailures []DetailedTapeFailure
 }
 
-func (detailedTapeFailureList *DetailedTapeFailureList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (detailedTapeFailureList *DetailedTapeFailureList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "TapeFailure":
 			var model DetailedTapeFailure
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			detailedTapeFailureList.DetailedTapeFailures = append(detailedTapeFailureList.DetailedTapeFailures, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing DetailedTapeFailureList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing DetailedTapeFailureList.", child.XMLName.Local)
 		}
 	}
 }
@@ -9159,17 +9106,17 @@ type TapeLibraryList struct {
 	TapeLibraries []TapeLibrary
 }
 
-func (tapeLibraryList *TapeLibraryList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (tapeLibraryList *TapeLibraryList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "TapeLibrary":
 			var model TapeLibrary
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			tapeLibraryList.TapeLibraries = append(tapeLibraryList.TapeLibraries, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing TapeLibraryList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing TapeLibraryList.", child.XMLName.Local)
 		}
 	}
 }
@@ -9178,17 +9125,17 @@ type TapePartitionFailureList struct {
 	TapePartitionFailures []TapePartitionFailure
 }
 
-func (tapePartitionFailureList *TapePartitionFailureList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (tapePartitionFailureList *TapePartitionFailureList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "TapePartitionFailure":
 			var model TapePartitionFailure
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			tapePartitionFailureList.TapePartitionFailures = append(tapePartitionFailureList.TapePartitionFailures, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing TapePartitionFailureList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing TapePartitionFailureList.", child.XMLName.Local)
 		}
 	}
 }
@@ -9197,17 +9144,17 @@ type TapePartitionList struct {
 	TapePartitions []TapePartition
 }
 
-func (tapePartitionList *TapePartitionList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (tapePartitionList *TapePartitionList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "TapePartition":
 			var model TapePartition
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			tapePartitionList.TapePartitions = append(tapePartitionList.TapePartitions, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing TapePartitionList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing TapePartitionList.", child.XMLName.Local)
 		}
 	}
 }
@@ -9216,17 +9163,17 @@ type NamedDetailedTapePartitionList struct {
 	NamedDetailedTapePartitions []NamedDetailedTapePartition
 }
 
-func (namedDetailedTapePartitionList *NamedDetailedTapePartitionList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (namedDetailedTapePartitionList *NamedDetailedTapePartitionList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "TapePartition":
 			var model NamedDetailedTapePartition
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			namedDetailedTapePartitionList.NamedDetailedTapePartitions = append(namedDetailedTapePartitionList.NamedDetailedTapePartitions, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing NamedDetailedTapePartitionList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing NamedDetailedTapePartitionList.", child.XMLName.Local)
 		}
 	}
 }
@@ -9235,17 +9182,17 @@ type TapeList struct {
 	Tapes []Tape
 }
 
-func (tapeList *TapeList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (tapeList *TapeList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "Tape":
 			var model Tape
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			tapeList.Tapes = append(tapeList.Tapes, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing TapeList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing TapeList.", child.XMLName.Local)
 		}
 	}
 }
@@ -9254,17 +9201,17 @@ type AzureTargetBucketNameList struct {
 	AzureTargetBucketNames []AzureTargetBucketName
 }
 
-func (azureTargetBucketNameList *AzureTargetBucketNameList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (azureTargetBucketNameList *AzureTargetBucketNameList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "AzureTargetBucketName":
 			var model AzureTargetBucketName
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			azureTargetBucketNameList.AzureTargetBucketNames = append(azureTargetBucketNameList.AzureTargetBucketNames, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing AzureTargetBucketNameList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing AzureTargetBucketNameList.", child.XMLName.Local)
 		}
 	}
 }
@@ -9273,17 +9220,17 @@ type AzureTargetFailureList struct {
 	AzureTargetFailures []AzureTargetFailure
 }
 
-func (azureTargetFailureList *AzureTargetFailureList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (azureTargetFailureList *AzureTargetFailureList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "AzureTargetFailure":
 			var model AzureTargetFailure
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			azureTargetFailureList.AzureTargetFailures = append(azureTargetFailureList.AzureTargetFailures, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing AzureTargetFailureList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing AzureTargetFailureList.", child.XMLName.Local)
 		}
 	}
 }
@@ -9292,17 +9239,17 @@ type AzureTargetReadPreferenceList struct {
 	AzureTargetReadPreferences []AzureTargetReadPreference
 }
 
-func (azureTargetReadPreferenceList *AzureTargetReadPreferenceList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (azureTargetReadPreferenceList *AzureTargetReadPreferenceList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "AzureTargetReadPreference":
 			var model AzureTargetReadPreference
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			azureTargetReadPreferenceList.AzureTargetReadPreferences = append(azureTargetReadPreferenceList.AzureTargetReadPreferences, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing AzureTargetReadPreferenceList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing AzureTargetReadPreferenceList.", child.XMLName.Local)
 		}
 	}
 }
@@ -9311,17 +9258,17 @@ type AzureTargetList struct {
 	AzureTargets []AzureTarget
 }
 
-func (azureTargetList *AzureTargetList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (azureTargetList *AzureTargetList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "AzureTarget":
 			var model AzureTarget
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			azureTargetList.AzureTargets = append(azureTargetList.AzureTargets, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing AzureTargetList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing AzureTargetList.", child.XMLName.Local)
 		}
 	}
 }
@@ -9330,17 +9277,17 @@ type Ds3TargetFailureList struct {
 	Ds3TargetFailures []Ds3TargetFailure
 }
 
-func (ds3TargetFailureList *Ds3TargetFailureList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (ds3TargetFailureList *Ds3TargetFailureList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "Ds3TargetFailure":
 			var model Ds3TargetFailure
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			ds3TargetFailureList.Ds3TargetFailures = append(ds3TargetFailureList.Ds3TargetFailures, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing Ds3TargetFailureList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing Ds3TargetFailureList.", child.XMLName.Local)
 		}
 	}
 }
@@ -9349,17 +9296,17 @@ type Ds3TargetReadPreferenceList struct {
 	Ds3TargetReadPreferences []Ds3TargetReadPreference
 }
 
-func (ds3TargetReadPreferenceList *Ds3TargetReadPreferenceList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (ds3TargetReadPreferenceList *Ds3TargetReadPreferenceList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "Ds3TargetReadPreference":
 			var model Ds3TargetReadPreference
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			ds3TargetReadPreferenceList.Ds3TargetReadPreferences = append(ds3TargetReadPreferenceList.Ds3TargetReadPreferences, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing Ds3TargetReadPreferenceList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing Ds3TargetReadPreferenceList.", child.XMLName.Local)
 		}
 	}
 }
@@ -9368,17 +9315,17 @@ type Ds3TargetList struct {
 	Ds3Targets []Ds3Target
 }
 
-func (ds3TargetList *Ds3TargetList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (ds3TargetList *Ds3TargetList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "Ds3Target":
 			var model Ds3Target
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			ds3TargetList.Ds3Targets = append(ds3TargetList.Ds3Targets, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing Ds3TargetList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing Ds3TargetList.", child.XMLName.Local)
 		}
 	}
 }
@@ -9387,17 +9334,17 @@ type S3TargetBucketNameList struct {
 	S3TargetBucketNames []S3TargetBucketName
 }
 
-func (s3TargetBucketNameList *S3TargetBucketNameList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (s3TargetBucketNameList *S3TargetBucketNameList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "S3TargetBucketName":
 			var model S3TargetBucketName
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			s3TargetBucketNameList.S3TargetBucketNames = append(s3TargetBucketNameList.S3TargetBucketNames, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing S3TargetBucketNameList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing S3TargetBucketNameList.", child.XMLName.Local)
 		}
 	}
 }
@@ -9406,17 +9353,17 @@ type S3TargetFailureList struct {
 	S3TargetFailures []S3TargetFailure
 }
 
-func (s3TargetFailureList *S3TargetFailureList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (s3TargetFailureList *S3TargetFailureList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "S3TargetFailure":
 			var model S3TargetFailure
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			s3TargetFailureList.S3TargetFailures = append(s3TargetFailureList.S3TargetFailures, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing S3TargetFailureList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing S3TargetFailureList.", child.XMLName.Local)
 		}
 	}
 }
@@ -9425,17 +9372,17 @@ type S3TargetReadPreferenceList struct {
 	S3TargetReadPreferences []S3TargetReadPreference
 }
 
-func (s3TargetReadPreferenceList *S3TargetReadPreferenceList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (s3TargetReadPreferenceList *S3TargetReadPreferenceList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "S3TargetReadPreference":
 			var model S3TargetReadPreference
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			s3TargetReadPreferenceList.S3TargetReadPreferences = append(s3TargetReadPreferenceList.S3TargetReadPreferences, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing S3TargetReadPreferenceList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing S3TargetReadPreferenceList.", child.XMLName.Local)
 		}
 	}
 }
@@ -9444,17 +9391,17 @@ type S3TargetList struct {
 	S3Targets []S3Target
 }
 
-func (s3TargetList *S3TargetList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (s3TargetList *S3TargetList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "S3Target":
 			var model S3Target
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			s3TargetList.S3Targets = append(s3TargetList.S3Targets, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing S3TargetList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing S3TargetList.", child.XMLName.Local)
 		}
 	}
 }
@@ -9463,17 +9410,17 @@ type SpectraUserList struct {
 	SpectraUsers []SpectraUser
 }
 
-func (spectraUserList *SpectraUserList) parse(xmlNode *XmlNode, aggErr *AggregateError) {
+func (spectraUserList *SpectraUserList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
 		case "User":
 			var model SpectraUser
-			model.parse(&child, aggErr)
+			model.parse(&child, aggErr, logger)
 			spectraUserList.SpectraUsers = append(spectraUserList.SpectraUsers, model)
 		default:
-			log.Printf("WARNING: unable to parse unknown xml tag '%s' while parsing SpectraUserList.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing SpectraUserList.", child.XMLName.Local)
 		}
 	}
 }

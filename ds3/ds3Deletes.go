@@ -40,7 +40,7 @@ func (client *Client) AbortMultiPartUpload(ctx context.Context, request *models.
 	}
 
 	// Create a response object based on the result.
-	return models.NewAbortMultiPartUploadResponse(response)
+	return models.NewAbortMultiPartUploadResponse(response, client.Logger)
 }
 
 func (client *Client) DeleteBucket(ctx context.Context, request *models.DeleteBucketRequest) (*models.DeleteBucketResponse, error) {
@@ -63,7 +63,7 @@ func (client *Client) DeleteBucket(ctx context.Context, request *models.DeleteBu
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeleteBucketResponse(response)
+	return models.NewDeleteBucketResponse(response, client.Logger)
 }
 
 func (client *Client) DeleteObject(ctx context.Context, request *models.DeleteObjectRequest) (*models.DeleteObjectResponse, error) {
@@ -87,7 +87,7 @@ func (client *Client) DeleteObject(ctx context.Context, request *models.DeleteOb
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeleteObjectResponse(response)
+	return models.NewDeleteObjectResponse(response, client.Logger)
 }
 
 func (client *Client) DeleteBucketAclSpectraS3(ctx context.Context, request *models.DeleteBucketAclSpectraS3Request) (*models.DeleteBucketAclSpectraS3Response, error) {
@@ -110,7 +110,7 @@ func (client *Client) DeleteBucketAclSpectraS3(ctx context.Context, request *mod
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeleteBucketAclSpectraS3Response(response)
+	return models.NewDeleteBucketAclSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) DeleteDataPolicyAclSpectraS3(ctx context.Context, request *models.DeleteDataPolicyAclSpectraS3Request) (*models.DeleteDataPolicyAclSpectraS3Response, error) {
@@ -133,7 +133,7 @@ func (client *Client) DeleteDataPolicyAclSpectraS3(ctx context.Context, request 
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeleteDataPolicyAclSpectraS3Response(response)
+	return models.NewDeleteDataPolicyAclSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) DeleteBucketSpectraS3(ctx context.Context, request *models.DeleteBucketSpectraS3Request) (*models.DeleteBucketSpectraS3Response, error) {
@@ -157,7 +157,7 @@ func (client *Client) DeleteBucketSpectraS3(ctx context.Context, request *models
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeleteBucketSpectraS3Response(response)
+	return models.NewDeleteBucketSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) DeleteAzureDataReplicationRuleSpectraS3(ctx context.Context, request *models.DeleteAzureDataReplicationRuleSpectraS3Request) (*models.DeleteAzureDataReplicationRuleSpectraS3Response, error) {
@@ -180,7 +180,7 @@ func (client *Client) DeleteAzureDataReplicationRuleSpectraS3(ctx context.Contex
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeleteAzureDataReplicationRuleSpectraS3Response(response)
+	return models.NewDeleteAzureDataReplicationRuleSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) DeleteDataPersistenceRuleSpectraS3(ctx context.Context, request *models.DeleteDataPersistenceRuleSpectraS3Request) (*models.DeleteDataPersistenceRuleSpectraS3Response, error) {
@@ -203,7 +203,7 @@ func (client *Client) DeleteDataPersistenceRuleSpectraS3(ctx context.Context, re
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeleteDataPersistenceRuleSpectraS3Response(response)
+	return models.NewDeleteDataPersistenceRuleSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) DeleteDataPolicySpectraS3(ctx context.Context, request *models.DeleteDataPolicySpectraS3Request) (*models.DeleteDataPolicySpectraS3Response, error) {
@@ -226,7 +226,7 @@ func (client *Client) DeleteDataPolicySpectraS3(ctx context.Context, request *mo
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeleteDataPolicySpectraS3Response(response)
+	return models.NewDeleteDataPolicySpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) DeleteDs3DataReplicationRuleSpectraS3(ctx context.Context, request *models.DeleteDs3DataReplicationRuleSpectraS3Request) (*models.DeleteDs3DataReplicationRuleSpectraS3Response, error) {
@@ -249,7 +249,7 @@ func (client *Client) DeleteDs3DataReplicationRuleSpectraS3(ctx context.Context,
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeleteDs3DataReplicationRuleSpectraS3Response(response)
+	return models.NewDeleteDs3DataReplicationRuleSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) DeleteS3DataReplicationRuleSpectraS3(ctx context.Context, request *models.DeleteS3DataReplicationRuleSpectraS3Request) (*models.DeleteS3DataReplicationRuleSpectraS3Response, error) {
@@ -272,7 +272,7 @@ func (client *Client) DeleteS3DataReplicationRuleSpectraS3(ctx context.Context, 
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeleteS3DataReplicationRuleSpectraS3Response(response)
+	return models.NewDeleteS3DataReplicationRuleSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) ClearSuspectBlobAzureTargetsSpectraS3(ctx context.Context, request *models.ClearSuspectBlobAzureTargetsSpectraS3Request) (*models.ClearSuspectBlobAzureTargetsSpectraS3Response, error) {
@@ -297,7 +297,7 @@ func (client *Client) ClearSuspectBlobAzureTargetsSpectraS3(ctx context.Context,
 	}
 
 	// Create a response object based on the result.
-	return models.NewClearSuspectBlobAzureTargetsSpectraS3Response(response)
+	return models.NewClearSuspectBlobAzureTargetsSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) ClearSuspectBlobDs3TargetsSpectraS3(ctx context.Context, request *models.ClearSuspectBlobDs3TargetsSpectraS3Request) (*models.ClearSuspectBlobDs3TargetsSpectraS3Response, error) {
@@ -322,7 +322,7 @@ func (client *Client) ClearSuspectBlobDs3TargetsSpectraS3(ctx context.Context, r
 	}
 
 	// Create a response object based on the result.
-	return models.NewClearSuspectBlobDs3TargetsSpectraS3Response(response)
+	return models.NewClearSuspectBlobDs3TargetsSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) ClearSuspectBlobPoolsSpectraS3(ctx context.Context, request *models.ClearSuspectBlobPoolsSpectraS3Request) (*models.ClearSuspectBlobPoolsSpectraS3Response, error) {
@@ -347,7 +347,7 @@ func (client *Client) ClearSuspectBlobPoolsSpectraS3(ctx context.Context, reques
 	}
 
 	// Create a response object based on the result.
-	return models.NewClearSuspectBlobPoolsSpectraS3Response(response)
+	return models.NewClearSuspectBlobPoolsSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) ClearSuspectBlobS3TargetsSpectraS3(ctx context.Context, request *models.ClearSuspectBlobS3TargetsSpectraS3Request) (*models.ClearSuspectBlobS3TargetsSpectraS3Response, error) {
@@ -372,7 +372,7 @@ func (client *Client) ClearSuspectBlobS3TargetsSpectraS3(ctx context.Context, re
 	}
 
 	// Create a response object based on the result.
-	return models.NewClearSuspectBlobS3TargetsSpectraS3Response(response)
+	return models.NewClearSuspectBlobS3TargetsSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) ClearSuspectBlobTapesSpectraS3(ctx context.Context, request *models.ClearSuspectBlobTapesSpectraS3Request) (*models.ClearSuspectBlobTapesSpectraS3Response, error) {
@@ -397,7 +397,7 @@ func (client *Client) ClearSuspectBlobTapesSpectraS3(ctx context.Context, reques
 	}
 
 	// Create a response object based on the result.
-	return models.NewClearSuspectBlobTapesSpectraS3Response(response)
+	return models.NewClearSuspectBlobTapesSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) DeleteGroupMemberSpectraS3(ctx context.Context, request *models.DeleteGroupMemberSpectraS3Request) (*models.DeleteGroupMemberSpectraS3Response, error) {
@@ -420,7 +420,7 @@ func (client *Client) DeleteGroupMemberSpectraS3(ctx context.Context, request *m
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeleteGroupMemberSpectraS3Response(response)
+	return models.NewDeleteGroupMemberSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) DeleteGroupSpectraS3(ctx context.Context, request *models.DeleteGroupSpectraS3Request) (*models.DeleteGroupSpectraS3Response, error) {
@@ -443,7 +443,7 @@ func (client *Client) DeleteGroupSpectraS3(ctx context.Context, request *models.
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeleteGroupSpectraS3Response(response)
+	return models.NewDeleteGroupSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) CancelActiveJobSpectraS3(ctx context.Context, request *models.CancelActiveJobSpectraS3Request) (*models.CancelActiveJobSpectraS3Response, error) {
@@ -467,7 +467,7 @@ func (client *Client) CancelActiveJobSpectraS3(ctx context.Context, request *mod
 	}
 
 	// Create a response object based on the result.
-	return models.NewCancelActiveJobSpectraS3Response(response)
+	return models.NewCancelActiveJobSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) CancelAllActiveJobsSpectraS3(ctx context.Context, request *models.CancelAllActiveJobsSpectraS3Request) (*models.CancelAllActiveJobsSpectraS3Response, error) {
@@ -493,7 +493,7 @@ func (client *Client) CancelAllActiveJobsSpectraS3(ctx context.Context, request 
 	}
 
 	// Create a response object based on the result.
-	return models.NewCancelAllActiveJobsSpectraS3Response(response)
+	return models.NewCancelAllActiveJobsSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) CancelAllJobsSpectraS3(ctx context.Context, request *models.CancelAllJobsSpectraS3Request) (*models.CancelAllJobsSpectraS3Response, error) {
@@ -519,7 +519,7 @@ func (client *Client) CancelAllJobsSpectraS3(ctx context.Context, request *model
 	}
 
 	// Create a response object based on the result.
-	return models.NewCancelAllJobsSpectraS3Response(response)
+	return models.NewCancelAllJobsSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) CancelJobSpectraS3(ctx context.Context, request *models.CancelJobSpectraS3Request) (*models.CancelJobSpectraS3Response, error) {
@@ -543,7 +543,7 @@ func (client *Client) CancelJobSpectraS3(ctx context.Context, request *models.Ca
 	}
 
 	// Create a response object based on the result.
-	return models.NewCancelJobSpectraS3Response(response)
+	return models.NewCancelJobSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) ClearAllCanceledJobsSpectraS3(ctx context.Context, request *models.ClearAllCanceledJobsSpectraS3Request) (*models.ClearAllCanceledJobsSpectraS3Response, error) {
@@ -566,7 +566,7 @@ func (client *Client) ClearAllCanceledJobsSpectraS3(ctx context.Context, request
 	}
 
 	// Create a response object based on the result.
-	return models.NewClearAllCanceledJobsSpectraS3Response(response)
+	return models.NewClearAllCanceledJobsSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) ClearAllCompletedJobsSpectraS3(ctx context.Context, request *models.ClearAllCompletedJobsSpectraS3Request) (*models.ClearAllCompletedJobsSpectraS3Response, error) {
@@ -589,7 +589,7 @@ func (client *Client) ClearAllCompletedJobsSpectraS3(ctx context.Context, reques
 	}
 
 	// Create a response object based on the result.
-	return models.NewClearAllCompletedJobsSpectraS3Response(response)
+	return models.NewClearAllCompletedJobsSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) DeleteJobCreationFailureSpectraS3(ctx context.Context, request *models.DeleteJobCreationFailureSpectraS3Request) (*models.DeleteJobCreationFailureSpectraS3Response, error) {
@@ -612,7 +612,7 @@ func (client *Client) DeleteJobCreationFailureSpectraS3(ctx context.Context, req
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeleteJobCreationFailureSpectraS3Response(response)
+	return models.NewDeleteJobCreationFailureSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) TruncateActiveJobSpectraS3(ctx context.Context, request *models.TruncateActiveJobSpectraS3Request) (*models.TruncateActiveJobSpectraS3Response, error) {
@@ -635,7 +635,7 @@ func (client *Client) TruncateActiveJobSpectraS3(ctx context.Context, request *m
 	}
 
 	// Create a response object based on the result.
-	return models.NewTruncateActiveJobSpectraS3Response(response)
+	return models.NewTruncateActiveJobSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) TruncateAllActiveJobsSpectraS3(ctx context.Context, request *models.TruncateAllActiveJobsSpectraS3Request) (*models.TruncateAllActiveJobsSpectraS3Response, error) {
@@ -660,7 +660,7 @@ func (client *Client) TruncateAllActiveJobsSpectraS3(ctx context.Context, reques
 	}
 
 	// Create a response object based on the result.
-	return models.NewTruncateAllActiveJobsSpectraS3Response(response)
+	return models.NewTruncateAllActiveJobsSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) TruncateAllJobsSpectraS3(ctx context.Context, request *models.TruncateAllJobsSpectraS3Request) (*models.TruncateAllJobsSpectraS3Response, error) {
@@ -685,7 +685,7 @@ func (client *Client) TruncateAllJobsSpectraS3(ctx context.Context, request *mod
 	}
 
 	// Create a response object based on the result.
-	return models.NewTruncateAllJobsSpectraS3Response(response)
+	return models.NewTruncateAllJobsSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) TruncateJobSpectraS3(ctx context.Context, request *models.TruncateJobSpectraS3Request) (*models.TruncateJobSpectraS3Response, error) {
@@ -708,7 +708,7 @@ func (client *Client) TruncateJobSpectraS3(ctx context.Context, request *models.
 	}
 
 	// Create a response object based on the result.
-	return models.NewTruncateJobSpectraS3Response(response)
+	return models.NewTruncateJobSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) DeleteAzureTargetFailureNotificationRegistrationSpectraS3(ctx context.Context, request *models.DeleteAzureTargetFailureNotificationRegistrationSpectraS3Request) (*models.DeleteAzureTargetFailureNotificationRegistrationSpectraS3Response, error) {
@@ -731,7 +731,7 @@ func (client *Client) DeleteAzureTargetFailureNotificationRegistrationSpectraS3(
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeleteAzureTargetFailureNotificationRegistrationSpectraS3Response(response)
+	return models.NewDeleteAzureTargetFailureNotificationRegistrationSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) DeleteBucketChangesNotificationRegistrationSpectraS3(ctx context.Context, request *models.DeleteBucketChangesNotificationRegistrationSpectraS3Request) (*models.DeleteBucketChangesNotificationRegistrationSpectraS3Response, error) {
@@ -754,7 +754,7 @@ func (client *Client) DeleteBucketChangesNotificationRegistrationSpectraS3(ctx c
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeleteBucketChangesNotificationRegistrationSpectraS3Response(response)
+	return models.NewDeleteBucketChangesNotificationRegistrationSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) DeleteDs3TargetFailureNotificationRegistrationSpectraS3(ctx context.Context, request *models.DeleteDs3TargetFailureNotificationRegistrationSpectraS3Request) (*models.DeleteDs3TargetFailureNotificationRegistrationSpectraS3Response, error) {
@@ -777,7 +777,7 @@ func (client *Client) DeleteDs3TargetFailureNotificationRegistrationSpectraS3(ct
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeleteDs3TargetFailureNotificationRegistrationSpectraS3Response(response)
+	return models.NewDeleteDs3TargetFailureNotificationRegistrationSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) DeleteJobCompletedNotificationRegistrationSpectraS3(ctx context.Context, request *models.DeleteJobCompletedNotificationRegistrationSpectraS3Request) (*models.DeleteJobCompletedNotificationRegistrationSpectraS3Response, error) {
@@ -800,7 +800,7 @@ func (client *Client) DeleteJobCompletedNotificationRegistrationSpectraS3(ctx co
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeleteJobCompletedNotificationRegistrationSpectraS3Response(response)
+	return models.NewDeleteJobCompletedNotificationRegistrationSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) DeleteJobCreatedNotificationRegistrationSpectraS3(ctx context.Context, request *models.DeleteJobCreatedNotificationRegistrationSpectraS3Request) (*models.DeleteJobCreatedNotificationRegistrationSpectraS3Response, error) {
@@ -823,7 +823,7 @@ func (client *Client) DeleteJobCreatedNotificationRegistrationSpectraS3(ctx cont
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeleteJobCreatedNotificationRegistrationSpectraS3Response(response)
+	return models.NewDeleteJobCreatedNotificationRegistrationSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) DeleteJobCreationFailedNotificationRegistrationSpectraS3(ctx context.Context, request *models.DeleteJobCreationFailedNotificationRegistrationSpectraS3Request) (*models.DeleteJobCreationFailedNotificationRegistrationSpectraS3Response, error) {
@@ -846,7 +846,7 @@ func (client *Client) DeleteJobCreationFailedNotificationRegistrationSpectraS3(c
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeleteJobCreationFailedNotificationRegistrationSpectraS3Response(response)
+	return models.NewDeleteJobCreationFailedNotificationRegistrationSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) DeleteObjectCachedNotificationRegistrationSpectraS3(ctx context.Context, request *models.DeleteObjectCachedNotificationRegistrationSpectraS3Request) (*models.DeleteObjectCachedNotificationRegistrationSpectraS3Response, error) {
@@ -869,7 +869,7 @@ func (client *Client) DeleteObjectCachedNotificationRegistrationSpectraS3(ctx co
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeleteObjectCachedNotificationRegistrationSpectraS3Response(response)
+	return models.NewDeleteObjectCachedNotificationRegistrationSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) DeleteObjectLostNotificationRegistrationSpectraS3(ctx context.Context, request *models.DeleteObjectLostNotificationRegistrationSpectraS3Request) (*models.DeleteObjectLostNotificationRegistrationSpectraS3Response, error) {
@@ -892,7 +892,7 @@ func (client *Client) DeleteObjectLostNotificationRegistrationSpectraS3(ctx cont
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeleteObjectLostNotificationRegistrationSpectraS3Response(response)
+	return models.NewDeleteObjectLostNotificationRegistrationSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) DeleteObjectPersistedNotificationRegistrationSpectraS3(ctx context.Context, request *models.DeleteObjectPersistedNotificationRegistrationSpectraS3Request) (*models.DeleteObjectPersistedNotificationRegistrationSpectraS3Response, error) {
@@ -915,7 +915,7 @@ func (client *Client) DeleteObjectPersistedNotificationRegistrationSpectraS3(ctx
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeleteObjectPersistedNotificationRegistrationSpectraS3Response(response)
+	return models.NewDeleteObjectPersistedNotificationRegistrationSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) DeletePoolFailureNotificationRegistrationSpectraS3(ctx context.Context, request *models.DeletePoolFailureNotificationRegistrationSpectraS3Request) (*models.DeletePoolFailureNotificationRegistrationSpectraS3Response, error) {
@@ -938,7 +938,7 @@ func (client *Client) DeletePoolFailureNotificationRegistrationSpectraS3(ctx con
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeletePoolFailureNotificationRegistrationSpectraS3Response(response)
+	return models.NewDeletePoolFailureNotificationRegistrationSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) DeleteS3TargetFailureNotificationRegistrationSpectraS3(ctx context.Context, request *models.DeleteS3TargetFailureNotificationRegistrationSpectraS3Request) (*models.DeleteS3TargetFailureNotificationRegistrationSpectraS3Response, error) {
@@ -961,7 +961,7 @@ func (client *Client) DeleteS3TargetFailureNotificationRegistrationSpectraS3(ctx
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeleteS3TargetFailureNotificationRegistrationSpectraS3Response(response)
+	return models.NewDeleteS3TargetFailureNotificationRegistrationSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) DeleteStorageDomainFailureNotificationRegistrationSpectraS3(ctx context.Context, request *models.DeleteStorageDomainFailureNotificationRegistrationSpectraS3Request) (*models.DeleteStorageDomainFailureNotificationRegistrationSpectraS3Response, error) {
@@ -984,7 +984,7 @@ func (client *Client) DeleteStorageDomainFailureNotificationRegistrationSpectraS
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeleteStorageDomainFailureNotificationRegistrationSpectraS3Response(response)
+	return models.NewDeleteStorageDomainFailureNotificationRegistrationSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) DeleteSystemFailureNotificationRegistrationSpectraS3(ctx context.Context, request *models.DeleteSystemFailureNotificationRegistrationSpectraS3Request) (*models.DeleteSystemFailureNotificationRegistrationSpectraS3Response, error) {
@@ -1007,7 +1007,7 @@ func (client *Client) DeleteSystemFailureNotificationRegistrationSpectraS3(ctx c
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeleteSystemFailureNotificationRegistrationSpectraS3Response(response)
+	return models.NewDeleteSystemFailureNotificationRegistrationSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) DeleteTapeFailureNotificationRegistrationSpectraS3(ctx context.Context, request *models.DeleteTapeFailureNotificationRegistrationSpectraS3Request) (*models.DeleteTapeFailureNotificationRegistrationSpectraS3Response, error) {
@@ -1030,7 +1030,7 @@ func (client *Client) DeleteTapeFailureNotificationRegistrationSpectraS3(ctx con
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeleteTapeFailureNotificationRegistrationSpectraS3Response(response)
+	return models.NewDeleteTapeFailureNotificationRegistrationSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) DeleteTapePartitionFailureNotificationRegistrationSpectraS3(ctx context.Context, request *models.DeleteTapePartitionFailureNotificationRegistrationSpectraS3Request) (*models.DeleteTapePartitionFailureNotificationRegistrationSpectraS3Response, error) {
@@ -1053,7 +1053,7 @@ func (client *Client) DeleteTapePartitionFailureNotificationRegistrationSpectraS
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeleteTapePartitionFailureNotificationRegistrationSpectraS3Response(response)
+	return models.NewDeleteTapePartitionFailureNotificationRegistrationSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) DeleteFolderRecursivelySpectraS3(ctx context.Context, request *models.DeleteFolderRecursivelySpectraS3Request) (*models.DeleteFolderRecursivelySpectraS3Response, error) {
@@ -1078,7 +1078,7 @@ func (client *Client) DeleteFolderRecursivelySpectraS3(ctx context.Context, requ
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeleteFolderRecursivelySpectraS3Response(response)
+	return models.NewDeleteFolderRecursivelySpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) DeletePermanentlyLostPoolSpectraS3(ctx context.Context, request *models.DeletePermanentlyLostPoolSpectraS3Request) (*models.DeletePermanentlyLostPoolSpectraS3Response, error) {
@@ -1101,7 +1101,7 @@ func (client *Client) DeletePermanentlyLostPoolSpectraS3(ctx context.Context, re
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeletePermanentlyLostPoolSpectraS3Response(response)
+	return models.NewDeletePermanentlyLostPoolSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) DeletePoolFailureSpectraS3(ctx context.Context, request *models.DeletePoolFailureSpectraS3Request) (*models.DeletePoolFailureSpectraS3Response, error) {
@@ -1124,7 +1124,7 @@ func (client *Client) DeletePoolFailureSpectraS3(ctx context.Context, request *m
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeletePoolFailureSpectraS3Response(response)
+	return models.NewDeletePoolFailureSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) DeletePoolPartitionSpectraS3(ctx context.Context, request *models.DeletePoolPartitionSpectraS3Request) (*models.DeletePoolPartitionSpectraS3Response, error) {
@@ -1147,7 +1147,7 @@ func (client *Client) DeletePoolPartitionSpectraS3(ctx context.Context, request 
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeletePoolPartitionSpectraS3Response(response)
+	return models.NewDeletePoolPartitionSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) DeleteStorageDomainFailureSpectraS3(ctx context.Context, request *models.DeleteStorageDomainFailureSpectraS3Request) (*models.DeleteStorageDomainFailureSpectraS3Response, error) {
@@ -1170,7 +1170,7 @@ func (client *Client) DeleteStorageDomainFailureSpectraS3(ctx context.Context, r
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeleteStorageDomainFailureSpectraS3Response(response)
+	return models.NewDeleteStorageDomainFailureSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) DeleteStorageDomainMemberSpectraS3(ctx context.Context, request *models.DeleteStorageDomainMemberSpectraS3Request) (*models.DeleteStorageDomainMemberSpectraS3Response, error) {
@@ -1193,7 +1193,7 @@ func (client *Client) DeleteStorageDomainMemberSpectraS3(ctx context.Context, re
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeleteStorageDomainMemberSpectraS3Response(response)
+	return models.NewDeleteStorageDomainMemberSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) DeleteStorageDomainSpectraS3(ctx context.Context, request *models.DeleteStorageDomainSpectraS3Request) (*models.DeleteStorageDomainSpectraS3Response, error) {
@@ -1216,7 +1216,7 @@ func (client *Client) DeleteStorageDomainSpectraS3(ctx context.Context, request 
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeleteStorageDomainSpectraS3Response(response)
+	return models.NewDeleteStorageDomainSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) DeletePermanentlyLostTapeSpectraS3(ctx context.Context, request *models.DeletePermanentlyLostTapeSpectraS3Request) (*models.DeletePermanentlyLostTapeSpectraS3Response, error) {
@@ -1239,7 +1239,7 @@ func (client *Client) DeletePermanentlyLostTapeSpectraS3(ctx context.Context, re
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeletePermanentlyLostTapeSpectraS3Response(response)
+	return models.NewDeletePermanentlyLostTapeSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) DeleteTapeDensityDirectiveSpectraS3(ctx context.Context, request *models.DeleteTapeDensityDirectiveSpectraS3Request) (*models.DeleteTapeDensityDirectiveSpectraS3Response, error) {
@@ -1262,7 +1262,7 @@ func (client *Client) DeleteTapeDensityDirectiveSpectraS3(ctx context.Context, r
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeleteTapeDensityDirectiveSpectraS3Response(response)
+	return models.NewDeleteTapeDensityDirectiveSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) DeleteTapeDriveSpectraS3(ctx context.Context, request *models.DeleteTapeDriveSpectraS3Request) (*models.DeleteTapeDriveSpectraS3Response, error) {
@@ -1285,7 +1285,7 @@ func (client *Client) DeleteTapeDriveSpectraS3(ctx context.Context, request *mod
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeleteTapeDriveSpectraS3Response(response)
+	return models.NewDeleteTapeDriveSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) DeleteTapeFailureSpectraS3(ctx context.Context, request *models.DeleteTapeFailureSpectraS3Request) (*models.DeleteTapeFailureSpectraS3Response, error) {
@@ -1308,7 +1308,7 @@ func (client *Client) DeleteTapeFailureSpectraS3(ctx context.Context, request *m
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeleteTapeFailureSpectraS3Response(response)
+	return models.NewDeleteTapeFailureSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) DeleteTapePartitionFailureSpectraS3(ctx context.Context, request *models.DeleteTapePartitionFailureSpectraS3Request) (*models.DeleteTapePartitionFailureSpectraS3Response, error) {
@@ -1331,7 +1331,7 @@ func (client *Client) DeleteTapePartitionFailureSpectraS3(ctx context.Context, r
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeleteTapePartitionFailureSpectraS3Response(response)
+	return models.NewDeleteTapePartitionFailureSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) DeleteTapePartitionSpectraS3(ctx context.Context, request *models.DeleteTapePartitionSpectraS3Request) (*models.DeleteTapePartitionSpectraS3Response, error) {
@@ -1354,7 +1354,7 @@ func (client *Client) DeleteTapePartitionSpectraS3(ctx context.Context, request 
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeleteTapePartitionSpectraS3Response(response)
+	return models.NewDeleteTapePartitionSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) DeleteAzureTargetBucketNameSpectraS3(ctx context.Context, request *models.DeleteAzureTargetBucketNameSpectraS3Request) (*models.DeleteAzureTargetBucketNameSpectraS3Response, error) {
@@ -1377,7 +1377,7 @@ func (client *Client) DeleteAzureTargetBucketNameSpectraS3(ctx context.Context, 
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeleteAzureTargetBucketNameSpectraS3Response(response)
+	return models.NewDeleteAzureTargetBucketNameSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) DeleteAzureTargetFailureSpectraS3(ctx context.Context, request *models.DeleteAzureTargetFailureSpectraS3Request) (*models.DeleteAzureTargetFailureSpectraS3Response, error) {
@@ -1400,7 +1400,7 @@ func (client *Client) DeleteAzureTargetFailureSpectraS3(ctx context.Context, req
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeleteAzureTargetFailureSpectraS3Response(response)
+	return models.NewDeleteAzureTargetFailureSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) DeleteAzureTargetReadPreferenceSpectraS3(ctx context.Context, request *models.DeleteAzureTargetReadPreferenceSpectraS3Request) (*models.DeleteAzureTargetReadPreferenceSpectraS3Response, error) {
@@ -1423,7 +1423,7 @@ func (client *Client) DeleteAzureTargetReadPreferenceSpectraS3(ctx context.Conte
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeleteAzureTargetReadPreferenceSpectraS3Response(response)
+	return models.NewDeleteAzureTargetReadPreferenceSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) DeleteAzureTargetSpectraS3(ctx context.Context, request *models.DeleteAzureTargetSpectraS3Request) (*models.DeleteAzureTargetSpectraS3Response, error) {
@@ -1446,7 +1446,7 @@ func (client *Client) DeleteAzureTargetSpectraS3(ctx context.Context, request *m
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeleteAzureTargetSpectraS3Response(response)
+	return models.NewDeleteAzureTargetSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) DeleteDs3TargetFailureSpectraS3(ctx context.Context, request *models.DeleteDs3TargetFailureSpectraS3Request) (*models.DeleteDs3TargetFailureSpectraS3Response, error) {
@@ -1469,7 +1469,7 @@ func (client *Client) DeleteDs3TargetFailureSpectraS3(ctx context.Context, reque
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeleteDs3TargetFailureSpectraS3Response(response)
+	return models.NewDeleteDs3TargetFailureSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) DeleteDs3TargetReadPreferenceSpectraS3(ctx context.Context, request *models.DeleteDs3TargetReadPreferenceSpectraS3Request) (*models.DeleteDs3TargetReadPreferenceSpectraS3Response, error) {
@@ -1492,7 +1492,7 @@ func (client *Client) DeleteDs3TargetReadPreferenceSpectraS3(ctx context.Context
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeleteDs3TargetReadPreferenceSpectraS3Response(response)
+	return models.NewDeleteDs3TargetReadPreferenceSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) DeleteDs3TargetSpectraS3(ctx context.Context, request *models.DeleteDs3TargetSpectraS3Request) (*models.DeleteDs3TargetSpectraS3Response, error) {
@@ -1515,7 +1515,7 @@ func (client *Client) DeleteDs3TargetSpectraS3(ctx context.Context, request *mod
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeleteDs3TargetSpectraS3Response(response)
+	return models.NewDeleteDs3TargetSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) DeleteS3TargetBucketNameSpectraS3(ctx context.Context, request *models.DeleteS3TargetBucketNameSpectraS3Request) (*models.DeleteS3TargetBucketNameSpectraS3Response, error) {
@@ -1538,7 +1538,7 @@ func (client *Client) DeleteS3TargetBucketNameSpectraS3(ctx context.Context, req
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeleteS3TargetBucketNameSpectraS3Response(response)
+	return models.NewDeleteS3TargetBucketNameSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) DeleteS3TargetFailureSpectraS3(ctx context.Context, request *models.DeleteS3TargetFailureSpectraS3Request) (*models.DeleteS3TargetFailureSpectraS3Response, error) {
@@ -1561,7 +1561,7 @@ func (client *Client) DeleteS3TargetFailureSpectraS3(ctx context.Context, reques
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeleteS3TargetFailureSpectraS3Response(response)
+	return models.NewDeleteS3TargetFailureSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) DeleteS3TargetReadPreferenceSpectraS3(ctx context.Context, request *models.DeleteS3TargetReadPreferenceSpectraS3Request) (*models.DeleteS3TargetReadPreferenceSpectraS3Response, error) {
@@ -1584,7 +1584,7 @@ func (client *Client) DeleteS3TargetReadPreferenceSpectraS3(ctx context.Context,
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeleteS3TargetReadPreferenceSpectraS3Response(response)
+	return models.NewDeleteS3TargetReadPreferenceSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) DeleteS3TargetSpectraS3(ctx context.Context, request *models.DeleteS3TargetSpectraS3Request) (*models.DeleteS3TargetSpectraS3Response, error) {
@@ -1607,7 +1607,7 @@ func (client *Client) DeleteS3TargetSpectraS3(ctx context.Context, request *mode
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeleteS3TargetSpectraS3Response(response)
+	return models.NewDeleteS3TargetSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) DelegateDeleteUserSpectraS3(ctx context.Context, request *models.DelegateDeleteUserSpectraS3Request) (*models.DelegateDeleteUserSpectraS3Response, error) {
@@ -1630,5 +1630,5 @@ func (client *Client) DelegateDeleteUserSpectraS3(ctx context.Context, request *
 	}
 
 	// Create a response object based on the result.
-	return models.NewDelegateDeleteUserSpectraS3Response(response)
+	return models.NewDelegateDeleteUserSpectraS3Response(response, client.Logger)
 }
