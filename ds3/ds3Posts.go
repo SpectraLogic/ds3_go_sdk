@@ -17,6 +17,7 @@ import (
 	"context"
 	"github.com/SpectraLogic/ds3_go_sdk/ds3/models"
 	"github.com/SpectraLogic/ds3_go_sdk/ds3/networking"
+	"strconv"
 )
 
 func (client *Client) CompleteBlob(ctx context.Context, request *models.CompleteBlobRequest) (*models.CompleteBlobResponse, error) {
@@ -47,31 +48,6 @@ func (client *Client) CompleteBlob(ctx context.Context, request *models.Complete
 	return models.NewCompleteBlobResponse(response, client.Logger)
 }
 
-func (client *Client) CompleteMultiPartUpload(ctx context.Context, request *models.CompleteMultiPartUploadRequest) (*models.CompleteMultiPartUploadResponse, error) {
-	// Build the http request
-	httpRequest, err := networking.NewHttpRequestBuilder().
-		WithHttpVerb(HTTP_VERB_POST).
-		WithPath("/"+request.BucketName+"/"+request.ObjectName).
-		WithQueryParam("upload_id", request.UploadId).
-		WithReadCloser(buildPartsListStream(request.Parts)).
-		Build(ctx, client.connectionInfo)
-
-	if err != nil {
-		return nil, err
-	}
-
-	networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
-
-	// Invoke the HTTP request.
-	response, requestErr := networkRetryDecorator.Invoke(httpRequest)
-	if requestErr != nil {
-		return nil, requestErr
-	}
-
-	// Create a response object based on the result.
-	return models.NewCompleteMultiPartUploadResponse(response, client.Logger)
-}
-
 func (client *Client) DeleteObjects(ctx context.Context, request *models.DeleteObjectsRequest) (*models.DeleteObjectsResponse, error) {
 	// Build the http request
 	httpRequest, err := networking.NewHttpRequestBuilder().
@@ -95,30 +71,6 @@ func (client *Client) DeleteObjects(ctx context.Context, request *models.DeleteO
 
 	// Create a response object based on the result.
 	return models.NewDeleteObjectsResponse(response, client.Logger)
-}
-
-func (client *Client) InitiateMultiPartUpload(ctx context.Context, request *models.InitiateMultiPartUploadRequest) (*models.InitiateMultiPartUploadResponse, error) {
-	// Build the http request
-	httpRequest, err := networking.NewHttpRequestBuilder().
-		WithHttpVerb(HTTP_VERB_POST).
-		WithPath("/"+request.BucketName+"/"+request.ObjectName).
-		WithQueryParam("uploads", "").
-		Build(ctx, client.connectionInfo)
-
-	if err != nil {
-		return nil, err
-	}
-
-	networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
-
-	// Invoke the HTTP request.
-	response, requestErr := networkRetryDecorator.Invoke(httpRequest)
-	if requestErr != nil {
-		return nil, requestErr
-	}
-
-	// Create a response object based on the result.
-	return models.NewInitiateMultiPartUploadResponse(response, client.Logger)
 }
 
 func (client *Client) PutBucketAclForGroupSpectraS3(ctx context.Context, request *models.PutBucketAclForGroupSpectraS3Request) (*models.PutBucketAclForGroupSpectraS3Response, error) {
@@ -347,6 +299,34 @@ func (client *Client) PutBucketSpectraS3(ctx context.Context, request *models.Pu
 
 	// Create a response object based on the result.
 	return models.NewPutBucketSpectraS3Response(response, client.Logger)
+}
+
+func (client *Client) PutCacheThrottleRuleSpectraS3(ctx context.Context, request *models.PutCacheThrottleRuleSpectraS3Request) (*models.PutCacheThrottleRuleSpectraS3Response, error) {
+	// Build the http request
+	httpRequest, err := networking.NewHttpRequestBuilder().
+		WithHttpVerb(HTTP_VERB_POST).
+		WithPath("/_rest_/cache_throttle_rule").
+		WithQueryParam("max_cache_percent", strconv.FormatFloat(request.MaxCachePercent, 'f', -1, 64)).
+		WithOptionalQueryParam("bucket_id", request.BucketId).
+		WithOptionalQueryParam("burst_threshold", networking.Float64PtrToStrPtr(request.BurstThreshold)).
+		WithOptionalQueryParam("priority", networking.InterfaceToStrPtr(request.Priority)).
+		WithOptionalQueryParam("request_type", networking.InterfaceToStrPtr(request.RequestType)).
+		Build(ctx, client.connectionInfo)
+
+	if err != nil {
+		return nil, err
+	}
+
+	networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
+
+	// Invoke the HTTP request.
+	response, requestErr := networkRetryDecorator.Invoke(httpRequest)
+	if requestErr != nil {
+		return nil, requestErr
+	}
+
+	// Create a response object based on the result.
+	return models.NewPutCacheThrottleRuleSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) PutAzureDataReplicationRuleSpectraS3(ctx context.Context, request *models.PutAzureDataReplicationRuleSpectraS3Request) (*models.PutAzureDataReplicationRuleSpectraS3Response, error) {

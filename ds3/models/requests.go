@@ -18,20 +18,6 @@ import (
 	"strings"
 )
 
-type AbortMultiPartUploadRequest struct {
-	BucketName string
-	ObjectName string
-	UploadId   string
-}
-
-func NewAbortMultiPartUploadRequest(bucketName string, objectName string, uploadId string) *AbortMultiPartUploadRequest {
-	return &AbortMultiPartUploadRequest{
-		BucketName: bucketName,
-		ObjectName: objectName,
-		UploadId:   uploadId,
-	}
-}
-
 type CompleteBlobRequest struct {
 	BucketName string
 	ObjectName string
@@ -73,22 +59,6 @@ func (completeBlobRequest *CompleteBlobRequest) WithMetaData(key string, values 
 	return completeBlobRequest
 }
 
-type CompleteMultiPartUploadRequest struct {
-	BucketName string
-	ObjectName string
-	Parts      []Part
-	UploadId   string
-}
-
-func NewCompleteMultiPartUploadRequest(bucketName string, objectName string, parts []Part, uploadId string) *CompleteMultiPartUploadRequest {
-	return &CompleteMultiPartUploadRequest{
-		BucketName: bucketName,
-		ObjectName: objectName,
-		UploadId:   uploadId,
-		Parts:      parts,
-	}
-}
-
 type PutBucketRequest struct {
 	BucketName string
 }
@@ -96,24 +66,6 @@ type PutBucketRequest struct {
 func NewPutBucketRequest(bucketName string) *PutBucketRequest {
 	return &PutBucketRequest{
 		BucketName: bucketName,
-	}
-}
-
-type PutMultiPartUploadPartRequest struct {
-	BucketName string
-	ObjectName string
-	Content    ReaderWithSizeDecorator
-	PartNumber int
-	UploadId   string
-}
-
-func NewPutMultiPartUploadPartRequest(bucketName string, objectName string, content ReaderWithSizeDecorator, partNumber int, uploadId string) *PutMultiPartUploadPartRequest {
-	return &PutMultiPartUploadPartRequest{
-		BucketName: bucketName,
-		ObjectName: objectName,
-		PartNumber: partNumber,
-		UploadId:   uploadId,
-		Content:    content,
 	}
 }
 
@@ -335,84 +287,6 @@ func NewHeadObjectRequest(bucketName string, objectName string) *HeadObjectReque
 func (headObjectRequest *HeadObjectRequest) WithVersionId(versionId string) *HeadObjectRequest {
 	headObjectRequest.VersionId = &versionId
 	return headObjectRequest
-}
-
-type InitiateMultiPartUploadRequest struct {
-	BucketName string
-	ObjectName string
-}
-
-func NewInitiateMultiPartUploadRequest(bucketName string, objectName string) *InitiateMultiPartUploadRequest {
-	return &InitiateMultiPartUploadRequest{
-		BucketName: bucketName,
-		ObjectName: objectName,
-	}
-}
-
-type ListMultiPartUploadPartsRequest struct {
-	BucketName       string
-	ObjectName       string
-	MaxParts         *int
-	PartNumberMarker *int
-	UploadId         string
-}
-
-func NewListMultiPartUploadPartsRequest(bucketName string, objectName string, uploadId string) *ListMultiPartUploadPartsRequest {
-	return &ListMultiPartUploadPartsRequest{
-		BucketName: bucketName,
-		ObjectName: objectName,
-		UploadId:   uploadId,
-	}
-}
-
-func (listMultiPartUploadPartsRequest *ListMultiPartUploadPartsRequest) WithMaxParts(maxParts int) *ListMultiPartUploadPartsRequest {
-	listMultiPartUploadPartsRequest.MaxParts = &maxParts
-	return listMultiPartUploadPartsRequest
-}
-
-func (listMultiPartUploadPartsRequest *ListMultiPartUploadPartsRequest) WithPartNumberMarker(partNumberMarker int) *ListMultiPartUploadPartsRequest {
-	listMultiPartUploadPartsRequest.PartNumberMarker = &partNumberMarker
-	return listMultiPartUploadPartsRequest
-}
-
-type ListMultiPartUploadsRequest struct {
-	BucketName     string
-	Delimiter      *string
-	KeyMarker      *string
-	MaxUploads     *int
-	Prefix         *string
-	UploadIdMarker *string
-}
-
-func NewListMultiPartUploadsRequest(bucketName string) *ListMultiPartUploadsRequest {
-	return &ListMultiPartUploadsRequest{
-		BucketName: bucketName,
-	}
-}
-
-func (listMultiPartUploadsRequest *ListMultiPartUploadsRequest) WithDelimiter(delimiter string) *ListMultiPartUploadsRequest {
-	listMultiPartUploadsRequest.Delimiter = &delimiter
-	return listMultiPartUploadsRequest
-}
-
-func (listMultiPartUploadsRequest *ListMultiPartUploadsRequest) WithKeyMarker(keyMarker string) *ListMultiPartUploadsRequest {
-	listMultiPartUploadsRequest.KeyMarker = &keyMarker
-	return listMultiPartUploadsRequest
-}
-
-func (listMultiPartUploadsRequest *ListMultiPartUploadsRequest) WithMaxUploads(maxUploads int) *ListMultiPartUploadsRequest {
-	listMultiPartUploadsRequest.MaxUploads = &maxUploads
-	return listMultiPartUploadsRequest
-}
-
-func (listMultiPartUploadsRequest *ListMultiPartUploadsRequest) WithPrefix(prefix string) *ListMultiPartUploadsRequest {
-	listMultiPartUploadsRequest.Prefix = &prefix
-	return listMultiPartUploadsRequest
-}
-
-func (listMultiPartUploadsRequest *ListMultiPartUploadsRequest) WithUploadIdMarker(uploadIdMarker string) *ListMultiPartUploadsRequest {
-	listMultiPartUploadsRequest.UploadIdMarker = &uploadIdMarker
-	return listMultiPartUploadsRequest
 }
 
 type PutBucketAclForGroupSpectraS3Request struct {
@@ -792,6 +666,50 @@ func (modifyBucketSpectraS3Request *ModifyBucketSpectraS3Request) WithUserId(use
 	return modifyBucketSpectraS3Request
 }
 
+type PutCacheThrottleRuleSpectraS3Request struct {
+	BucketId        *string
+	BurstThreshold  *float64
+	MaxCachePercent float64
+	Priority        Priority
+	RequestType     JobRequestType
+}
+
+func NewPutCacheThrottleRuleSpectraS3Request(maxCachePercent float64) *PutCacheThrottleRuleSpectraS3Request {
+	return &PutCacheThrottleRuleSpectraS3Request{
+		MaxCachePercent: maxCachePercent,
+	}
+}
+
+func (putCacheThrottleRuleSpectraS3Request *PutCacheThrottleRuleSpectraS3Request) WithBucketId(bucketId string) *PutCacheThrottleRuleSpectraS3Request {
+	putCacheThrottleRuleSpectraS3Request.BucketId = &bucketId
+	return putCacheThrottleRuleSpectraS3Request
+}
+
+func (putCacheThrottleRuleSpectraS3Request *PutCacheThrottleRuleSpectraS3Request) WithBurstThreshold(burstThreshold float64) *PutCacheThrottleRuleSpectraS3Request {
+	putCacheThrottleRuleSpectraS3Request.BurstThreshold = &burstThreshold
+	return putCacheThrottleRuleSpectraS3Request
+}
+
+func (putCacheThrottleRuleSpectraS3Request *PutCacheThrottleRuleSpectraS3Request) WithPriority(priority Priority) *PutCacheThrottleRuleSpectraS3Request {
+	putCacheThrottleRuleSpectraS3Request.Priority = priority
+	return putCacheThrottleRuleSpectraS3Request
+}
+
+func (putCacheThrottleRuleSpectraS3Request *PutCacheThrottleRuleSpectraS3Request) WithRequestType(requestType JobRequestType) *PutCacheThrottleRuleSpectraS3Request {
+	putCacheThrottleRuleSpectraS3Request.RequestType = requestType
+	return putCacheThrottleRuleSpectraS3Request
+}
+
+type DeleteCacheThrottleRuleSpectraS3Request struct {
+	CacheThrottleRule string
+}
+
+func NewDeleteCacheThrottleRuleSpectraS3Request(cacheThrottleRule string) *DeleteCacheThrottleRuleSpectraS3Request {
+	return &DeleteCacheThrottleRuleSpectraS3Request{
+		CacheThrottleRule: cacheThrottleRule,
+	}
+}
+
 type ForceFullCacheReclaimSpectraS3Request struct {
 }
 
@@ -853,6 +771,77 @@ func NewGetCacheStateSpectraS3Request() *GetCacheStateSpectraS3Request {
 	return &GetCacheStateSpectraS3Request{}
 }
 
+type GetCacheThrottleRuleSpectraS3Request struct {
+	CacheThrottleRule string
+}
+
+func NewGetCacheThrottleRuleSpectraS3Request(cacheThrottleRule string) *GetCacheThrottleRuleSpectraS3Request {
+	return &GetCacheThrottleRuleSpectraS3Request{
+		CacheThrottleRule: cacheThrottleRule,
+	}
+}
+
+type GetCacheThrottleRulesSpectraS3Request struct {
+	BucketId        *string
+	BurstThreshold  *float64
+	LastPage        bool
+	MaxCachePercent *float64
+	PageLength      *int
+	PageOffset      *int
+	PageStartMarker *string
+	Priority        Priority
+	RequestType     JobRequestType
+}
+
+func NewGetCacheThrottleRulesSpectraS3Request() *GetCacheThrottleRulesSpectraS3Request {
+	return &GetCacheThrottleRulesSpectraS3Request{}
+}
+
+func (getCacheThrottleRulesSpectraS3Request *GetCacheThrottleRulesSpectraS3Request) WithBucketId(bucketId string) *GetCacheThrottleRulesSpectraS3Request {
+	getCacheThrottleRulesSpectraS3Request.BucketId = &bucketId
+	return getCacheThrottleRulesSpectraS3Request
+}
+
+func (getCacheThrottleRulesSpectraS3Request *GetCacheThrottleRulesSpectraS3Request) WithBurstThreshold(burstThreshold float64) *GetCacheThrottleRulesSpectraS3Request {
+	getCacheThrottleRulesSpectraS3Request.BurstThreshold = &burstThreshold
+	return getCacheThrottleRulesSpectraS3Request
+}
+
+func (getCacheThrottleRulesSpectraS3Request *GetCacheThrottleRulesSpectraS3Request) WithLastPage() *GetCacheThrottleRulesSpectraS3Request {
+	getCacheThrottleRulesSpectraS3Request.LastPage = true
+	return getCacheThrottleRulesSpectraS3Request
+}
+
+func (getCacheThrottleRulesSpectraS3Request *GetCacheThrottleRulesSpectraS3Request) WithMaxCachePercent(maxCachePercent float64) *GetCacheThrottleRulesSpectraS3Request {
+	getCacheThrottleRulesSpectraS3Request.MaxCachePercent = &maxCachePercent
+	return getCacheThrottleRulesSpectraS3Request
+}
+
+func (getCacheThrottleRulesSpectraS3Request *GetCacheThrottleRulesSpectraS3Request) WithPageLength(pageLength int) *GetCacheThrottleRulesSpectraS3Request {
+	getCacheThrottleRulesSpectraS3Request.PageLength = &pageLength
+	return getCacheThrottleRulesSpectraS3Request
+}
+
+func (getCacheThrottleRulesSpectraS3Request *GetCacheThrottleRulesSpectraS3Request) WithPageOffset(pageOffset int) *GetCacheThrottleRulesSpectraS3Request {
+	getCacheThrottleRulesSpectraS3Request.PageOffset = &pageOffset
+	return getCacheThrottleRulesSpectraS3Request
+}
+
+func (getCacheThrottleRulesSpectraS3Request *GetCacheThrottleRulesSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetCacheThrottleRulesSpectraS3Request {
+	getCacheThrottleRulesSpectraS3Request.PageStartMarker = &pageStartMarker
+	return getCacheThrottleRulesSpectraS3Request
+}
+
+func (getCacheThrottleRulesSpectraS3Request *GetCacheThrottleRulesSpectraS3Request) WithPriority(priority Priority) *GetCacheThrottleRulesSpectraS3Request {
+	getCacheThrottleRulesSpectraS3Request.Priority = priority
+	return getCacheThrottleRulesSpectraS3Request
+}
+
+func (getCacheThrottleRulesSpectraS3Request *GetCacheThrottleRulesSpectraS3Request) WithRequestType(requestType JobRequestType) *GetCacheThrottleRulesSpectraS3Request {
+	getCacheThrottleRulesSpectraS3Request.RequestType = requestType
+	return getCacheThrottleRulesSpectraS3Request
+}
+
 type ModifyCacheFilesystemSpectraS3Request struct {
 	AutoReclaimInitiateThreshold  *float64
 	AutoReclaimTerminateThreshold *float64
@@ -897,6 +886,46 @@ func (modifyCacheFilesystemSpectraS3Request *ModifyCacheFilesystemSpectraS3Reque
 func (modifyCacheFilesystemSpectraS3Request *ModifyCacheFilesystemSpectraS3Request) WithNeedsReconcile(needsReconcile bool) *ModifyCacheFilesystemSpectraS3Request {
 	modifyCacheFilesystemSpectraS3Request.NeedsReconcile = &needsReconcile
 	return modifyCacheFilesystemSpectraS3Request
+}
+
+type ModifyCacheThrottleRuleSpectraS3Request struct {
+	BucketId          *string
+	BurstThreshold    *float64
+	CacheThrottleRule string
+	MaxCachePercent   *float64
+	Priority          Priority
+	RequestType       JobRequestType
+}
+
+func NewModifyCacheThrottleRuleSpectraS3Request(cacheThrottleRule string) *ModifyCacheThrottleRuleSpectraS3Request {
+	return &ModifyCacheThrottleRuleSpectraS3Request{
+		CacheThrottleRule: cacheThrottleRule,
+	}
+}
+
+func (modifyCacheThrottleRuleSpectraS3Request *ModifyCacheThrottleRuleSpectraS3Request) WithBucketId(bucketId string) *ModifyCacheThrottleRuleSpectraS3Request {
+	modifyCacheThrottleRuleSpectraS3Request.BucketId = &bucketId
+	return modifyCacheThrottleRuleSpectraS3Request
+}
+
+func (modifyCacheThrottleRuleSpectraS3Request *ModifyCacheThrottleRuleSpectraS3Request) WithBurstThreshold(burstThreshold float64) *ModifyCacheThrottleRuleSpectraS3Request {
+	modifyCacheThrottleRuleSpectraS3Request.BurstThreshold = &burstThreshold
+	return modifyCacheThrottleRuleSpectraS3Request
+}
+
+func (modifyCacheThrottleRuleSpectraS3Request *ModifyCacheThrottleRuleSpectraS3Request) WithMaxCachePercent(maxCachePercent float64) *ModifyCacheThrottleRuleSpectraS3Request {
+	modifyCacheThrottleRuleSpectraS3Request.MaxCachePercent = &maxCachePercent
+	return modifyCacheThrottleRuleSpectraS3Request
+}
+
+func (modifyCacheThrottleRuleSpectraS3Request *ModifyCacheThrottleRuleSpectraS3Request) WithPriority(priority Priority) *ModifyCacheThrottleRuleSpectraS3Request {
+	modifyCacheThrottleRuleSpectraS3Request.Priority = priority
+	return modifyCacheThrottleRuleSpectraS3Request
+}
+
+func (modifyCacheThrottleRuleSpectraS3Request *ModifyCacheThrottleRuleSpectraS3Request) WithRequestType(requestType JobRequestType) *ModifyCacheThrottleRuleSpectraS3Request {
+	modifyCacheThrottleRuleSpectraS3Request.RequestType = requestType
+	return modifyCacheThrottleRuleSpectraS3Request
 }
 
 type GetBucketCapacitySummarySpectraS3Request struct {
@@ -1027,6 +1056,7 @@ func NewGetDataPathBackendSpectraS3Request() *GetDataPathBackendSpectraS3Request
 
 type GetDataPlannerBlobStoreTasksSpectraS3Request struct {
 	FullDetails bool
+	Job         *string
 }
 
 func NewGetDataPlannerBlobStoreTasksSpectraS3Request() *GetDataPlannerBlobStoreTasksSpectraS3Request {
@@ -1038,9 +1068,15 @@ func (getDataPlannerBlobStoreTasksSpectraS3Request *GetDataPlannerBlobStoreTasks
 	return getDataPlannerBlobStoreTasksSpectraS3Request
 }
 
+func (getDataPlannerBlobStoreTasksSpectraS3Request *GetDataPlannerBlobStoreTasksSpectraS3Request) WithJob(job string) *GetDataPlannerBlobStoreTasksSpectraS3Request {
+	getDataPlannerBlobStoreTasksSpectraS3Request.Job = &job
+	return getDataPlannerBlobStoreTasksSpectraS3Request
+}
+
 type ModifyDataPathBackendSpectraS3Request struct {
 	Activated                                 *bool
 	AllowNewJobRequests                       *bool
+	AlwaysRollback                            *bool
 	AutoActivateTimeoutInMins                 *int
 	AutoInspect                               AutoInspectMode
 	CacheAvailableRetryAfterInSeconds         *int
@@ -1069,6 +1105,11 @@ func (modifyDataPathBackendSpectraS3Request *ModifyDataPathBackendSpectraS3Reque
 
 func (modifyDataPathBackendSpectraS3Request *ModifyDataPathBackendSpectraS3Request) WithAllowNewJobRequests(allowNewJobRequests bool) *ModifyDataPathBackendSpectraS3Request {
 	modifyDataPathBackendSpectraS3Request.AllowNewJobRequests = &allowNewJobRequests
+	return modifyDataPathBackendSpectraS3Request
+}
+
+func (modifyDataPathBackendSpectraS3Request *ModifyDataPathBackendSpectraS3Request) WithAlwaysRollback(alwaysRollback bool) *ModifyDataPathBackendSpectraS3Request {
+	modifyDataPathBackendSpectraS3Request.AlwaysRollback = &alwaysRollback
 	return modifyDataPathBackendSpectraS3Request
 }
 
@@ -3626,12 +3667,56 @@ func (getJobCreationFailuresSpectraS3Request *GetJobCreationFailuresSpectraS3Req
 	return getJobCreationFailuresSpectraS3Request
 }
 
+type GetJobEntriesSpectraS3Request struct {
+	JobId           string
+	LastPage        bool
+	PageLength      *int
+	PageOffset      *int
+	PageStartMarker *string
+}
+
+func NewGetJobEntriesSpectraS3Request(jobId string) *GetJobEntriesSpectraS3Request {
+	return &GetJobEntriesSpectraS3Request{
+		JobId: jobId,
+	}
+}
+
+func (getJobEntriesSpectraS3Request *GetJobEntriesSpectraS3Request) WithLastPage() *GetJobEntriesSpectraS3Request {
+	getJobEntriesSpectraS3Request.LastPage = true
+	return getJobEntriesSpectraS3Request
+}
+
+func (getJobEntriesSpectraS3Request *GetJobEntriesSpectraS3Request) WithPageLength(pageLength int) *GetJobEntriesSpectraS3Request {
+	getJobEntriesSpectraS3Request.PageLength = &pageLength
+	return getJobEntriesSpectraS3Request
+}
+
+func (getJobEntriesSpectraS3Request *GetJobEntriesSpectraS3Request) WithPageOffset(pageOffset int) *GetJobEntriesSpectraS3Request {
+	getJobEntriesSpectraS3Request.PageOffset = &pageOffset
+	return getJobEntriesSpectraS3Request
+}
+
+func (getJobEntriesSpectraS3Request *GetJobEntriesSpectraS3Request) WithPageStartMarker(pageStartMarker string) *GetJobEntriesSpectraS3Request {
+	getJobEntriesSpectraS3Request.PageStartMarker = &pageStartMarker
+	return getJobEntriesSpectraS3Request
+}
+
 type GetJobSpectraS3Request struct {
 	JobId string
 }
 
 func NewGetJobSpectraS3Request(jobId string) *GetJobSpectraS3Request {
 	return &GetJobSpectraS3Request{
+		JobId: jobId,
+	}
+}
+
+type GetJobSummarySpectraS3Request struct {
+	JobId string
+}
+
+func NewGetJobSummarySpectraS3Request(jobId string) *GetJobSummarySpectraS3Request {
+	return &GetJobSummarySpectraS3Request{
 		JobId: jobId,
 	}
 }
@@ -6589,6 +6674,13 @@ func NewForceFeatureKeyValidationSpectraS3Request() *ForceFeatureKeyValidationSp
 	return &ForceFeatureKeyValidationSpectraS3Request{}
 }
 
+type GetAbmConfigSpectraS3Request struct {
+}
+
+func NewGetAbmConfigSpectraS3Request() *GetAbmConfigSpectraS3Request {
+	return &GetAbmConfigSpectraS3Request{}
+}
+
 type GetFeatureKeysSpectraS3Request struct {
 	ErrorMessage    *string
 	ExpirationDate  *string
@@ -7002,11 +7094,17 @@ func NewForceTapeEnvironmentRefreshSpectraS3Request() *ForceTapeEnvironmentRefre
 }
 
 type FormatAllTapesSpectraS3Request struct {
-	Force bool
+	Characterize bool
+	Force        bool
 }
 
 func NewFormatAllTapesSpectraS3Request() *FormatAllTapesSpectraS3Request {
 	return &FormatAllTapesSpectraS3Request{}
+}
+
+func (formatAllTapesSpectraS3Request *FormatAllTapesSpectraS3Request) WithCharacterize() *FormatAllTapesSpectraS3Request {
+	formatAllTapesSpectraS3Request.Characterize = true
+	return formatAllTapesSpectraS3Request
 }
 
 func (formatAllTapesSpectraS3Request *FormatAllTapesSpectraS3Request) WithForce() *FormatAllTapesSpectraS3Request {
@@ -7015,14 +7113,20 @@ func (formatAllTapesSpectraS3Request *FormatAllTapesSpectraS3Request) WithForce(
 }
 
 type FormatTapeSpectraS3Request struct {
-	Force  bool
-	TapeId string
+	Characterize bool
+	Force        bool
+	TapeId       string
 }
 
 func NewFormatTapeSpectraS3Request(tapeId string) *FormatTapeSpectraS3Request {
 	return &FormatTapeSpectraS3Request{
 		TapeId: tapeId,
 	}
+}
+
+func (formatTapeSpectraS3Request *FormatTapeSpectraS3Request) WithCharacterize() *FormatTapeSpectraS3Request {
+	formatTapeSpectraS3Request.Characterize = true
+	return formatTapeSpectraS3Request
 }
 
 func (formatTapeSpectraS3Request *FormatTapeSpectraS3Request) WithForce() *FormatTapeSpectraS3Request {
@@ -7909,6 +8013,7 @@ func (modifyTapePartitionSpectraS3Request *ModifyTapePartitionSpectraS3Request) 
 }
 
 type ModifyTapeSpectraS3Request struct {
+	AllowRollback *bool
 	EjectLabel    *string
 	EjectLocation *string
 	Role          TapeRole
@@ -7920,6 +8025,11 @@ func NewModifyTapeSpectraS3Request(tapeId string) *ModifyTapeSpectraS3Request {
 	return &ModifyTapeSpectraS3Request{
 		TapeId: tapeId,
 	}
+}
+
+func (modifyTapeSpectraS3Request *ModifyTapeSpectraS3Request) WithAllowRollback(allowRollback bool) *ModifyTapeSpectraS3Request {
+	modifyTapeSpectraS3Request.AllowRollback = &allowRollback
+	return modifyTapeSpectraS3Request
 }
 
 func (modifyTapeSpectraS3Request *ModifyTapeSpectraS3Request) WithEjectLabel(ejectLabel string) *ModifyTapeSpectraS3Request {

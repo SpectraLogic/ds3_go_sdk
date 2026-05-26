@@ -13,14 +13,14 @@ package ds3
 
 import (
 	"context"
-	"github.com/SpectraLogic/ds3_go_sdk/ds3/models"
-	"github.com/SpectraLogic/ds3_go_sdk/ds3_utils/ds3Testing"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"reflect"
-	"strconv"
 	"testing"
+
+	"github.com/SpectraLogic/ds3_go_sdk/ds3/models"
+	"github.com/SpectraLogic/ds3_go_sdk/ds3_utils/ds3Testing"
 )
 
 func TestGetService(t *testing.T) {
@@ -695,107 +695,6 @@ func runBulkGetTest(t *testing.T, operation string, stringRequest *string, callT
 		ds3Testing.AssertNonNilStringPtr(t, "Name", keys[i], obj.Name)
 		ds3Testing.AssertInt64(t, "Length", sizes[i], obj.Length)
 	}
-}
-
-func TestInitiateMultipart(t *testing.T) {
-	stringResponse := "<?xml version=\"1.0\" encoding=\"UTF-8\"?><InitiateMultipartUploadResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Bucket>example-bucket</Bucket><Key>example-object</Key><UploadId>VXBsb2FkIElEIGZvciA2aWWpbmcncyBteS1tb3ZpZS5tMnRzIHVwbG9hZA</UploadId></InitiateMultipartUploadResult>"
-
-	// Create and run the mocked client.
-	qs := &url.Values{"uploads": []string{""}}
-	response, err := mockedClient(t).
-		Expecting(HTTP_VERB_POST, "/bucketName/object", qs, &http.Header{}, nil).
-		Returning(200, stringResponse, nil).
-		InitiateMultiPartUpload(context.Background(), models.NewInitiateMultiPartUploadRequest(
-			"bucketName",
-			"object",
-		))
-
-	// Check the error result.
-	ds3Testing.AssertNilError(t, err)
-
-	// Check the response value.
-	if response == nil {
-		t.Fatalf("Response was unexpectedly nil.")
-	}
-	ds3Testing.AssertNonNilStringPtr(t, "Bucket", "example-bucket", response.InitiateMultipartUploadResult.Bucket)
-	ds3Testing.AssertNonNilStringPtr(t, "Key", "example-object", response.InitiateMultipartUploadResult.Key)
-	ds3Testing.AssertNonNilStringPtr(t, "UploadId", "VXBsb2FkIElEIGZvciA2aWWpbmcncyBteS1tb3ZpZS5tMnRzIHVwbG9hZA", response.InitiateMultipartUploadResult.UploadId)
-}
-
-func TestPutPart(t *testing.T) {
-	content := "this is the part content"
-	partNumber := 2
-	uploadId := "VXBsb2FkIElEIGZvciA2aWWpbmcncyBteS1tb3ZpZS5tMnRzIHVwbG9hZA"
-	eTag := "b54357faf0632cce46e942fa68356b38"
-
-	// Create and run the mocked client.
-	qs := &url.Values{
-		"part_number": []string{strconv.Itoa(partNumber)},
-		"upload_id":   []string{uploadId},
-	}
-	responseHeaders := &http.Header{}
-	responseHeaders.Add("ETag", eTag)
-
-	response, err := mockedClient(t).
-		Expecting(HTTP_VERB_PUT, "/bucketName/object", qs, &http.Header{}, &content).
-		Returning(200, "", responseHeaders).
-		PutMultiPartUploadPart(context.Background(), models.NewPutMultiPartUploadPartRequest(
-			"bucketName",
-			"object",
-			BuildByteReaderWithSizeDecorator([]byte(content)),
-			partNumber,
-			uploadId,
-		))
-
-	// Check the error result.
-	ds3Testing.AssertNilError(t, err)
-
-	// Check the response value.
-	if response == nil {
-		t.Fatalf("Response was unexpectedly nil.")
-	}
-
-	ds3Testing.AssertString(t, "etag header", eTag, response.Headers.Get("etag"))
-}
-
-func TestCompleteMultipart(t *testing.T) {
-	bucket := "bucketName"
-	key := "object"
-	location := "http://my-server/bucketName/object"
-	etag := "b54357faf0632cce46e942fa68356b38"
-	uploadId := "VXBsb2FkIElEIGZvciA2aWWpbmcncyBteS1tb3ZpZS5tMnRzIHVwbG9hZA"
-	expectedRequest := "<CompleteMultipartUpload><Part><PartNumber>1</PartNumber><ETag>7a112844c1a2327e617f530cb06dccf8</ETag></Part><Part><PartNumber>2</PartNumber><ETag>7162e29f4e40da7f521d0794b57770ba</ETag></Part></CompleteMultipartUpload>"
-	expectedResponse := "<?xml version=\"1.0\" encoding=\"UTF-8\"?><CompleteMultipartUploadResult xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\"><Location>http://my-server/bucketName/object</Location><Bucket>bucketName</Bucket><Key>object</Key><ETag>b54357faf0632cce46e942fa68356b38</ETag></CompleteMultipartUploadResult>"
-
-	// Create and run the mocked client.
-	qs := &url.Values{
-		"upload_id": []string{uploadId},
-	}
-	response, err := mockedClient(t).
-		Expecting(HTTP_VERB_POST, "/bucketName/object", qs, &http.Header{}, &expectedRequest).
-		Returning(200, expectedResponse, &http.Header{"etag": []string{etag}}).
-		CompleteMultiPartUpload(context.Background(), models.NewCompleteMultiPartUploadRequest(
-			bucket,
-			key,
-			[]models.Part{
-				{PartNumber: 1, ETag: "7a112844c1a2327e617f530cb06dccf8"},
-				{PartNumber: 2, ETag: "7162e29f4e40da7f521d0794b57770ba"},
-			},
-			uploadId,
-		))
-
-	// Check the error result.
-	ds3Testing.AssertNilError(t, err)
-
-	// Check the response value.
-	if response == nil {
-		t.Fatalf("Response was unexpectedly nil.")
-	}
-
-	ds3Testing.AssertNonNilStringPtr(t, "Location", location, response.CompleteMultipartUploadResult.Location)
-	ds3Testing.AssertNonNilStringPtr(t, "Bucket", bucket, response.CompleteMultipartUploadResult.Bucket)
-	ds3Testing.AssertNonNilStringPtr(t, "Key", key, response.CompleteMultipartUploadResult.Key)
-	ds3Testing.AssertNonNilStringPtr(t, "ETag", etag, response.CompleteMultipartUploadResult.ETag)
 }
 
 func TestDeleteObjects(t *testing.T) {
