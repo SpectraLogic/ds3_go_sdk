@@ -44,7 +44,7 @@ func (client *Client) CompleteBlob(ctx context.Context, request *models.Complete
 	}
 
 	// Create a response object based on the result.
-	return models.NewCompleteBlobResponse(response)
+	return models.NewCompleteBlobResponse(response, client.Logger)
 }
 
 func (client *Client) CompleteMultiPartUpload(ctx context.Context, request *models.CompleteMultiPartUploadRequest) (*models.CompleteMultiPartUploadResponse, error) {
@@ -69,7 +69,7 @@ func (client *Client) CompleteMultiPartUpload(ctx context.Context, request *mode
 	}
 
 	// Create a response object based on the result.
-	return models.NewCompleteMultiPartUploadResponse(response)
+	return models.NewCompleteMultiPartUploadResponse(response, client.Logger)
 }
 
 func (client *Client) DeleteObjects(ctx context.Context, request *models.DeleteObjectsRequest) (*models.DeleteObjectsResponse, error) {
@@ -94,7 +94,7 @@ func (client *Client) DeleteObjects(ctx context.Context, request *models.DeleteO
 	}
 
 	// Create a response object based on the result.
-	return models.NewDeleteObjectsResponse(response)
+	return models.NewDeleteObjectsResponse(response, client.Logger)
 }
 
 func (client *Client) InitiateMultiPartUpload(ctx context.Context, request *models.InitiateMultiPartUploadRequest) (*models.InitiateMultiPartUploadResponse, error) {
@@ -118,7 +118,7 @@ func (client *Client) InitiateMultiPartUpload(ctx context.Context, request *mode
 	}
 
 	// Create a response object based on the result.
-	return models.NewInitiateMultiPartUploadResponse(response)
+	return models.NewInitiateMultiPartUploadResponse(response, client.Logger)
 }
 
 func (client *Client) PutBucketAclForGroupSpectraS3(ctx context.Context, request *models.PutBucketAclForGroupSpectraS3Request) (*models.PutBucketAclForGroupSpectraS3Response, error) {
@@ -144,7 +144,7 @@ func (client *Client) PutBucketAclForGroupSpectraS3(ctx context.Context, request
 	}
 
 	// Create a response object based on the result.
-	return models.NewPutBucketAclForGroupSpectraS3Response(response)
+	return models.NewPutBucketAclForGroupSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) PutBucketAclForUserSpectraS3(ctx context.Context, request *models.PutBucketAclForUserSpectraS3Request) (*models.PutBucketAclForUserSpectraS3Response, error) {
@@ -170,7 +170,7 @@ func (client *Client) PutBucketAclForUserSpectraS3(ctx context.Context, request 
 	}
 
 	// Create a response object based on the result.
-	return models.NewPutBucketAclForUserSpectraS3Response(response)
+	return models.NewPutBucketAclForUserSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) PutDataPolicyAclForGroupSpectraS3(ctx context.Context, request *models.PutDataPolicyAclForGroupSpectraS3Request) (*models.PutDataPolicyAclForGroupSpectraS3Response, error) {
@@ -195,7 +195,7 @@ func (client *Client) PutDataPolicyAclForGroupSpectraS3(ctx context.Context, req
 	}
 
 	// Create a response object based on the result.
-	return models.NewPutDataPolicyAclForGroupSpectraS3Response(response)
+	return models.NewPutDataPolicyAclForGroupSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) PutDataPolicyAclForUserSpectraS3(ctx context.Context, request *models.PutDataPolicyAclForUserSpectraS3Request) (*models.PutDataPolicyAclForUserSpectraS3Response, error) {
@@ -220,7 +220,7 @@ func (client *Client) PutDataPolicyAclForUserSpectraS3(ctx context.Context, requ
 	}
 
 	// Create a response object based on the result.
-	return models.NewPutDataPolicyAclForUserSpectraS3Response(response)
+	return models.NewPutDataPolicyAclForUserSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) PutGlobalBucketAclForGroupSpectraS3(ctx context.Context, request *models.PutGlobalBucketAclForGroupSpectraS3Request) (*models.PutGlobalBucketAclForGroupSpectraS3Response, error) {
@@ -245,7 +245,7 @@ func (client *Client) PutGlobalBucketAclForGroupSpectraS3(ctx context.Context, r
 	}
 
 	// Create a response object based on the result.
-	return models.NewPutGlobalBucketAclForGroupSpectraS3Response(response)
+	return models.NewPutGlobalBucketAclForGroupSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) PutGlobalBucketAclForUserSpectraS3(ctx context.Context, request *models.PutGlobalBucketAclForUserSpectraS3Request) (*models.PutGlobalBucketAclForUserSpectraS3Response, error) {
@@ -270,7 +270,7 @@ func (client *Client) PutGlobalBucketAclForUserSpectraS3(ctx context.Context, re
 	}
 
 	// Create a response object based on the result.
-	return models.NewPutGlobalBucketAclForUserSpectraS3Response(response)
+	return models.NewPutGlobalBucketAclForUserSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) PutGlobalDataPolicyAclForGroupSpectraS3(ctx context.Context, request *models.PutGlobalDataPolicyAclForGroupSpectraS3Request) (*models.PutGlobalDataPolicyAclForGroupSpectraS3Response, error) {
@@ -294,7 +294,7 @@ func (client *Client) PutGlobalDataPolicyAclForGroupSpectraS3(ctx context.Contex
 	}
 
 	// Create a response object based on the result.
-	return models.NewPutGlobalDataPolicyAclForGroupSpectraS3Response(response)
+	return models.NewPutGlobalDataPolicyAclForGroupSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) PutGlobalDataPolicyAclForUserSpectraS3(ctx context.Context, request *models.PutGlobalDataPolicyAclForUserSpectraS3Request) (*models.PutGlobalDataPolicyAclForUserSpectraS3Response, error) {
@@ -318,7 +318,7 @@ func (client *Client) PutGlobalDataPolicyAclForUserSpectraS3(ctx context.Context
 	}
 
 	// Create a response object based on the result.
-	return models.NewPutGlobalDataPolicyAclForUserSpectraS3Response(response)
+	return models.NewPutGlobalDataPolicyAclForUserSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) PutBucketSpectraS3(ctx context.Context, request *models.PutBucketSpectraS3Request) (*models.PutBucketSpectraS3Response, error) {
@@ -346,7 +346,7 @@ func (client *Client) PutBucketSpectraS3(ctx context.Context, request *models.Pu
 	}
 
 	// Create a response object based on the result.
-	return models.NewPutBucketSpectraS3Response(response)
+	return models.NewPutBucketSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) PutAzureDataReplicationRuleSpectraS3(ctx context.Context, request *models.PutAzureDataReplicationRuleSpectraS3Request) (*models.PutAzureDataReplicationRuleSpectraS3Response, error) {
@@ -374,7 +374,7 @@ func (client *Client) PutAzureDataReplicationRuleSpectraS3(ctx context.Context, 
 	}
 
 	// Create a response object based on the result.
-	return models.NewPutAzureDataReplicationRuleSpectraS3Response(response)
+	return models.NewPutAzureDataReplicationRuleSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) PutDataPersistenceRuleSpectraS3(ctx context.Context, request *models.PutDataPersistenceRuleSpectraS3Request) (*models.PutDataPersistenceRuleSpectraS3Response, error) {
@@ -402,7 +402,7 @@ func (client *Client) PutDataPersistenceRuleSpectraS3(ctx context.Context, reque
 	}
 
 	// Create a response object based on the result.
-	return models.NewPutDataPersistenceRuleSpectraS3Response(response)
+	return models.NewPutDataPersistenceRuleSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) PutDataPolicySpectraS3(ctx context.Context, request *models.PutDataPolicySpectraS3Request) (*models.PutDataPolicySpectraS3Response, error) {
@@ -439,7 +439,7 @@ func (client *Client) PutDataPolicySpectraS3(ctx context.Context, request *model
 	}
 
 	// Create a response object based on the result.
-	return models.NewPutDataPolicySpectraS3Response(response)
+	return models.NewPutDataPolicySpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) PutDs3DataReplicationRuleSpectraS3(ctx context.Context, request *models.PutDs3DataReplicationRuleSpectraS3Request) (*models.PutDs3DataReplicationRuleSpectraS3Response, error) {
@@ -467,7 +467,7 @@ func (client *Client) PutDs3DataReplicationRuleSpectraS3(ctx context.Context, re
 	}
 
 	// Create a response object based on the result.
-	return models.NewPutDs3DataReplicationRuleSpectraS3Response(response)
+	return models.NewPutDs3DataReplicationRuleSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) PutS3DataReplicationRuleSpectraS3(ctx context.Context, request *models.PutS3DataReplicationRuleSpectraS3Request) (*models.PutS3DataReplicationRuleSpectraS3Response, error) {
@@ -496,7 +496,7 @@ func (client *Client) PutS3DataReplicationRuleSpectraS3(ctx context.Context, req
 	}
 
 	// Create a response object based on the result.
-	return models.NewPutS3DataReplicationRuleSpectraS3Response(response)
+	return models.NewPutS3DataReplicationRuleSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) PutGroupGroupMemberSpectraS3(ctx context.Context, request *models.PutGroupGroupMemberSpectraS3Request) (*models.PutGroupGroupMemberSpectraS3Response, error) {
@@ -521,7 +521,7 @@ func (client *Client) PutGroupGroupMemberSpectraS3(ctx context.Context, request 
 	}
 
 	// Create a response object based on the result.
-	return models.NewPutGroupGroupMemberSpectraS3Response(response)
+	return models.NewPutGroupGroupMemberSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) PutGroupSpectraS3(ctx context.Context, request *models.PutGroupSpectraS3Request) (*models.PutGroupSpectraS3Response, error) {
@@ -545,7 +545,7 @@ func (client *Client) PutGroupSpectraS3(ctx context.Context, request *models.Put
 	}
 
 	// Create a response object based on the result.
-	return models.NewPutGroupSpectraS3Response(response)
+	return models.NewPutGroupSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) PutUserGroupMemberSpectraS3(ctx context.Context, request *models.PutUserGroupMemberSpectraS3Request) (*models.PutUserGroupMemberSpectraS3Response, error) {
@@ -570,7 +570,7 @@ func (client *Client) PutUserGroupMemberSpectraS3(ctx context.Context, request *
 	}
 
 	// Create a response object based on the result.
-	return models.NewPutUserGroupMemberSpectraS3Response(response)
+	return models.NewPutUserGroupMemberSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) PutAzureTargetFailureNotificationRegistrationSpectraS3(ctx context.Context, request *models.PutAzureTargetFailureNotificationRegistrationSpectraS3Request) (*models.PutAzureTargetFailureNotificationRegistrationSpectraS3Response, error) {
@@ -597,7 +597,7 @@ func (client *Client) PutAzureTargetFailureNotificationRegistrationSpectraS3(ctx
 	}
 
 	// Create a response object based on the result.
-	return models.NewPutAzureTargetFailureNotificationRegistrationSpectraS3Response(response)
+	return models.NewPutAzureTargetFailureNotificationRegistrationSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) PutBucketChangesNotificationRegistrationSpectraS3(ctx context.Context, request *models.PutBucketChangesNotificationRegistrationSpectraS3Request) (*models.PutBucketChangesNotificationRegistrationSpectraS3Response, error) {
@@ -625,7 +625,7 @@ func (client *Client) PutBucketChangesNotificationRegistrationSpectraS3(ctx cont
 	}
 
 	// Create a response object based on the result.
-	return models.NewPutBucketChangesNotificationRegistrationSpectraS3Response(response)
+	return models.NewPutBucketChangesNotificationRegistrationSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) PutDs3TargetFailureNotificationRegistrationSpectraS3(ctx context.Context, request *models.PutDs3TargetFailureNotificationRegistrationSpectraS3Request) (*models.PutDs3TargetFailureNotificationRegistrationSpectraS3Response, error) {
@@ -652,7 +652,7 @@ func (client *Client) PutDs3TargetFailureNotificationRegistrationSpectraS3(ctx c
 	}
 
 	// Create a response object based on the result.
-	return models.NewPutDs3TargetFailureNotificationRegistrationSpectraS3Response(response)
+	return models.NewPutDs3TargetFailureNotificationRegistrationSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) PutJobCompletedNotificationRegistrationSpectraS3(ctx context.Context, request *models.PutJobCompletedNotificationRegistrationSpectraS3Request) (*models.PutJobCompletedNotificationRegistrationSpectraS3Response, error) {
@@ -680,7 +680,7 @@ func (client *Client) PutJobCompletedNotificationRegistrationSpectraS3(ctx conte
 	}
 
 	// Create a response object based on the result.
-	return models.NewPutJobCompletedNotificationRegistrationSpectraS3Response(response)
+	return models.NewPutJobCompletedNotificationRegistrationSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) PutJobCreatedNotificationRegistrationSpectraS3(ctx context.Context, request *models.PutJobCreatedNotificationRegistrationSpectraS3Request) (*models.PutJobCreatedNotificationRegistrationSpectraS3Response, error) {
@@ -707,7 +707,7 @@ func (client *Client) PutJobCreatedNotificationRegistrationSpectraS3(ctx context
 	}
 
 	// Create a response object based on the result.
-	return models.NewPutJobCreatedNotificationRegistrationSpectraS3Response(response)
+	return models.NewPutJobCreatedNotificationRegistrationSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) PutJobCreationFailedNotificationRegistrationSpectraS3(ctx context.Context, request *models.PutJobCreationFailedNotificationRegistrationSpectraS3Request) (*models.PutJobCreationFailedNotificationRegistrationSpectraS3Response, error) {
@@ -734,7 +734,7 @@ func (client *Client) PutJobCreationFailedNotificationRegistrationSpectraS3(ctx 
 	}
 
 	// Create a response object based on the result.
-	return models.NewPutJobCreationFailedNotificationRegistrationSpectraS3Response(response)
+	return models.NewPutJobCreationFailedNotificationRegistrationSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) PutObjectCachedNotificationRegistrationSpectraS3(ctx context.Context, request *models.PutObjectCachedNotificationRegistrationSpectraS3Request) (*models.PutObjectCachedNotificationRegistrationSpectraS3Response, error) {
@@ -762,7 +762,7 @@ func (client *Client) PutObjectCachedNotificationRegistrationSpectraS3(ctx conte
 	}
 
 	// Create a response object based on the result.
-	return models.NewPutObjectCachedNotificationRegistrationSpectraS3Response(response)
+	return models.NewPutObjectCachedNotificationRegistrationSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) PutObjectLostNotificationRegistrationSpectraS3(ctx context.Context, request *models.PutObjectLostNotificationRegistrationSpectraS3Request) (*models.PutObjectLostNotificationRegistrationSpectraS3Response, error) {
@@ -789,7 +789,7 @@ func (client *Client) PutObjectLostNotificationRegistrationSpectraS3(ctx context
 	}
 
 	// Create a response object based on the result.
-	return models.NewPutObjectLostNotificationRegistrationSpectraS3Response(response)
+	return models.NewPutObjectLostNotificationRegistrationSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) PutObjectPersistedNotificationRegistrationSpectraS3(ctx context.Context, request *models.PutObjectPersistedNotificationRegistrationSpectraS3Request) (*models.PutObjectPersistedNotificationRegistrationSpectraS3Response, error) {
@@ -817,7 +817,7 @@ func (client *Client) PutObjectPersistedNotificationRegistrationSpectraS3(ctx co
 	}
 
 	// Create a response object based on the result.
-	return models.NewPutObjectPersistedNotificationRegistrationSpectraS3Response(response)
+	return models.NewPutObjectPersistedNotificationRegistrationSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) PutPoolFailureNotificationRegistrationSpectraS3(ctx context.Context, request *models.PutPoolFailureNotificationRegistrationSpectraS3Request) (*models.PutPoolFailureNotificationRegistrationSpectraS3Response, error) {
@@ -844,7 +844,7 @@ func (client *Client) PutPoolFailureNotificationRegistrationSpectraS3(ctx contex
 	}
 
 	// Create a response object based on the result.
-	return models.NewPutPoolFailureNotificationRegistrationSpectraS3Response(response)
+	return models.NewPutPoolFailureNotificationRegistrationSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) PutS3TargetFailureNotificationRegistrationSpectraS3(ctx context.Context, request *models.PutS3TargetFailureNotificationRegistrationSpectraS3Request) (*models.PutS3TargetFailureNotificationRegistrationSpectraS3Response, error) {
@@ -871,7 +871,7 @@ func (client *Client) PutS3TargetFailureNotificationRegistrationSpectraS3(ctx co
 	}
 
 	// Create a response object based on the result.
-	return models.NewPutS3TargetFailureNotificationRegistrationSpectraS3Response(response)
+	return models.NewPutS3TargetFailureNotificationRegistrationSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) PutStorageDomainFailureNotificationRegistrationSpectraS3(ctx context.Context, request *models.PutStorageDomainFailureNotificationRegistrationSpectraS3Request) (*models.PutStorageDomainFailureNotificationRegistrationSpectraS3Response, error) {
@@ -898,7 +898,7 @@ func (client *Client) PutStorageDomainFailureNotificationRegistrationSpectraS3(c
 	}
 
 	// Create a response object based on the result.
-	return models.NewPutStorageDomainFailureNotificationRegistrationSpectraS3Response(response)
+	return models.NewPutStorageDomainFailureNotificationRegistrationSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) PutSystemFailureNotificationRegistrationSpectraS3(ctx context.Context, request *models.PutSystemFailureNotificationRegistrationSpectraS3Request) (*models.PutSystemFailureNotificationRegistrationSpectraS3Response, error) {
@@ -925,7 +925,7 @@ func (client *Client) PutSystemFailureNotificationRegistrationSpectraS3(ctx cont
 	}
 
 	// Create a response object based on the result.
-	return models.NewPutSystemFailureNotificationRegistrationSpectraS3Response(response)
+	return models.NewPutSystemFailureNotificationRegistrationSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) PutTapeFailureNotificationRegistrationSpectraS3(ctx context.Context, request *models.PutTapeFailureNotificationRegistrationSpectraS3Request) (*models.PutTapeFailureNotificationRegistrationSpectraS3Response, error) {
@@ -952,7 +952,7 @@ func (client *Client) PutTapeFailureNotificationRegistrationSpectraS3(ctx contex
 	}
 
 	// Create a response object based on the result.
-	return models.NewPutTapeFailureNotificationRegistrationSpectraS3Response(response)
+	return models.NewPutTapeFailureNotificationRegistrationSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) PutTapePartitionFailureNotificationRegistrationSpectraS3(ctx context.Context, request *models.PutTapePartitionFailureNotificationRegistrationSpectraS3Request) (*models.PutTapePartitionFailureNotificationRegistrationSpectraS3Response, error) {
@@ -979,7 +979,7 @@ func (client *Client) PutTapePartitionFailureNotificationRegistrationSpectraS3(c
 	}
 
 	// Create a response object based on the result.
-	return models.NewPutTapePartitionFailureNotificationRegistrationSpectraS3Response(response)
+	return models.NewPutTapePartitionFailureNotificationRegistrationSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) PutPoolPartitionSpectraS3(ctx context.Context, request *models.PutPoolPartitionSpectraS3Request) (*models.PutPoolPartitionSpectraS3Response, error) {
@@ -1004,7 +1004,7 @@ func (client *Client) PutPoolPartitionSpectraS3(ctx context.Context, request *mo
 	}
 
 	// Create a response object based on the result.
-	return models.NewPutPoolPartitionSpectraS3Response(response)
+	return models.NewPutPoolPartitionSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) PutPoolStorageDomainMemberSpectraS3(ctx context.Context, request *models.PutPoolStorageDomainMemberSpectraS3Request) (*models.PutPoolStorageDomainMemberSpectraS3Response, error) {
@@ -1030,7 +1030,7 @@ func (client *Client) PutPoolStorageDomainMemberSpectraS3(ctx context.Context, r
 	}
 
 	// Create a response object based on the result.
-	return models.NewPutPoolStorageDomainMemberSpectraS3Response(response)
+	return models.NewPutPoolStorageDomainMemberSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) PutStorageDomainSpectraS3(ctx context.Context, request *models.PutStorageDomainSpectraS3Request) (*models.PutStorageDomainSpectraS3Response, error) {
@@ -1066,7 +1066,7 @@ func (client *Client) PutStorageDomainSpectraS3(ctx context.Context, request *mo
 	}
 
 	// Create a response object based on the result.
-	return models.NewPutStorageDomainSpectraS3Response(response)
+	return models.NewPutStorageDomainSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) PutTapeStorageDomainMemberSpectraS3(ctx context.Context, request *models.PutTapeStorageDomainMemberSpectraS3Request) (*models.PutTapeStorageDomainMemberSpectraS3Response, error) {
@@ -1094,7 +1094,7 @@ func (client *Client) PutTapeStorageDomainMemberSpectraS3(ctx context.Context, r
 	}
 
 	// Create a response object based on the result.
-	return models.NewPutTapeStorageDomainMemberSpectraS3Response(response)
+	return models.NewPutTapeStorageDomainMemberSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) PutTapeDensityDirectiveSpectraS3(ctx context.Context, request *models.PutTapeDensityDirectiveSpectraS3Request) (*models.PutTapeDensityDirectiveSpectraS3Response, error) {
@@ -1120,7 +1120,7 @@ func (client *Client) PutTapeDensityDirectiveSpectraS3(ctx context.Context, requ
 	}
 
 	// Create a response object based on the result.
-	return models.NewPutTapeDensityDirectiveSpectraS3Response(response)
+	return models.NewPutTapeDensityDirectiveSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) PutAzureTargetBucketNameSpectraS3(ctx context.Context, request *models.PutAzureTargetBucketNameSpectraS3Request) (*models.PutAzureTargetBucketNameSpectraS3Response, error) {
@@ -1146,7 +1146,7 @@ func (client *Client) PutAzureTargetBucketNameSpectraS3(ctx context.Context, req
 	}
 
 	// Create a response object based on the result.
-	return models.NewPutAzureTargetBucketNameSpectraS3Response(response)
+	return models.NewPutAzureTargetBucketNameSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) PutAzureTargetReadPreferenceSpectraS3(ctx context.Context, request *models.PutAzureTargetReadPreferenceSpectraS3Request) (*models.PutAzureTargetReadPreferenceSpectraS3Response, error) {
@@ -1172,7 +1172,7 @@ func (client *Client) PutAzureTargetReadPreferenceSpectraS3(ctx context.Context,
 	}
 
 	// Create a response object based on the result.
-	return models.NewPutAzureTargetReadPreferenceSpectraS3Response(response)
+	return models.NewPutAzureTargetReadPreferenceSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) RegisterAzureTargetSpectraS3(ctx context.Context, request *models.RegisterAzureTargetSpectraS3Request) (*models.RegisterAzureTargetSpectraS3Response, error) {
@@ -1204,7 +1204,7 @@ func (client *Client) RegisterAzureTargetSpectraS3(ctx context.Context, request 
 	}
 
 	// Create a response object based on the result.
-	return models.NewRegisterAzureTargetSpectraS3Response(response)
+	return models.NewRegisterAzureTargetSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) PutDs3TargetReadPreferenceSpectraS3(ctx context.Context, request *models.PutDs3TargetReadPreferenceSpectraS3Request) (*models.PutDs3TargetReadPreferenceSpectraS3Response, error) {
@@ -1230,7 +1230,7 @@ func (client *Client) PutDs3TargetReadPreferenceSpectraS3(ctx context.Context, r
 	}
 
 	// Create a response object based on the result.
-	return models.NewPutDs3TargetReadPreferenceSpectraS3Response(response)
+	return models.NewPutDs3TargetReadPreferenceSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) RegisterDs3TargetSpectraS3(ctx context.Context, request *models.RegisterDs3TargetSpectraS3Request) (*models.RegisterDs3TargetSpectraS3Response, error) {
@@ -1265,7 +1265,7 @@ func (client *Client) RegisterDs3TargetSpectraS3(ctx context.Context, request *m
 	}
 
 	// Create a response object based on the result.
-	return models.NewRegisterDs3TargetSpectraS3Response(response)
+	return models.NewRegisterDs3TargetSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) PutS3TargetBucketNameSpectraS3(ctx context.Context, request *models.PutS3TargetBucketNameSpectraS3Request) (*models.PutS3TargetBucketNameSpectraS3Response, error) {
@@ -1291,7 +1291,7 @@ func (client *Client) PutS3TargetBucketNameSpectraS3(ctx context.Context, reques
 	}
 
 	// Create a response object based on the result.
-	return models.NewPutS3TargetBucketNameSpectraS3Response(response)
+	return models.NewPutS3TargetBucketNameSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) PutS3TargetReadPreferenceSpectraS3(ctx context.Context, request *models.PutS3TargetReadPreferenceSpectraS3Request) (*models.PutS3TargetReadPreferenceSpectraS3Response, error) {
@@ -1317,7 +1317,7 @@ func (client *Client) PutS3TargetReadPreferenceSpectraS3(ctx context.Context, re
 	}
 
 	// Create a response object based on the result.
-	return models.NewPutS3TargetReadPreferenceSpectraS3Response(response)
+	return models.NewPutS3TargetReadPreferenceSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) RegisterS3TargetSpectraS3(ctx context.Context, request *models.RegisterS3TargetSpectraS3Request) (*models.RegisterS3TargetSpectraS3Response, error) {
@@ -1360,7 +1360,7 @@ func (client *Client) RegisterS3TargetSpectraS3(ctx context.Context, request *mo
 	}
 
 	// Create a response object based on the result.
-	return models.NewRegisterS3TargetSpectraS3Response(response)
+	return models.NewRegisterS3TargetSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) DelegateCreateUserSpectraS3(ctx context.Context, request *models.DelegateCreateUserSpectraS3Request) (*models.DelegateCreateUserSpectraS3Response, error) {
@@ -1388,5 +1388,5 @@ func (client *Client) DelegateCreateUserSpectraS3(ctx context.Context, request *
 	}
 
 	// Create a response object based on the result.
-	return models.NewDelegateCreateUserSpectraS3Response(response)
+	return models.NewDelegateCreateUserSpectraS3Response(response, client.Logger)
 }

@@ -4,6 +4,8 @@ import (
 	"io"
 	"strings"
 	"testing"
+
+	"github.com/SpectraLogic/ds3_go_sdk/sdk_log"
 )
 
 type nopCloser struct {
@@ -38,7 +40,7 @@ func TestUnmarshalingTapeWithPreviousState(t *testing.T) {
 	// parse the response
 	var aggErr AggregateError
 	var tapeResponse GetTapesSpectraS3Response
-	tapeResponse.TapeList.parse(root, &aggErr)
+	tapeResponse.TapeList.parse(root, &aggErr, sdk_log.NewSimpleLogger())
 
 	if len(aggErr.Errors) > 0 {
 		t.Fatalf("expected no errors when marshaling, but got %d", len(aggErr.Errors))
@@ -82,7 +84,7 @@ func TestUnmarshalingTapeWithoutPreviousState(t *testing.T) {
 	// parse the response
 	var aggErr AggregateError
 	var tapeResponse GetTapesSpectraS3Response
-	tapeResponse.TapeList.parse(root, &aggErr)
+	tapeResponse.TapeList.parse(root, &aggErr, sdk_log.NewSimpleLogger())
 
 	if len(aggErr.Errors) > 0 {
 		t.Fatalf("expected no errors when marshaling, but got %d", len(aggErr.Errors))

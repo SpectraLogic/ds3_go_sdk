@@ -3,12 +3,15 @@ package ds3_integration
 import (
 	"context"
 	"fmt"
+
 	"github.com/SpectraLogic/ds3_go_sdk/ds3"
 	"github.com/SpectraLogic/ds3_go_sdk/ds3/buildclient"
 	"github.com/SpectraLogic/ds3_go_sdk/ds3/models"
 	"github.com/SpectraLogic/ds3_go_sdk/ds3/networking"
 	"github.com/SpectraLogic/ds3_go_sdk/ds3_integration/utils"
 	"github.com/SpectraLogic/ds3_go_sdk/ds3_utils/ds3Testing"
+	"github.com/SpectraLogic/ds3_go_sdk/sdk_log"
+
 	"log"
 	"net/url"
 	"os"
@@ -89,7 +92,7 @@ func putFileWithSendNetwork(name string, offset int64, jobId string, content *[]
 		t.Fail()
 	}
 
-	_, err = models.NewPutObjectResponse(response)
+	_, err = models.NewPutObjectResponse(response, sdk_log.NewSimpleLogger())
 	if err != nil {
 		t.Errorf("Unexpected error when putting file '%s': '%s'.", name, err.Error())
 		debug.PrintStack()
