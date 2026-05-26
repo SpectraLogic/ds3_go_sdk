@@ -19,30 +19,6 @@ import (
 	"github.com/SpectraLogic/ds3_go_sdk/ds3/networking"
 )
 
-func (client *Client) AbortMultiPartUpload(ctx context.Context, request *models.AbortMultiPartUploadRequest) (*models.AbortMultiPartUploadResponse, error) {
-	// Build the http request
-	httpRequest, err := networking.NewHttpRequestBuilder().
-		WithHttpVerb(HTTP_VERB_DELETE).
-		WithPath("/"+request.BucketName+"/"+request.ObjectName).
-		WithQueryParam("upload_id", request.UploadId).
-		Build(ctx, client.connectionInfo)
-
-	if err != nil {
-		return nil, err
-	}
-
-	networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
-
-	// Invoke the HTTP request.
-	response, requestErr := networkRetryDecorator.Invoke(httpRequest)
-	if requestErr != nil {
-		return nil, requestErr
-	}
-
-	// Create a response object based on the result.
-	return models.NewAbortMultiPartUploadResponse(response, client.Logger)
-}
-
 func (client *Client) DeleteBucket(ctx context.Context, request *models.DeleteBucketRequest) (*models.DeleteBucketResponse, error) {
 	// Build the http request
 	httpRequest, err := networking.NewHttpRequestBuilder().
@@ -158,6 +134,29 @@ func (client *Client) DeleteBucketSpectraS3(ctx context.Context, request *models
 
 	// Create a response object based on the result.
 	return models.NewDeleteBucketSpectraS3Response(response, client.Logger)
+}
+
+func (client *Client) DeleteCacheThrottleRuleSpectraS3(ctx context.Context, request *models.DeleteCacheThrottleRuleSpectraS3Request) (*models.DeleteCacheThrottleRuleSpectraS3Response, error) {
+	// Build the http request
+	httpRequest, err := networking.NewHttpRequestBuilder().
+		WithHttpVerb(HTTP_VERB_DELETE).
+		WithPath("/_rest_/cache_throttle_rule/"+request.CacheThrottleRule).
+		Build(ctx, client.connectionInfo)
+
+	if err != nil {
+		return nil, err
+	}
+
+	networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
+
+	// Invoke the HTTP request.
+	response, requestErr := networkRetryDecorator.Invoke(httpRequest)
+	if requestErr != nil {
+		return nil, requestErr
+	}
+
+	// Create a response object based on the result.
+	return models.NewDeleteCacheThrottleRuleSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) DeleteAzureDataReplicationRuleSpectraS3(ctx context.Context, request *models.DeleteAzureDataReplicationRuleSpectraS3Request) (*models.DeleteAzureDataReplicationRuleSpectraS3Response, error) {

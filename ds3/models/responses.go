@@ -19,22 +19,6 @@ import (
 	"github.com/SpectraLogic/ds3_go_sdk/sdk_log"
 )
 
-type AbortMultiPartUploadResponse struct {
-	Headers *http.Header
-}
-
-func NewAbortMultiPartUploadResponse(webResponse WebResponse, logger sdk_log.Logger) (*AbortMultiPartUploadResponse, error) {
-	defer webResponse.Body().Close()
-	expectedStatusCodes := []int{204}
-
-	switch code := webResponse.StatusCode(); code {
-	case 204:
-		return &AbortMultiPartUploadResponse{Headers: webResponse.Header()}, nil
-	default:
-		return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
-	}
-}
-
 type CompleteBlobResponse struct {
 	Headers *http.Header
 }
@@ -51,32 +35,6 @@ func NewCompleteBlobResponse(webResponse WebResponse, logger sdk_log.Logger) (*C
 	}
 }
 
-type CompleteMultiPartUploadResponse struct {
-	CompleteMultipartUploadResult CompleteMultipartUploadResult
-	Headers                       *http.Header
-}
-
-func (completeMultiPartUploadResponse *CompleteMultiPartUploadResponse) parse(webResponse WebResponse, logger sdk_log.Logger) error {
-	return parseResponsePayload(webResponse, &completeMultiPartUploadResponse.CompleteMultipartUploadResult, logger)
-}
-
-func NewCompleteMultiPartUploadResponse(webResponse WebResponse, logger sdk_log.Logger) (*CompleteMultiPartUploadResponse, error) {
-	defer webResponse.Body().Close()
-	expectedStatusCodes := []int{200}
-
-	switch code := webResponse.StatusCode(); code {
-	case 200:
-		var body CompleteMultiPartUploadResponse
-		if err := body.parse(webResponse, logger); err != nil {
-			return nil, err
-		}
-		body.Headers = webResponse.Header()
-		return &body, nil
-	default:
-		return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
-	}
-}
-
 type PutBucketResponse struct {
 	Headers *http.Header
 }
@@ -88,22 +46,6 @@ func NewPutBucketResponse(webResponse WebResponse, logger sdk_log.Logger) (*PutB
 	switch code := webResponse.StatusCode(); code {
 	case 200:
 		return &PutBucketResponse{Headers: webResponse.Header()}, nil
-	default:
-		return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
-	}
-}
-
-type PutMultiPartUploadPartResponse struct {
-	Headers *http.Header
-}
-
-func NewPutMultiPartUploadPartResponse(webResponse WebResponse, logger sdk_log.Logger) (*PutMultiPartUploadPartResponse, error) {
-	defer webResponse.Body().Close()
-	expectedStatusCodes := []int{200}
-
-	switch code := webResponse.StatusCode(); code {
-	case 200:
-		return &PutMultiPartUploadPartResponse{Headers: webResponse.Header()}, nil
 	default:
 		return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
 	}
@@ -291,84 +233,6 @@ func NewHeadObjectResponse(webResponse WebResponse, logger sdk_log.Logger) (*Hea
 			return nil, err
 		}
 		return &HeadObjectResponse{BlobChecksumType: checksumType, BlobChecksums: checksumMap, Headers: webResponse.Header()}, nil
-	default:
-		return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
-	}
-}
-
-type InitiateMultiPartUploadResponse struct {
-	InitiateMultipartUploadResult InitiateMultipartUploadResult
-	Headers                       *http.Header
-}
-
-func (initiateMultiPartUploadResponse *InitiateMultiPartUploadResponse) parse(webResponse WebResponse, logger sdk_log.Logger) error {
-	return parseResponsePayload(webResponse, &initiateMultiPartUploadResponse.InitiateMultipartUploadResult, logger)
-}
-
-func NewInitiateMultiPartUploadResponse(webResponse WebResponse, logger sdk_log.Logger) (*InitiateMultiPartUploadResponse, error) {
-	defer webResponse.Body().Close()
-	expectedStatusCodes := []int{200}
-
-	switch code := webResponse.StatusCode(); code {
-	case 200:
-		var body InitiateMultiPartUploadResponse
-		if err := body.parse(webResponse, logger); err != nil {
-			return nil, err
-		}
-		body.Headers = webResponse.Header()
-		return &body, nil
-	default:
-		return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
-	}
-}
-
-type ListMultiPartUploadPartsResponse struct {
-	ListPartsResult ListPartsResult
-	Headers         *http.Header
-}
-
-func (listMultiPartUploadPartsResponse *ListMultiPartUploadPartsResponse) parse(webResponse WebResponse, logger sdk_log.Logger) error {
-	return parseResponsePayload(webResponse, &listMultiPartUploadPartsResponse.ListPartsResult, logger)
-}
-
-func NewListMultiPartUploadPartsResponse(webResponse WebResponse, logger sdk_log.Logger) (*ListMultiPartUploadPartsResponse, error) {
-	defer webResponse.Body().Close()
-	expectedStatusCodes := []int{200}
-
-	switch code := webResponse.StatusCode(); code {
-	case 200:
-		var body ListMultiPartUploadPartsResponse
-		if err := body.parse(webResponse, logger); err != nil {
-			return nil, err
-		}
-		body.Headers = webResponse.Header()
-		return &body, nil
-	default:
-		return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
-	}
-}
-
-type ListMultiPartUploadsResponse struct {
-	ListMultiPartUploadsResult ListMultiPartUploadsResult
-	Headers                    *http.Header
-}
-
-func (listMultiPartUploadsResponse *ListMultiPartUploadsResponse) parse(webResponse WebResponse, logger sdk_log.Logger) error {
-	return parseResponsePayload(webResponse, &listMultiPartUploadsResponse.ListMultiPartUploadsResult, logger)
-}
-
-func NewListMultiPartUploadsResponse(webResponse WebResponse, logger sdk_log.Logger) (*ListMultiPartUploadsResponse, error) {
-	defer webResponse.Body().Close()
-	expectedStatusCodes := []int{200}
-
-	switch code := webResponse.StatusCode(); code {
-	case 200:
-		var body ListMultiPartUploadsResponse
-		if err := body.parse(webResponse, logger); err != nil {
-			return nil, err
-		}
-		body.Headers = webResponse.Header()
-		return &body, nil
 	default:
 		return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
 	}
@@ -838,6 +702,48 @@ func NewModifyBucketSpectraS3Response(webResponse WebResponse, logger sdk_log.Lo
 	}
 }
 
+type PutCacheThrottleRuleSpectraS3Response struct {
+	CacheThrottleRule CacheThrottleRule
+	Headers           *http.Header
+}
+
+func (putCacheThrottleRuleSpectraS3Response *PutCacheThrottleRuleSpectraS3Response) parse(webResponse WebResponse, logger sdk_log.Logger) error {
+	return parseResponsePayload(webResponse, &putCacheThrottleRuleSpectraS3Response.CacheThrottleRule, logger)
+}
+
+func NewPutCacheThrottleRuleSpectraS3Response(webResponse WebResponse, logger sdk_log.Logger) (*PutCacheThrottleRuleSpectraS3Response, error) {
+	defer webResponse.Body().Close()
+	expectedStatusCodes := []int{201}
+
+	switch code := webResponse.StatusCode(); code {
+	case 201:
+		var body PutCacheThrottleRuleSpectraS3Response
+		if err := body.parse(webResponse, logger); err != nil {
+			return nil, err
+		}
+		body.Headers = webResponse.Header()
+		return &body, nil
+	default:
+		return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
+	}
+}
+
+type DeleteCacheThrottleRuleSpectraS3Response struct {
+	Headers *http.Header
+}
+
+func NewDeleteCacheThrottleRuleSpectraS3Response(webResponse WebResponse, logger sdk_log.Logger) (*DeleteCacheThrottleRuleSpectraS3Response, error) {
+	defer webResponse.Body().Close()
+	expectedStatusCodes := []int{204}
+
+	switch code := webResponse.StatusCode(); code {
+	case 204:
+		return &DeleteCacheThrottleRuleSpectraS3Response{Headers: webResponse.Header()}, nil
+	default:
+		return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
+	}
+}
+
 type ForceFullCacheReclaimSpectraS3Response struct {
 	Headers *http.Header
 }
@@ -932,6 +838,58 @@ func NewGetCacheStateSpectraS3Response(webResponse WebResponse, logger sdk_log.L
 	}
 }
 
+type GetCacheThrottleRuleSpectraS3Response struct {
+	CacheThrottleRule CacheThrottleRule
+	Headers           *http.Header
+}
+
+func (getCacheThrottleRuleSpectraS3Response *GetCacheThrottleRuleSpectraS3Response) parse(webResponse WebResponse, logger sdk_log.Logger) error {
+	return parseResponsePayload(webResponse, &getCacheThrottleRuleSpectraS3Response.CacheThrottleRule, logger)
+}
+
+func NewGetCacheThrottleRuleSpectraS3Response(webResponse WebResponse, logger sdk_log.Logger) (*GetCacheThrottleRuleSpectraS3Response, error) {
+	defer webResponse.Body().Close()
+	expectedStatusCodes := []int{200}
+
+	switch code := webResponse.StatusCode(); code {
+	case 200:
+		var body GetCacheThrottleRuleSpectraS3Response
+		if err := body.parse(webResponse, logger); err != nil {
+			return nil, err
+		}
+		body.Headers = webResponse.Header()
+		return &body, nil
+	default:
+		return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
+	}
+}
+
+type GetCacheThrottleRulesSpectraS3Response struct {
+	CacheThrottleRuleList CacheThrottleRuleList
+	Headers               *http.Header
+}
+
+func (getCacheThrottleRulesSpectraS3Response *GetCacheThrottleRulesSpectraS3Response) parse(webResponse WebResponse, logger sdk_log.Logger) error {
+	return parseResponsePayload(webResponse, &getCacheThrottleRulesSpectraS3Response.CacheThrottleRuleList, logger)
+}
+
+func NewGetCacheThrottleRulesSpectraS3Response(webResponse WebResponse, logger sdk_log.Logger) (*GetCacheThrottleRulesSpectraS3Response, error) {
+	defer webResponse.Body().Close()
+	expectedStatusCodes := []int{200}
+
+	switch code := webResponse.StatusCode(); code {
+	case 200:
+		var body GetCacheThrottleRulesSpectraS3Response
+		if err := body.parse(webResponse, logger); err != nil {
+			return nil, err
+		}
+		body.Headers = webResponse.Header()
+		return &body, nil
+	default:
+		return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
+	}
+}
+
 type ModifyCacheFilesystemSpectraS3Response struct {
 	CacheFilesystem CacheFilesystem
 	Headers         *http.Header
@@ -948,6 +906,32 @@ func NewModifyCacheFilesystemSpectraS3Response(webResponse WebResponse, logger s
 	switch code := webResponse.StatusCode(); code {
 	case 200:
 		var body ModifyCacheFilesystemSpectraS3Response
+		if err := body.parse(webResponse, logger); err != nil {
+			return nil, err
+		}
+		body.Headers = webResponse.Header()
+		return &body, nil
+	default:
+		return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
+	}
+}
+
+type ModifyCacheThrottleRuleSpectraS3Response struct {
+	CacheThrottleRule CacheThrottleRule
+	Headers           *http.Header
+}
+
+func (modifyCacheThrottleRuleSpectraS3Response *ModifyCacheThrottleRuleSpectraS3Response) parse(webResponse WebResponse, logger sdk_log.Logger) error {
+	return parseResponsePayload(webResponse, &modifyCacheThrottleRuleSpectraS3Response.CacheThrottleRule, logger)
+}
+
+func NewModifyCacheThrottleRuleSpectraS3Response(webResponse WebResponse, logger sdk_log.Logger) (*ModifyCacheThrottleRuleSpectraS3Response, error) {
+	defer webResponse.Body().Close()
+	expectedStatusCodes := []int{200}
+
+	switch code := webResponse.StatusCode(); code {
+	case 200:
+		var body ModifyCacheThrottleRuleSpectraS3Response
 		if err := body.parse(webResponse, logger); err != nil {
 			return nil, err
 		}
@@ -3008,6 +2992,32 @@ func NewGetJobCreationFailuresSpectraS3Response(webResponse WebResponse, logger 
 	}
 }
 
+type GetJobEntriesSpectraS3Response struct {
+	JobEntryList JobEntryList
+	Headers      *http.Header
+}
+
+func (getJobEntriesSpectraS3Response *GetJobEntriesSpectraS3Response) parse(webResponse WebResponse, logger sdk_log.Logger) error {
+	return parseResponsePayload(webResponse, &getJobEntriesSpectraS3Response.JobEntryList, logger)
+}
+
+func NewGetJobEntriesSpectraS3Response(webResponse WebResponse, logger sdk_log.Logger) (*GetJobEntriesSpectraS3Response, error) {
+	defer webResponse.Body().Close()
+	expectedStatusCodes := []int{200}
+
+	switch code := webResponse.StatusCode(); code {
+	case 200:
+		var body GetJobEntriesSpectraS3Response
+		if err := body.parse(webResponse, logger); err != nil {
+			return nil, err
+		}
+		body.Headers = webResponse.Header()
+		return &body, nil
+	default:
+		return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
+	}
+}
+
 type GetJobSpectraS3Response struct {
 	MasterObjectList MasterObjectList
 	Headers          *http.Header
@@ -3024,6 +3034,32 @@ func NewGetJobSpectraS3Response(webResponse WebResponse, logger sdk_log.Logger) 
 	switch code := webResponse.StatusCode(); code {
 	case 200:
 		var body GetJobSpectraS3Response
+		if err := body.parse(webResponse, logger); err != nil {
+			return nil, err
+		}
+		body.Headers = webResponse.Header()
+		return &body, nil
+	default:
+		return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
+	}
+}
+
+type GetJobSummarySpectraS3Response struct {
+	JobSummaryApiBean JobSummaryApiBean
+	Headers           *http.Header
+}
+
+func (getJobSummarySpectraS3Response *GetJobSummarySpectraS3Response) parse(webResponse WebResponse, logger sdk_log.Logger) error {
+	return parseResponsePayload(webResponse, &getJobSummarySpectraS3Response.JobSummaryApiBean, logger)
+}
+
+func NewGetJobSummarySpectraS3Response(webResponse WebResponse, logger sdk_log.Logger) (*GetJobSummarySpectraS3Response, error) {
+	defer webResponse.Body().Close()
+	expectedStatusCodes := []int{200}
+
+	switch code := webResponse.StatusCode(); code {
+	case 200:
+		var body GetJobSummarySpectraS3Response
 		if err := body.parse(webResponse, logger); err != nil {
 			return nil, err
 		}
@@ -5943,6 +5979,32 @@ func NewForceFeatureKeyValidationSpectraS3Response(webResponse WebResponse, logg
 	switch code := webResponse.StatusCode(); code {
 	case 204:
 		return &ForceFeatureKeyValidationSpectraS3Response{Headers: webResponse.Header()}, nil
+	default:
+		return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
+	}
+}
+
+type GetAbmConfigSpectraS3Response struct {
+	AbmConfigApiBean AbmConfigApiBean
+	Headers          *http.Header
+}
+
+func (getAbmConfigSpectraS3Response *GetAbmConfigSpectraS3Response) parse(webResponse WebResponse, logger sdk_log.Logger) error {
+	return parseResponsePayload(webResponse, &getAbmConfigSpectraS3Response.AbmConfigApiBean, logger)
+}
+
+func NewGetAbmConfigSpectraS3Response(webResponse WebResponse, logger sdk_log.Logger) (*GetAbmConfigSpectraS3Response, error) {
+	defer webResponse.Body().Close()
+	expectedStatusCodes := []int{200}
+
+	switch code := webResponse.StatusCode(); code {
+	case 200:
+		var body GetAbmConfigSpectraS3Response
+		if err := body.parse(webResponse, logger); err != nil {
+			return nil, err
+		}
+		body.Headers = webResponse.Header()
+		return &body, nil
 	default:
 		return nil, buildBadStatusCodeError(webResponse, expectedStatusCodes)
 	}

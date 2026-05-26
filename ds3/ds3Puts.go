@@ -17,7 +17,6 @@ import (
 	"context"
 	"github.com/SpectraLogic/ds3_go_sdk/ds3/models"
 	"github.com/SpectraLogic/ds3_go_sdk/ds3/networking"
-	"strconv"
 )
 
 func (client *Client) PutBucket(ctx context.Context, request *models.PutBucketRequest) (*models.PutBucketResponse, error) {
@@ -41,32 +40,6 @@ func (client *Client) PutBucket(ctx context.Context, request *models.PutBucketRe
 
 	// Create a response object based on the result.
 	return models.NewPutBucketResponse(response, client.Logger)
-}
-
-func (client *Client) PutMultiPartUploadPart(ctx context.Context, request *models.PutMultiPartUploadPartRequest) (*models.PutMultiPartUploadPartResponse, error) {
-	// Build the http request
-	httpRequest, err := networking.NewHttpRequestBuilder().
-		WithHttpVerb(HTTP_VERB_PUT).
-		WithPath("/"+request.BucketName+"/"+request.ObjectName).
-		WithQueryParam("part_number", strconv.Itoa(request.PartNumber)).
-		WithQueryParam("upload_id", request.UploadId).
-		WithReader(request.Content).
-		Build(ctx, client.connectionInfo)
-
-	if err != nil {
-		return nil, err
-	}
-
-	networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
-
-	// Invoke the HTTP request.
-	response, requestErr := networkRetryDecorator.Invoke(httpRequest)
-	if requestErr != nil {
-		return nil, requestErr
-	}
-
-	// Create a response object based on the result.
-	return models.NewPutMultiPartUploadPartResponse(response, client.Logger)
 }
 
 func (client *Client) PutObject(ctx context.Context, request *models.PutObjectRequest) (*models.PutObjectResponse, error) {
@@ -176,6 +149,34 @@ func (client *Client) ModifyCacheFilesystemSpectraS3(ctx context.Context, reques
 	return models.NewModifyCacheFilesystemSpectraS3Response(response, client.Logger)
 }
 
+func (client *Client) ModifyCacheThrottleRuleSpectraS3(ctx context.Context, request *models.ModifyCacheThrottleRuleSpectraS3Request) (*models.ModifyCacheThrottleRuleSpectraS3Response, error) {
+	// Build the http request
+	httpRequest, err := networking.NewHttpRequestBuilder().
+		WithHttpVerb(HTTP_VERB_PUT).
+		WithPath("/_rest_/cache_throttle_rule/"+request.CacheThrottleRule).
+		WithOptionalQueryParam("bucket_id", request.BucketId).
+		WithOptionalQueryParam("burst_threshold", networking.Float64PtrToStrPtr(request.BurstThreshold)).
+		WithOptionalQueryParam("max_cache_percent", networking.Float64PtrToStrPtr(request.MaxCachePercent)).
+		WithOptionalQueryParam("priority", networking.InterfaceToStrPtr(request.Priority)).
+		WithOptionalQueryParam("request_type", networking.InterfaceToStrPtr(request.RequestType)).
+		Build(ctx, client.connectionInfo)
+
+	if err != nil {
+		return nil, err
+	}
+
+	networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
+
+	// Invoke the HTTP request.
+	response, requestErr := networkRetryDecorator.Invoke(httpRequest)
+	if requestErr != nil {
+		return nil, requestErr
+	}
+
+	// Create a response object based on the result.
+	return models.NewModifyCacheThrottleRuleSpectraS3Response(response, client.Logger)
+}
+
 func (client *Client) ModifyDataPathBackendSpectraS3(ctx context.Context, request *models.ModifyDataPathBackendSpectraS3Request) (*models.ModifyDataPathBackendSpectraS3Response, error) {
 	// Build the http request
 	httpRequest, err := networking.NewHttpRequestBuilder().
@@ -183,6 +184,7 @@ func (client *Client) ModifyDataPathBackendSpectraS3(ctx context.Context, reques
 		WithPath("/_rest_/data_path_backend").
 		WithOptionalQueryParam("activated", networking.BoolPtrToStrPtr(request.Activated)).
 		WithOptionalQueryParam("allow_new_job_requests", networking.BoolPtrToStrPtr(request.AllowNewJobRequests)).
+		WithOptionalQueryParam("always_rollback", networking.BoolPtrToStrPtr(request.AlwaysRollback)).
 		WithOptionalQueryParam("auto_activate_timeout_in_mins", networking.IntPtrToStrPtr(request.AutoActivateTimeoutInMins)).
 		WithOptionalQueryParam("auto_inspect", networking.InterfaceToStrPtr(request.AutoInspect)).
 		WithOptionalQueryParam("cache_available_retry_after_in_seconds", networking.IntPtrToStrPtr(request.CacheAvailableRetryAfterInSeconds)).
@@ -1921,6 +1923,7 @@ func (client *Client) FormatAllTapesSpectraS3(ctx context.Context, request *mode
 	httpRequest, err := networking.NewHttpRequestBuilder().
 		WithHttpVerb(HTTP_VERB_PUT).
 		WithPath("/_rest_/tape").
+		WithOptionalVoidQueryParam("characterize", request.Characterize).
 		WithOptionalVoidQueryParam("force", request.Force).
 		WithQueryParam("operation", "format").
 		Build(ctx, client.connectionInfo)
@@ -1946,6 +1949,7 @@ func (client *Client) FormatTapeSpectraS3(ctx context.Context, request *models.F
 	httpRequest, err := networking.NewHttpRequestBuilder().
 		WithHttpVerb(HTTP_VERB_PUT).
 		WithPath("/_rest_/tape/"+request.TapeId).
+		WithOptionalVoidQueryParam("characterize", request.Characterize).
 		WithOptionalVoidQueryParam("force", request.Force).
 		WithQueryParam("operation", "format").
 		Build(ctx, client.connectionInfo)
@@ -2186,6 +2190,7 @@ func (client *Client) ModifyTapeSpectraS3(ctx context.Context, request *models.M
 	httpRequest, err := networking.NewHttpRequestBuilder().
 		WithHttpVerb(HTTP_VERB_PUT).
 		WithPath("/_rest_/tape/"+request.TapeId).
+		WithOptionalQueryParam("allow_rollback", networking.BoolPtrToStrPtr(request.AllowRollback)).
 		WithOptionalQueryParam("eject_label", request.EjectLabel).
 		WithOptionalQueryParam("eject_location", request.EjectLocation).
 		WithOptionalQueryParam("role", networking.InterfaceToStrPtr(request.Role)).

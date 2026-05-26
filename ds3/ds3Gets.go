@@ -15,7 +15,6 @@ package ds3
 
 import (
 	"context"
-
 	"github.com/SpectraLogic/ds3_go_sdk/ds3/models"
 	"github.com/SpectraLogic/ds3_go_sdk/ds3/networking"
 )
@@ -100,63 +99,6 @@ func (client *Client) GetService(ctx context.Context, request *models.GetService
 
 	// Create a response object based on the result.
 	return models.NewGetServiceResponse(response, client.Logger)
-}
-
-func (client *Client) ListMultiPartUploadParts(ctx context.Context, request *models.ListMultiPartUploadPartsRequest) (*models.ListMultiPartUploadPartsResponse, error) {
-	// Build the http request
-	httpRequest, err := networking.NewHttpRequestBuilder().
-		WithHttpVerb(HTTP_VERB_GET).
-		WithPath("/"+request.BucketName+"/"+request.ObjectName).
-		WithQueryParam("upload_id", request.UploadId).
-		WithOptionalQueryParam("max_parts", networking.IntPtrToStrPtr(request.MaxParts)).
-		WithOptionalQueryParam("part_number_marker", networking.IntPtrToStrPtr(request.PartNumberMarker)).
-		Build(ctx, client.connectionInfo)
-
-	if err != nil {
-		return nil, err
-	}
-
-	networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
-	httpRedirectDecorator := networking.NewHttpTempRedirectDecorator(networkRetryDecorator, client.clientPolicy.maxRedirect)
-
-	// Invoke the HTTP request.
-	response, requestErr := httpRedirectDecorator.Invoke(httpRequest)
-	if requestErr != nil {
-		return nil, requestErr
-	}
-
-	// Create a response object based on the result.
-	return models.NewListMultiPartUploadPartsResponse(response, client.Logger)
-}
-
-func (client *Client) ListMultiPartUploads(ctx context.Context, request *models.ListMultiPartUploadsRequest) (*models.ListMultiPartUploadsResponse, error) {
-	// Build the http request
-	httpRequest, err := networking.NewHttpRequestBuilder().
-		WithHttpVerb(HTTP_VERB_GET).
-		WithPath("/"+request.BucketName).
-		WithQueryParam("uploads", "").
-		WithOptionalQueryParam("delimiter", request.Delimiter).
-		WithOptionalQueryParam("key_marker", request.KeyMarker).
-		WithOptionalQueryParam("max_uploads", networking.IntPtrToStrPtr(request.MaxUploads)).
-		WithOptionalQueryParam("prefix", request.Prefix).
-		WithOptionalQueryParam("upload_id_marker", request.UploadIdMarker).
-		Build(ctx, client.connectionInfo)
-
-	if err != nil {
-		return nil, err
-	}
-
-	networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
-	httpRedirectDecorator := networking.NewHttpTempRedirectDecorator(networkRetryDecorator, client.clientPolicy.maxRedirect)
-
-	// Invoke the HTTP request.
-	response, requestErr := httpRedirectDecorator.Invoke(httpRequest)
-	if requestErr != nil {
-		return nil, requestErr
-	}
-
-	// Create a response object based on the result.
-	return models.NewListMultiPartUploadsResponse(response, client.Logger)
 }
 
 func (client *Client) GetBucketAclSpectraS3(ctx context.Context, request *models.GetBucketAclSpectraS3Request) (*models.GetBucketAclSpectraS3Response, error) {
@@ -402,6 +344,63 @@ func (client *Client) GetCacheStateSpectraS3(ctx context.Context, request *model
 	return models.NewGetCacheStateSpectraS3Response(response, client.Logger)
 }
 
+func (client *Client) GetCacheThrottleRuleSpectraS3(ctx context.Context, request *models.GetCacheThrottleRuleSpectraS3Request) (*models.GetCacheThrottleRuleSpectraS3Response, error) {
+	// Build the http request
+	httpRequest, err := networking.NewHttpRequestBuilder().
+		WithHttpVerb(HTTP_VERB_GET).
+		WithPath("/_rest_/cache_throttle_rule/"+request.CacheThrottleRule).
+		Build(ctx, client.connectionInfo)
+
+	if err != nil {
+		return nil, err
+	}
+
+	networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
+	httpRedirectDecorator := networking.NewHttpTempRedirectDecorator(networkRetryDecorator, client.clientPolicy.maxRedirect)
+
+	// Invoke the HTTP request.
+	response, requestErr := httpRedirectDecorator.Invoke(httpRequest)
+	if requestErr != nil {
+		return nil, requestErr
+	}
+
+	// Create a response object based on the result.
+	return models.NewGetCacheThrottleRuleSpectraS3Response(response, client.Logger)
+}
+
+func (client *Client) GetCacheThrottleRulesSpectraS3(ctx context.Context, request *models.GetCacheThrottleRulesSpectraS3Request) (*models.GetCacheThrottleRulesSpectraS3Response, error) {
+	// Build the http request
+	httpRequest, err := networking.NewHttpRequestBuilder().
+		WithHttpVerb(HTTP_VERB_GET).
+		WithPath("/_rest_/cache_throttle_rule").
+		WithOptionalQueryParam("bucket_id", request.BucketId).
+		WithOptionalQueryParam("burst_threshold", networking.Float64PtrToStrPtr(request.BurstThreshold)).
+		WithOptionalVoidQueryParam("last_page", request.LastPage).
+		WithOptionalQueryParam("max_cache_percent", networking.Float64PtrToStrPtr(request.MaxCachePercent)).
+		WithOptionalQueryParam("page_length", networking.IntPtrToStrPtr(request.PageLength)).
+		WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
+		WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
+		WithOptionalQueryParam("priority", networking.InterfaceToStrPtr(request.Priority)).
+		WithOptionalQueryParam("request_type", networking.InterfaceToStrPtr(request.RequestType)).
+		Build(ctx, client.connectionInfo)
+
+	if err != nil {
+		return nil, err
+	}
+
+	networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
+	httpRedirectDecorator := networking.NewHttpTempRedirectDecorator(networkRetryDecorator, client.clientPolicy.maxRedirect)
+
+	// Invoke the HTTP request.
+	response, requestErr := httpRedirectDecorator.Invoke(httpRequest)
+	if requestErr != nil {
+		return nil, requestErr
+	}
+
+	// Create a response object based on the result.
+	return models.NewGetCacheThrottleRulesSpectraS3Response(response, client.Logger)
+}
+
 func (client *Client) GetBucketCapacitySummarySpectraS3(ctx context.Context, request *models.GetBucketCapacitySummarySpectraS3Request) (*models.GetBucketCapacitySummarySpectraS3Response, error) {
 	// Build the http request
 	httpRequest, err := networking.NewHttpRequestBuilder().
@@ -522,6 +521,7 @@ func (client *Client) GetDataPlannerBlobStoreTasksSpectraS3(ctx context.Context,
 		WithHttpVerb(HTTP_VERB_GET).
 		WithPath("/_rest_/blob_store_task").
 		WithOptionalVoidQueryParam("full_details", request.FullDetails).
+		WithOptionalQueryParam("job", request.Job).
 		Build(ctx, client.connectionInfo)
 
 	if err != nil {
@@ -1653,6 +1653,35 @@ func (client *Client) GetJobCreationFailuresSpectraS3(ctx context.Context, reque
 	return models.NewGetJobCreationFailuresSpectraS3Response(response, client.Logger)
 }
 
+func (client *Client) GetJobEntriesSpectraS3(ctx context.Context, request *models.GetJobEntriesSpectraS3Request) (*models.GetJobEntriesSpectraS3Response, error) {
+	// Build the http request
+	httpRequest, err := networking.NewHttpRequestBuilder().
+		WithHttpVerb(HTTP_VERB_GET).
+		WithPath("/_rest_/job_chunk_dao").
+		WithQueryParam("job_id", request.JobId).
+		WithOptionalVoidQueryParam("last_page", request.LastPage).
+		WithOptionalQueryParam("page_length", networking.IntPtrToStrPtr(request.PageLength)).
+		WithOptionalQueryParam("page_offset", networking.IntPtrToStrPtr(request.PageOffset)).
+		WithOptionalQueryParam("page_start_marker", request.PageStartMarker).
+		Build(ctx, client.connectionInfo)
+
+	if err != nil {
+		return nil, err
+	}
+
+	networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
+	httpRedirectDecorator := networking.NewHttpTempRedirectDecorator(networkRetryDecorator, client.clientPolicy.maxRedirect)
+
+	// Invoke the HTTP request.
+	response, requestErr := httpRedirectDecorator.Invoke(httpRequest)
+	if requestErr != nil {
+		return nil, requestErr
+	}
+
+	// Create a response object based on the result.
+	return models.NewGetJobEntriesSpectraS3Response(response, client.Logger)
+}
+
 func (client *Client) GetJobSpectraS3(ctx context.Context, request *models.GetJobSpectraS3Request) (*models.GetJobSpectraS3Response, error) {
 	// Build the http request
 	httpRequest, err := networking.NewHttpRequestBuilder().
@@ -1675,6 +1704,31 @@ func (client *Client) GetJobSpectraS3(ctx context.Context, request *models.GetJo
 
 	// Create a response object based on the result.
 	return models.NewGetJobSpectraS3Response(response, client.Logger)
+}
+
+func (client *Client) GetJobSummarySpectraS3(ctx context.Context, request *models.GetJobSummarySpectraS3Request) (*models.GetJobSummarySpectraS3Response, error) {
+	// Build the http request
+	httpRequest, err := networking.NewHttpRequestBuilder().
+		WithHttpVerb(HTTP_VERB_GET).
+		WithPath("/_rest_/job/"+request.JobId).
+		WithQueryParam("summary", "").
+		Build(ctx, client.connectionInfo)
+
+	if err != nil {
+		return nil, err
+	}
+
+	networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
+	httpRedirectDecorator := networking.NewHttpTempRedirectDecorator(networkRetryDecorator, client.clientPolicy.maxRedirect)
+
+	// Invoke the HTTP request.
+	response, requestErr := httpRedirectDecorator.Invoke(httpRequest)
+	if requestErr != nil {
+		return nil, requestErr
+	}
+
+	// Create a response object based on the result.
+	return models.NewGetJobSummarySpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) GetJobToReplicateSpectraS3(ctx context.Context, request *models.GetJobToReplicateSpectraS3Request) (*models.GetJobToReplicateSpectraS3Response, error) {
@@ -3100,6 +3154,30 @@ func (client *Client) GetStorageDomainsSpectraS3(ctx context.Context, request *m
 
 	// Create a response object based on the result.
 	return models.NewGetStorageDomainsSpectraS3Response(response, client.Logger)
+}
+
+func (client *Client) GetAbmConfigSpectraS3(ctx context.Context, request *models.GetAbmConfigSpectraS3Request) (*models.GetAbmConfigSpectraS3Response, error) {
+	// Build the http request
+	httpRequest, err := networking.NewHttpRequestBuilder().
+		WithHttpVerb(HTTP_VERB_GET).
+		WithPath("/_rest_/abm_config").
+		Build(ctx, client.connectionInfo)
+
+	if err != nil {
+		return nil, err
+	}
+
+	networkRetryDecorator := networking.NewNetworkRetryDecorator(client.sendNetwork, client.clientPolicy.maxRetries)
+	httpRedirectDecorator := networking.NewHttpTempRedirectDecorator(networkRetryDecorator, client.clientPolicy.maxRedirect)
+
+	// Invoke the HTTP request.
+	response, requestErr := httpRedirectDecorator.Invoke(httpRequest)
+	if requestErr != nil {
+		return nil, requestErr
+	}
+
+	// Create a response object based on the result.
+	return models.NewGetAbmConfigSpectraS3Response(response, client.Logger)
 }
 
 func (client *Client) GetFeatureKeysSpectraS3(ctx context.Context, request *models.GetFeatureKeysSpectraS3Request) (*models.GetFeatureKeysSpectraS3Response, error) {

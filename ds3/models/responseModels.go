@@ -387,6 +387,38 @@ func newBucketAclPermissionFromContent(content []byte, aggErr *AggregateError) *
 	return result
 }
 
+type CacheThrottleRule struct {
+	BucketId        *string
+	BurstThreshold  *float64
+	Id              string
+	MaxCachePercent float64
+	Priority        *Priority
+	RequestType     *JobRequestType
+}
+
+func (cacheThrottleRule *CacheThrottleRule) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
+
+	// Parse Child Nodes
+	for _, child := range xmlNode.Children {
+		switch child.XMLName.Local {
+		case "BucketId":
+			cacheThrottleRule.BucketId = parseNullableString(child.Content)
+		case "BurstThreshold":
+			cacheThrottleRule.BurstThreshold = parseNullableFloat64(child.Content, aggErr)
+		case "Id":
+			cacheThrottleRule.Id = parseString(child.Content)
+		case "MaxCachePercent":
+			cacheThrottleRule.MaxCachePercent = parseFloat64(child.Content, aggErr)
+		case "Priority":
+			cacheThrottleRule.Priority = newPriorityFromContent(child.Content, aggErr)
+		case "RequestType":
+			cacheThrottleRule.RequestType = newJobRequestTypeFromContent(child.Content, aggErr)
+		default:
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing CacheThrottleRule.", child.XMLName.Local)
+		}
+	}
+}
+
 type CanceledJob struct {
 	BucketId                            string
 	CachedSizeInBytes                   int64
@@ -641,6 +673,7 @@ func newDataIsolationLevelFromContent(content []byte, aggErr *AggregateError) *D
 type DataPathBackend struct {
 	Activated                                 bool
 	AllowNewJobRequests                       bool
+	AlwaysRollback                            bool
 	AutoActivateTimeoutInMins                 *int
 	AutoInspect                               AutoInspectMode
 	CacheAvailableRetryAfterInSeconds         int
@@ -670,6 +703,8 @@ func (dataPathBackend *DataPathBackend) parse(xmlNode *XmlNode, aggErr *Aggregat
 			dataPathBackend.Activated = parseBool(child.Content, aggErr)
 		case "AllowNewJobRequests":
 			dataPathBackend.AllowNewJobRequests = parseBool(child.Content, aggErr)
+		case "AlwaysRollback":
+			dataPathBackend.AlwaysRollback = parseBool(child.Content, aggErr)
 		case "AutoActivateTimeoutInMins":
 			dataPathBackend.AutoActivateTimeoutInMins = parseNullableInt(child.Content, aggErr)
 		case "AutoInspect":
@@ -1199,6 +1234,63 @@ func (groupMember *GroupMember) parse(xmlNode *XmlNode, aggErr *AggregateError, 
 	}
 }
 
+type IomType Enum
+
+const (
+	IOM_TYPE_NO             IomType = 1 + iota
+	IOM_TYPE_YES            IomType = 1 + iota
+	IOM_TYPE_PERMANENT_ONLY IomType = 1 + iota
+)
+
+func (iomType *IomType) UnmarshalText(text []byte) error {
+	var str string = string(bytes.ToUpper(text))
+	switch str {
+	case "":
+		*iomType = UNDEFINED
+	case "NO":
+		*iomType = IOM_TYPE_NO
+	case "YES":
+		*iomType = IOM_TYPE_YES
+	case "PERMANENT_ONLY":
+		*iomType = IOM_TYPE_PERMANENT_ONLY
+	default:
+		*iomType = UNDEFINED
+		return errors.New(fmt.Sprintf("Cannot marshal '%s' into IomType", str))
+	}
+	return nil
+}
+
+func (iomType IomType) String() string {
+	switch iomType {
+	case IOM_TYPE_NO:
+		return "NO"
+	case IOM_TYPE_YES:
+		return "YES"
+	case IOM_TYPE_PERMANENT_ONLY:
+		return "PERMANENT_ONLY"
+	default:
+		return ""
+	}
+}
+
+func (iomType IomType) StringPtr() *string {
+	if iomType == UNDEFINED {
+		return nil
+	}
+	result := iomType.String()
+	return &result
+}
+
+func newIomTypeFromContent(content []byte, aggErr *AggregateError) *IomType {
+	if len(content) == 0 {
+		// no value
+		return nil
+	}
+	result := new(IomType)
+	parseEnum(content, result, aggErr)
+	return result
+}
+
 type ActiveJob struct {
 	Aggregating                         bool
 	BucketId                            string
@@ -1210,6 +1302,7 @@ type ActiveJob struct {
 	ErrorMessage                        *string
 	Id                                  string
 	ImplicitJobIdResolution             bool
+	IomType                             IomType
 	MinimizeSpanningAcrossMedia         bool
 	Naked                               bool
 	Name                                *string
@@ -1219,7 +1312,6 @@ type ActiveJob struct {
 	Rechunked                           *string
 	Replicating                         bool
 	RequestType                         JobRequestType
-	Restore                             JobRestore
 	Truncated                           bool
 	TruncatedDueToTimeout               bool
 	UserId                              string
@@ -1251,6 +1343,8 @@ func (activeJob *ActiveJob) parse(xmlNode *XmlNode, aggErr *AggregateError, logg
 			activeJob.Id = parseString(child.Content)
 		case "ImplicitJobIdResolution":
 			activeJob.ImplicitJobIdResolution = parseBool(child.Content, aggErr)
+		case "Restore":
+			parseEnum(child.Content, &activeJob.IomType, aggErr)
 		case "MinimizeSpanningAcrossMedia":
 			activeJob.MinimizeSpanningAcrossMedia = parseBool(child.Content, aggErr)
 		case "Naked":
@@ -1269,8 +1363,6 @@ func (activeJob *ActiveJob) parse(xmlNode *XmlNode, aggErr *AggregateError, logg
 			activeJob.Replicating = parseBool(child.Content, aggErr)
 		case "RequestType":
 			parseEnum(child.Content, &activeJob.RequestType, aggErr)
-		case "Restore":
-			parseEnum(child.Content, &activeJob.Restore, aggErr)
 		case "Truncated":
 			activeJob.Truncated = parseBool(child.Content, aggErr)
 		case "TruncatedDueToTimeout":
@@ -1281,56 +1373,6 @@ func (activeJob *ActiveJob) parse(xmlNode *XmlNode, aggErr *AggregateError, logg
 			activeJob.VerifyAfterWrite = parseBool(child.Content, aggErr)
 		default:
 			logger.Warningf("unable to parse unknown xml tag '%s' while parsing ActiveJob.", child.XMLName.Local)
-		}
-	}
-}
-
-type JobChunk struct {
-	BlobStoreState        JobChunkBlobStoreState
-	ChunkNumber           int
-	Id                    string
-	JobCreationDate       string
-	JobId                 string
-	NodeId                *string
-	PendingTargetCommit   bool
-	ReadFromAzureTargetId *string
-	ReadFromDs3TargetId   *string
-	ReadFromPoolId        *string
-	ReadFromS3TargetId    *string
-	ReadFromTapeId        *string
-}
-
-func (jobChunk *JobChunk) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
-
-	// Parse Child Nodes
-	for _, child := range xmlNode.Children {
-		switch child.XMLName.Local {
-		case "BlobStoreState":
-			parseEnum(child.Content, &jobChunk.BlobStoreState, aggErr)
-		case "ChunkNumber":
-			jobChunk.ChunkNumber = parseInt(child.Content, aggErr)
-		case "Id":
-			jobChunk.Id = parseString(child.Content)
-		case "JobCreationDate":
-			jobChunk.JobCreationDate = parseString(child.Content)
-		case "JobId":
-			jobChunk.JobId = parseString(child.Content)
-		case "NodeId":
-			jobChunk.NodeId = parseNullableString(child.Content)
-		case "PendingTargetCommit":
-			jobChunk.PendingTargetCommit = parseBool(child.Content, aggErr)
-		case "ReadFromAzureTargetId":
-			jobChunk.ReadFromAzureTargetId = parseNullableString(child.Content)
-		case "ReadFromDs3TargetId":
-			jobChunk.ReadFromDs3TargetId = parseNullableString(child.Content)
-		case "ReadFromPoolId":
-			jobChunk.ReadFromPoolId = parseNullableString(child.Content)
-		case "ReadFromS3TargetId":
-			jobChunk.ReadFromS3TargetId = parseNullableString(child.Content)
-		case "ReadFromTapeId":
-			jobChunk.ReadFromTapeId = parseNullableString(child.Content)
-		default:
-			logger.Warningf("unable to parse unknown xml tag '%s' while parsing JobChunk.", child.XMLName.Local)
 		}
 	}
 }
@@ -1479,6 +1521,7 @@ func (jobCreationFailed *JobCreationFailed) parse(xmlNode *XmlNode, aggErr *Aggr
 type JobCreationFailedType Enum
 
 const (
+	JOB_CREATION_FAILED_TYPE_DATA_UNAVAILABLE      JobCreationFailedType = 1 + iota
 	JOB_CREATION_FAILED_TYPE_TAPES_MUST_BE_ONLINED JobCreationFailedType = 1 + iota
 )
 
@@ -1487,6 +1530,8 @@ func (jobCreationFailedType *JobCreationFailedType) UnmarshalText(text []byte) e
 	switch str {
 	case "":
 		*jobCreationFailedType = UNDEFINED
+	case "DATA_UNAVAILABLE":
+		*jobCreationFailedType = JOB_CREATION_FAILED_TYPE_DATA_UNAVAILABLE
 	case "TAPES_MUST_BE_ONLINED":
 		*jobCreationFailedType = JOB_CREATION_FAILED_TYPE_TAPES_MUST_BE_ONLINED
 	default:
@@ -1498,6 +1543,8 @@ func (jobCreationFailedType *JobCreationFailedType) UnmarshalText(text []byte) e
 
 func (jobCreationFailedType JobCreationFailedType) String() string {
 	switch jobCreationFailedType {
+	case JOB_CREATION_FAILED_TYPE_DATA_UNAVAILABLE:
+		return "DATA_UNAVAILABLE"
 	case JOB_CREATION_FAILED_TYPE_TAPES_MUST_BE_ONLINED:
 		return "TAPES_MUST_BE_ONLINED"
 	default:
@@ -1521,6 +1568,59 @@ func newJobCreationFailedTypeFromContent(content []byte, aggErr *AggregateError)
 	result := new(JobCreationFailedType)
 	parseEnum(content, result, aggErr)
 	return result
+}
+
+type JobEntry struct {
+	BlobId                string
+	BlobStoreState        JobChunkBlobStoreState
+	ChunkId               *string
+	ChunkNumber           int
+	Id                    string
+	JobId                 string
+	NodeId                *string
+	PendingTargetCommit   bool
+	ReadFromAzureTargetId *string
+	ReadFromDs3TargetId   *string
+	ReadFromPoolId        *string
+	ReadFromS3TargetId    *string
+	ReadFromTapeId        *string
+}
+
+func (jobEntry *JobEntry) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
+
+	// Parse Child Nodes
+	for _, child := range xmlNode.Children {
+		switch child.XMLName.Local {
+		case "BlobId":
+			jobEntry.BlobId = parseString(child.Content)
+		case "BlobStoreState":
+			parseEnum(child.Content, &jobEntry.BlobStoreState, aggErr)
+		case "ChunkId":
+			jobEntry.ChunkId = parseNullableString(child.Content)
+		case "ChunkNumber":
+			jobEntry.ChunkNumber = parseInt(child.Content, aggErr)
+		case "Id":
+			jobEntry.Id = parseString(child.Content)
+		case "JobId":
+			jobEntry.JobId = parseString(child.Content)
+		case "NodeId":
+			jobEntry.NodeId = parseNullableString(child.Content)
+		case "PendingTargetCommit":
+			jobEntry.PendingTargetCommit = parseBool(child.Content, aggErr)
+		case "ReadFromAzureTargetId":
+			jobEntry.ReadFromAzureTargetId = parseNullableString(child.Content)
+		case "ReadFromDs3TargetId":
+			jobEntry.ReadFromDs3TargetId = parseNullableString(child.Content)
+		case "ReadFromPoolId":
+			jobEntry.ReadFromPoolId = parseNullableString(child.Content)
+		case "ReadFromS3TargetId":
+			jobEntry.ReadFromS3TargetId = parseNullableString(child.Content)
+		case "ReadFromTapeId":
+			jobEntry.ReadFromTapeId = parseNullableString(child.Content)
+		default:
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing JobEntry.", child.XMLName.Local)
+		}
+	}
 }
 
 type JobRequestType Enum
@@ -1576,63 +1676,6 @@ func newJobRequestTypeFromContent(content []byte, aggErr *AggregateError) *JobRe
 		return nil
 	}
 	result := new(JobRequestType)
-	parseEnum(content, result, aggErr)
-	return result
-}
-
-type JobRestore Enum
-
-const (
-	JOB_RESTORE_NO             JobRestore = 1 + iota
-	JOB_RESTORE_YES            JobRestore = 1 + iota
-	JOB_RESTORE_PERMANENT_ONLY JobRestore = 1 + iota
-)
-
-func (jobRestore *JobRestore) UnmarshalText(text []byte) error {
-	var str string = string(bytes.ToUpper(text))
-	switch str {
-	case "":
-		*jobRestore = UNDEFINED
-	case "NO":
-		*jobRestore = JOB_RESTORE_NO
-	case "YES":
-		*jobRestore = JOB_RESTORE_YES
-	case "PERMANENT_ONLY":
-		*jobRestore = JOB_RESTORE_PERMANENT_ONLY
-	default:
-		*jobRestore = UNDEFINED
-		return errors.New(fmt.Sprintf("Cannot marshal '%s' into JobRestore", str))
-	}
-	return nil
-}
-
-func (jobRestore JobRestore) String() string {
-	switch jobRestore {
-	case JOB_RESTORE_NO:
-		return "NO"
-	case JOB_RESTORE_YES:
-		return "YES"
-	case JOB_RESTORE_PERMANENT_ONLY:
-		return "PERMANENT_ONLY"
-	default:
-		return ""
-	}
-}
-
-func (jobRestore JobRestore) StringPtr() *string {
-	if jobRestore == UNDEFINED {
-		return nil
-	}
-	result := jobRestore.String()
-	return &result
-}
-
-func newJobRestoreFromContent(content []byte, aggErr *AggregateError) *JobRestore {
-	if len(content) == 0 {
-		// no value
-		return nil
-	}
-	result := new(JobRestore)
 	parseEnum(content, result, aggErr)
 	return result
 }
@@ -3471,8 +3514,9 @@ func (tapePartitionFailureNotificationRegistration *TapePartitionFailureNotifica
 type CacheEntryState Enum
 
 const (
-	CACHE_ENTRY_STATE_ALLOCATED CacheEntryState = 1 + iota
-	CACHE_ENTRY_STATE_IN_CACHE  CacheEntryState = 1 + iota
+	CACHE_ENTRY_STATE_ALLOCATED      CacheEntryState = 1 + iota
+	CACHE_ENTRY_STATE_IN_CACHE       CacheEntryState = 1 + iota
+	CACHE_ENTRY_STATE_PENDING_DELETE CacheEntryState = 1 + iota
 )
 
 func (cacheEntryState *CacheEntryState) UnmarshalText(text []byte) error {
@@ -3484,6 +3528,8 @@ func (cacheEntryState *CacheEntryState) UnmarshalText(text []byte) error {
 		*cacheEntryState = CACHE_ENTRY_STATE_ALLOCATED
 	case "IN_CACHE":
 		*cacheEntryState = CACHE_ENTRY_STATE_IN_CACHE
+	case "PENDING_DELETE":
+		*cacheEntryState = CACHE_ENTRY_STATE_PENDING_DELETE
 	default:
 		*cacheEntryState = UNDEFINED
 		return errors.New(fmt.Sprintf("Cannot marshal '%s' into CacheEntryState", str))
@@ -3497,6 +3543,8 @@ func (cacheEntryState CacheEntryState) String() string {
 		return "ALLOCATED"
 	case CACHE_ENTRY_STATE_IN_CACHE:
 		return "IN_CACHE"
+	case CACHE_ENTRY_STATE_PENDING_DELETE:
+		return "PENDING_DELETE"
 	default:
 		return ""
 	}
@@ -4217,10 +4265,12 @@ func (suspectBlobTape *SuspectBlobTape) parse(xmlNode *XmlNode, aggErr *Aggregat
 }
 
 type Tape struct {
+	AllowRollback                bool
 	AssignedToStorageDomain      bool
 	AvailableRawCapacity         *int64
 	BarCode                      *string
 	BucketId                     *string
+	CharacterizationVer          *string
 	DescriptionForIdentification *string
 	EjectDate                    *string
 	EjectLabel                   *string
@@ -4251,6 +4301,8 @@ func (tape *Tape) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
+		case "AllowRollback":
+			tape.AllowRollback = parseBool(child.Content, aggErr)
 		case "AssignedToStorageDomain":
 			tape.AssignedToStorageDomain = parseBool(child.Content, aggErr)
 		case "AvailableRawCapacity":
@@ -4259,6 +4311,8 @@ func (tape *Tape) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log
 			tape.BarCode = parseNullableString(child.Content)
 		case "BucketId":
 			tape.BucketId = parseNullableString(child.Content)
+		case "CharacterizationVer":
+			tape.CharacterizationVer = parseNullableString(child.Content)
 		case "DescriptionForIdentification":
 			tape.DescriptionForIdentification = parseNullableString(child.Content)
 		case "EjectDate":
@@ -4352,6 +4406,7 @@ func (tapeDensityDirective *TapeDensityDirective) parse(xmlNode *XmlNode, aggErr
 }
 
 type TapeDrive struct {
+	CharacterizationVer *string
 	CleaningRequired    bool
 	ErrorMessage        *string
 	ForceTapeRemoval    bool
@@ -4374,6 +4429,8 @@ func (tapeDrive *TapeDrive) parse(xmlNode *XmlNode, aggErr *AggregateError, logg
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
+		case "CharacterizationVer":
+			tapeDrive.CharacterizationVer = parseNullableString(child.Content)
 		case "CleaningRequired":
 			tapeDrive.CleaningRequired = parseBool(child.Content, aggErr)
 		case "ErrorMessage":
@@ -4639,8 +4696,10 @@ const (
 	TAPE_FAILURE_TYPE_READ_FAILED                                 TapeFailureType = 1 + iota
 	TAPE_FAILURE_TYPE_REIMPORT_REQUIRED                           TapeFailureType = 1 + iota
 	TAPE_FAILURE_TYPE_SERIAL_NUMBER_MISMATCH                      TapeFailureType = 1 + iota
+	TAPE_FAILURE_TYPE_SINGLE_PARTITION                            TapeFailureType = 1 + iota
 	TAPE_FAILURE_TYPE_VERIFY_FAILED                               TapeFailureType = 1 + iota
 	TAPE_FAILURE_TYPE_WRITE_FAILED                                TapeFailureType = 1 + iota
+	TAPE_FAILURE_TYPE_WRITE_SOURCE_FAILED                         TapeFailureType = 1 + iota
 )
 
 func (tapeFailureType *TapeFailureType) UnmarshalText(text []byte) error {
@@ -4708,10 +4767,14 @@ func (tapeFailureType *TapeFailureType) UnmarshalText(text []byte) error {
 		*tapeFailureType = TAPE_FAILURE_TYPE_REIMPORT_REQUIRED
 	case "SERIAL_NUMBER_MISMATCH":
 		*tapeFailureType = TAPE_FAILURE_TYPE_SERIAL_NUMBER_MISMATCH
+	case "SINGLE_PARTITION":
+		*tapeFailureType = TAPE_FAILURE_TYPE_SINGLE_PARTITION
 	case "VERIFY_FAILED":
 		*tapeFailureType = TAPE_FAILURE_TYPE_VERIFY_FAILED
 	case "WRITE_FAILED":
 		*tapeFailureType = TAPE_FAILURE_TYPE_WRITE_FAILED
+	case "WRITE_SOURCE_FAILED":
+		*tapeFailureType = TAPE_FAILURE_TYPE_WRITE_SOURCE_FAILED
 	default:
 		*tapeFailureType = UNDEFINED
 		return errors.New(fmt.Sprintf("Cannot marshal '%s' into TapeFailureType", str))
@@ -4781,10 +4844,14 @@ func (tapeFailureType TapeFailureType) String() string {
 		return "REIMPORT_REQUIRED"
 	case TAPE_FAILURE_TYPE_SERIAL_NUMBER_MISMATCH:
 		return "SERIAL_NUMBER_MISMATCH"
+	case TAPE_FAILURE_TYPE_SINGLE_PARTITION:
+		return "SINGLE_PARTITION"
 	case TAPE_FAILURE_TYPE_VERIFY_FAILED:
 		return "VERIFY_FAILED"
 	case TAPE_FAILURE_TYPE_WRITE_FAILED:
 		return "WRITE_FAILED"
+	case TAPE_FAILURE_TYPE_WRITE_SOURCE_FAILED:
+		return "WRITE_SOURCE_FAILED"
 	default:
 		return ""
 	}
@@ -6222,18 +6289,21 @@ func (buildInformation *BuildInformation) parse(xmlNode *XmlNode, aggErr *Aggreg
 }
 
 type BlobStoreTaskInformation struct {
-	DateScheduled string
-	DateStarted   *string
-	Description   *string
-	DriveId       *string
-	Id            int64
-	Name          *string
-	PoolId        *string
-	Priority      Priority
-	State         BlobStoreTaskState
-	TapeId        *string
-	TargetId      *string
-	TargetType    *string
+	DateScheduled      string
+	DateStarted        *string
+	Description        *string
+	DriveId            *string
+	DurationInProgress *Duration
+	DurationScheduled  *Duration
+	Id                 int64
+	JobIds             []string
+	Name               *string
+	PoolId             *string
+	Priority           Priority
+	State              BlobStoreTaskState
+	TapeId             *string
+	TargetId           *string
+	TargetType         *string
 }
 
 func (blobStoreTaskInformation *BlobStoreTaskInformation) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
@@ -6249,8 +6319,18 @@ func (blobStoreTaskInformation *BlobStoreTaskInformation) parse(xmlNode *XmlNode
 			blobStoreTaskInformation.Description = parseNullableString(child.Content)
 		case "DriveId":
 			blobStoreTaskInformation.DriveId = parseNullableString(child.Content)
+		case "DurationInProgress":
+			var model Duration
+			model.parse(&child, aggErr, logger)
+			blobStoreTaskInformation.DurationInProgress = &model
+		case "DurationScheduled":
+			var model Duration
+			model.parse(&child, aggErr, logger)
+			blobStoreTaskInformation.DurationScheduled = &model
 		case "Id":
 			blobStoreTaskInformation.Id = parseInt64(child.Content, aggErr)
+		case "JobId":
+			blobStoreTaskInformation.JobIds = parseStringSlice("JobIds", child.Children, aggErr, logger)
 		case "Name":
 			blobStoreTaskInformation.Name = parseNullableString(child.Content)
 		case "PoolId":
@@ -6438,6 +6518,38 @@ func (cacheInformation *CacheInformation) parse(xmlNode *XmlNode, aggErr *Aggreg
 	}
 }
 
+type AbmConfigApiBean struct {
+	DataPolicies   []DataPolicyApiBean
+	Message        *string
+	PoolPartitions []PoolPartitionApiBean
+	StorageDomains []StorageDomainApiBean
+	TapePartitions []TapePartitionApiBean
+	Targets        []TargetApiBean
+}
+
+func (abmConfigApiBean *AbmConfigApiBean) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
+
+	// Parse Child Nodes
+	for _, child := range xmlNode.Children {
+		switch child.XMLName.Local {
+		case "DataPoliciesThatHaveBuckets":
+			abmConfigApiBean.DataPolicies = parseDataPolicyApiBeanSlice("DataPolicy", child.Children, aggErr, logger)
+		case "Message":
+			abmConfigApiBean.Message = parseNullableString(child.Content)
+		case "PoolPartitions":
+			abmConfigApiBean.PoolPartitions = parsePoolPartitionApiBeanSlice("PoolPartition", child.Children, aggErr, logger)
+		case "StorageDomains":
+			abmConfigApiBean.StorageDomains = parseStorageDomainApiBeanSlice("StorageDomain", child.Children, aggErr, logger)
+		case "TapePartitions":
+			abmConfigApiBean.TapePartitions = parseTapePartitionApiBeanSlice("TapePartition", child.Children, aggErr, logger)
+		case "Targets":
+			abmConfigApiBean.Targets = parseTargetApiBeanSlice("Target", child.Children, aggErr, logger)
+		default:
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing AbmConfigApiBean.", child.XMLName.Local)
+		}
+	}
+}
+
 type BucketDetails struct {
 	CreationDate *string
 	Name         *string
@@ -6545,30 +6657,205 @@ func (listAllMyBucketsResult *ListAllMyBucketsResult) parse(xmlNode *XmlNode, ag
 	}
 }
 
-type CompleteMultipartUploadResult struct {
-	Bucket   *string
-	ETag     *string
-	Key      *string
-	Location *string
+type DataPersistenceRuleApiBean struct {
+	Id                  string
+	IsolationLevel      DataIsolationLevel
+	MinimumDaysToRetain *int
+	State               DataPlacementRuleState
+	StorageDomainId     string
+	StorageDomainName   *string
+	Type                DataPersistenceRuleType
 }
 
-func (completeMultipartUploadResult *CompleteMultipartUploadResult) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
+func (dataPersistenceRuleApiBean *DataPersistenceRuleApiBean) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
+	// Parse Attributes
+	for _, attr := range xmlNode.Attrs {
+		switch attr.Name.Local {
+		case "StorageDomainName":
+			dataPersistenceRuleApiBean.StorageDomainName = parseNullableStringFromString(attr.Value)
+		default:
+			logger.Warningf("unable to parse unknown attribute '%s' while parsing DataPersistenceRuleApiBean.", attr.Name.Local)
+		}
+	}
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
-		case "Bucket":
-			completeMultipartUploadResult.Bucket = parseNullableString(child.Content)
-		case "ETag":
-			completeMultipartUploadResult.ETag = parseNullableString(child.Content)
-		case "Key":
-			completeMultipartUploadResult.Key = parseNullableString(child.Content)
-		case "Location":
-			completeMultipartUploadResult.Location = parseNullableString(child.Content)
+		case "Id":
+			dataPersistenceRuleApiBean.Id = parseString(child.Content)
+		case "IsolationLevel":
+			parseEnum(child.Content, &dataPersistenceRuleApiBean.IsolationLevel, aggErr)
+		case "MinimumDaysToRetain":
+			dataPersistenceRuleApiBean.MinimumDaysToRetain = parseNullableInt(child.Content, aggErr)
+		case "State":
+			parseEnum(child.Content, &dataPersistenceRuleApiBean.State, aggErr)
+		case "StorageDomainId":
+			dataPersistenceRuleApiBean.StorageDomainId = parseString(child.Content)
+		case "Type":
+			parseEnum(child.Content, &dataPersistenceRuleApiBean.Type, aggErr)
 		default:
-			logger.Warningf("unable to parse unknown xml tag '%s' while parsing CompleteMultipartUploadResult.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing DataPersistenceRuleApiBean.", child.XMLName.Local)
 		}
 	}
+}
+
+func parseDataPersistenceRuleApiBeanSlice(tagName string, xmlNodes []XmlNode, aggErr *AggregateError, logger sdk_log.Logger) []DataPersistenceRuleApiBean {
+	var result []DataPersistenceRuleApiBean
+	for _, curXmlNode := range xmlNodes {
+		if curXmlNode.XMLName.Local == tagName {
+			var curResult DataPersistenceRuleApiBean
+			curResult.parse(&curXmlNode, aggErr, logger)
+			result = append(result, curResult)
+		} else {
+			logger.Warningf("Discovered unexpected xml tag '%s' when expected tag '%s' when parsing DataPersistenceRuleApiBean struct.", curXmlNode.XMLName.Local, tagName)
+		}
+	}
+	return result
+}
+
+type DataPolicyApiBean struct {
+	AlwaysForcePutJobCreation         bool
+	AlwaysMinimizeSpanningAcrossMedia bool
+	BlobbingEnabled                   bool
+	Buckets                           []HumanReadableBucketApiBean
+	ChecksumType                      ChecksumType
+	CreationDate                      string
+	DataPersistenceRules              []DataPersistenceRuleApiBean
+	DataReplicationRules              []DataReplicationRuleApiBean
+	DefaultBlobSize                   *int64
+	DefaultGetJobPriority             Priority
+	DefaultPutJobPriority             Priority
+	DefaultVerifyAfterWrite           bool
+	DefaultVerifyJobPriority          Priority
+	EndToEndCrcRequired               bool
+	Id                                string
+	MaxVersionsToKeep                 int
+	Name                              *string
+	RebuildPriority                   Priority
+	Versioning                        VersioningLevel
+}
+
+func (dataPolicyApiBean *DataPolicyApiBean) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
+	// Parse Attributes
+	for _, attr := range xmlNode.Attrs {
+		switch attr.Name.Local {
+		case "Name":
+			dataPolicyApiBean.Name = parseNullableStringFromString(attr.Value)
+		default:
+			logger.Warningf("unable to parse unknown attribute '%s' while parsing DataPolicyApiBean.", attr.Name.Local)
+		}
+	}
+
+	// Parse Child Nodes
+	for _, child := range xmlNode.Children {
+		switch child.XMLName.Local {
+		case "AlwaysForcePutJobCreation":
+			dataPolicyApiBean.AlwaysForcePutJobCreation = parseBool(child.Content, aggErr)
+		case "AlwaysMinimizeSpanningAcrossMedia":
+			dataPolicyApiBean.AlwaysMinimizeSpanningAcrossMedia = parseBool(child.Content, aggErr)
+		case "BlobbingEnabled":
+			dataPolicyApiBean.BlobbingEnabled = parseBool(child.Content, aggErr)
+		case "Buckets":
+			dataPolicyApiBean.Buckets = parseHumanReadableBucketApiBeanSlice("Bucket", child.Children, aggErr, logger)
+		case "ChecksumType":
+			parseEnum(child.Content, &dataPolicyApiBean.ChecksumType, aggErr)
+		case "CreationDate":
+			dataPolicyApiBean.CreationDate = parseString(child.Content)
+		case "LocalCopies":
+			dataPolicyApiBean.DataPersistenceRules = parseDataPersistenceRuleApiBeanSlice("DataPersistenceRule", child.Children, aggErr, logger)
+		case "RemoteCopies":
+			dataPolicyApiBean.DataReplicationRules = parseDataReplicationRuleApiBeanSlice("DataReplicationRule", child.Children, aggErr, logger)
+		case "DefaultBlobSize":
+			dataPolicyApiBean.DefaultBlobSize = parseNullableInt64(child.Content, aggErr)
+		case "DefaultGetJobPriority":
+			parseEnum(child.Content, &dataPolicyApiBean.DefaultGetJobPriority, aggErr)
+		case "DefaultPutJobPriority":
+			parseEnum(child.Content, &dataPolicyApiBean.DefaultPutJobPriority, aggErr)
+		case "DefaultVerifyAfterWrite":
+			dataPolicyApiBean.DefaultVerifyAfterWrite = parseBool(child.Content, aggErr)
+		case "DefaultVerifyJobPriority":
+			parseEnum(child.Content, &dataPolicyApiBean.DefaultVerifyJobPriority, aggErr)
+		case "EndToEndCrcRequired":
+			dataPolicyApiBean.EndToEndCrcRequired = parseBool(child.Content, aggErr)
+		case "Id":
+			dataPolicyApiBean.Id = parseString(child.Content)
+		case "MaxVersionsToKeep":
+			dataPolicyApiBean.MaxVersionsToKeep = parseInt(child.Content, aggErr)
+		case "RebuildPriority":
+			parseEnum(child.Content, &dataPolicyApiBean.RebuildPriority, aggErr)
+		case "Versioning":
+			parseEnum(child.Content, &dataPolicyApiBean.Versioning, aggErr)
+		default:
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing DataPolicyApiBean.", child.XMLName.Local)
+		}
+	}
+}
+
+func parseDataPolicyApiBeanSlice(tagName string, xmlNodes []XmlNode, aggErr *AggregateError, logger sdk_log.Logger) []DataPolicyApiBean {
+	var result []DataPolicyApiBean
+	for _, curXmlNode := range xmlNodes {
+		if curXmlNode.XMLName.Local == tagName {
+			var curResult DataPolicyApiBean
+			curResult.parse(&curXmlNode, aggErr, logger)
+			result = append(result, curResult)
+		} else {
+			logger.Warningf("Discovered unexpected xml tag '%s' when expected tag '%s' when parsing DataPolicyApiBean struct.", curXmlNode.XMLName.Local, tagName)
+		}
+	}
+	return result
+}
+
+type DataReplicationRuleApiBean struct {
+	Id               string
+	ReplicateDeletes bool
+	State            DataPlacementRuleState
+	TargetId         string
+	TargetName       *string
+	Type             DataReplicationRuleType
+}
+
+func (dataReplicationRuleApiBean *DataReplicationRuleApiBean) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
+	// Parse Attributes
+	for _, attr := range xmlNode.Attrs {
+		switch attr.Name.Local {
+		case "TargetName":
+			dataReplicationRuleApiBean.TargetName = parseNullableStringFromString(attr.Value)
+		default:
+			logger.Warningf("unable to parse unknown attribute '%s' while parsing DataReplicationRuleApiBean.", attr.Name.Local)
+		}
+	}
+
+	// Parse Child Nodes
+	for _, child := range xmlNode.Children {
+		switch child.XMLName.Local {
+		case "Id":
+			dataReplicationRuleApiBean.Id = parseString(child.Content)
+		case "ReplicateDeletes":
+			dataReplicationRuleApiBean.ReplicateDeletes = parseBool(child.Content, aggErr)
+		case "State":
+			parseEnum(child.Content, &dataReplicationRuleApiBean.State, aggErr)
+		case "TargetId":
+			dataReplicationRuleApiBean.TargetId = parseString(child.Content)
+		case "Type":
+			parseEnum(child.Content, &dataReplicationRuleApiBean.Type, aggErr)
+		default:
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing DataReplicationRuleApiBean.", child.XMLName.Local)
+		}
+	}
+}
+
+func parseDataReplicationRuleApiBeanSlice(tagName string, xmlNodes []XmlNode, aggErr *AggregateError, logger sdk_log.Logger) []DataReplicationRuleApiBean {
+	var result []DataReplicationRuleApiBean
+	for _, curXmlNode := range xmlNodes {
+		if curXmlNode.XMLName.Local == tagName {
+			var curResult DataReplicationRuleApiBean
+			curResult.parse(&curXmlNode, aggErr, logger)
+			result = append(result, curResult)
+		} else {
+			logger.Warningf("Discovered unexpected xml tag '%s' when expected tag '%s' when parsing DataReplicationRuleApiBean struct.", curXmlNode.XMLName.Local, tagName)
+		}
+	}
+	return result
 }
 
 type DeleteObjectError struct {
@@ -6619,6 +6906,46 @@ func (deleteResult *DeleteResult) parse(xmlNode *XmlNode, aggErr *AggregateError
 			logger.Warningf("unable to parse unknown xml tag '%s' while parsing DeleteResult.", child.XMLName.Local)
 		}
 	}
+}
+
+type DestinationSummary struct {
+	CompletedChunks  []Objects
+	Id               string
+	IncompleteChunks []Objects
+	Name             *string
+}
+
+func (destinationSummary *DestinationSummary) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
+
+	// Parse Child Nodes
+	for _, child := range xmlNode.Children {
+		switch child.XMLName.Local {
+		case "Complete":
+			destinationSummary.CompletedChunks = parseObjectsSlice("JobChunk", child.Children, aggErr, logger)
+		case "Id":
+			destinationSummary.Id = parseString(child.Content)
+		case "Incomplete":
+			destinationSummary.IncompleteChunks = parseObjectsSlice("JobChunk", child.Children, aggErr, logger)
+		case "Name":
+			destinationSummary.Name = parseNullableString(child.Content)
+		default:
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing DestinationSummary.", child.XMLName.Local)
+		}
+	}
+}
+
+func parseDestinationSummarySlice(tagName string, xmlNodes []XmlNode, aggErr *AggregateError, logger sdk_log.Logger) []DestinationSummary {
+	var result []DestinationSummary
+	for _, curXmlNode := range xmlNodes {
+		if curXmlNode.XMLName.Local == tagName {
+			var curResult DestinationSummary
+			curResult.parse(&curXmlNode, aggErr, logger)
+			result = append(result, curResult)
+		} else {
+			logger.Warningf("Discovered unexpected xml tag '%s' when expected tag '%s' when parsing DestinationSummary struct.", curXmlNode.XMLName.Local, tagName)
+		}
+	}
+	return result
 }
 
 type DetailedTapePartition struct {
@@ -6704,6 +7031,56 @@ func (detailedTapePartition *DetailedTapePartition) parse(xmlNode *XmlNode, aggE
 	}
 }
 
+type JobChunk struct {
+	BlobStoreState        JobChunkBlobStoreState
+	ChunkNumber           int
+	Id                    string
+	JobCreationDate       string
+	JobId                 string
+	NodeId                *string
+	PendingTargetCommit   bool
+	ReadFromAzureTargetId *string
+	ReadFromDs3TargetId   *string
+	ReadFromPoolId        *string
+	ReadFromS3TargetId    *string
+	ReadFromTapeId        *string
+}
+
+func (jobChunk *JobChunk) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
+
+	// Parse Child Nodes
+	for _, child := range xmlNode.Children {
+		switch child.XMLName.Local {
+		case "BlobStoreState":
+			parseEnum(child.Content, &jobChunk.BlobStoreState, aggErr)
+		case "ChunkNumber":
+			jobChunk.ChunkNumber = parseInt(child.Content, aggErr)
+		case "Id":
+			jobChunk.Id = parseString(child.Content)
+		case "JobCreationDate":
+			jobChunk.JobCreationDate = parseString(child.Content)
+		case "JobId":
+			jobChunk.JobId = parseString(child.Content)
+		case "NodeId":
+			jobChunk.NodeId = parseNullableString(child.Content)
+		case "PendingTargetCommit":
+			jobChunk.PendingTargetCommit = parseBool(child.Content, aggErr)
+		case "ReadFromAzureTargetId":
+			jobChunk.ReadFromAzureTargetId = parseNullableString(child.Content)
+		case "ReadFromDs3TargetId":
+			jobChunk.ReadFromDs3TargetId = parseNullableString(child.Content)
+		case "ReadFromPoolId":
+			jobChunk.ReadFromPoolId = parseNullableString(child.Content)
+		case "ReadFromS3TargetId":
+			jobChunk.ReadFromS3TargetId = parseNullableString(child.Content)
+		case "ReadFromTapeId":
+			jobChunk.ReadFromTapeId = parseNullableString(child.Content)
+		default:
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing JobChunk.", child.XMLName.Local)
+		}
+	}
+}
+
 type Error struct {
 	Code          *string
 	HttpErrorCode int
@@ -6733,27 +7110,45 @@ func (error *Error) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_l
 	}
 }
 
-type InitiateMultipartUploadResult struct {
-	Bucket   *string
-	Key      *string
-	UploadId *string
+type HumanReadableBucketApiBean struct {
+	CreationDate *string
+	Name         *string
 }
 
-func (initiateMultipartUploadResult *InitiateMultipartUploadResult) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
+func (humanReadableBucketApiBean *HumanReadableBucketApiBean) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
+	// Parse Attributes
+	for _, attr := range xmlNode.Attrs {
+		switch attr.Name.Local {
+		case "Name":
+			humanReadableBucketApiBean.Name = parseNullableStringFromString(attr.Value)
+		default:
+			logger.Warningf("unable to parse unknown attribute '%s' while parsing HumanReadableBucketApiBean.", attr.Name.Local)
+		}
+	}
 
 	// Parse Child Nodes
 	for _, child := range xmlNode.Children {
 		switch child.XMLName.Local {
-		case "Bucket":
-			initiateMultipartUploadResult.Bucket = parseNullableString(child.Content)
-		case "Key":
-			initiateMultipartUploadResult.Key = parseNullableString(child.Content)
-		case "UploadId":
-			initiateMultipartUploadResult.UploadId = parseNullableString(child.Content)
+		case "CreationDate":
+			humanReadableBucketApiBean.CreationDate = parseNullableString(child.Content)
 		default:
-			logger.Warningf("unable to parse unknown xml tag '%s' while parsing InitiateMultipartUploadResult.", child.XMLName.Local)
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing HumanReadableBucketApiBean.", child.XMLName.Local)
 		}
 	}
+}
+
+func parseHumanReadableBucketApiBeanSlice(tagName string, xmlNodes []XmlNode, aggErr *AggregateError, logger sdk_log.Logger) []HumanReadableBucketApiBean {
+	var result []HumanReadableBucketApiBean
+	for _, curXmlNode := range xmlNodes {
+		if curXmlNode.XMLName.Local == tagName {
+			var curResult HumanReadableBucketApiBean
+			curResult.parse(&curXmlNode, aggErr, logger)
+			result = append(result, curResult)
+		} else {
+			logger.Warningf("Discovered unexpected xml tag '%s' when expected tag '%s' when parsing HumanReadableBucketApiBean struct.", curXmlNode.XMLName.Local, tagName)
+		}
+	}
+	return result
 }
 
 type Job struct {
@@ -6877,6 +7272,20 @@ func (objects *Objects) parse(xmlNode *XmlNode, aggErr *AggregateError, logger s
 	}
 }
 
+func parseObjectsSlice(tagName string, xmlNodes []XmlNode, aggErr *AggregateError, logger sdk_log.Logger) []Objects {
+	var result []Objects
+	for _, curXmlNode := range xmlNodes {
+		if curXmlNode.XMLName.Local == tagName {
+			var curResult Objects
+			curResult.parse(&curXmlNode, aggErr, logger)
+			result = append(result, curResult)
+		} else {
+			logger.Warningf("Discovered unexpected xml tag '%s' when expected tag '%s' when parsing Objects struct.", curXmlNode.XMLName.Local, tagName)
+		}
+	}
+	return result
+}
+
 type JobStatus Enum
 
 const (
@@ -6932,6 +7341,84 @@ func newJobStatusFromContent(content []byte, aggErr *AggregateError) *JobStatus 
 	result := new(JobStatus)
 	parseEnum(content, result, aggErr)
 	return result
+}
+
+type JobSummaryApiBean struct {
+	Aggregating                         bool
+	BucketName                          *string
+	CachedSizeInBytes                   int64
+	ChunkClientProcessingOrderGuarantee JobChunkClientProcessingOrderGuarantee
+	CompletedSizeInBytes                int64
+	DestinationSummaries                []DestinationSummary
+	EntirelyInCache                     *bool
+	JobId                               string
+	Naked                               bool
+	Name                                *string
+	Nodes                               []JobNode
+	OriginalSizeInBytes                 int64
+	Priority                            Priority
+	RequestType                         JobRequestType
+	StartDate                           string
+	Status                              JobStatus
+	Summary                             *string
+	UserId                              string
+	UserName                            *string
+}
+
+func (jobSummaryApiBean *JobSummaryApiBean) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
+	// Parse Attributes
+	for _, attr := range xmlNode.Attrs {
+		switch attr.Name.Local {
+		case "Aggregating":
+			jobSummaryApiBean.Aggregating = parseBoolFromString(attr.Value, aggErr)
+		case "BucketName":
+			jobSummaryApiBean.BucketName = parseNullableStringFromString(attr.Value)
+		case "CachedSizeInBytes":
+			jobSummaryApiBean.CachedSizeInBytes = parseInt64FromString(attr.Value, aggErr)
+		case "ChunkClientProcessingOrderGuarantee":
+			parseEnumFromString(attr.Value, &jobSummaryApiBean.ChunkClientProcessingOrderGuarantee, aggErr)
+		case "CompletedSizeInBytes":
+			jobSummaryApiBean.CompletedSizeInBytes = parseInt64FromString(attr.Value, aggErr)
+		case "EntirelyInCache":
+			jobSummaryApiBean.EntirelyInCache = parseNullableBoolFromString(attr.Value, aggErr)
+		case "JobId":
+			jobSummaryApiBean.JobId = attr.Value
+		case "Naked":
+			jobSummaryApiBean.Naked = parseBoolFromString(attr.Value, aggErr)
+		case "Name":
+			jobSummaryApiBean.Name = parseNullableStringFromString(attr.Value)
+		case "OriginalSizeInBytes":
+			jobSummaryApiBean.OriginalSizeInBytes = parseInt64FromString(attr.Value, aggErr)
+		case "Priority":
+			parseEnumFromString(attr.Value, &jobSummaryApiBean.Priority, aggErr)
+		case "RequestType":
+			parseEnumFromString(attr.Value, &jobSummaryApiBean.RequestType, aggErr)
+		case "StartDate":
+			jobSummaryApiBean.StartDate = attr.Value
+		case "Status":
+			parseEnumFromString(attr.Value, &jobSummaryApiBean.Status, aggErr)
+		case "UserId":
+			jobSummaryApiBean.UserId = attr.Value
+		case "UserName":
+			jobSummaryApiBean.UserName = parseNullableStringFromString(attr.Value)
+		default:
+			logger.Warningf("unable to parse unknown attribute '%s' while parsing JobSummaryApiBean.", attr.Name.Local)
+		}
+	}
+
+	// Parse Child Nodes
+	for _, child := range xmlNode.Children {
+		switch child.XMLName.Local {
+		case "Destinations":
+			jobSummaryApiBean.DestinationSummaries = parseDestinationSummarySlice("Destination", child.Children, aggErr, logger)
+		case "Nodes":
+			jobSummaryApiBean.Nodes = parseJobNodeSlice("Node", child.Children, aggErr, logger)
+		case "Summary":
+			jobSummaryApiBean.Summary = parseNullableString(child.Content)
+		default:
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing JobSummaryApiBean.", child.XMLName.Local)
+		}
+	}
 }
 
 type MasterObjectList struct {
@@ -7030,149 +7517,6 @@ func (jobList *JobList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger s
 	}
 }
 
-type ListPartsResult struct {
-	Bucket               *string
-	Key                  *string
-	MaxParts             int
-	NextPartNumberMarker int
-	Owner                User
-	PartNumberMarker     *int
-	Parts                []MultiPartUploadPart
-	Truncated            bool
-	UploadId             string
-}
-
-func (listPartsResult *ListPartsResult) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
-
-	// Parse Child Nodes
-	for _, child := range xmlNode.Children {
-		switch child.XMLName.Local {
-		case "Bucket":
-			listPartsResult.Bucket = parseNullableString(child.Content)
-		case "Key":
-			listPartsResult.Key = parseNullableString(child.Content)
-		case "MaxParts":
-			listPartsResult.MaxParts = parseInt(child.Content, aggErr)
-		case "NextPartNumberMarker":
-			listPartsResult.NextPartNumberMarker = parseInt(child.Content, aggErr)
-		case "Owner":
-			listPartsResult.Owner.parse(&child, aggErr, logger)
-		case "PartNumberMarker":
-			listPartsResult.PartNumberMarker = parseNullableInt(child.Content, aggErr)
-		case "Part":
-			var model MultiPartUploadPart
-			model.parse(&child, aggErr, logger)
-			listPartsResult.Parts = append(listPartsResult.Parts, model)
-		case "IsTruncated":
-			listPartsResult.Truncated = parseBool(child.Content, aggErr)
-		case "UploadId":
-			listPartsResult.UploadId = parseString(child.Content)
-		default:
-			logger.Warningf("unable to parse unknown xml tag '%s' while parsing ListPartsResult.", child.XMLName.Local)
-		}
-	}
-}
-
-type ListMultiPartUploadsResult struct {
-	Bucket             *string
-	CommonPrefixes     []string
-	Delimiter          *string
-	KeyMarker          *string
-	MaxUploads         int
-	NextKeyMarker      *string
-	NextUploadIdMarker *string
-	Prefix             *string
-	Truncated          bool
-	UploadIdMarker     *string
-	Uploads            []MultiPartUpload
-}
-
-func (listMultiPartUploadsResult *ListMultiPartUploadsResult) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
-
-	// Parse Child Nodes
-	for _, child := range xmlNode.Children {
-		switch child.XMLName.Local {
-		case "Bucket":
-			listMultiPartUploadsResult.Bucket = parseNullableString(child.Content)
-		case "CommonPrefixes":
-			var prefixes []string
-			prefixes = parseStringSlice("Prefix", child.Children, aggErr, logger)
-			listMultiPartUploadsResult.CommonPrefixes = append(listMultiPartUploadsResult.CommonPrefixes, prefixes...)
-		case "Delimiter":
-			listMultiPartUploadsResult.Delimiter = parseNullableString(child.Content)
-		case "KeyMarker":
-			listMultiPartUploadsResult.KeyMarker = parseNullableString(child.Content)
-		case "MaxUploads":
-			listMultiPartUploadsResult.MaxUploads = parseInt(child.Content, aggErr)
-		case "NextKeyMarker":
-			listMultiPartUploadsResult.NextKeyMarker = parseNullableString(child.Content)
-		case "NextUploadIdMarker":
-			listMultiPartUploadsResult.NextUploadIdMarker = parseNullableString(child.Content)
-		case "Prefix":
-			listMultiPartUploadsResult.Prefix = parseNullableString(child.Content)
-		case "IsTruncated":
-			listMultiPartUploadsResult.Truncated = parseBool(child.Content, aggErr)
-		case "UploadIdMarker":
-			listMultiPartUploadsResult.UploadIdMarker = parseNullableString(child.Content)
-		case "Upload":
-			var model MultiPartUpload
-			model.parse(&child, aggErr, logger)
-			listMultiPartUploadsResult.Uploads = append(listMultiPartUploadsResult.Uploads, model)
-		default:
-			logger.Warningf("unable to parse unknown xml tag '%s' while parsing ListMultiPartUploadsResult.", child.XMLName.Local)
-		}
-	}
-}
-
-type MultiPartUpload struct {
-	Initiated string
-	Key       *string
-	Owner     User
-	UploadId  string
-}
-
-func (multiPartUpload *MultiPartUpload) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
-
-	// Parse Child Nodes
-	for _, child := range xmlNode.Children {
-		switch child.XMLName.Local {
-		case "Initiated":
-			multiPartUpload.Initiated = parseString(child.Content)
-		case "Key":
-			multiPartUpload.Key = parseNullableString(child.Content)
-		case "Owner":
-			multiPartUpload.Owner.parse(&child, aggErr, logger)
-		case "UploadId":
-			multiPartUpload.UploadId = parseString(child.Content)
-		default:
-			logger.Warningf("unable to parse unknown xml tag '%s' while parsing MultiPartUpload.", child.XMLName.Local)
-		}
-	}
-}
-
-type MultiPartUploadPart struct {
-	ETag         *string
-	LastModified string
-	PartNumber   int
-}
-
-func (multiPartUploadPart *MultiPartUploadPart) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
-
-	// Parse Child Nodes
-	for _, child := range xmlNode.Children {
-		switch child.XMLName.Local {
-		case "ETag":
-			multiPartUploadPart.ETag = parseNullableString(child.Content)
-		case "LastModified":
-			multiPartUploadPart.LastModified = parseString(child.Content)
-		case "PartNumber":
-			multiPartUploadPart.PartNumber = parseInt(child.Content, aggErr)
-		default:
-			logger.Warningf("unable to parse unknown xml tag '%s' while parsing MultiPartUploadPart.", child.XMLName.Local)
-		}
-	}
-}
-
 type JobNode struct {
 	EndPoint  *string
 	HttpPort  *int
@@ -7207,6 +7551,53 @@ func parseJobNodeSlice(tagName string, xmlNodes []XmlNode, aggErr *AggregateErro
 			result = append(result, curResult)
 		} else {
 			logger.Warningf("Discovered unexpected xml tag '%s' when expected tag '%s' when parsing JobNode struct.", curXmlNode.XMLName.Local, tagName)
+		}
+	}
+	return result
+}
+
+type PoolPartitionApiBean struct {
+	Id        string
+	Name      *string
+	PoolCount int
+	Type      PoolType
+}
+
+func (poolPartitionApiBean *PoolPartitionApiBean) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
+	// Parse Attributes
+	for _, attr := range xmlNode.Attrs {
+		switch attr.Name.Local {
+		case "Name":
+			poolPartitionApiBean.Name = parseNullableStringFromString(attr.Value)
+		default:
+			logger.Warningf("unable to parse unknown attribute '%s' while parsing PoolPartitionApiBean.", attr.Name.Local)
+		}
+	}
+
+	// Parse Child Nodes
+	for _, child := range xmlNode.Children {
+		switch child.XMLName.Local {
+		case "Id":
+			poolPartitionApiBean.Id = parseString(child.Content)
+		case "PoolCount":
+			poolPartitionApiBean.PoolCount = parseInt(child.Content, aggErr)
+		case "Type":
+			parseEnum(child.Content, &poolPartitionApiBean.Type, aggErr)
+		default:
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing PoolPartitionApiBean.", child.XMLName.Local)
+		}
+	}
+}
+
+func parsePoolPartitionApiBeanSlice(tagName string, xmlNodes []XmlNode, aggErr *AggregateError, logger sdk_log.Logger) []PoolPartitionApiBean {
+	var result []PoolPartitionApiBean
+	for _, curXmlNode := range xmlNodes {
+		if curXmlNode.XMLName.Local == tagName {
+			var curResult PoolPartitionApiBean
+			curResult.parse(&curXmlNode, aggErr, logger)
+			result = append(result, curResult)
+		} else {
+			logger.Warningf("Discovered unexpected xml tag '%s' when expected tag '%s' when parsing PoolPartitionApiBean struct.", curXmlNode.XMLName.Local, tagName)
 		}
 	}
 	return result
@@ -7268,6 +7659,228 @@ func (s3ObjectToDelete *S3ObjectToDelete) parse(xmlNode *XmlNode, aggErr *Aggreg
 			logger.Warningf("unable to parse unknown xml tag '%s' while parsing S3ObjectToDelete.", child.XMLName.Local)
 		}
 	}
+}
+
+type StorageDomainApiBean struct {
+	AutoEjectMediaFullThreshold            *int64
+	AutoEjectUponCron                      *string
+	AutoEjectUponJobCancellation           bool
+	AutoEjectUponJobCompletion             bool
+	AutoEjectUponMediaFull                 bool
+	Id                                     string
+	LtfsFileNaming                         LtfsFileNamingMode
+	MaxTapeFragmentationPercent            int
+	MaximumAutoVerificationFrequencyInDays *int
+	MediaEjectionAllowed                   bool
+	Name                                   *string
+	SecureMediaAllocation                  bool
+	StorageDomainMembers                   []StorageDomainMemberApiBean
+	VerifyPriorToAutoEject                 *Priority
+	WriteOptimization                      WriteOptimization
+}
+
+func (storageDomainApiBean *StorageDomainApiBean) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
+	// Parse Attributes
+	for _, attr := range xmlNode.Attrs {
+		switch attr.Name.Local {
+		case "Name":
+			storageDomainApiBean.Name = parseNullableStringFromString(attr.Value)
+		default:
+			logger.Warningf("unable to parse unknown attribute '%s' while parsing StorageDomainApiBean.", attr.Name.Local)
+		}
+	}
+
+	// Parse Child Nodes
+	for _, child := range xmlNode.Children {
+		switch child.XMLName.Local {
+		case "AutoEjectMediaFullThreshold":
+			storageDomainApiBean.AutoEjectMediaFullThreshold = parseNullableInt64(child.Content, aggErr)
+		case "AutoEjectUponCron":
+			storageDomainApiBean.AutoEjectUponCron = parseNullableString(child.Content)
+		case "AutoEjectUponJobCancellation":
+			storageDomainApiBean.AutoEjectUponJobCancellation = parseBool(child.Content, aggErr)
+		case "AutoEjectUponJobCompletion":
+			storageDomainApiBean.AutoEjectUponJobCompletion = parseBool(child.Content, aggErr)
+		case "AutoEjectUponMediaFull":
+			storageDomainApiBean.AutoEjectUponMediaFull = parseBool(child.Content, aggErr)
+		case "Id":
+			storageDomainApiBean.Id = parseString(child.Content)
+		case "LtfsFileNaming":
+			parseEnum(child.Content, &storageDomainApiBean.LtfsFileNaming, aggErr)
+		case "MaxTapeFragmentationPercent":
+			storageDomainApiBean.MaxTapeFragmentationPercent = parseInt(child.Content, aggErr)
+		case "MaximumAutoVerificationFrequencyInDays":
+			storageDomainApiBean.MaximumAutoVerificationFrequencyInDays = parseNullableInt(child.Content, aggErr)
+		case "MediaEjectionAllowed":
+			storageDomainApiBean.MediaEjectionAllowed = parseBool(child.Content, aggErr)
+		case "SecureMediaAllocation":
+			storageDomainApiBean.SecureMediaAllocation = parseBool(child.Content, aggErr)
+		case "StorageDomainMembers":
+			storageDomainApiBean.StorageDomainMembers = parseStorageDomainMemberApiBeanSlice("StorageDomainMember", child.Children, aggErr, logger)
+		case "VerifyPriorToAutoEject":
+			storageDomainApiBean.VerifyPriorToAutoEject = newPriorityFromContent(child.Content, aggErr)
+		case "WriteOptimization":
+			parseEnum(child.Content, &storageDomainApiBean.WriteOptimization, aggErr)
+		default:
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing StorageDomainApiBean.", child.XMLName.Local)
+		}
+	}
+}
+
+func parseStorageDomainApiBeanSlice(tagName string, xmlNodes []XmlNode, aggErr *AggregateError, logger sdk_log.Logger) []StorageDomainApiBean {
+	var result []StorageDomainApiBean
+	for _, curXmlNode := range xmlNodes {
+		if curXmlNode.XMLName.Local == tagName {
+			var curResult StorageDomainApiBean
+			curResult.parse(&curXmlNode, aggErr, logger)
+			result = append(result, curResult)
+		} else {
+			logger.Warningf("Discovered unexpected xml tag '%s' when expected tag '%s' when parsing StorageDomainApiBean struct.", curXmlNode.XMLName.Local, tagName)
+		}
+	}
+	return result
+}
+
+type StorageDomainMemberApiBean struct {
+	AutoCompactionThreshold *int
+	Id                      string
+	PartitionName           *string
+	PoolPartitionId         *string
+	State                   StorageDomainMemberState
+	TapePartitionId         *string
+	TapeType                string
+	WritePreference         WritePreferenceLevel
+}
+
+func (storageDomainMemberApiBean *StorageDomainMemberApiBean) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
+	// Parse Attributes
+	for _, attr := range xmlNode.Attrs {
+		switch attr.Name.Local {
+		case "PartitionName":
+			storageDomainMemberApiBean.PartitionName = parseNullableStringFromString(attr.Value)
+		case "TapeType":
+			storageDomainMemberApiBean.TapeType = attr.Value
+		default:
+			logger.Warningf("unable to parse unknown attribute '%s' while parsing StorageDomainMemberApiBean.", attr.Name.Local)
+		}
+	}
+
+	// Parse Child Nodes
+	for _, child := range xmlNode.Children {
+		switch child.XMLName.Local {
+		case "AutoCompactionThreshold":
+			storageDomainMemberApiBean.AutoCompactionThreshold = parseNullableInt(child.Content, aggErr)
+		case "Id":
+			storageDomainMemberApiBean.Id = parseString(child.Content)
+		case "PoolPartitionId":
+			storageDomainMemberApiBean.PoolPartitionId = parseNullableString(child.Content)
+		case "State":
+			parseEnum(child.Content, &storageDomainMemberApiBean.State, aggErr)
+		case "TapePartitionId":
+			storageDomainMemberApiBean.TapePartitionId = parseNullableString(child.Content)
+		case "WritePreference":
+			parseEnum(child.Content, &storageDomainMemberApiBean.WritePreference, aggErr)
+		default:
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing StorageDomainMemberApiBean.", child.XMLName.Local)
+		}
+	}
+}
+
+func parseStorageDomainMemberApiBeanSlice(tagName string, xmlNodes []XmlNode, aggErr *AggregateError, logger sdk_log.Logger) []StorageDomainMemberApiBean {
+	var result []StorageDomainMemberApiBean
+	for _, curXmlNode := range xmlNodes {
+		if curXmlNode.XMLName.Local == tagName {
+			var curResult StorageDomainMemberApiBean
+			curResult.parse(&curXmlNode, aggErr, logger)
+			result = append(result, curResult)
+		} else {
+			logger.Warningf("Discovered unexpected xml tag '%s' when expected tag '%s' when parsing StorageDomainMemberApiBean struct.", curXmlNode.XMLName.Local, tagName)
+		}
+	}
+	return result
+}
+
+type TapePartitionApiBean struct {
+	AutoCompactionEnabled      bool
+	AutoQuiesceEnabled         bool
+	DriveCount                 int
+	DriveIdleTimeoutInMinutes  *int
+	DriveType                  *TapeDriveType
+	ErrorMessage               *string
+	Id                         string
+	ImportExportConfiguration  ImportExportConfiguration
+	LibraryId                  string
+	MinimumReadReservedDrives  int
+	MinimumWriteReservedDrives int
+	Name                       *string
+	Quiesced                   Quiesced
+	SerialNumber               *string
+	State                      TapePartitionState
+	TapeCount                  int
+}
+
+func (tapePartitionApiBean *TapePartitionApiBean) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
+	// Parse Attributes
+	for _, attr := range xmlNode.Attrs {
+		switch attr.Name.Local {
+		case "Name":
+			tapePartitionApiBean.Name = parseNullableStringFromString(attr.Value)
+		default:
+			logger.Warningf("unable to parse unknown attribute '%s' while parsing TapePartitionApiBean.", attr.Name.Local)
+		}
+	}
+
+	// Parse Child Nodes
+	for _, child := range xmlNode.Children {
+		switch child.XMLName.Local {
+		case "AutoCompactionEnabled":
+			tapePartitionApiBean.AutoCompactionEnabled = parseBool(child.Content, aggErr)
+		case "AutoQuiesceEnabled":
+			tapePartitionApiBean.AutoQuiesceEnabled = parseBool(child.Content, aggErr)
+		case "DriveCount":
+			tapePartitionApiBean.DriveCount = parseInt(child.Content, aggErr)
+		case "DriveIdleTimeoutInMinutes":
+			tapePartitionApiBean.DriveIdleTimeoutInMinutes = parseNullableInt(child.Content, aggErr)
+		case "DriveType":
+			tapePartitionApiBean.DriveType = newTapeDriveTypeFromContent(child.Content, aggErr)
+		case "ErrorMessage":
+			tapePartitionApiBean.ErrorMessage = parseNullableString(child.Content)
+		case "Id":
+			tapePartitionApiBean.Id = parseString(child.Content)
+		case "ImportExportConfiguration":
+			parseEnum(child.Content, &tapePartitionApiBean.ImportExportConfiguration, aggErr)
+		case "LibraryId":
+			tapePartitionApiBean.LibraryId = parseString(child.Content)
+		case "MinimumReadReservedDrives":
+			tapePartitionApiBean.MinimumReadReservedDrives = parseInt(child.Content, aggErr)
+		case "MinimumWriteReservedDrives":
+			tapePartitionApiBean.MinimumWriteReservedDrives = parseInt(child.Content, aggErr)
+		case "Quiesced":
+			parseEnum(child.Content, &tapePartitionApiBean.Quiesced, aggErr)
+		case "SerialNumber":
+			tapePartitionApiBean.SerialNumber = parseNullableString(child.Content)
+		case "State":
+			parseEnum(child.Content, &tapePartitionApiBean.State, aggErr)
+		case "TapeCount":
+			tapePartitionApiBean.TapeCount = parseInt(child.Content, aggErr)
+		default:
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing TapePartitionApiBean.", child.XMLName.Local)
+		}
+	}
+}
+
+func parseTapePartitionApiBeanSlice(tagName string, xmlNodes []XmlNode, aggErr *AggregateError, logger sdk_log.Logger) []TapePartitionApiBean {
+	var result []TapePartitionApiBean
+	for _, curXmlNode := range xmlNodes {
+		if curXmlNode.XMLName.Local == tagName {
+			var curResult TapePartitionApiBean
+			curResult.parse(&curXmlNode, aggErr, logger)
+			result = append(result, curResult)
+		} else {
+			logger.Warningf("Discovered unexpected xml tag '%s' when expected tag '%s' when parsing TapePartitionApiBean struct.", curXmlNode.XMLName.Local, tagName)
+		}
+	}
+	return result
 }
 
 type TapeStateSummaryApiBean struct {
@@ -7350,6 +7963,62 @@ func parseTapeTypeSummaryApiBeanSlice(tagName string, xmlNodes []XmlNode, aggErr
 			result = append(result, curResult)
 		} else {
 			logger.Warningf("Discovered unexpected xml tag '%s' when expected tag '%s' when parsing TapeTypeSummaryApiBean struct.", curXmlNode.XMLName.Local, tagName)
+		}
+	}
+	return result
+}
+
+type TargetApiBean struct {
+	CloudNamingMode       *CloudNamingMode
+	DefaultReadPreference TargetReadPreferenceType
+	Id                    string
+	Name                  *string
+	PermitGoingOutOfSync  bool
+	Quiesced              Quiesced
+	State                 TargetState
+}
+
+func (targetApiBean *TargetApiBean) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
+	// Parse Attributes
+	for _, attr := range xmlNode.Attrs {
+		switch attr.Name.Local {
+		case "Name":
+			targetApiBean.Name = parseNullableStringFromString(attr.Value)
+		default:
+			logger.Warningf("unable to parse unknown attribute '%s' while parsing TargetApiBean.", attr.Name.Local)
+		}
+	}
+
+	// Parse Child Nodes
+	for _, child := range xmlNode.Children {
+		switch child.XMLName.Local {
+		case "CloudNamingMode":
+			targetApiBean.CloudNamingMode = newCloudNamingModeFromContent(child.Content, aggErr)
+		case "DefaultReadPreference":
+			parseEnum(child.Content, &targetApiBean.DefaultReadPreference, aggErr)
+		case "Id":
+			targetApiBean.Id = parseString(child.Content)
+		case "PermitGoingOutOfSync":
+			targetApiBean.PermitGoingOutOfSync = parseBool(child.Content, aggErr)
+		case "Quiesced":
+			parseEnum(child.Content, &targetApiBean.Quiesced, aggErr)
+		case "State":
+			parseEnum(child.Content, &targetApiBean.State, aggErr)
+		default:
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing TargetApiBean.", child.XMLName.Local)
+		}
+	}
+}
+
+func parseTargetApiBeanSlice(tagName string, xmlNodes []XmlNode, aggErr *AggregateError, logger sdk_log.Logger) []TargetApiBean {
+	var result []TargetApiBean
+	for _, curXmlNode := range xmlNodes {
+		if curXmlNode.XMLName.Local == tagName {
+			var curResult TargetApiBean
+			curResult.parse(&curXmlNode, aggErr, logger)
+			result = append(result, curResult)
+		} else {
+			logger.Warningf("Discovered unexpected xml tag '%s' when expected tag '%s' when parsing TargetApiBean struct.", curXmlNode.XMLName.Local, tagName)
 		}
 	}
 	return result
@@ -7998,6 +8667,35 @@ func newRequestTypeFromContent(content []byte, aggErr *AggregateError) *RequestT
 	return result
 }
 
+type Duration struct {
+	ElapsedHours   int
+	ElapsedMillis  int64
+	ElapsedMinutes int
+	ElapsedNanos   int64
+	ElapsedSeconds int
+}
+
+func (duration *Duration) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
+
+	// Parse Child Nodes
+	for _, child := range xmlNode.Children {
+		switch child.XMLName.Local {
+		case "ElapsedHours":
+			duration.ElapsedHours = parseInt(child.Content, aggErr)
+		case "ElapsedMillis":
+			duration.ElapsedMillis = parseInt64(child.Content, aggErr)
+		case "ElapsedMinutes":
+			duration.ElapsedMinutes = parseInt(child.Content, aggErr)
+		case "ElapsedNanos":
+			duration.ElapsedNanos = parseInt64(child.Content, aggErr)
+		case "ElapsedSeconds":
+			duration.ElapsedSeconds = parseInt(child.Content, aggErr)
+		default:
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing Duration.", child.XMLName.Local)
+		}
+	}
+}
+
 type NamingConventionType Enum
 
 const (
@@ -8205,6 +8903,25 @@ func (cacheFilesystemList *CacheFilesystemList) parse(xmlNode *XmlNode, aggErr *
 			cacheFilesystemList.CacheFilesystems = append(cacheFilesystemList.CacheFilesystems, model)
 		default:
 			logger.Warningf("unable to parse unknown xml tag '%s' while parsing CacheFilesystemList.", child.XMLName.Local)
+		}
+	}
+}
+
+type CacheThrottleRuleList struct {
+	CacheThrottleRules []CacheThrottleRule
+}
+
+func (cacheThrottleRuleList *CacheThrottleRuleList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
+
+	// Parse Child Nodes
+	for _, child := range xmlNode.Children {
+		switch child.XMLName.Local {
+		case "CacheThrottleRule":
+			var model CacheThrottleRule
+			model.parse(&child, aggErr, logger)
+			cacheThrottleRuleList.CacheThrottleRules = append(cacheThrottleRuleList.CacheThrottleRules, model)
+		default:
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing CacheThrottleRuleList.", child.XMLName.Local)
 		}
 	}
 }
@@ -8547,6 +9264,25 @@ func (jobCreationFailedList *JobCreationFailedList) parse(xmlNode *XmlNode, aggE
 			jobCreationFailedList.JobCreationFaileds = append(jobCreationFailedList.JobCreationFaileds, model)
 		default:
 			logger.Warningf("unable to parse unknown xml tag '%s' while parsing JobCreationFailedList.", child.XMLName.Local)
+		}
+	}
+}
+
+type JobEntryList struct {
+	JobEntries []JobEntry
+}
+
+func (jobEntryList *JobEntryList) parse(xmlNode *XmlNode, aggErr *AggregateError, logger sdk_log.Logger) {
+
+	// Parse Child Nodes
+	for _, child := range xmlNode.Children {
+		switch child.XMLName.Local {
+		case "JobEntry":
+			var model JobEntry
+			model.parse(&child, aggErr, logger)
+			jobEntryList.JobEntries = append(jobEntryList.JobEntries, model)
+		default:
+			logger.Warningf("unable to parse unknown xml tag '%s' while parsing JobEntryList.", child.XMLName.Local)
 		}
 	}
 }
